@@ -1,0 +1,33 @@
+# --- .htaccess à mettre dans dans /public  
+
+ 
+ 
+
+RewriteEngine On 
+
+ 
+ 
+
+# D'abord on redirige tout sur le https 
+
+RewriteCond %{HTTPS} !=on 
+
+RewriteRule ^(.*) https://%{SERVER_NAME}/$1 [R,L] 
+
+ 
+ 
+
+# Puis, toutes les urls en .css, .js, etc… sont servies directement 
+
+RewriteCond %{REQUEST_URI} \..+$ 
+
+RewriteCond %{REQUEST_URI} !\.html$ 
+
+RewriteRule .* - [L] 
+
+ 
+ 
+
+# Puis, les autres sont redirigées vers index.php 
+
+RewriteRule ^(.*)$ index.php [QSA,L] 

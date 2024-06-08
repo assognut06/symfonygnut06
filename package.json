@@ -1,0 +1,35 @@
+{
+  "name": "gnut06",
+  "version": "1.0.0",
+  "description": "gnut06.org",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "node-fs-extra": "^0.8.2",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
+    "@symfony/webpack-encore": "^4.6.1"
+  },
+  "scripts": {
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run development",
+    "development": "mix",
+    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod": "npm run production",
+    "production": "mix --production"
+  },
+  "author": "gnut06",
+  "license": "ISC"
+}
