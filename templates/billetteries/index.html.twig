@@ -16,6 +16,12 @@
         <li>Your controller at <code>D:/laragon/www/gnut06symfony/gnut06/src/Controller/BilletteriesController.php</code></li>
         <li>Your template at <code>D:/laragon/www/gnut06symfony/gnut06/templates/billetteries/index.html.twig</code></li>
     </ul>
+
+    {% if bearer_token %}
+        <p>Your bearer token is: <code>{{ bearer_token }}</code></p>
+    {% else %}
+        <p>Bearer token is not available.</p>
+    {% endif %}
 </div>
 <pre>
   {{ dump(app.request.attributes.get('_route')) }}
