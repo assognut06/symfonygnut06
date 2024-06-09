@@ -6,24 +6,38 @@
 			{% block title %}Welcome!
 			{% endblock %}
 		</title>
+		<!-- Include header -->
 		{% include '_partials/header.html.twig' %}
-		
 	</head>
 	<body>
-
+		<!-- Include navbar -->
 		{% include '_partials/navbar.html.twig' %}
+
+		<!-- Include main content -->
 		{% include '_partials/main.html.twig' %}
-		{% for flash_error in app.flashes('reset_password_error') %}
-			<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+
+		<!-- Display flash messages -->
+		{% for type, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ type }}" role="alert">{{ message }}</div>
+			{% endfor %}
 		{% endfor %}
+
+		<!-- Body content -->
 		{% block body %}{% endblock %}
+
+		<!-- Include footer -->
 		{% include '_partials/footer.html.twig' %}
+
+		<!-- Include scripts -->
 		{% include '_partials/scripts.html.twig' %}
+
+		<!-- Include javascripts -->
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
-{% block importmap %}
-			{{ importmap('app') }}
-		{% endblock %}
+			{% block importmap %}
+				{{ importmap('app') }}
+			{% endblock %}
 		{% endblock %}
 	</body>
 </html>

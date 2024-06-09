@@ -7,6 +7,7 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "guzzlehttp/guzzle": "*",
         "symfony/apache-pack": "*",
         "symfony/console": "7.1.*",
         "symfony/dotenv": "7.1.*",
