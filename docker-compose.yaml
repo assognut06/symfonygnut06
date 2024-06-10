@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql_gnut
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: gnut06
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - dev
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin_gnut
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - dev
+
+  maildev:
+    image: maildev/maildev
+    container_name: maildev_gnut
+    command: bin/maildev --web 80 --smtp 25 --hide-extensions STARTTLS
+    ports:
+      - 1080:80
+      - 1025:25
+    restart: always
+    networks:
+      - dev
+
+  symfony:
+    build:
+      context: ./app
+    container_name: symfony_asso
+    restart: always
+    volumes:
+      - .:/var/www/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    networks:
+      - dev
+
+networks:
+  dev:
+    driver: bridge
+
+volumes:
+  mysql:
