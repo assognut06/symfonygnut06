@@ -4,7 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    helloasso.api_client_id: '%env(APICLIENTID)%'
+    helloasso.api_client_secret: '%env(APICLIENTSECRET)%'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -28,3 +29,10 @@ services:
             $clientSecret: '%env(APICLIENTSECRET)%'
             $urlToken: 'https://api.helloasso.com/oauth2/token'
             $slugAsso: '%env(SLUGASSO)%'
+
+    App\Service\HelloAssoAuthService:
+        class: App\Service\HelloAssoAuthService
+        arguments:
+            - '@request_stack'
+            - '%env(APICLIENTID)%'
+            - '%env(APICLIENTSECRET)%'

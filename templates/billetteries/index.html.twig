@@ -1,29 +1,70 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Billeteries de Gnut 06{% endblock %}
+{% block title %}Billeteries de Gnut 06
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+	<div class="pt-0">
+		<div class="mx-3">
+			<h2 class="my-5 text-success text-center">Actualités de Gnut 06</h2>
+			<div class="border border-success mb-5 mx-5"></div>
+			<div class="row align-items-start mx-auto">
+				{# {{ dump(data_forms) }} #}
+				{# Affiche le contenu de data_forms pour le débogage #}
+				{# {% for item in data_forms.data %}
+																	{{ dump(item) }}
+																{% endfor %} #}
+					{% for item in data_forms %}
+						<div class="col d-flex justify-content-around my-3"> <div class="card shadow-lg" style="width: 21rem;">
+							<img src="{{ random_image }}" class="card-img-top" alt="Evénements Gnut 06">
+							<div class="card-body">
+								<h5 class="card-title text-center">{{ item.title }}</h5>
+								<p class="card-text text-center">
+									<div class="alert alert-danger text-center mx-5 shadow-lg rounded-pill" role="alert">
+										{% set endDate = item.endDate|date("Y-m-d H:i:s") %}
+										{% set now = "now"|date("Y-m-d H:i:s") %}
+										{% set interval = date(endDate).diff(date(now)) %}
+										{% if interval.days == 0 %}
+											<strong>Expire dans quelques heures</strong>
+										{% else %}
+											<strong>Expire dans
+												{{ interval.days }}
+												jours.</strong>
+										{% endif %}
+									</div>
+									{{ item.description|slice(0, 200) }}...<br>
+									{# <a href="?page={{ page }}&formType={{ item.formType }}&slug={{ item.formSlug }}"> #}
+									En savoir +
+								</p>
+							</a>
+						</p>
+						<div class="text-center">
+							<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.index }}">Réserver</button>
+						</div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+						<!-- Modal -->
+						<div class="modal fade modal-lg" id="modal_{{ loop.index }}" tabindex="-1" aria-labelledby="ModalLabel_{{ loop.index }}" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h1 class="modal-title fs-5" id="ModalLabel_{{ loop.index }}">{{ item.title }}</h1>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="{{ item.widgetFullUrl }}" style="width: 100%; height: 750px; border: none;"></iframe>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>D:/laragon/www/gnut06symfony/gnut06/src/Controller/BilletteriesController.php</code></li>
-        <li>Your template at <code>D:/laragon/www/gnut06symfony/gnut06/templates/billetteries/index.html.twig</code></li>
-    </ul>
-
-    {% if bearer_token %}
-        <p>Your bearer token is: <code>{{ bearer_token }}</code></p>
-    {% else %}
-        <p>Bearer token is not available.</p>
-    {% endif %}
-</div>
-<pre>
-  {{ dump(app.request.attributes.get('_route')) }}
-</pre>
-{% endblock %}
+		{% else %}
+			No data available.
+		{% endfor %}
+	</div>
+</div></div>{% endblock %}
