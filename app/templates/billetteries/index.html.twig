@@ -33,7 +33,7 @@
 										{% endif %}
 									</div>
 									{{ item.description|slice(0, 200) }}...<br>
-									{# <a href="?page={{ page }}&formType={{ item.formType }}&slug={{ item.formSlug }}"> #}
+									<a href="{{ path('app_billetteries_detail', {'formType': item.formType, 'slug': item.formSlug}) }}">
 									En savoir +
 								</p>
 							</a>
