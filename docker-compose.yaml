@@ -46,7 +46,7 @@ services:
     container_name: symfony_asso
     restart: always
     volumes:
-      - .:/var/www/app
+      - .:/var/www/
     ports:
       - "8000:8000"
     depends_on:
