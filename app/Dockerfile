@@ -38,9 +38,9 @@ RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
 
 COPY . /var/www/
 
-RUN chmod +x /var/www/
+RUN chmod +x /var/www/app
 
-RUN chown -R www-data:www-data /var/www/
+RUN chown -R www-data:www-data /var/www/app
 
 # Set environment variable for Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
