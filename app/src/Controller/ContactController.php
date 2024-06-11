@@ -44,10 +44,10 @@ class ContactController extends AbstractController
                 $subject = 'Message du site Gnut06.org';
                 $to = 'gnut@gnut.eu';
                 $headers = 'From: ' . $email . "\r\n" .
-                           'Reply-To: ' . $email . "\r\n" .
-                           'Content-Type: text/plain; charset=UTF-8' . "\r\n" .
-                           'Content-Transfer-Encoding: 8bit' . "\r\n" .
-                           'X-Mailer: PHP/' . phpversion();
+                    'Reply-To: ' . $email . "\r\n" .
+                    'Content-Type: text/plain; charset=UTF-8' . "\r\n" .
+                    'Content-Transfer-Encoding: 8bit' . "\r\n" .
+                    'X-Mailer: PHP/' . phpversion();
 
                 // Envoyer l'email
                 if (mail($to, $subject, $body, $headers)) {
@@ -61,7 +61,6 @@ class ContactController extends AbstractController
         return $this->render('contact/index.html.twig', [
             'message_envoye' => $messageEnvoye,
             'errors' => $errors,
-            'currentDate' => new \DateTime()
         ]);
     }
 }

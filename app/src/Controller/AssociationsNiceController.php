@@ -13,7 +13,6 @@ class AssociationsNiceController extends AbstractController
     {
         return $this->render('associations_nice/index.html.twig', [
             'controller_name' => 'AssociationsNiceController',
-            'currentDate' => new \DateTime(),
         ]);
     }
 }

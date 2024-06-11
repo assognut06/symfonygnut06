@@ -42,4 +42,21 @@
     {% if app.request.attributes.get('_route') != 'app_adhesion' %}
         <h3 class="text-center mb-5 fs-1"><a href="?page=adhesion" class="badge text-bg-success p-4 text-uppercase">Adhérer</a></h3>
     {% endif %}
+{% for label, flashes in app.session.flashbag.all() %}
+    {% for flash in flashes %}
+        {% set alertClass = 'info' %}
+        {% if label == 'success' %}
+            {% set alertClass = 'success' %}
+        {% elseif label == 'warning' %}
+            {% set alertClass = 'warning' %}
+        {% elseif label == 'danger' %}
+            {% set alertClass = 'danger' %}
+        {% elseif label == 'error' %}
+            {% set alertClass = 'danger' %}
+        {% elseif label == 'info' %}
+            {% set alertClass = 'info' %}
+        {% endif %}
+        <div class="alert alert-{{ alertClass }}" role="alert">{{ flash }}</div>
+    {% endfor %}
+{% endfor %}
 </main>
