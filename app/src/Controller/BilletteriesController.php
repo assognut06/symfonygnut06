@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use DateTime;
 use App\Service\HelloAssoAuthService;
+use GuzzleHttp\Client;
 
 class BilletteriesController extends AbstractController
 {
@@ -35,7 +36,7 @@ class BilletteriesController extends AbstractController
         // $session->set('expiration_token', (new DateTime())->modify('+' . $dataToken['expires_in'] . ' seconds'));
         // $session->set('refresh_token', $dataToken['refresh_token']);
         // $session->set('bearer_token', 'my_bearer_token');
-        $bearer_token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0YWU4Y2JmMGEwMTc0MzAyMmQwNjA4ZGM4ODQxNTg1MiIsInVycyI6Ik9yZ2FuaXphdGlvbkFkbWluIiwiY3BzIjpbIkFjY2Vzc1B1YmxpY0RhdGEiLCJBY2Nlc3NUcmFuc2FjdGlvbnMiLCJDaGVja291dCJdLCJuYmYiOjE3MTc5NzI5NzAsImV4cCI6MTcxNzk3NDc3MCwiaXNzIjoiaHR0cHM6Ly9hcGkuaGVsbG9hc3NvLmNvbSIsImF1ZCI6IjZiZWJiYTU5ZWZhMTQ0Njk4ZWFhYzc4NGY0ZGUxZmNmIn0.VSe9kFGWVfcIHxbBWANVP79aHcdUnlA5sbg8sqQuiJuI8LnW698JIYu_RMFfhmSFc0NqUS50hiJouf44Ds5X1dMR6pDX0d397pp3PZthJVUm3dx3QESsad3oVNYaor2_jjxnpcbdvWwnXMGChE_vOWfwAFxzd-RvCdPijNLseJx-PabB-fIWE_QAubZhe3_86hP0kjF4AT3jK0vMp8uC0wK4elbx5_Tp4tFWaLCDpi1P7Q8SpvAkwj6q4VGR3SNsJeEMP2-trJhbpiwArOg2h7Co6MxIjkgjJT4UX8xsc4IXAepgcMO1eotokEqUoB_UIoMzNmpSYxcMTbzLmROZHA";
+        // $bearer_token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0YWU4Y2JmMGEwMTc0MzAyMmQwNjA4ZGM4ODQxNTg1MiIsInVycyI6Ik9yZ2FuaXphdGlvbkFkbWluIiwiY3BzIjpbIkFjY2Vzc1B1YmxpY0RhdGEiLCJBY2Nlc3NUcmFuc2FjdGlvbnMiLCJDaGVja291dCJdLCJuYmYiOjE3MTc5NzI5NzAsImV4cCI6MTcxNzk3NDc3MCwiaXNzIjoiaHR0cHM6Ly9hcGkuaGVsbG9hc3NvLmNvbSIsImF1ZCI6IjZiZWJiYTU5ZWZhMTQ0Njk4ZWFhYzc4NGY0ZGUxZmNmIn0.VSe9kFGWVfcIHxbBWANVP79aHcdUnlA5sbg8sqQuiJuI8LnW698JIYu_RMFfhmSFc0NqUS50hiJouf44Ds5X1dMR6pDX0d397pp3PZthJVUm3dx3QESsad3oVNYaor2_jjxnpcbdvWwnXMGChE_vOWfwAFxzd-RvCdPijNLseJx-PabB-fIWE_QAubZhe3_86hP0kjF4AT3jK0vMp8uC0wK4elbx5_Tp4tFWaLCDpi1P7Q8SpvAkwj6q4VGR3SNsJeEMP2-trJhbpiwArOg2h7Co6MxIjkgjJT4UX8xsc4IXAepgcMO1eotokEqUoB_UIoMzNmpSYxcMTbzLmROZHA";
         $bearerToken = $this->helloAssoAuthService->getToken();
         $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO']  ."/forms";
         $authorization = "Bearer " . $bearerToken;
@@ -107,8 +108,8 @@ class BilletteriesController extends AbstractController
         // dump($filteredData);
         // dump($data_forms);
         // Dans votre méthode de contrôleur
-        $allSessionData = $session->all();
-        dump($allSessionData);
+        // $allSessionData = $session->all();
+        // dump($allSessionData);
         // dump($bearerToken); // Utilisez dump() pour Symfony ou error_log() pour un log simple
         // dump($bearer_token);
         // exit;
@@ -131,6 +132,39 @@ class BilletteriesController extends AbstractController
             'controller_name' => 'Billetteries Gnut 06',
             'currentDate' => new \DateTime(),
             'bearer_token' => $bearerToken // Passer le token à la vue
+        ]);
+    }
+
+    #[Route('/billetteries/{formType}/{slug}', name: 'app_billetteries_detail')]
+    public function detail(string $formType, string $slug, Request $request): Response
+    {
+        // Vous pouvez accéder aux variables $formType et $slug directement dans cette méthode.
+        // Ici, vous pouvez ajouter votre logique pour traiter les données en fonction de $formType et $slug.
+        
+        // Exemple d'utilisation:
+        // $data = $this->someService->getDataBasedOnTypeAndSlug($formType, $slug);
+        $bearerToken = $this->helloAssoAuthService->getToken();
+        $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO']  ."/forms/" . $formType . "/" . $slug . "/public";
+        $authorization = "Bearer " . $bearerToken;
+
+        $client = new \GuzzleHttp\Client();
+
+        $response = $client->request('GET', $url, [
+            'headers' => [
+                'accept' => 'application/json',
+                'authorization' => $authorization,
+            ],
+        ]);
+        $data_form = json_decode($response->getBody(), true);
+
+        $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
+    
+        return $this->render('billetteries/detail.html.twig', [
+            // 'data' => $data,
+            'googleMapsApiKey' => $googleMapsApiKey,
+            'data_actu' => $data_form,
+            'controller_name' => 'Billetteries Gnut 06',
+            'currentDate' => new \DateTime(),
         ]);
     }
 }
