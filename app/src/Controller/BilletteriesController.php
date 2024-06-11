@@ -130,7 +130,6 @@ class BilletteriesController extends AbstractController
             'random_image' => $webPath,
             'data_forms' => $filteredData,
             'controller_name' => 'Billetteries Gnut 06',
-            'currentDate' => new \DateTime(),
             'bearer_token' => $bearerToken // Passer le token à la vue
         ]);
     }
@@ -164,7 +163,6 @@ class BilletteriesController extends AbstractController
             'googleMapsApiKey' => $googleMapsApiKey,
             'data_actu' => $data_form,
             'controller_name' => 'Billetteries Gnut 06',
-            'currentDate' => new \DateTime(),
         ]);
     }
 }

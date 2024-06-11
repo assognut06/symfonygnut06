@@ -13,7 +13,6 @@ class DonController extends AbstractController
     {
         return $this->render('don/index.html.twig', [
             'controller_name' => 'DonController',
-            'currentDate' => new \DateTime(),
         ]);
     }
 }
