@@ -8,6 +8,7 @@
 		</title>
 		<!-- Include header -->
 		{% include '_partials/header.html.twig' %}
+		{{ encore_entry_link_tags('app') }}
 	</head>
 	<body>
 		<!-- Include navbar -->
@@ -34,7 +35,7 @@
 
 		<!-- Include javascripts -->
 		{% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {{ encore_entry_script_tags('app') }}
 			{{ encore_entry_script_tags('app') }}
 		{% endblock %}
 	</body>

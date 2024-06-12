@@ -17,7 +17,9 @@
   "devDependencies": {
     "@babel/core": "^7.24.7",
     "@babel/preset-env": "^7.24.7",
-    "@symfony/webpack-encore": "^4.6.1"
+    "@symfony/webpack-encore": "^4.6.1",
+    "file-loader": "^6.2.0",
+    "webpack-notifier": "^1.15.0"
   },
   "scripts": {
     "dev": "encore dev",
@@ -28,7 +30,8 @@
     "development": "mix",
     "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
     "prod": "npm run production",
-    "production": "mix --production"
+    "production": "mix --production",
+    "webpack-node-externals": "^3.0.0"
   },
   "author": "gnut06",
   "license": "ISC"

@@ -8,7 +8,7 @@ RUN apt-get update \
     && apt-get install -qq -y --no-install-recommends \
     cron \
     wget \
-    vim \
+    nano \
     locales coreutils apt-utils git libicu-dev g++ libpng-dev libxml2-dev libzip-dev libonig-dev libxslt-dev
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
@@ -35,13 +35,12 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions amqp
-
+  
 COPY . /var/www/
 
 RUN chmod +x /var/www/app
 
 RUN chown -R www-data:www-data /var/www/app
-
 # Set environment variable for Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
@@ -49,5 +48,15 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN if [ -f composer.json ]; then composer install; fi
 
 RUN a2ensite 000-default.conf
+    
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    npm
 
-CMD ["symfony", "serve"]
+RUN npm install npm@latest -g && \
+    npm install n -g && \
+    n latest
+
+ENTRYPOINT [ "/var/www/app/run.sh" ]
+
+# CMD ["symfony", "serve"]
