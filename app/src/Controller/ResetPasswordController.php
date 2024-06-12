@@ -19,26 +19,22 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
-use Twig\Environment;
-
 
 #[Route('/reset-password')]
 class ResetPasswordController extends AbstractController
 {
     use ResetPasswordControllerTrait;
-    private Environment $twig;
+
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
-        private EntityManagerInterface $entityManager,
-        Environment $twig
+        private EntityManagerInterface $entityManager
     ) {
-        $this->twig = $twig;
     }
 
     /**
      * Display & process form to request a password reset.
      */
-    #[Route('', name: 'app_forgot_password_request')]
+    #[Route('', name: 'app_forgot_password_request', methods: ['GET'])]
     public function request(Request $request, MailerInterface $mailer, TranslatorInterface $translator): Response
     {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
@@ -54,7 +50,7 @@ class ResetPasswordController extends AbstractController
 
         return $this->render('reset_password/request.html.twig', [
             'requestForm' => $form,
-            'currentDate' => new \DateTime(),
+            'currentDate' => new \DateTime()
         ]);
     }
 
@@ -72,7 +68,6 @@ class ResetPasswordController extends AbstractController
 
         return $this->render('reset_password/check_email.html.twig', [
             'resetToken' => $resetToken,
-            'currentDate' => new \DateTime(),
         ]);
     }
 
@@ -80,7 +75,7 @@ class ResetPasswordController extends AbstractController
      * Validates and process the reset URL that the user clicked in their email.
      */
     #[Route('/reset/{token}', name: 'app_reset_password')]
-    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, ?string $token = null): Response
+    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, string $token = null): Response
     {
         if ($token) {
             // We store the token in session and remove it from the URL, to avoid the URL being
@@ -91,7 +86,6 @@ class ResetPasswordController extends AbstractController
         }
 
         $token = $this->getTokenFromSession();
-
         if (null === $token) {
             throw $this->createNotFoundException('No reset password token found in the URL or in the session.');
         }
@@ -129,12 +123,11 @@ class ResetPasswordController extends AbstractController
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
 
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->render('reset_password/reset.html.twig', [
             'resetForm' => $form,
-            'currentDate' => new \DateTime(),
         ]);
     }
 
@@ -165,36 +158,17 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('app_check_email');
         }
 
-        // $email = (new TemplatedEmail())
-        //     ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
-        //     ->to($user->getEmail())
-        //     ->subject('Your password reset request')
-        //     ->htmlTemplate('reset_password/email.html.twig')
-        //     ->context([
-        //         'resetToken' => $resetToken,
-        //     ]);
-        // Rendre le template de l'email en HTML avec le contexte préparé
-        $emailContent = $this->twig->render('reset_password/email.html.twig', [
-            'resetToken' => $resetToken,
-        ]);
-        // Définir les paramètres de l'email
-        $to = $user->getEmail();
-        $subject = 'Please Confirm your Email';
-        $headers = 'From: gnut@gnut06.org' . "\r\n" .
-            'Reply-To: gnut@gnut06.org' . "\r\n" .
-            'MIME-Version: 1.0' . "\r\n" .
-            'Content-Type: text/html; charset=UTF-8' . "\r\n" .
-            'Content-Transfer-Encoding: 8bit' . "\r\n" .
-            'X-Mailer: PHP/' . phpversion();
+        $email = (new TemplatedEmail())
+            ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
+            ->to($user->getEmail())
+            ->subject('Your password reset request')
+            ->htmlTemplate('reset_password/email.html.twig')
+            ->context([
+                'resetToken' => $resetToken,
+            ])
+        ;
 
-        // Encodage du sujet pour gérer les caractères spéciaux
-        $encodedSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
-
-        // Envoyer l'email à l'aide de la fonction mail() de PHP
-        if (!mail($to, $encodedSubject, $emailContent, $headers)) {
-            throw new \RuntimeException('L\'envoi de l\'email a échoué.');
-        }
-        // $mailer->send($email);
+        $mailer->send($email);
 
         // Store the token object in session for retrieval in check-email route.
         $this->setTokenObjectInSession($resetToken);

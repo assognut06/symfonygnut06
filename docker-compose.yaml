@@ -45,6 +45,8 @@ services:
       context: ./app
     container_name: symfony_asso
     restart: always
+    environment:
+      DATABASE_URL: "mysql://root:root@mysql_gnut:3306/gnut06?serverVersion=5.7&charset=utf8mb4"
     volumes:
       - .:/var/www/
     ports:

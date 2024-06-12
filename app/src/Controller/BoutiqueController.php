@@ -13,7 +13,6 @@ class BoutiqueController extends AbstractController
     {
         return $this->render('boutique/index.html.twig', [
             'controller_name' => 'BoutiqueController',
-            'currentDate' => new \DateTime(),
         ]);
     }
 }
