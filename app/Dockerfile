@@ -36,11 +36,12 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions amqp
   
-COPY . /var/www/
 
-RUN chmod +x /var/www/app
+COPY . /var/www/app/
 
-RUN chown -R www-data:www-data /var/www/app
+RUN chmod +x /var/www/app/
+
+RUN chown -R www-data:www-data /var/www/app/
 # Set environment variable for Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
@@ -57,6 +58,6 @@ RUN npm install npm@latest -g && \
     npm install n -g && \
     n latest
 
-ENTRYPOINT [ "/var/www/app/run.sh" ]
+# ENTRYPOINT [ "./run.sh" ]
 
-# CMD ["symfony", "serve"]
+CMD ["symfony", "serve"]
