@@ -1,0 +1,31 @@
+{# templates/profil/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil de l'utilisateur
+{% endblock %}
+
+{% block body %}
+	<h2 class="text-center">Profil de l'utilisateur</h2>
+
+	<div class="text-center">
+		<p>Identifiant:
+			{{ user.id }}</p>
+		<p>Email:
+			{{ user.email }}</p>
+		<!-- Ajoutez plus d'informations de l'utilisateur ici -->
+		<div class="container">
+			{% if data_items is defined and data_items['data'] is not empty %}
+            <ul>
+                {% for item in data_items['data']  %}
+                    <li>{{ dump(item.order.id) }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aucun élément à afficher.</p>
+        {% endif %}
+    </div>
+		</div>
+    </div>
+        {{ dump(data_items) }}
+	{% endblock %}
