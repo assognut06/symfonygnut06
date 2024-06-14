@@ -13,19 +13,29 @@
 			{{ user.id }}</p>
 		<p>Email:
 			{{ user.email }}</p>
-		<!-- Ajoutez plus d'informations de l'utilisateur ici -->
-		<div class="container">
+	</div>
+	<!-- Ajoutez plus d'informations de l'utilisateur ici -->
+	<div class="container my-5">
+		<div class="row justify-content-around">
 			{% if data_items is defined and data_items['data'] is not empty %}
-            <ul>
-                {% for item in data_items['data']  %}
-                    <li>{{ dump(item.order.id) }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Aucun élément à afficher.</p>
-        {% endif %}
-    </div>
+				{% for item in data_items['data']  %}
+					<div class="col-12 col-lg-4 mb-4 card" style="width: 18rem;">
+						<div class="card-body text-center">
+							<h5 class="card-title bg-warning-subtle ">Commande n°{{ item.order.id }}</h5>
+							<p class="card-text">
+								{{ item.order.formName }}</p>
+							<p class="card-text">Le
+								{{ item.order.date|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}</p>
+							<p class="card-text">Total: {{ item.amount }} €</p>
+							{# <a href="{{ path('order_show', {'id': item.order.id}) }}" class="btn btn-primary">Voir la commande</a> #}
+						</div>
+					</div>
+				{% endfor %}
+			{% else %}
+				<p>Aucun élément à afficher.</p>
+			{% endif %}
 		</div>
-    </div>
-        {{ dump(data_items) }}
-	{% endblock %}
+	</div>
+</div>
+
+{{ dump(data_items) }}{% endblock %}

@@ -12,7 +12,7 @@
           <a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" aria-current="page" href="{{ path('app_home') }}">Accueil</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}" href="{{ path('app_billetteries') }}">Billetteries</a>
+            <a class="nav-link {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}" href="{{ path('app_billetteries') }}">Événements</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nos Hubs</a>
@@ -58,8 +58,11 @@
           <a class="nav-link {% if app.request.attributes.get('_route') == 'app_aPropos' %}active{% endif %}" href="{{ path('app_a_propos') }}">A propos</a>
         </li>
         {% if app.user %}
+        <li class="nav-item">
+          <a class="nav-link {% if app.request.attributes.get('_route') == 'app_profil' %}active{% endif %}" href="{{ path('app_profil') }}">Profil</a>
+        </li>
       	<li class="nav-item">
-					<a class="nav-link" href="{{ path('app_logout')}}">Déconnexion</a>
+                <a class="nav-link" href="{{ path('app_logout')}}">Déconnexion</a>
 				</li>
 				{% else %}
 				<li class="nav-item">
