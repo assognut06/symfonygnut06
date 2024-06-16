@@ -26,16 +26,50 @@
 								{{ item.order.formName }}</p>
 							<p class="card-text">Le
 								{{ item.order.date|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}</p>
-							<p class="card-text">Total: {{ item.amount }} €</p>
+							<p class="card-text">Total:
+								{{ item.amount }}
+								€</p>
 							{# <a href="{{ path('order_show', {'id': item.order.id}) }}" class="btn btn-primary">Voir la commande</a> #}
 						</div>
 					</div>
 				{% endfor %}
+				<div class="col-12 d-flex justify-content-center">
+				<nav aria-label="Commandes sur Gnut 06">
+					<ul class="pagination">
+						{% if data_items['pagination'].pageIndex > 1 %}
+							<li class="page-item">
+								<a class="page-link" href="{{ path('app_profil', {'page': data_items['pagination'].pageIndex - 1}) }}">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+						{% endif %}
+
+						{% for page in 1..data_items['pagination'].totalPages %}
+							<li class="page-item{% if page == data_items['pagination'].pageIndex %} active{% endif %}">
+								<a class="page-link" href="{{ path('app_profil', {'page': page}) }}">{{ page }}</a>
+							</li>
+						{% endfor %}
+
+						{% if data_items['pagination'].pageIndex < data_items['pagination'].totalPages %}
+							<li class="page-item">
+								<a class="page-link" href="{{ path('app_profil', {'page': data_items['pagination'].pageIndex + 1}) }}">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+						{% endif %}
+					</ul>
+				</nav>
+			</div>
 			{% else %}
-				<p>Aucun élément à afficher.</p>
+				<p>Aucune commande à afficher.</p>
 			{% endif %}
+			
 		</div>
 	</div>
-</div>
+	<div class="text-center my-4">
+		<a href="{{ path('app_logout') }}" class="btn btn-danger">Se déconnecter</a>
+	</div>
 
-{{ dump(data_items) }}{% endblock %}
+
+	{{ dump(data_items) }}
+{% endblock %}
