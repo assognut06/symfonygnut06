@@ -39,3 +39,4 @@ services:
             - '@request_stack'
             - '%env(APICLIENTID)%'
             - '%env(APICLIENTSECRET)%'
+
