@@ -1,0 +1,87 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Association à Nice
+{% endblock %}
+
+{% block body %}
+	<!--Contenu Orders-->
+	<div class="pt-0">
+		<div class="mx-3">
+			<h2 class="my-5 text-success text-center">Les commandes de Gnut 06</h2>
+			<div class="border border-success mb-5 mx-5"></div>
+
+			<div class="row align-items-start mx-auto">
+				<div class="col-12">
+					<table class="table table-success table-striped">
+						<thead>
+							<tr>
+								<th scope="col">Réf commande</th>
+								<th scope="col">Nom</th>
+								<th scope="col">Prénom</th>
+								<th scope="col">Email</th>
+								<th scope="col">Téléphone</th>
+								<th scope="col">Liste</th>
+								<th scope="col">Type</th>
+								<th scope="col">Date</th>
+								<th scope="col">Paiement</th>
+								<th class="text-end" scope="col">Montant</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% set i = 0 %}
+							{% set total_payment = 0 %}
+							{% if data_forms['data'] is defined %}
+								{% for item in data_forms['data'] %}
+									{% if (item.state|default('')) == "Processed" %}
+										{% include 'admin/_partials/tableau.html.twig' %}
+										{% set total_payment = total_payment + item.amount %}
+										{% set i = i + 1 %}
+									{% endif %}
+								{% endfor %}
+							{% else %}
+								No data available.
+							{% endif %}
+							<tr>
+								<td class="text-end" scope="row" colspan="10">
+									<strong class="text-success">Soit
+										{{ i }}
+										billets sur
+										{{ data_forms.pagination.totalCount }}
+										pour un Total</strong>
+									:
+									{{ formattedPrice(total_payment) }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-12 pagination-container mt-3">
+					<nav aria-label="Admin navigation">
+						<ul class="pagination">
+							{% if data_forms['pagination'].pageIndex > 1 %}
+								<li class="page-item">
+									<a class="page-link" href="{{ path('admin_api', {'donnees' : app.request.attributes.get('donnees'),'page': data_forms['pagination'].pageIndex - 1}) }}">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+							{% endif %}
+
+							{% for page in 1..data_forms['pagination'].totalPages %}
+								<li class="page-item{% if page == data_forms['pagination'].pageIndex %} active{% endif %}">
+									<a class="page-link" href="{{ path('admin_api', {'donnees' : app.request.attributes.get('donnees'),'page': page}) }}">{{ page }}</a>
+								</li>
+							{% endfor %}
+
+							{% if data_forms['pagination'].pageIndex < data_forms['pagination'].totalPages %}
+								<li class="page-item">
+									<a class="page-link" href="{{ path('admin_api', {'donnees' : app.request.attributes.get('donnees'),'page': data_forms['pagination'].pageIndex + 1}) }}">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+							{% endif %}
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

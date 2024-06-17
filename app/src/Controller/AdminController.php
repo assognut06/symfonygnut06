@@ -37,5 +37,31 @@ class AdminController extends AbstractController
         ]);
     }
 
-    // Ajoutez d'autres méthodes au besoin
+    #[Route('/{donnees}/{page}', name: 'admin_api')]
+    public function api(string $donnees, string $page)
+    {
+        if ($donnees == 'orders') {
+            $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO'] . "/items?pageIndex=" . $page . "&pageSize=20&withDetails=true&sortOrder=Desc&sortField=Date";
+        }
+
+        $bearerToken = $this->helloAssoAuthService->getToken();
+
+        $bearerToken = $this->helloAssoAuthService->getToken();
+        $authorization = "Bearer " . $bearerToken;
+
+        $client = new \GuzzleHttp\Client();
+
+        $response = $client->request('GET', $url, [
+            'headers' => [
+                'accept' => 'application/json',
+                'authorization' => $authorization,
+            ],
+        ]);
+        $data_forms = json_decode($response->getBody(), true);
+
+        return $this->render('admin/orders/index.html.twig', [
+            'data_forms' => $data_forms,
+        ]);
+    }
+
 }
