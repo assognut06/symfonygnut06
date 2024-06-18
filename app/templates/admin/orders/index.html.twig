@@ -4,11 +4,13 @@
 {% endblock %}
 
 {% block body %}
+
 	<!--Contenu Orders-->
 	<div class="pt-0">
-		<div class="mx-3">
-			<h2 class="my-5 text-success text-center">Les commandes de Gnut 06</h2>
-			<div class="border border-success mb-5 mx-5"></div>
+		<div class="mx-4">
+			{% set title = app.request.attributes.get('formSlug') == "adhesion-a-l-association-gnut-06" ? 'Les adhérants' : (app.request.attributes.get('donnees') == "payments" ? 'Les paiements' : (app.request.attributes.get('tierTypes') == "Donation" ? 'Les dons' : 'Les commandes')) %}
+			<h2 class="my-4 text-success text-center">{{ title }} de Gnut 06</h2>
+			<div class="border border-success mb-4 mx-5"></div>
 
 			<div class="row align-items-start mx-auto">
 				<div class="col-12">
@@ -32,7 +34,7 @@
 							{% set total_payment = 0 %}
 							{% if data_forms['data'] is defined %}
 								{% for item in data_forms['data'] %}
-									{% if (item.state|default('')) == "Processed" %}
+									{% if (item.state|default('')) == "Processed" or 'Authorized' %}
 										{% include 'admin/_partials/tableau.html.twig' %}
 										{% set total_payment = total_payment + item.amount %}
 										{% set i = i + 1 %}
@@ -59,7 +61,7 @@
 						<ul class="pagination">
 							{% if data_forms['pagination'].pageIndex > 1 %}
 								<li class="page-item">
-									<a class="page-link" href="{{ path('admin_api', {'donnees' : app.request.attributes.get('donnees'),'page': data_forms['pagination'].pageIndex - 1}) }}">
+									<a class="page-link" href="{{ path('admin_api', {'donnees' : app.request.attributes.get('donnees'),'formType': app.request.get('formType'), 'formSlug': app.request.attributes.get('formSlug'), 'tierTypes': app.request.attributes.get('tierTypes') ,'page': data_forms['pagination'].pageIndex - 1}) }}">
 										<span aria-hidden="true">&laquo;</span>
 									</a>
 								</li>
@@ -67,13 +69,13 @@
 
 							{% for page in 1..data_forms['pagination'].totalPages %}
 								<li class="page-item{% if page == data_forms['pagination'].pageIndex %} active{% endif %}">
-									<a class="page-link" href="{{ path('admin_api', {'donnees' : app.request.attributes.get('donnees'),'page': page}) }}">{{ page }}</a>
+									<a class="page-link" href="{{ path('admin_api', {'donnees' : app.request.attributes.get('donnees'),'formType': app.request.get('formType'), 'formSlug': app.request.attributes.get('formSlug'), 'tierTypes': app.request.attributes.get('tierTypes') ,'page': page}) }}">{{ page }}</a>
 								</li>
 							{% endfor %}
 
 							{% if data_forms['pagination'].pageIndex < data_forms['pagination'].totalPages %}
 								<li class="page-item">
-									<a class="page-link" href="{{ path('admin_api', {'donnees' : app.request.attributes.get('donnees'),'page': data_forms['pagination'].pageIndex + 1}) }}">
+									<a class="page-link" href="{{ path('admin_api', {'donnees' : app.request.attributes.get('donnees'),'formType': app.request.get('formType'), 'formSlug': app.request.attributes.get('formSlug'), 'tierTypes': app.request.attributes.get('tierTypes') ,'page': data_forms['pagination'].pageIndex + 1}) }}">
 										<span aria-hidden="true">&laquo;</span>
 									</a>
 								</li>

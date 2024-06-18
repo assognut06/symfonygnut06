@@ -37,14 +37,32 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/{donnees}/{page}', name: 'admin_api')]
-    public function api(string $donnees, string $page)
+    #[Route('/{donnees}/{formType}/{formSlug}/{tierTypes}/{{page}', name: 'admin_api')]
+    public function api(string $donnees, string $page, string $formType, string $formSlug, string $tierTypes)
     {
-        if ($donnees == 'orders') {
-            $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO'] . "/items?pageIndex=" . $page . "&pageSize=20&withDetails=true&sortOrder=Desc&sortField=Date";
+        if ($donnees === 'orders') {
+            $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO'] . "/items?pageIndex=" . $page . "&pageSize=15&withDetails=true&sortOrder=Desc&sortField=Date";
+            if ($formType !== '1' && $formSlug !== '1') {
+                $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO'] . "/forms/" . $formType . "/" . $formSlug . "/items?pageIndex=" . $page . "&pageSize=15&withDetails=true&sortOrder=Desc&sortField=Date";
+            }
+            if ($tierTypes !== '1') {
+                $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO'] . "/items?pageIndex=" . $page . "&pageSize=15&tierTypes=" . $tierTypes . "&withDetails=true&sortOrder=Desc&sortField=Date";
+                // https://api.helloasso.com/v5/organizations/gnut-06/items?pageIndex=1&pageSize=15Donation&withDetails=true&sortOrder=Desc&sortField=Date
+            }
+        }
+        if ($donnees === 'payments') {
+            $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO'] . "/payments?pageIndex=" . $page . "&pageSize=15&withDetails=true&sortOrder=Desc&sortField=Date";
+            
+            // 'https://api.helloasso.com/v5/organizations/gnut-06/payments?pageIndex=1&pageSize=15&sortOrder=Desc&sortField=Date'
+
+            if ($formType !== '1') {
+                // 'https://api.helloasso.com/v5/organizations/gnut-06/payments/search?pageSize=15&formType=Donation&sortOrder=Desc&sortField=Date';
+                $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO'] . "/payments/search?pageSize=15&formType=" . $formType . "&sortOrder=Desc&sortField=Date";
+            }
         }
 
-        $bearerToken = $this->helloAssoAuthService->getToken();
+        // dump($url);
+        //     exit;
 
         $bearerToken = $this->helloAssoAuthService->getToken();
         $authorization = "Bearer " . $bearerToken;
@@ -58,10 +76,11 @@ class AdminController extends AbstractController
             ],
         ]);
         $data_forms = json_decode($response->getBody(), true);
+        // dump($data_forms);
+        // exit;
 
         return $this->render('admin/orders/index.html.twig', [
             'data_forms' => $data_forms,
         ]);
     }
-
 }
