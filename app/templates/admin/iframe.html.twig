@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		<!-- Include header -->
+		{% include 'admin/_partials/header.html.twig' %}
+		{{ encore_entry_link_tags('app') }}
+	</head>
+	<body>
+		
+
+		<!-- Body content -->
+		{% block body %}{% endblock %}
+
+		<!-- Include scripts -->
+		{% include 'admin/_partials/scripts.html.twig' %}
+
+		<!-- Include javascripts -->
+		{% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
+	</body>
+</html>
