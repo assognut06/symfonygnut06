@@ -37,7 +37,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/{donnees}/{formType}/{formSlug}/{tierTypes}/{{page}', name: 'admin_api')]
+    #[Route('/{donnees}/{formType}/{formSlug}/{tierTypes}/{page}', name: 'admin_api')]
     public function api(string $donnees, string $page, string $formType, string $formSlug, string $tierTypes)
     {
         if ($donnees === 'orders') {
@@ -61,9 +61,7 @@ class AdminController extends AbstractController
             }
         }
 
-        // dump($url);
-        //     exit;
-
+       
         $bearerToken = $this->helloAssoAuthService->getToken();
         $authorization = "Bearer " . $bearerToken;
 
@@ -76,11 +74,48 @@ class AdminController extends AbstractController
             ],
         ]);
         $data_forms = json_decode($response->getBody(), true);
-        // dump($data_forms);
-        // exit;
-
+        
         return $this->render('admin/orders/index.html.twig', [
             'data_forms' => $data_forms,
         ]);
+    }
+
+    #[Route('/details/{donnees}/{id}', name: 'admin_details_show')]
+    public function details(string $donnees, string $id)
+    {
+        if ($donnees === 'orders') {
+            $url = "https://api.helloasso.com/v5/items/" . $id;
+        }
+        if ($donnees === 'payments') {
+            $url = "https://api.helloasso.com/v5/payments/" . $id;
+        }
+        $bearerToken = $this->helloAssoAuthService->getToken();
+        $authorization = "Bearer " . $bearerToken;
+
+        $client = new \GuzzleHttp\Client();
+
+        $response = $client->request('GET', $url, [
+            'headers' => [
+                'accept' => 'application/json',
+                'authorization' => $authorization,
+            ],
+        ]);
+        $data_forms = json_decode($response->getBody(), true);
+
+        $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
+
+        if($donnees === 'orders') {
+            return $this->render('admin/orders/detailsOrder.html.twig', [
+                'data_forms' => $data_forms,
+                'googleMapsApiKey' => $googleMapsApiKey,
+            ]);
+        }
+        if($donnees === 'payments') {
+            return $this->render('admin/orders/detailsPayment.html.twig', [
+                'data_forms' => $data_forms,
+                'googleMapsApiKey' => $googleMapsApiKey,
+            ]);
+        }
+       
     }
 }
