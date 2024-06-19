@@ -10,6 +10,7 @@
 /var/
 /vendor/
 /node_modules/
+/run.sh
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###

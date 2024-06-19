@@ -1,0 +1,23 @@
+<div>
+    <ul class="nav nav-tabs mt-5 pt-4">
+        <li class="nav-item">
+            <a class="nav-link{{ (app.request.attributes.get('formSlug') == 'adhesion-a-l-association-gnut-06') ? ' active' : '' }}" aria-current="item" href="{{ path('admin_api', {'donnees': 'orders', 'page': '1', 'formType': 'Membership', 'formSlug': 'adhesion-a-l-association-gnut-06', 'tierTypes' : '1'}) }}">Adhérants</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link{{ (app.request.attributes.get('donnees') == 'orders' and app.request.attributes.get('formSlug') == '1' and app.request.attributes.get('tierTypes') == "1") ? ' active' : '' }}" href="{{ path('admin_api', {'donnees': 'orders', 'page': '1','formType': '1', 'formSlug': '1', 'tierTypes' : '1'}) }}">Commandes</a>
+        </li>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link{{ (app.request.attributes.get('donnees') == 'payments') ? ' active' : '' }}" href="{{ path('admin_api', {'donnees': 'payments', 'page': '1','formType': '1', 'formSlug': '1', 'tierTypes' : '1'}) }}">Paiements</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link{{ (app.request.attributes.get('tierTypes') == 'Donation') ? ' active' : '' }}" href="{{ path('admin_api', {'donnees': 'orders', 'page': '1','formType': '1', 'formSlug': '1', 'tierTypes' : 'Donation'}) }}">Donations</a>
+        </li>
+        <!-- <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li> -->
+        <li class="nav-item">
+            <a class="nav-link disabled">A venir</a>
+        </li>
+    </ul>
+</div>

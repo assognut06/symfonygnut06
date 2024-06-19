@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		<!-- Include header -->
+		{% include 'admin/_partials/header.html.twig' %}
+		{{ encore_entry_link_tags('app') }}
+	</head>
+	<body>
+		<!-- Include navbar -->
+		{% include 'admin/_partials/navbar.html.twig' %}
+
+
+		<!-- Display flash messages -->
+		{% for type, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ type }}" role="alert">{{ message }}</div>
+			{% endfor %}
+		{% endfor %}
+
+		{% include 'admin/_partials/nav_tabs.html.twig' %}
+
+		<!-- Body content -->
+		{% block body %}{% endblock %}
+
+		<!-- Include footer -->
+		{% include 'admin/_partials/footer.html.twig' %}
+
+		<!-- Include scripts -->
+		{% include 'admin/_partials/scripts.html.twig' %}
+
+		<!-- Include javascripts -->
+		{% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
+	</body>
+</html>
