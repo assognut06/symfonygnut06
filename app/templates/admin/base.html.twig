@@ -23,6 +23,10 @@
 		{% endfor %}
 
 		{% include 'admin/_partials/nav_tabs.html.twig' %}
+		<!-- Spinner de Chargement -->
+		<div id="loadingSpinner" class="spinner-border text-warning mt-5 text-center" role="status">
+			<span class="visually-hidden">Loading...</span>
+		</div>
 
 		<!-- Body content -->
 		{% block body %}{% endblock %}

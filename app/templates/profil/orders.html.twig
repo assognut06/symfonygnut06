@@ -1,0 +1,17 @@
+<div class="col-12 col-lg-4 mb-4 card mt-5 shadow" style="width: 18rem;">
+	<div class="card-body text-center">
+		<h5 class="card-title bg-warning-subtle ">Commande n°{{ item.order.id }}</h5>
+		<p class="card-text">
+			{{ item.order.formName }}</p>
+		{% if item.name is defined %}
+			<p class="card-text">
+				{{ item.name }}</p>
+		{% endif %}
+		{# {{ dump(item)}} #}
+		<p class="card-text">Le
+			{{ item.order.date|format_datetime(pattern="d MMMM y 'à' HH'h'mm':'s", locale='fr') }}</p>
+		<p class="card-text">Total:
+			{{ formattedPrice(item.amount) }}
+		</p>
+	</div>
+</div>
