@@ -47,11 +47,9 @@
 							{% set total_payment = 0 %}
 							{% if data_forms['data'] is defined %}
 								{% for item in data_forms['data'] %}
-									{% if (item.state|default('')) == "Processed" or 'Authorized' %}
 										{% include 'admin/_partials/tableau.html.twig' %}
 										{% set total_payment = total_payment + item.amount %}
 										{% set i = i + 1 %}
-									{% endif %}
 								{% endfor %}
 							{% else %}
 								No data available.

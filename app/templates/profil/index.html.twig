@@ -13,60 +13,96 @@
 			{{ user.id }}</p>
 		<p>Email:
 			{{ user.email }}</p>
+			{% if data_items['data'] is not empty %}
+				{# {{  dump (data_items['data'][0].payer.firstName) }} #}
+				<p>Nom:
+					{{ data_items['data'][0].payer.lastName }}</br>
+					Prénom : 
+					{{ data_items['data'][0].payer.firstName }}</p>
+					{% if data_items['data'][0].payer.address is defined %}
+					<div class="container">
+						<div class="row">
+						<div class="col-12 col-lg-6  d-flex align-items-center justify-content-center shadow">
+							<p>Adresse:
+							{{ data_items['data'][0].payer.address }}</br>
+							Code postal : 
+							{{ data_items['data'][0].payer.zipCode }}</br>
+							Ville : 
+							{{ data_items['data'][0].payer.city }}</p>
+						</div>
+						<div class="col-12 col-lg-6">
+							<iframe class="shadow" width="100%" height="450" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}&q={{ data_items['data'][0].payer.lastName|replace({' ': '+'})|e }}+{{ data_items['data'][0].payer.firstName|replace({' ': '+'})|e }},{{ data_items['data'][0].payer.address|replace({' ': '+'})|e ~ "+" ~ data_items['data'][0].payer.zipCode|e ~ "+" ~ data_items['data'][0].payer.city|replace({' ': '+'})|e }},{{ data_items['data'][0].payer.country|e }}">
+							</iframe>
+						</div>
+						</div>
+						{% endif %}
+			{% endif %}
 	</div>
 	<!-- Ajoutez plus d'informations de l'utilisateur ici -->
 	<div class="container my-5">
-		<div class="row justify-content-around">
-			{% if data_items is defined and data_items['data'] is not empty %}
-				{% for item in data_items['data']  %}
-					<div class="col-12 col-lg-4 mb-4 card" style="width: 18rem;">
-						<div class="card-body text-center">
-							<h5 class="card-title bg-warning-subtle ">Commande n°{{ item.order.id }}</h5>
-							<p class="card-text">
-								{{ item.order.formName }}</p>
-							<p class="card-text">Le
-								{{ item.order.date|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}</p>
-							<p class="card-text">Total:
-								{{ item.amount }}
-								€</p>
-							{# <a href="{{ path('order_show', {'id': item.order.id}) }}" class="btn btn-primary">Voir la commande</a> #}
-						</div>
-					</div>
-				{% endfor %}
-				<div class="col-12 d-flex justify-content-center">
-					<nav aria-label="Commandes sur Gnut 06">
-						<ul class="pagination">
-							{% if data_items['pagination'].pageIndex > 1 %}
-								<li class="page-item">
-									<a class="page-link" href="{{ path('app_profil_page', {'page': data_items['pagination'].pageIndex - 1}) }}">
-										<span aria-hidden="true">&laquo;</span>
-									</a>
-								</li>
-							{% endif %}
+		
+	<div class="row justify-content-around shadow-lg">
+		<div class="my-2">
+			<ul class="nav nav-tabs">
+				<li class="nav-item">
+					<a class="nav-link{{ (app.request.attributes.get('donnees') == 'orders' or app.request.attributes.get('_route') == 'app_profil') ? ' active' : '' }}" href="{{ path('app_profil_page', {'page': '1', 'donnees': 'orders'}) }}">Mes commandes</a>
+				</li>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link{{ (app.request.attributes.get('donnees') == 'payments') ? ' active' : '' }}" href="{{ path('app_profil_page', {'page': '1', 'donnees': 'payments'}) }}">Mes paiements</a>
+			</li>
 
-							{% for page in 1..data_items['pagination'].totalPages %}
-								<li class="page-item{% if page == data_items['pagination'].pageIndex %} active{% endif %}">
-									<a class="page-link" href="{{ path('app_profil_page', {'page': page}) }}">{{ page }}</a>
-								</li>
-							{% endfor %}
-
-							{% if data_items['pagination'].pageIndex < data_items['pagination'].totalPages %}
-								<li class="page-item">
-									<a class="page-link" href="{{ path('app_profil_page', {'page': data_items['pagination'].pageIndex + 1}) }}">
-										<span aria-hidden="true">&laquo;</span>
-									</a>
-								</li>
-							{% endif %}
-						</ul>
-					</nav>
-				</div>
-			{% else %}
-				<p>Aucune commande à afficher.</p>
-			{% endif %}
-
-		</div>
+			<!-- <li class="nav-item">
+						                    <a class="nav-link" href="#">Link</a>
+						                </li> -->
+			<li class="nav-item">
+				<a class="nav-link disabled">A venir</a>
+			</li>
+		</ul>
 	</div>
-	<div class="text-center my-4">
-		<a href="{{ path('app_logout') }}" class="btn btn-danger">Se déconnecter</a>
+		{% if data_items is defined and data_items['data'] is not empty %}
+			{% for item in data_items['data']  %}
+				{% if(app.request.attributes.get('donnees') == 'orders' or app.request.attributes.get('_route') == 'app_profil') %}
+					{% include 'profil/orders.html.twig' %}
+				{% elseif app.request.attributes.get('donnees') == 'payments' %}
+					{% include 'profil/payments.html.twig' %}
+				{% endif %}
+			{% endfor %}
+			<div class="col-12 d-flex justify-content-center my-3">
+				<nav aria-label="Commandes sur Gnut 06">
+					<ul class="pagination">
+						{% if data_items['pagination'].pageIndex > 1 %}
+							<li class="page-item">
+								<a class="page-link" href="{{ path('app_profil_page', {'page': data_items['pagination'].pageIndex - 1, 'donnees': app.request.attributes.get('donnees') is defined and app.request.attributes.get('donnees') ? app.request.attributes.get('donnees') : 'orders'}) }}">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+						{% endif %}
+
+						{% for page in 1..data_items['pagination'].totalPages %}
+							<li class="page-item{% if page == data_items['pagination'].pageIndex %} active{% endif %}">
+								<a class="page-link" href="{{ path('app_profil_page', {'page': page, 'donnees': app.request.attributes.get('donnees') is defined and app.request.attributes.get('donnees') ? app.request.attributes.get('donnees') : 'orders'}) }}">{{ page }}</a>
+							</li>
+						{% endfor %}
+
+						{% if data_items['pagination'].pageIndex < data_items['pagination'].totalPages %}
+							<li class="page-item">
+								<a class="page-link" href="{{ path('app_profil_page', {'page': data_items['pagination'].pageIndex + 1, 'donnees': app.request.attributes.get('donnees') is defined and app.request.attributes.get('donnees') ? app.request.attributes.get('donnees') : 'orders'}) }}">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+						{% endif %}
+					</ul>
+				</nav>
+			</div>
+		{% else %}
+			<div class="text-center">
+				<p>Aucune donnees à afficher.</p>
+			</div>
+		{% endif %}
+
 	</div>
-{% endblock %}
+</div>
+<div class="text-center my-4">
+	<a href="{{ path('app_logout') }}" class="btn btn-danger">Se déconnecter</a>
+</div>{% endblock %}

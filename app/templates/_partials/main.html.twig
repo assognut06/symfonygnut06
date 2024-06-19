@@ -40,7 +40,7 @@
 
     <h3 class="text-center mb-4">Des Mondes Virtuels, des Liens Réels : L'Inclusion à Portée de Main</h3>
     {% if app.request.attributes.get('_route') != 'app_adhesion' %}
-        <h3 class="text-center mb-5 fs-1"><a href="?page=adhesion" class="badge text-bg-success p-4 text-uppercase">Adhérer</a></h3>
+        <h3 class="text-center mb-5 fs-1"><a href="{{ path('app_adhesion') }}" class="badge text-bg-success p-4 text-uppercase">Adhérer</a></h3>
     {% endif %}
 {% for label, flashes in app.session.flashbag.all() %}
     {% for flash in flashes %}
