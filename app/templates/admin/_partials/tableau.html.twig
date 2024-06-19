@@ -1,0 +1,113 @@
+<tr>
+	<th
+		scope="row">
+		<!-- Button trigger modal -->
+		<button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#Modal_{{ item.id|e }}">
+			{{ item.id|e }}
+		</button>
+
+		<!-- Modal -->
+		<div class="modal fade modal-xl" id="Modal_{{ item.id|e }}" tabindex="-1" aria-labelledby="Modal_{{ item.id|e }}Label" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						{% if app.request.attributes.get('donnees') == 'orders' %}
+							<h1 class="modal-title fs-5" id="Modal_{{ item.id|e }}Label">Détails de la commande numéro :
+								{{ item.id|e }}</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							{% set order = item.id|e %}
+							<iframe width="100%" height="700" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="{{ path('admin_details_show', {'id': item.id|e, 'donnees': 'orders'}) }}"></iframe>
+						{% elseif app.request.attributes.get('donnees') == 'payments' %}
+							<h1 class="modal-title fs-5" id="Modal_payment_{{ item.id|e }}Label">Détails du paiement numéro :
+								{{ item.id|e }}</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							{% set payment = item.id|e %}
+							<iframe width="100%" height="700" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="{{ path('admin_details_show', {'id': payment, 'donnees': 'payments'}) }}"></iframe>
+						{% endif %}
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th>
+	<td>{{ item.user.lastName is defined ? item.user.lastName|e : item.payer.lastName|e }}</td>
+	<td>{{ item.user.firstName is defined ? item.user.firstName|e : item.payer.firstName|e }}</td>
+	<td>{{ item.payer.email|e }}</td>
+	<td>{{ item.customFields[0].answer is defined ? item.customFields[0].answer|e : 'Aucun' }}</td>
+	<td>
+		<a href="?page={{ app.request.query.get('page')|e }}&item={{ app.request.query.get('item')|e }}&formType={{ item.order.formType|e }}&formSlug={{ item.order.formSlug|e }}">
+			<i class="bi bi-browser-edge"></i>
+		</a>
+	</td>
+	<td>{{ item.order.formType|e }}</td>
+	<td>{{ item.order.date|date('d/m/y H:i') }}</td>
+	<td>
+		{% if app.request.attributes.get('donnees') == 'orders' %}
+			{% if item.payments[0].id is defined %}
+				<!-- Button trigger modal -->
+				<button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#Modal_payment_{{ item.payments[0].id|e }}">
+					{{ item.payments[0].id|e }}
+				</button>
+
+				<!-- Modal -->
+				<div class="modal fade modal-xl" id="Modal_payment_{{ item.payments[0].id|e }}" tabindex="-1" aria-labelledby="Modal_payment_{{ item.payments[0].id|e }}Label" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+
+								<h1 class="modal-title fs-5" id="Modal_payment_{{ item.payments[0].id|e }}Label">Détails du paiement numéro :
+									{{ item.payments[0].id|e }}</h1>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								{% set payment = item.payments[0].id|e %}
+								<iframe width="100%" height="700" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="{{ path('admin_details_show', {'id': item.payments[0].id|e, 'donnees': 'payments'}) }}"></iframe>
+
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% else  %}
+				Gratuit
+			{% endif %}
+		{% endif %}
+		{% if app.request.attributes.get('donnees') == 'payments' %}
+			<!-- Button trigger modal -->
+				<button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#Modal_payment_{{ item.order.id|e }}">
+					{{ item.order.id|e }}
+				</button>
+
+				<!-- Modal -->
+				<div class="modal fade modal-xl" id="Modal_payment_{{ item.order.id|e }}" tabindex="-1" aria-labelledby="Modal_payment_{{ item.order.id|e }}Label" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+
+								<h1 class="modal-title fs-5" id="Modal_payment_{{ item.order.id|e }}Label">Détails du paiement numéro :
+									{{ item.order.id|e }}</h1>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								{% set order = item.order.id|e %}
+								<iframe width="100%" height="700" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="{{ path('admin_details_show', {'id': order, 'donnees': 'orders'}) }}"></iframe>
+
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+							</div>
+						</div>
+					</div>
+				</div>
+		{% endif %}
+	</td>
+	<td class="text-end">{{ formattedPrice(item.amount) }}</td>
+</tr>
