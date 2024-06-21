@@ -40,3 +40,7 @@ services:
             - '%env(APICLIENTID)%'
             - '%env(APICLIENTSECRET)%'
 
+    App\Service\HelloAssoApiService:
+        class: App\Service\HelloAssoApiService
+        arguments:
+            $helloAssoAuthService: '@App\Service\HelloAssoAuthService'
