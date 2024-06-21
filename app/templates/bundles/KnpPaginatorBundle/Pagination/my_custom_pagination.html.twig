@@ -1,0 +1,27 @@
+{# templates/bundles/KnpPaginatorBundle/Pagination/my_custom_pagination.html.twig #}
+{% if pagination is defined and pagination.getTotalItemCount > 0 %}
+    <nav>
+        <ul class="pagination">
+            {# Bouton précédent #}
+            <li class="page-item {{ pagination.isFirstPage ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({(pagination.pageParameterName): pagination.previousPageNumber})) }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            {# Affichage des pages #}
+            {% for page in pagination.renderedPages %}
+                <li class="page-item {{ page == pagination.currentPageNumber ? 'active' : '' }}">
+                    <a class="page-link" href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({(pagination.pageParameterName): page})) }}">{{ page }}</a>
+                </li>
+            {% endfor %}
+
+            {# Bouton suivant #}
+            <li class="page-item {{ pagination.isLastPage ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({(pagination.pageParameterName): pagination.nextPageNumber})) }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endif %}
