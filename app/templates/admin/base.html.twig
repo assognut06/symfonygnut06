@@ -15,18 +15,18 @@
 		{% include 'admin/_partials/navbar.html.twig' %}
 
 
-		<!-- Display flash messages -->
-		{% for type, messages in app.flashes %}
-			{% for message in messages %}
-				<div class="alert alert-{{ type }}" role="alert">{{ message }}</div>
-			{% endfor %}
-		{% endfor %}
-
 		{% include 'admin/_partials/nav_tabs.html.twig' %}
 		<!-- Spinner de Chargement -->
 		<div id="loadingSpinner" class="spinner-border text-warning mt-5 text-center" role="status">
 			<span class="visually-hidden">Loading...</span>
 		</div>
+
+		<!-- Display flash messages -->
+		{% for type, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ type }} text-center" role="alert">{{ message }}</div>
+			{% endfor %}
+		{% endfor %}
 
 		<!-- Body content -->
 		{% block body %}{% endblock %}
@@ -39,7 +39,7 @@
 
 		<!-- Include javascripts -->
 		{% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
+			{{ encore_entry_script_tags('app') }}
 			{{ encore_entry_script_tags('app') }}
 		{% endblock %}
 	</body>

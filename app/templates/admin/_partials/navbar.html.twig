@@ -9,7 +9,7 @@
     <div class="collapse navbar-collapse fs-5" id="navbarNavDropdown">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" aria-current="page" href="{{ path('app_home') }}">Accueil</a>
+          <a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" aria-current="page" href="{{ path('admin_dashboard') }}">Accueil</a>
         </li>
          {% if app.user %}
         <li class="nav-item">
