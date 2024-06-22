@@ -9,29 +9,20 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Service\PaginationService;
 
 class AdminUserController extends AbstractController
 {
     #[Route('/admin/user/{page}', name: 'app_admin_user', defaults: ['page' => 1])]
-    public function index(EntityManagerInterface $entityManager, string $page): Response
+    public function index(PaginationService $paginationService, int $page = 1): Response
     {
-        // Définition de la limite et du calcul de l'offset
-        $limit = 10; // Nombre d'enregistrements par page
-        $start = $limit * ($page - 1); // Calcul de l'offset (le début)
+        $pagination = $paginationService->getPaginatedData(User::class, $page);
 
-        // Calcul du total des utilisateurs pour déterminer le nombre de pages
-        $totalUsers = count($entityManager->getRepository(User::class)->findAll());
-        $pages = ceil($totalUsers / $limit); // Nombre de pages total, arrondi à l'entier supérieur
-
-        // Récupération des utilisateurs avec pagination
-        $users = $entityManager->getRepository(User::class)->findBy([], [], $limit, $start);
-
-        // Rendu du template avec les données paginées
         return $this->render('admin/admin_user/index.html.twig', [
-            'controller_name' => 'AdminUserController',
-            'users' => $users,
-            'pages' => $pages,
-            'page' => $page,
+            'users' => $pagination['data'],
+            'total' => $pagination['total'],
+            'pages' => $pagination['pages'],
+            'page' => $pagination['current_page'],
         ]);
     }
 

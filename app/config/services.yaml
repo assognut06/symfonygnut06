@@ -44,3 +44,9 @@ services:
         class: App\Service\HelloAssoApiService
         arguments:
             $helloAssoAuthService: '@App\Service\HelloAssoAuthService'
+
+    # Configuration spécifique pour votre service de pagination
+    App\Service\PaginationService:
+        class: App\Service\PaginationService
+        arguments:
+            $limit: 2 # Vous pouvez définir une valeur par défaut différente pour 'limit' ici si nécessaire
