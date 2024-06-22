@@ -1,5 +1,0 @@
-knp_paginator:
-  template:
-    pagination: 'bundles/KnpPaginatorBundle/Pagination/my_custom_pagination.html.twig' # Chemin vers votre template de pagination
-    sortable: 'bundles/KnpPaginatorBundle/Pagination/my_custom_pagination.html.twig' # Utilisez votre propre template si nécessaire
-    filtration: 'bundles/KnpPaginatorBundle/Pagination/my_custom_pagination.html.twig' # Utilisez votre propre template si nécessaire
