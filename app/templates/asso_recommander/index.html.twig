@@ -1,20 +1,34 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AssoRecommanderController!{% endblock %}
+{% block title %}Hello AssoRecommanderController!
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>D:/laragon/www/gnut06symfony/gnut06/symfonygnut06/app/src/Controller/AssoRecommanderController.php</code></li>
-        <li>Your template at <code>D:/laragon/www/gnut06symfony/gnut06/symfonygnut06/app/templates/asso_recommander/index.html.twig</code></li>
-    </ul>
-</div>
+	<div class="container pt-0">
+		<div class="mx-3">
+			<h2 class="my-5 text-success text-center">Actualités de Gnut 06</h2>
+			<div class="border border-success mb-5 mx-5"></div>
+			<div class="row align-items-start mx-auto">
+				{% for item in data_forms %}
+					<div class="col d-flex justify-content-around my-3">
+						<div class="card shadow-lg" style="width: 21rem;">
+							<img src="{{ item.banner }}" class="card-img-top" alt="Bannière {{ item.name }}">
+							<div class="card-body">
+								<h5 class="card-title text-center">{{ item.name }}</h5>
+                                <div class="card-text text-center">
+                                <img src="{{ item.logo }}" class="card-img-top logoAsso my-2" alt="Logo {{ item.name }}"></br>
+                                <p>{{ item.category }}</p>
+                                <p>{{ item.description }}</p>
+                                <p>{{ item.zipCode}} {{ item.city }}</p>
+                                <a class="btn btn-warning" href="{{ item.url }}"  target='_blanck'>Sur HelloAsso</a>
+                                </div>
+                            </div>
+						</div>
+					</div>
+				{% else %}
+					No data available.
+				{% endfor %}
+			</div>
+		</div>
+	</div>
 {% endblock %}
