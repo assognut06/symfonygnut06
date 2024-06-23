@@ -1,12 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AssoRecommanderController!
-{% endblock %}
+{% block title %}Associations à recommander{% endblock %}
 
 {% block body %}
 	<div class="container pt-0">
 		<div class="mx-3">
-			<h2 class="my-5 text-success text-center">Actualités de Gnut 06</h2>
+			<h2 class="my-5 text-success text-center">Associations à recommander</h2>
 			<div class="border border-success mb-5 mx-5"></div>
 			<div class="row align-items-start mx-auto">
 				{% for item in data_forms %}
@@ -18,7 +17,7 @@
                                 <div class="card-text text-center">
                                 <img src="{{ item.logo }}" class="card-img-top logoAsso my-2" alt="Logo {{ item.name }}"></br>
                                 <p>{{ item.category }}</p>
-                                <p>{{ item.description }}</p>
+                                <p class="text-justify">{{ item.description }}</p>
                                 <p>{{ item.zipCode}} {{ item.city }}</p>
                                 <a class="btn btn-warning" href="{{ item.url }}"  target='_blanck'>Sur HelloAsso</a>
                                 </div>
@@ -28,6 +27,33 @@
 				{% else %}
 					No data available.
 				{% endfor %}
+				<div class="col-12 pagination-container mt-3">
+					<nav aria-label="Admin navigation">
+						<ul class="pagination">
+							{% if page > 1 %}
+								<li class="page-item">
+									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page - 1}) }}">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+							{% endif %}
+
+							{% for page in 1..pages %}
+								<li class="page-item{% if app.request.attributes.get('page') == page %} active{% endif %}">
+									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page}) }}">{{ page }}</a>
+								</li>
+							{% endfor %}
+
+							{% if page < pages %}
+								<li class="page-item">
+									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page + 1}) }}">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+							{% endif %}
+						</ul>
+					</nav>
+				</div>
 			</div>
 		</div>
 	</div>

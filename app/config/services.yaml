@@ -22,7 +22,7 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-            - '../src/Message/'
+            # - '../src/Message/'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -49,7 +49,7 @@ services:
     App\Service\PaginationService:
         class: App\Service\PaginationService
         arguments:
-            $limit: 2 # Vous pouvez définir une valeur par défaut différente pour 'limit' ici si nécessaire
+            $limit: 6 # Vous pouvez définir une valeur par défaut différente pour 'limit' ici si nécessaire
 
     App\Service\AssoRecommanderService:
         class: App\Service\AssoRecommanderService

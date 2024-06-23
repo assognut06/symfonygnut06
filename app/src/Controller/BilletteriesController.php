@@ -6,40 +6,31 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use DateTime;
 use App\Service\HelloAssoAuthService;
-use GuzzleHttp\Client;
+use App\Service\HelloAssoApiService; // Service dédié pour les appels API HelloAsso
 
 class BilletteriesController extends AbstractController
 {
     private $helloAssoAuthService;
-
-    public function __construct(HelloAssoAuthService $helloAssoAuthService)
+    private $helloAssoApiService;
+    
+    public function __construct(HelloAssoAuthService $helloAssoAuthService, HelloAssoApiService $helloAssoApiService)
     {
         $this->helloAssoAuthService = $helloAssoAuthService;
+        $this->helloAssoApiService = $helloAssoApiService;
     }
-    #[Route('/billetteries', name: 'app_billetteries')]
-    public function index(Request $request, SessionInterface $session, KernelInterface $kernel): Response
+    #[Route('/billetteries/{page}', name: 'app_billetteries', defaults: ['page' => 1])]
+    public function index(KernelInterface $kernel, int $page): Response
     {
-        $bearerToken = $this->helloAssoAuthService->getToken();
-        $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO']  ."/forms";
-        $authorization = "Bearer " . $bearerToken;
-        $client = new \GuzzleHttp\Client();
 
-        $response = $client->request('GET', $url, [
-            'headers' => [
-                'accept' => 'application/json',
-                'authorization' => $authorization,
-            ],
-        ]);
-        $data_forms = json_decode($response->getBody(), true);
+        $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO']  ."/forms?states=&formTypes=Event";
+
+        $data_forms = $this->helloAssoApiService->makeApiCall($url);
+
         // Supposons que $data_forms['data'] contient les données que vous avez mentionnées
         $filteredData = array_filter($data_forms['data'], function ($entry) {
-            if ($entry['formType'] !== "Event") {
-                return false;
-            }
 
             $endDate = DateTime::createFromFormat(DateTime::ISO8601, $entry['endDate']);
             $now = new DateTime();
@@ -58,24 +49,23 @@ class BilletteriesController extends AbstractController
             return ($dateA < $dateB) ? -1 : 1;
         });
 
+        $itemsPerPage = 6;
+        $totalItems = count($filteredData);
+        $totalPages = ceil($totalItems / $itemsPerPage);
 
-        $projectDir = $kernel->getProjectDir();
-        $dir = $projectDir . '/public/images/news'; // Chemin vers le répertoire des images
-        $images = glob($dir . '/*.jpeg'); // Récupère tous les fichiers JPEG
-
-        if (!empty($images)) {
-            $randomImage = $images[array_rand($images)]; // Sélectionne aléatoirement une image
-            // Convertit le chemin système en chemin relatif pour le web
-            $webPath = str_replace($projectDir . '/public', '', $randomImage);
-            // Assurez-vous que le chemin commence par '/'
-            $webPath = '/' . ltrim($webPath, '/');
-        }
+        // Calculer l'index de départ pour la page actuelle
+        $start = ($page - 1) * $itemsPerPage;
+        
+        // Extraire les éléments pour la page actuelle
+        $pageItems = array_slice($filteredData, $start, $itemsPerPage);
 
         return $this->render('billetteries/index.html.twig', [
-            'random_image' => $webPath,
-            'data_forms' => $filteredData,
+            'data_forms' => $pageItems,
             'controller_name' => 'Billetteries Gnut 06',
-            'bearer_token' => $bearerToken // Passer le token à la vue
+            'total' => $totalItems,
+            'pages' => $totalPages,
+            'page' => $page,
+           
         ]);
     }
 

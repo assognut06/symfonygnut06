@@ -31,6 +31,10 @@ h1{
   width :70%;
 }
 
+.text-justify {
+  text-align: justify;
+}
+
 .HaAuthorizeButton {
   align-items: center;
   -webkit-box-pack: center;
