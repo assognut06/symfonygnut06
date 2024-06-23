@@ -71,30 +71,14 @@ class BilletteriesController extends AbstractController
 
     #[Route('/billetteries/{formType}/{slug}', name: 'app_billetteries_detail')]
     public function detail(string $formType, string $slug, Request $request): Response
-    {
-        // Vous pouvez accéder aux variables $formType et $slug directement dans cette méthode.
-        // Ici, vous pouvez ajouter votre logique pour traiter les données en fonction de $formType et $slug.
-        
-        // Exemple d'utilisation:
-        // $data = $this->someService->getDataBasedOnTypeAndSlug($formType, $slug);
-        $bearerToken = $this->helloAssoAuthService->getToken();
+    {  
         $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO']  ."/forms/" . $formType . "/" . $slug . "/public";
-        $authorization = "Bearer " . $bearerToken;
-
-        $client = new \GuzzleHttp\Client();
-
-        $response = $client->request('GET', $url, [
-            'headers' => [
-                'accept' => 'application/json',
-                'authorization' => $authorization,
-            ],
-        ]);
-        $data_form = json_decode($response->getBody(), true);
+       
+        $data_form = $this->helloAssoApiService->makeApiCall($url);
 
         $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
     
         return $this->render('billetteries/detail.html.twig', [
-            // 'data' => $data,
             'googleMapsApiKey' => $googleMapsApiKey,
             'data_actu' => $data_form,
             'controller_name' => 'Billetteries Gnut 06',
