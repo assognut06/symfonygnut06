@@ -22,6 +22,8 @@ class AssoRecommanderService
 
         if ($data) {
             $assoRecommander = new AssoRecommander();
+            // Définir organizationSlug
+            $assoRecommander->setOrganizationSlug($organizationSlug);
             $assoRecommander->fillFromApiData($data);
             // Ici, vous pouvez persister $assoRecommander avec EntityManager si nécessaire
             $this->entityManager->persist($assoRecommander);

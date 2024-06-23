@@ -27,6 +27,9 @@ h1{
   display: flex;
   justify-content: center;
 }
+.logoAsso{
+  width :70%;
+}
 
 .HaAuthorizeButton {
   align-items: center;
