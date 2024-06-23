@@ -10,14 +10,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Service\PaginationService;
 use App\Entity\AssoRecommander;
+use App\Repository\AssoRecommanderRepository;
 
 class AssoRecommanderController extends AbstractController
 {
     private $assoRecommanderService;
+    private $assoRecommanderRepository;
 
-    function __construct(AssoRecommanderService $assoRecommanderService)
+    function __construct(AssoRecommanderService $assoRecommanderService, AssoRecommanderRepository $assoRecommanderRepository)
     {
         $this->assoRecommanderService = $assoRecommanderService;
+        $this->assoRecommanderRepository = $assoRecommanderRepository;
     }
 
     #[Route('/asso/recommander/{page}', name: 'app_asso_recommander', defaults: ['page' => 1])]
@@ -38,19 +41,30 @@ class AssoRecommanderController extends AbstractController
     {
         // $assoRecommander = new AssoRecommander();
         $form = $this->createForm(AssoRecommanderType::class);
-    
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $organizationSlug = $form->get('organizationSlug')->getData();
-            $this->assoRecommanderService->updateAssoRecommanderFromApi($organizationSlug);
-            // $entityManager->persist($assoRecommander);
-            // $entityManager->flush();
 
-            $this->addFlash('success', 'L\'association a bien été recommandée !');
-    
-            return $this->redirectToRoute('app_asso_recommander_new');
+            // Vérifier si l'organizationSlug existe déjà
+            if ($this->assoRecommanderRepository->existsByOrganizationSlug($organizationSlug)) {
+                // Ajouter un message flash pour informer l'utilisateur
+                $this->addFlash('danger', 'Le slug de l\'organisation existe déjà.');
+                return $this->redirectToRoute('app_asso_recommander_new');
+            } else {
+
+                $data = $this->assoRecommanderService->updateAssoRecommanderFromApi($organizationSlug);
+
+                if ($data) {
+                    $this->addFlash('success', 'L\'association a bien été recommandée !');
+                } else {
+                    $this->addFlash('danger', 'L\'association n\'a pas été trouvée !');
+                }
+
+                return $this->redirectToRoute('app_asso_recommander_new');
+            }
         }
-    
+
         return $this->render('asso_recommander/new.html.twig', [
             'form' => $form->createView(),
         ]);

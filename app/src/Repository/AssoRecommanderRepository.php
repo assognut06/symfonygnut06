@@ -16,6 +16,19 @@ class AssoRecommanderRepository extends ServiceEntityRepository
         parent::__construct($registry, AssoRecommander::class);
     }
 
+    // src/Repository/AssoRecommanderRepository.php
+
+    public function existsByOrganizationSlug(string $organizationSlug): bool
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->select('count(a.id)')
+            ->where('a.organizationSlug = :organizationSlug')
+            ->setParameter('organizationSlug', $organizationSlug)
+            ->getQuery();
+
+        return $qb->getSingleScalarResult() > 0;
+    }
+    
     //    /**
     //     * @return AssoRecommander[] Returns an array of AssoRecommander objects
     //     */
