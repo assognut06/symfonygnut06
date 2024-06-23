@@ -50,3 +50,7 @@ services:
         class: App\Service\PaginationService
         arguments:
             $limit: 2 # Vous pouvez définir une valeur par défaut différente pour 'limit' ici si nécessaire
+
+    App\Service\AssoRecommanderService:
+        class: App\Service\AssoRecommanderService
+        
