@@ -6,20 +6,35 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use App\Service\HelloAssoApiService;
+use App\Service\DataFilterAndPaginator;
+use Twig\TwigFilter;
 
 class AppExtension extends AbstractExtension
 {
     private $parameterBag;
+    private $helloAssoApiService;
+    private $dataFilterAndPaginator;
 
-    public function __construct(ParameterBagInterface $parameterBag)
+    public function __construct(ParameterBagInterface $parameterBag, HelloAssoApiService $helloAssoApiService, DataFilterAndPaginator $dataFilterAndPaginator)
     {
         $this->parameterBag = $parameterBag;
+        $this->helloAssoApiService = $helloAssoApiService;
+        $this->dataFilterAndPaginator = $dataFilterAndPaginator;
     }
+    public function getFilters()
+    {
+        return [
+            new TwigFilter('url_decode', [$this, 'urlDecode']),
+        ];
+    }
+
     public function getFunctions()
     {
         return [
             new TwigFunction('formattedPrice', [$this, 'formatPrice']),
             new TwigFunction('randomImage', [$this, 'randomImage']),
+            new TwigFunction('getEventsAssoRecommender', [$this, 'getEventsAssoRecommender']),
         ];
     }
 
@@ -60,5 +75,26 @@ class AppExtension extends AbstractExtension
         }
     
         return null; // ou retourner un chemin d'image par défaut
+    }
+
+    public function getEventsAssoRecommender($organizationSlug) : string
+        {
+        $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms?formTypes=Event";
+    
+        $data_forms = $this->helloAssoApiService->makeApiCall($url);
+        $filteredData = $this->dataFilterAndPaginator->filterAndSortData($data_forms['data']);
+        $count = count($filteredData);
+
+        if ($count > 0) {
+            return $count . ' événement(s) à venir';
+        } else {
+            return 'Aucun événement à venir';
+        }
+        
+    }
+
+    public function urlDecode($value)
+    {
+        return urldecode($value);
     }
 }
