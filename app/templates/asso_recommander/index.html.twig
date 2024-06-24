@@ -18,7 +18,14 @@
                                 <img src="{{ item.logo }}" class="card-img-top logoAsso my-2" alt="Logo {{ item.name }}"></br>
                                 <p>{{ item.category }}</p>
                                 <p class="text-justify">{{ item.description }}</p>
-								<p><a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug, 'page': 1, 'formTypes': 'Event'}) }}">Événements</a></p>
+								<p>
+								{% if getEventsAssoRecommender(item.organizationSlug) == 'Aucun événement à venir' %}
+								Aucun événement à venir
+								{% else %}
+								<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode}) }}">{{ getEventsAssoRecommender(item.organizationSlug) }}</a>
+								{# <a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug, 'page': 1, 'formTypes': 'Event'}) }}">{{ getEventsAssoRecommender(item.organizationSlug) }}</a> #}
+								{% endif %}
+								</p>
                                 <p>{{ item.zipCode}} {{ item.city }}</p>
                                 <a class="btn btn-warning" href="{{ item.url }}"  target='_blanck'>Sur HelloAsso</a>
                                 </div>

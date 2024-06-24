@@ -48,9 +48,10 @@ class AssoRecommanderController extends AbstractController
         $data_forms = $this->helloAssoApiService->makeApiCall($url);
         $filteredData = $dataFilterAndPaginator->filterAndSortData($data_forms['data']);
         $paginationResult = $dataFilterAndPaginator->paginateData($filteredData, $page);
-        dump($data_forms['data']);
-        dump($paginationResult['items']);
-        exit;
+        // echo $url;
+        // dump($data_forms['data']);
+        // dump($paginationResult['items']);
+        // exit;
         return $this->render('asso_recommander/events.html.twig', [
             'data_forms' => $paginationResult['items'],
             'total' => $paginationResult['totalItems'],
