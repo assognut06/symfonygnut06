@@ -1,0 +1,24 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Recommander une Association{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Recommander une Association</h1>
+
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+    
+    {% for field in form %}
+        {% if field.vars.name != '_token' %}
+            <div class="mb-3">
+                {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(field, {'attr': {'class': 'invalid-feedback'}}) }}
+            </div>
+        {% endif %}
+    {% endfor %}
+    
+    <button type="submit" class="btn btn-primary">Soumettre</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
