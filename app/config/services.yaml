@@ -53,4 +53,7 @@ services:
 
     App\Service\AssoRecommanderService:
         class: App\Service\AssoRecommanderService
+
+    App\Service\DataFilterAndSortService:
+        class: App\Service\DataFilterAndSortService
         
