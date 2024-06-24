@@ -12,7 +12,7 @@ use App\Service\PaginationService;
 use App\Entity\AssoRecommander;
 use App\Repository\AssoRecommanderRepository;
 use App\Service\HelloAssoApiService; // Service dédié pour les appels API HelloAsso
-use DateTime;
+use App\Service\DataFilterAndPaginator;
 
 class AssoRecommanderController extends AbstractController
 {
@@ -28,7 +28,7 @@ class AssoRecommanderController extends AbstractController
     }
 
     #[Route('/asso/recommander/{page}', name: 'app_asso_recommander', defaults: ['page' => 1])]
-    public function index(PaginationService $paginationService, int $page = 1): Response
+    public function index(PaginationService $paginationService, int $page): Response
     {
         $pagination = $paginationService->getPaginatedData(AssoRecommander::class, $page);
         return $this->render('asso_recommander/index.html.twig', [
@@ -40,49 +40,22 @@ class AssoRecommanderController extends AbstractController
         ]);
     }
 
-    #[Route('/asso/recommander/{organizationSlug}/{formTypes}/{page}', name: 'app_asso_evenements', defaults: ['page' => 1, 'formTypes' => 'Event'])]
-    public function evenementsAssoRecommander(string $organizationSlug,int $page, string $formTypes): Response
+    #[Route('/asso/recommander/events/{organizationSlug}/{formTypes}/{page}', name: 'app_asso_evenements', defaults: ['page' => 1, 'formTypes' => 'Event'])]
+    public function evenementsAssoRecommander(string $organizationSlug, int $page, string $formTypes, DataFilterAndPaginator $dataFilterAndPaginator): Response
     {
-        $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms?states=&formTypes={$formTypes}";
-
+        $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms?formTypes={$formTypes}";
+    
         $data_forms = $this->helloAssoApiService->makeApiCall($url);
-
-        // Supposons que $data_forms['data'] contient les données que vous avez mentionnées
-        $filteredData = array_filter($data_forms['data'], function ($entry) {
-
-            $endDate = DateTime::createFromFormat(DateTime::ISO8601, $entry['endDate']);
-            $now = new DateTime();
-
-            return $endDate > $now;
-        });
-
-        usort($filteredData, function ($a, $b) {
-            $dateA = DateTime::createFromFormat(DateTime::ISO8601, $a['endDate']);
-            $dateB = DateTime::createFromFormat(DateTime::ISO8601, $b['endDate']);
-
-            if ($dateA == $dateB) {
-                return 0;
-            }
-
-            return ($dateA < $dateB) ? -1 : 1;
-        });
-
-        $itemsPerPage = 6;
-        $totalItems = count($filteredData);
-        $totalPages = ceil($totalItems / $itemsPerPage);
-
-        // Calculer l'index de départ pour la page actuelle
-        $start = ($page - 1) * $itemsPerPage;
-        
-        // Extraire les éléments pour la page actuelle
-        $pageItems = array_slice($filteredData, $start, $itemsPerPage);
-        
+        $filteredData = $dataFilterAndPaginator->filterAndSortData($data_forms['data']);
+        $paginationResult = $dataFilterAndPaginator->paginateData($filteredData, $page);
+        dump($data_forms['data']);
+        dump($paginationResult['items']);
+        exit;
         return $this->render('asso_recommander/events.html.twig', [
-            'controller_name' => 'AssoRecommanderController',
-            'data_forms' => $pageItems,
-            'total' => $totalItems,
-            'pages' => $totalPages,
-            'page' => $page,
+            'data_forms' => $paginationResult['items'],
+            'total' => $paginationResult['totalItems'],
+            'pages' => $paginationResult['totalPages'],
+            'page' => $paginationResult['currentPage'],
         ]);
     }
 
