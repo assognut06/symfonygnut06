@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Associations à recommander{% endblock %}
+{% block title %}Associations à recommander
+{% endblock %}
 
 {% block body %}
 	<div class="container pt-0">
@@ -14,55 +15,76 @@
 							<img src="{{ item.banner }}" class="card-img-top" alt="Bannière {{ item.name }}">
 							<div class="card-body">
 								<h5 class="card-title text-center">{{ item.name }}</h5>
-                                <div class="card-text text-center">
-                                <img src="{{ item.logo }}" class="card-img-top logoAsso my-2" alt="Logo {{ item.name }}"></br>
-                                <p>{{ item.category }}</p>
-                                <p class="text-justify">{{ item.description }}</p>
+								<div class="card-text text-center">
+									{# <img src="{{ item.logo }}" class="card-img-top logoAsso my-2" alt="Logo {{ item.name }}"> #}
+									{% if item.logo %}
+										<img class="card-img-top logoAsso my-2" src="{{ item.logo }}" alt="Logo de l'association {{ item.name }}"/>
+									{% else %}
+										<img src="{{ asset('images/Gnut 06 white.png') }}" alt="Logo par défaut" style="height: 70%;"/>
+									{% endif %}
+								<br>
+								<p>{{ item.category }}</p>
+								<p class="text-justify">{{ item.description }}</p>
 								<p>
-								{% if getEventsAssoRecommender(item.organizationSlug) == 'Aucun événement à venir' %}
-								Aucun événement à venir
-								{% else %}
-								<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode}) }}">{{ getEventsAssoRecommender(item.organizationSlug) }}</a>
-								{# <a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug, 'page': 1, 'formTypes': 'Event'}) }}">{{ getEventsAssoRecommender(item.organizationSlug) }}</a> #}
-								{% endif %}
+									{% if getEventsAssoRecommender(item.organizationSlug) == 'Aucun événement à venir' %}
+										Aucun événement à venir
+									{% else %}
+										<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode}) }}">{{ getEventsAssoRecommender(item.organizationSlug) }}</a>
+										{# <a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug, 'page': 1, 'formTypes': 'Event'}) }}">{{ getEventsAssoRecommender(item.organizationSlug) }}</a> #}
+									{% endif %}
 								</p>
-                                <p>{{ item.zipCode}} {{ item.city }}</p>
-                                <a class="btn btn-warning" href="{{ item.url }}"  target='_blanck'>Sur HelloAsso</a>
-                                </div>
-                            </div>
+								<p>{{ item.zipCode}}
+									{{ item.city }}</p>
+								<a class="btn btn-warning" href="{{ item.url }}" target='_blanck'>Sur HelloAsso</a>
+							</div>
 						</div>
 					</div>
-				{% else %}
-					No data available.
-				{% endfor %}
-				<div class="col-12 pagination-container mt-3">
-					<nav aria-label="Admin navigation">
-						<ul class="pagination">
-							{% if page > 1 %}
-								<li class="page-item">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page - 1}) }}">
-										<span aria-hidden="true">&laquo;</span>
-									</a>
-								</li>
-							{% endif %}
-
-							{% for page in 1..pages %}
-								<li class="page-item{% if app.request.attributes.get('page') == page %} active{% endif %}">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page}) }}">{{ page }}</a>
-								</li>
-							{% endfor %}
-
-							{% if page < pages %}
-								<li class="page-item">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page + 1}) }}">
-										<span aria-hidden="true">&laquo;</span>
-									</a>
-								</li>
-							{% endif %}
-						</ul>
-					</nav>
 				</div>
+			{% else %}
+				No data available.
+			{% endfor %}
+			<div class="col-12 pagination-container mt-3">
+				<nav aria-label="Admin navigation">
+					<ul class="pagination">
+						{% if page > 1 %}
+							<li class="page-item">
+								<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page - 1}) }}">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+						{% endif %}
+
+						{% for page in 1..pages %}
+							<li class="page-item{% if app.request.attributes.get('page') == page %} active{% endif %}">
+								<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page}) }}">{{ page }}</a>
+							</li>
+						{% endfor %}
+
+						{% if page < pages %}
+							<li class="page-item">
+								<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page + 1}) }}">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+						{% endif %}
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</div>
+</div>
+<script>
+// Définissez l'URL de l'image par défaut en dehors du gestionnaire d'événements
+var defaultLogoUrl = '{{ asset("images/Gnut 06 white.png") }}';
+
+document.addEventListener("DOMContentLoaded", function() {
+	var images = document.querySelectorAll('.logoAsso');
+	images.forEach(function(img) {
+		img.onerror = function() {
+			// Utilisez la variable pour l'URL de l'image par défaut
+			this.src = defaultLogoUrl;
+		};
+	});
+});
+</script>
 {% endblock %}

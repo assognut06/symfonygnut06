@@ -60,6 +60,21 @@ class AssoRecommanderController extends AbstractController
         ]);
     }
 
+    #[Route('/asso/recommander/detail/{organizationSlug}/{formType}/{formSlug}', name: 'app_asso_recommander_detail')]
+    public function detailAssoRecommander(string $organizationSlug, string $formType, string $formSlug): Response
+    {
+        $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms/{$formType}/{$formSlug}/public";
+        $data_form = $this->helloAssoApiService->makeApiCall($url);
+
+        $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
+
+        return $this->render('billetteries\detail.html.twig', [
+            'data_actu' => $data_form,
+            'googleMapsApiKey' => $googleMapsApiKey,
+        ]);
+    }
+
+
     #[Route('/admin/asso/recommander/new', name: 'app_asso_recommander_new')]
     public function new(Request $request): Response
     {
@@ -89,7 +104,7 @@ class AssoRecommanderController extends AbstractController
             }
         }
 
-        return $this->render('asso_recommander/new.html.twig', [
+        return $this->render('admin/asso_recommander/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }

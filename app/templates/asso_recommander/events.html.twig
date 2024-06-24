@@ -17,82 +17,84 @@
 							<div class="card-body">
 								<h5 class="card-title text-center">{{ item.title }}</h5>
 								<p class="card-text text-center">
-									<img src="{{ item.logo.publicUrl }}" class="card-img-top logoAsso my-2" alt="Logo {{ app.request.query.get('organizationName')|url_decode }}"></br>
-									<div class="alert alert-danger text-center mx-5 shadow-lg rounded-pill" role="alert">
-										{% set endDate = item.endDate|date("Y-m-d H:i:s") %}
-										{% set now = "now"|date("Y-m-d H:i:s") %}
-										{% set interval = date(endDate).diff(date(now)) %}
-										{% if interval.days == 0 %}
-											<strong>Expire dans quelques heures</strong>
-										{% else %}
-											<strong>Expire dans
-												{{ interval.days }}
-												jours.</strong>
-										{% endif %}
-									</div>
+									<img src="{{ item.logo.publicUrl }}" class="card-img-top logoAsso my-2" alt="Logo {{ app.request.query.get('organizationName')|url_decode }}">
 								</p>
-								<p class="text-justify">{{ item.description|slice(0, 200) }}...
-									{# <br>
-																		<a href="{{ path('app_billetteries_detail', {'formType': item.formType, 'slug': item.formSlug}) }}">
-																			En savoir +
-																		</a> #}
-								</p>
-							</p>
-						</a>
-					</p>
-					<div class="text-center">
-						<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.index }}">Réserver</button>
-					</div>
-
-					<!-- Modal -->
-					<div class="modal fade modal-lg" id="modal_{{ loop.index }}" tabindex="-1" aria-labelledby="ModalLabel_{{ loop.index }}" aria-hidden="true">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h1 class="modal-title fs-5" id="ModalLabel_{{ loop.index }}">{{ item.title }}</h1>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-								</div>
-								<div class="modal-body">
-									<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="{{ item.widgetFullUrl }}" style="width: 100%; height: 750px; border: none;"></iframe>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-								</div>
+							</br>
+							<div class="alert alert-danger text-center mx-5 shadow-lg rounded-pill" role="alert">
+								{% set endDate = item.endDate|date("Y-m-d H:i:s") %}
+								{% set now = "now"|date("Y-m-d H:i:s") %}
+								{% set interval = date(endDate).diff(date(now)) %}
+								{% if interval.days == 0 %}
+									<strong>Expire dans quelques heures</strong>
+								{% else %}
+									<strong>Expire dans
+										{{ interval.days }}
+										jours.</strong>
+								{% endif %}
 							</div>
+						</p>
+						<p class="text-justify">{{ item.description|slice(0, 200) }}...
+							<br>
+							<a href="{{ path('app_asso_recommander_detail', {'organizationSlug': item.organizationSlug, 'formType': item.formType,'formSlug': item.formSlug}) }}">
+								En savoir +
+							</a>
+						</p>
+					</p>
+				</a>
+			</p>
+			<div class="text-center">
+				<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.index }}">Réserver</button>
+			</div>
+
+			<!-- Modal -->
+			<div class="modal fade modal-lg" id="modal_{{ loop.index }}" tabindex="-1" aria-labelledby="ModalLabel_{{ loop.index }}" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="ModalLabel_{{ loop.index }}">{{ item.title }}</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="{{ item.widgetFullUrl }}" style="width: 100%; height: 750px; border: none;"></iframe>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-	{% else %}
-		No data available.
-	{% endfor %}
-	{# <div class="col-12 pagination-container mt-3">
-				<nav aria-label="Admin navigation">
-					<ul class="pagination">
-						{% if page > 1 %}
-							<li class="page-item">
-								<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'organizationSlug': data_forms.organizationSlug,'page': page - 1}) }}">
-									<span aria-hidden="true">&laquo;</span>
-								</a>
-							</li>
-						{% endif %}
-		
-						{% for page in 1..pages %}
-							<li class="page-item{% if app.request.attributes.get('page') == page %} active{% endif %}">
-								<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'organizationSlug': data_forms.organizationSlug,'page': page}) }}">{{ page }}</a>
-							</li>
-						{% endfor %}
-		
-						{% if page < pages %}
-							<li class="page-item">
-								<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'organizationSlug': data_forms.organizationSlug,'page': page + 1}) }}">
-									<span aria-hidden="true">&laquo;</span>
-								</a>
-							</li>
-						{% endif %}
-					</ul>
-				</nav>
-			</div> #}
-</div></div></div>{% endblock %}
+	</div>
+</div>{% else %}
+No data available.{% endfor %}<div class="col-12 mt-4 text-center">
+{% if app.request.headers.get('Referer') %}
+	<a class="btn btn-success" href="{{ app.request.headers.get('Referer')|e('html_attr') }}">Retour</a>
+{% else %}
+	<p>Impossible de retourner à la page précédente.</p>
+{% endif %}</div>{# <div class="col-12 pagination-container mt-3">
+						<nav aria-label="Admin navigation">
+							<ul class="pagination">
+								{% if page > 1 %}
+									<li class="page-item">
+										<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'organizationSlug': data_forms.organizationSlug,'page': page - 1}) }}">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+								{% endif %}
+				
+								{% for page in 1..pages %}
+									<li class="page-item{% if app.request.attributes.get('page') == page %} active{% endif %}">
+										<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'organizationSlug': data_forms.organizationSlug,'page': page}) }}">{{ page }}</a>
+									</li>
+								{% endfor %}
+				
+								{% if page < pages %}
+									<li class="page-item">
+										<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'organizationSlug': data_forms.organizationSlug,'page': page + 1}) }}">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+								{% endif %}
+							</ul>
+						</nav>
+					</div> #}</div></div></div>{% endblock %}
