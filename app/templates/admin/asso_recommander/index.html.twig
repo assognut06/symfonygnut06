@@ -19,7 +19,7 @@
 								<th scope="col">Nom</th>
 								<th scope="col">Types</th>
 								<th scope="col">Fiscal</th>
-								<th scope="col">Actions</th>
+								{# <th scope="col">Actions</th> #}
 							</tr>
 						</thead>
 						<tbody>
@@ -36,10 +36,10 @@
 											{% endif %}
 										</td>
 										<td>{{ asso.name }}</td>
-										<td>{{ asso.types }}</td>
-										<td>{{ asso.fiscal_receipt_eligibility }}</td>
-										<td
-											class="d-flex">{# <form action="{{ path('app_admin_asso_delete', {'id': asso.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+										<td>{{ asso.type }}</td>
+										<td>{{ asso.fiscalReceiptEligibility }}</td>
+										{# <td
+											class="d-flex"><form action="{{ path('app_admin_asso_delete', {'id': asso.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
 																																																<input type="hidden" name="_method" value="DELETE">
 																																																<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ asso.id) }}">
 																																																<button class="btn btn-danger" type="submit">Supprimer</button>
@@ -47,8 +47,8 @@
 																																															<form action="{{ path('app_admin_asso_promote', {'id': asso.id}) }}" method="post">
 																																																<input type="hidden" name="_token" value="{{ csrf_token('promote_asso' ~ asso.id) }}">
 																																																<button class="btn btn-success mx-1" type="submit">Promouvoir</button>
-																																															</form> #}
-										</td>
+																																															</form>
+										</td> #}
 									</tr>
 								</tr>
 								{% set i = i + 1 %}
