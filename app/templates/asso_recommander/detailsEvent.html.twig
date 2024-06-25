@@ -7,8 +7,8 @@
 {% block body %}
 	<div class="container pt-0">
 		<div class="mx-3">
-			<h2 class="my-5 text-success text-center">{{ data_actu.title }}</h2>
-			<div class="border border-success mb-5 mx-5 "></div>
+			<h2 class="my-5 text-primary text-center">{{ data_actu.title }}</h2>
+			<div class="border border-secondary mb-5 mx-5 "></div>
 			<div class="row justify-content-center">
 				<div class="col-12 text-center">
 					<p class="fs-4">{{ data_actu.description|nl2br }}</p>
@@ -73,7 +73,7 @@
 					</table>
 				</div>
 				<div class="col-12 mt-3 text-center">
-					<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modal_tier">Réservé</button>
+					<button class="btn btn-warning text-primary" data-bs-toggle="modal" data-bs-target="#modal_tier">Réservé</button>
 					<!-- Modal -->
 					<div class="modal fade modal-lg" id="modal_tier" tabindex="-1" aria-labelledby="ModalLabel_tier" aria-hidden="true">
 						<div class="modal-dialog">
@@ -94,7 +94,7 @@
 				</div>
 				<div class="col-12 mt-4 text-center">
 					{% if app.request.headers.get('Referer') %}
-						<a class="btn btn-success" href="{{ app.request.headers.get('Referer')|e('html_attr') }}">Retour</a>
+						<a class="btn btn-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}">Retour</a>
 					{% else %}
 						<p>Impossible de retourner à la page précédente.</p>
 					{% endif %}
