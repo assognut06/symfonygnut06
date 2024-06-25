@@ -6,5 +6,5 @@ controllers:
 
 # config/routes.yaml
 send_email:
-    path: /send-email
+    path: /email
     controller: App\Controller\EmailController::sendEmail

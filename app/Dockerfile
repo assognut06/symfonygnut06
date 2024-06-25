@@ -58,6 +58,6 @@ RUN apt-get update && apt-get install -y \
 #     npm install n -g && \
 #     n latest
 
-# ENTRYPOINT [ "var/www/app/run.sh" ]
+# ENTRYPOINT [ "/var/www/app/run.sh" ]
 
 CMD ["symfony", "serve"]
