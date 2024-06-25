@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Billeteries de Gnut 06
+{% block title %}Événements de Gnut 06
 {% endblock %}
 
 {% block body %}
 	<div class="container pt-0">
 		<div class="mx-3">
-			<h2 class="my-5 text-success text-center">Actualités de Gnut 06</h2>
-			<div class="border border-success mb-5 mx-5"></div>
+			<h2 class="my-5 text-primary text-center">Événements de Gnut 06</h2>
+			<div class="border border-secondary mb-5 mx-5"></div>
 			<div class="row align-items-start mx-auto">
 				{% for item in data_forms %}
 					<div class="col d-flex justify-content-around my-3">
@@ -38,7 +38,7 @@
 						</a>
 					</p>
 					<div class="text-center">
-						<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.index }}">Réserver</button>
+						<button class="btn btn-warning text-primary" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.index }}">Réserver</button>
 					</div>
 
 					<!-- Modal -->

@@ -7,8 +7,8 @@
 
 <div class="container pt-0">
     <div class="mx-3">
-        <h2 class="my-5 text-success text-center">Détails de la commande numéro : {{ app.request.attributes.get('id') }}</h2>
-        <div class="border border-success mb-5 "></div>
+        <h2 class="my-5 text-primary text-center">Détails de la commande numéro : {{ app.request.attributes.get('id') }}</h2>
+        <div class="border border-secondary mb-5 "></div>
         <div class="row justify-content-center">
             <div class="col">
                 <p>
@@ -29,12 +29,12 @@
                 <div class="col">
                     <p>
                         <h5>{{ data_forms.order.formName }}</h5>
-                        <div class="border border-success mb-5"></div>
+                        <div class="border border-secondary mb-5"></div>
                         {% if data_forms.tierDescription is defined %}
                             <p>{{ data_forms.tierDescription|nl2br }}</p>
                         {% endif %}
                          Date : {{ data_forms.order.date|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}<br>
-                        <div class="border border-success mb-5"></div>
+                        <div class="border border-secondary mb-5"></div>
                         Type : {{ data_forms.order.formType|e }}<br>
                         {% if data_forms.payments is defined %}
                             Mode de paiement : {{ data_forms.payments[0].paymentMeans|e }}<br>

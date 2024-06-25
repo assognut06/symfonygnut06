@@ -9,9 +9,9 @@
 	<div class="pt-0">
 		<div class="mx-4">
 			{% set title = app.request.attributes.get('formSlug') == "adhesion-a-l-association-gnut-06" ? 'Les adhérants' : (app.request.attributes.get('donnees') == "payments" ? 'Les paiements' : (app.request.attributes.get('tierTypes') == "Donation" ? 'Les dons' : 'Les commandes')) %}
-			<h2 class="my-4 text-success text-center">{{ title }}
+			<h2 class="my-4 text-primary text-center">{{ title }}
 				de Gnut 06</h2>
-			<div class="border border-success mb-4 mx-5"></div>
+			<div class="border border-secondary mb-4 mx-5"></div>
 
 			<div class="row align-items-start mx-auto">
 				<div class="col-12">
@@ -56,7 +56,7 @@
 							{% endif %}
 							<tr>
 								<td class="text-end" scope="row" colspan="10">
-									<strong class="text-success">Soit
+									<strong class="text-primary">Soit
 										{{ i }}
 										billets sur
 										{{ data_forms.pagination.totalCount }}

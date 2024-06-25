@@ -6,8 +6,8 @@
 {% block body %}
 	<div class="container pt-0">
 		<div class="mx-3">
-			<h2 class="my-5 text-success text-center">Associations à recommander</h2>
-			<div class="border border-success mb-5 mx-5"></div>
+			<h2 class="my-5 text-primary text-center">Associations à recommander</h2>
+			<div class="border border-secondary mb-5 mx-5"></div>
 			<div class="row align-items-start mx-auto">
 				{% for item in data_forms %}
 					<div class="col d-flex justify-content-around my-3">
@@ -75,7 +75,7 @@
 </div>
 <script>
 // Définissez l'URL de l'image par défaut en dehors du gestionnaire d'événements
-var defaultLogoUrl = '{{ asset("images/Gnut 06 white.png") }}';
+var defaultLogoUrl = '{{ asset("images/logo_trans-min.png") }}';
 
 document.addEventListener("DOMContentLoaded", function() {
 	var images = document.querySelectorAll('.logoAsso');

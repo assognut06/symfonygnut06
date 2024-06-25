@@ -1,5 +1,6 @@
 body {
   background-color: white;
+  color: #070716 !important; /* Couleur du texte par défaut */
 }
 .logoNavbar {
   width: 50px;
