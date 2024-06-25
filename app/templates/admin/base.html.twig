@@ -7,8 +7,10 @@
 			{% endblock %}
 		</title>
 		<!-- Include header -->
+		<script src= "https://code.jquery.com/jquery-3.7.1.min.js"integrity= "sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"> 
+        </script> 
 		{% include 'admin/_partials/header.html.twig' %}
-		{{ encore_entry_link_tags('app') }}
+		{% block stylesheets %}{{ encore_entry_link_tags('app') }}{% endblock %}
 	</head>
 	<body>
 		<!-- Include navbar -->
@@ -39,7 +41,6 @@
 
 		<!-- Include javascripts -->
 		{% block javascripts %}
-			{{ encore_entry_script_tags('app') }}
 			{{ encore_entry_script_tags('app') }}
 		{% endblock %}
 	</body>
