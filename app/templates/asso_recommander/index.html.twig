@@ -17,11 +17,8 @@
 								<h5 class="card-title text-center">{{ item.name }}</h5>
 								<div class="card-text text-center">
 									{# <img src="{{ item.logo }}" class="card-img-top logoAsso my-2" alt="Logo {{ item.name }}"> #}
-									{% if item.logo %}
 										<img class="card-img-top logoAsso my-2" src="{{ item.logo }}" alt="Logo de l'association {{ item.name }}"/>
-									{% else %}
-										<img src="{{ asset('images/Gnut 06 white.png') }}" alt="Logo par défaut" style="height: 70%;"/>
-									{% endif %}
+
 								<br>
 								<p>{{ item.category }}</p>
 								<p class="text-justify">{{ item.description }}</p>
@@ -73,18 +70,4 @@
 		</div>
 	</div>
 </div>
-<script>
-// Définissez l'URL de l'image par défaut en dehors du gestionnaire d'événements
-var defaultLogoUrl = '{{ asset("images/logo_trans-min.png") }}';
-
-document.addEventListener("DOMContentLoaded", function() {
-	var images = document.querySelectorAll('.logoAsso');
-	images.forEach(function(img) {
-		img.onerror = function() {
-			// Utilisez la variable pour l'URL de l'image par défaut
-			this.src = defaultLogoUrl;
-		};
-	});
-});
-</script>
 {% endblock %}
