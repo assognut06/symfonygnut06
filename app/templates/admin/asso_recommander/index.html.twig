@@ -29,11 +29,7 @@
 									<tr>
 										<td>{{ asso.id }}</td>
 										<td>
-											{% if asso.logo %}
-												<img src="{{ asso.logo }}" alt="Logo de l'association {{ asso.name }}" style="height: 30px;"/>
-											{% else %}
-												<img src="{{ asset('images/Gnut 06 white.png') }}" alt="Logo par défaut" style="height: 30px;"/>
-											{% endif %}
+											<img class="logoAssoAdmin" src="{{ asso.logo }}" alt="Logo de l'association {{ asso.name }}">
 										</td>
 										<td>{{ asso.name }}</td>
 										<td>{{ asso.type }}</td>
