@@ -11,7 +11,7 @@
 		<div class="row justify-content-center">
 			<div class="col-md-6">
 				<h1 class="text-center mb-4">S'enregistrer</h1>
-				<div class="card p-4">
+				<div class="card p-4 shadow">
 					{{ form_errors(registrationForm) }}
 					{{ form_start(registrationForm, {'attr': {'class': 'g-3'}}) }}
 					<div class="mb-3">
@@ -31,8 +31,8 @@
 					</div>
 					<div class="mb-3 form-check">
 						{{ form_row(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
-						<label for="{{ registrationForm.agreeTerms.vars.id }}" class="form-check-label">
-							{{ registrationForm.agreeTerms.vars.label }}
+							<label for="{{ registrationForm.agreeTerms.vars.id }}" class="form-check-label">
+							{# {{ registrationForm.agreeTerms.vars.label }} #}
 						</label>
 					</div>
 					<div class="text-center">
