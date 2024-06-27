@@ -34,7 +34,7 @@
 											<form action="{{ path('app_admin_user_delete', {'id': user.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
 												<input type="hidden" name="_method" value="DELETE">
 												<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-												<button class="btn btn-danger" type="submit">Supprimer</button>
+												<button class="btn btn-danger text-white" type="submit">Supprimer</button>
 											</form>
 											<form action="{{ path('app_admin_user_promote', {'id': user.id}) }}" method="post">
 												<input type="hidden" name="_token" value="{{ csrf_token('promote_user' ~ user.id) }}">

@@ -38,7 +38,7 @@
 											class="d-flex"><form action="{{ path('app_admin_asso_delete', {'id': asso.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
 																																																<input type="hidden" name="_method" value="DELETE">
 																																																<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ asso.id) }}">
-																																																<button class="btn btn-danger" type="submit">Supprimer</button>
+																																																<button class="btn btn-danger text-white" type="submit">Supprimer</button>
 																																															</form>
 																																															<form action="{{ path('app_admin_asso_promote', {'id': asso.id}) }}" method="post">
 																																																<input type="hidden" name="_token" value="{{ csrf_token('promote_asso' ~ asso.id) }}">
