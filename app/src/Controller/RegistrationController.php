@@ -57,11 +57,11 @@ class RegistrationController extends AbstractController
                 (new TemplatedEmail())
                     ->from(new Address('gnut@gnut.eu', 'Gnut 06'))
                     ->to($user->getEmail())
-                    ->subject('Veuillez confirmer votre adresse e-mail')
+                    ->subject('Veuillez confirmer votre adresse e-mail sur Gnut 06.')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
-
+            $this->addFlash('danger', 'Un email de confirmation a été envoyé à votre adresse email. Veuillez consulter votre boîte mail pour confirmer votre inscription.');
             return $security->login($user, 'form_login', 'main');
         }
 
@@ -99,4 +99,34 @@ class RegistrationController extends AbstractController
 
         return $this->redirectToRoute('app_home');
     }
+
+    #[Route('/verify/email/renew', name: 'app_verify_email_renew')]
+    public function renewUserEmail(Request $request, UserRepository $userRepository): Response
+    {
+        $id = $request->query->get('id');
+
+        if (null === $id) {
+            return $this->redirectToRoute('app_register');
+        }
+
+        $user = $userRepository->find($id);
+
+        if (null === $user) {
+            $this->addFlash('success', 'Bonjours vous êtes déjà connecté \\n Vous avez reçu un mail de confirmation de votre inscription, veuillez le consulter pour confirmer votre inscription.');
+            return $this->redirectToRoute('app_home');
+        }
+
+        // generate a signed url and email it to the user
+        $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+                (new TemplatedEmail())
+                    ->from(new Address('gnut@gnut.eu', 'Gnut 06'))
+                    ->to($user->getEmail())
+                    ->subject('Veuillez confirmer votre adresse e-mail sur Gnut 06.')
+                    ->htmlTemplate('registration/confirmation_email.html.twig')
+            );
+            $this->addFlash('danger', 'Un email de confirmation a été envoyé à votre adresse email. Veuillez consulter votre boîte mail pour confirmer votre inscription.');
+
+            return $this->redirectToRoute('app_home');
+    }
+           
 }

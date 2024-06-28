@@ -161,7 +161,7 @@ class ResetPasswordController extends AbstractController
         $email = (new TemplatedEmail())
             ->from(new Address('gnut@gnut.eu', 'Gnut 06'))
             ->to($user->getEmail())
-            ->subject('Votre demande de réinitialisation de mot de passe')
+            ->subject('Votre demande de réinitialisation de mot de passe sur Gnut 06')
             ->htmlTemplate('reset_password/email.html.twig')
             ->context([
                 'resetToken' => $resetToken,
@@ -173,6 +173,6 @@ class ResetPasswordController extends AbstractController
         // Store the token object in session for retrieval in check-email route.
         $this->setTokenObjectInSession($resetToken);
 
-        return $this->redirectToRoute('app_check_email');
+        return $this->redirectToRoute('app_profil');
     }
 }

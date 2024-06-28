@@ -14,6 +14,14 @@ h1{
   height: auto;
 }
 
+.custom-tooltip {
+  --bs-tooltip-bg: var(--bs-primary);
+}
+
+.carousel.pointer-event {
+  padding-top: 18px !important;
+}
+
 .logoBack{
   background-color: black;
 }
