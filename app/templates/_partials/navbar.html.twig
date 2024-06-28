@@ -10,7 +10,9 @@
 		<div class="collapse navbar-collapse fs-5" id="navbarNavDropdown">
 			<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 				<li class="nav-item">
-					<a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" aria-current="page" href="{{ path('app_home') }}">Accueil</a>
+					<a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" aria-current="page" href="{{ path('app_home') }}" data-bs-toggle="tooltip" data-bs-placement="bottom"  title="Accueil">
+						<i class="bi bi-house"></i>
+					</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}" href="{{ path('app_billetteries') }}">Événements</a>
