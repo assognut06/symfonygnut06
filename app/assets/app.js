@@ -12,7 +12,7 @@ const $ = require('jquery');
 import 'bootstrap';
 require('bootstrap-icons/font/bootstrap-icons.css');
 
-$(document).ready(function() {
+jQuery(function($) {
     console.log('ready');
 });
 
