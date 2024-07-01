@@ -19,9 +19,7 @@
 
 		{% include 'admin/_partials/nav_tabs.html.twig' %}
 		<!-- Spinner de Chargement -->
-		<div id="loadingSpinner" class="spinner-border text-warning mt-5 text-center" role="status">
-			<span class="visually-hidden">Loading...</span>
-		</div>
+		
 
 		<!-- Display flash messages -->
 		{% for type, messages in app.flashes %}
@@ -31,7 +29,11 @@
 		{% endfor %}
 
 		<!-- Body content -->
+		{% if loading %}
+		{% include('_partials/loader.html.twig') %}
+		{% else %}
 		{% block body %}{% endblock %}
+		{% endif %}
 
 		<!-- Include footer -->
 		{% include 'admin/_partials/footer.html.twig' %}

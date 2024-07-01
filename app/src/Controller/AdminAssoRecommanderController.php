@@ -17,7 +17,7 @@ class AdminAssoRecommanderController extends AbstractController
     private $assoRecommanderService;
     private $assoRecommanderRepository;
 
-    public function __construct(AssoRecommanderService $assoRecommanderService, AssoRecommanderRepository $assoRecommanderRepository)
+    public function __construct(AssoRecommanderService $assoRecommanderService, AssoRecommanderRepository $assoRecommanderRepository, )
     {
         $this->assoRecommanderService = $assoRecommanderService;
         $this->assoRecommanderRepository = $assoRecommanderRepository;
@@ -33,6 +33,7 @@ class AdminAssoRecommanderController extends AbstractController
             'total' => $pagination['total'],
             'pages' => $pagination['pages'],
             'page' => $pagination['current_page'],
+            'loading' => false,
         ]);
     }
     
@@ -54,7 +55,7 @@ class AdminAssoRecommanderController extends AbstractController
                 return $this->redirectToRoute('app_asso_recommander_new');
             } else {
 
-                $data = $this->assoRecommanderService->updateAssoRecommanderFromApi($organizationSlug);
+                $data = $this->assoRecommanderService->createdAssoRecommanderFromApi($organizationSlug);
 
                 if ($data) {
                     $this->addFlash('success', 'L\'association a bien été recommandée !');
@@ -68,6 +69,20 @@ class AdminAssoRecommanderController extends AbstractController
 
         return $this->render('admin/asso_recommander/new.html.twig', [
             'form' => $form->createView(),
+            'loading' => false,
         ]);
+    }
+
+    #[Route('/update-data', name: 'app_asso_update_data')]
+    public function updateData(){
+
+        $assoRecommander = [];
+        foreach($this->assoRecommanderRepository->findAll() as $asso) {
+            $assoRecommander = $asso;
+            $this->assoRecommanderService->updateAssoRecommanderFromApi($assoRecommander);
+        }
+        $this->addFlash('success', 'Les données des l\'associations ont été mises à jour avec succès.');
+        return $this->redirectToRoute('app_admin_asso_recommander');
+
     }
 }
