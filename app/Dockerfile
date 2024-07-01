@@ -41,6 +41,11 @@ COPY . /var/www/app/
 
 RUN chmod +x /var/www/app/
 
+RUN apt-get update && apt-get install -y dos2unix
+RUN dos2unix /var/www/app/run.sh
+
+RUN chmod +x /var/www/app/run.sh
+
 RUN chown -R www-data:www-data /var/www/app/
 # Set environment variable for Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -54,10 +59,10 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     npm
 
-# RUN npm install npm@latest -g && \
-#     npm install n -g && \
-#     n latest
+RUN npm install npm@latest -g && \
+    npm install n -g && \
+    n latest
 
-# ENTRYPOINT [ "/var/www/app/run.sh" ]
+ENTRYPOINT ["/bin/bash", "/var/www/app/run.sh"]
 
-CMD ["symfony", "serve"]
+# CMD ["symfony", "serve"]
