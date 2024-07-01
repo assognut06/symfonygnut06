@@ -26,6 +26,7 @@ class AdminController extends AbstractController
 
         return $this->render('admin/dashbord/dashboard.html.twig', [
             'data' => $data,
+            'loading' => false,
         ]);
     }
 
@@ -39,6 +40,7 @@ class AdminController extends AbstractController
         
         return $this->render('admin/orders/index.html.twig', [
             'data_forms' => $data_forms,
+            'loading' => false,
         ]);
     }
 
@@ -55,12 +57,14 @@ class AdminController extends AbstractController
             return $this->render('admin/orders/detailsOrder.html.twig', [
                 'data_forms' => $data_forms,
                 'googleMapsApiKey' => $googleMapsApiKey,
+                'loading' => false,
             ]);
         }
         if($donnees === 'payments') {
             return $this->render('admin/orders/detailsPayment.html.twig', [
                 'data_forms' => $data_forms,
                 'googleMapsApiKey' => $googleMapsApiKey,
+                'loading' => false,
             ]);
         }
        

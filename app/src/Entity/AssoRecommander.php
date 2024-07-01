@@ -245,4 +245,6 @@ class AssoRecommander
         
         return $this;
     }
+
+    
 }

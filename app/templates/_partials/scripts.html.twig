@@ -1,9 +1,9 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Masquer le spinner une fois que la page est chargée
-    document.getElementById('loadingSpinner').style.display = 'none';
-    // Afficher le contenu de la page
-    document.getElementById('pageContent').style.display = 'block';
+    document.querySelector('.loader').style.display = 'block';
+	setTimeout(() => {
+		document.querySelector('.loader').style.display = 'none';
+	}, 1000);
 });
 
 // Définissez l'URL de l'image par défaut en dehors du gestionnaire d'événements
