@@ -9,9 +9,9 @@
 	<h2 class="text-center">Profil de utilisateur</h2>
 
 	<div class="text-center">
-		<p>Identifiant:
+		<p>Identifiant :
 			{{ user.id }}</p>
-		<p>Email:
+		<p class="fs-4">Email :
 			{{ user.email }} <i class="bi bi-patch-check {{ user.isVerified == 1 ? 'text-success' : 'text-danger' }}"></i> {% if user.isVerified == 0 %}<a href="{{ path('app_verify_email_renew', {'id': user.id}) }}">Demander un nouveau envoi d'email de confirmation</a>{% endif %}</p>
 			{% if data_items['data'] is not empty %}
 				{# {{  dump (data_items['data'][0].payer.firstName) }} #}

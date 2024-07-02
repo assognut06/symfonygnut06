@@ -14,10 +14,6 @@ h1{
   height: auto;
 }
 
-.custom-tooltip {
-  --bs-tooltip-bg: var(--bs-primary);
-}
-
 .carousel.pointer-event {
   padding-top: 18px !important;
 }
@@ -25,8 +21,12 @@ h1{
 .logoBack{
   background-color: black;
 }
+
 .logoAsso{
-  width :80%;
+  width :60%;
+}
+.logoAssoFiche{
+  max-width : 120px;
 }
 .emoji {
   font-size: 1.5rem; /* Adjust size of emojis */
@@ -35,9 +35,6 @@ h1{
 .pagination-container {
   display: flex;
   justify-content: center;
-}
-.logoAsso{
-  width :70%;
 }
 
 .logoAssoAdmin{
