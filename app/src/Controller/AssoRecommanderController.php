@@ -72,4 +72,15 @@ class AssoRecommanderController extends AbstractController
             'googleMapsApiKey' => $googleMapsApiKey,
         ]);
     }
+
+    #[Route('/asso/recommander/fiche/{organizationSlug}', name: 'app_asso_recommander_fiche')]
+    public function ficheAssoRecommander(string $organizationSlug): Response
+    {
+        $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}";
+        $data = $this->helloAssoApiService->makeApiCall($url);
+
+        return $this->render('asso_recommander/fiche.html.twig', [
+            'data' => $data,
+        ]);
+    }
 }
