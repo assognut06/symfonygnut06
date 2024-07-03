@@ -63,7 +63,6 @@ RUN npm install npm@latest -g && \
     npm install n -g && \
     n latest
 
-
-ENTRYPOINT ["sh", "/var/www/app/run.sh"]
+ENTRYPOINT ["/bin/bash", "/var/www/app/run.sh"]
 
 # CMD ["symfony", "serve"]
