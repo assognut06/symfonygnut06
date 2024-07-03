@@ -23,40 +23,48 @@ class NotificationController extends AbstractController
     #[Route('/notification/callback', name: 'notification_callback', methods: ['POST'])]
     public function callback(Request $request, MailerInterface $mailer): Response
     {
-        $expectedIp = '51.138.206.200';
-        $clientIp = $request->getClientIp();
 
-        if ($clientIp !== $expectedIp) {
-            return new Response('Unauthorized', Response::HTTP_UNAUTHORIZED);
+        try{
+
+            $expectedIp = '51.138.206.200';
+            $clientIp = $request->getClientIp();
+    
+            if ($clientIp !== $expectedIp) {
+                return new Response('Unauthorized', Response::HTTP_UNAUTHORIZED);
+            }
+    
+            $content = $request->getContent();
+            $data = json_decode($content, true);
+    
+            if ($data === null) {
+                return new Response('Invalid JSON', Response::HTTP_BAD_REQUEST);
+            }
+    
+            $data_payer = $data['data']['payer'];
+    
+            if ($data['eventType'] == 'Order') {
+                $this->verifyPayer($data_payer);
+                // Logique spécifique à 'Order', y compris l'envoi d'email si nécessaire
+            } elseif ($data['eventType'] == 'Payment') {
+                // Traitement des données pour un événement de type 'Payment'
+            }
+    
+            // Logique d'envoi d'email (ajustez selon les besoins)
+            $formattedData = print_r($data, true);
+            $email = (new Email())
+                ->from('gnut@gnut.eu')
+                ->to('gnut@gnut.eu')
+                ->subject('Notification Data')
+                ->text('Voici les données de la notification : ' . $formattedData);
+    
+            $mailer->send($email);
+    
+            return new Response('OK');
+
+        }  catch (\Exception $e) {
+            return "Erreur callBack: " . $e;
+
         }
-
-        $content = $request->getContent();
-        $data = json_decode($content, true);
-
-        if ($data === null) {
-            return new Response('Invalid JSON', Response::HTTP_BAD_REQUEST);
-        }
-
-        $data_payer = $data['data']['payer'];
-
-        if ($data['eventType'] == 'Order') {
-            $this->verifyPayer($data_payer);
-            // Logique spécifique à 'Order', y compris l'envoi d'email si nécessaire
-        } elseif ($data['eventType'] == 'Payment') {
-            // Traitement des données pour un événement de type 'Payment'
-        }
-
-        // Logique d'envoi d'email (ajustez selon les besoins)
-        $formattedData = print_r($data, true);
-        $email = (new Email())
-            ->from('gnut@gnut.eu')
-            ->to('gnut@gnut.eu')
-            ->subject('Notification Data')
-            ->text('Voici les données de la notification : ' . $formattedData);
-
-        $mailer->send($email);
-
-        return new Response('OK');
     }
 
     public function verifyPayer($data)
@@ -83,6 +91,8 @@ class NotificationController extends AbstractController
             $this->em->flush();
         } catch (\Exception $e) {
             // Gérer l'exception, par exemple en loggant l'erreur
+            return "Erreur verifyPlayer : " . $e;
+
         }
     }
 
