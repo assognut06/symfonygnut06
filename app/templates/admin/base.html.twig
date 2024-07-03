@@ -29,11 +29,11 @@
 		{% endfor %}
 
 		<!-- Body content -->
-		{% if loading %}
+	
 		{% include('_partials/loader.html.twig') %}
-		{% else %}
+		
 		{% block body %}{% endblock %}
-		{% endif %}
+		
 
 		<!-- Include footer -->
 		{% include 'admin/_partials/footer.html.twig' %}
@@ -44,6 +44,42 @@
 		<!-- Include javascripts -->
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
+			   <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var loader = document.getElementById('loader');
+
+                function showLoader() {
+                    loader.style.display = 'block';
+                }
+
+                function hideLoader() {
+                    loader.style.display = 'none';
+                }
+
+                // Show loader on page load
+                showLoader();
+
+                window.addEventListener('load', function() {
+                    hideLoader();
+                });
+
+                // Show loader on page navigation (e.g., internal links)
+                document.querySelectorAll('a').forEach(function(link) {
+                    link.addEventListener('click', function(event) {
+                        if (link.href && link.href.startsWith(window.location.origin)) {
+                            showLoader();
+                        }
+                    });
+                });
+
+                // Handle form submissions
+                document.querySelectorAll('form').forEach(function(form) {
+                    form.addEventListener('submit', function() {
+                        showLoader();
+                    });
+                });
+            });
+        </script>
 		{% endblock %}
 	</body>
 </html>
