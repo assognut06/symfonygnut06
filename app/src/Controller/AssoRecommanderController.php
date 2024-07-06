@@ -67,7 +67,7 @@ class AssoRecommanderController extends AbstractController
     {
         $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms/{$formType}/{$formSlug}/public";
         $data_form = $this->helloAssoApiService->makeApiCall($url);
-dd($url);
+// dd($url);
         $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
 
         return $this->render('billetteries\detail.html.twig', [
