@@ -52,13 +52,13 @@ class AppExtension extends AbstractExtension
         return $formattedPrice;
     }
 
-   
+
     public function randomImage($directory)
     {
         // Utiliser le répertoire racine du projet pour construire le chemin absolu
         $projectDir = $this->parameterBag->get('kernel.project_dir');
         $absolutePath = $projectDir . '/public' . $directory;
-    
+
         $finder = new Finder();
         try {
             $finder->files()->in($absolutePath);
@@ -67,30 +67,30 @@ class AppExtension extends AbstractExtension
             // Par exemple, retourner un chemin d'image par défaut
             return '/public/images/news/1714486898185.jpeg';
         }
-    
+
         $files = iterator_to_array($finder);
         if (count($files) > 0) {
             $randomFile = $files[array_rand($files)];
-            return $directory.$randomFile->getRelativePathname();
+            return $directory . $randomFile->getRelativePathname();
         }
-    
+
         return null; // ou retourner un chemin d'image par défaut
     }
 
-    public function getEventsAssoRecommender($organizationSlug) : string
-        {
-        $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms?formTypes=Event";
-    
+    public function getEventsAssoRecommender($organizationSlug, string $formTypes): int
+    {
+        $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms?formTypes={$formTypes}&states=Public";
+       
         $data_forms = $this->helloAssoApiService->makeApiCall($url);
-        $filteredData = $this->dataFilterAndPaginator->filterAndSortData($data_forms['data']);
-        $count = count($filteredData);
-
-        if ($count > 0) {
-            return $count . ' événement(s) à venir';
+        if ($formTypes === 'Event') {
+            $filteredData = $this->dataFilterAndPaginator->filterAndSortData($data_forms['data']);
         } else {
-            return 'Aucun événement à venir';
+            $filteredData = $data_forms['data'];
         }
         
+        $count = count($filteredData);
+
+        return $count;
     }
 
     public function urlDecode($value)

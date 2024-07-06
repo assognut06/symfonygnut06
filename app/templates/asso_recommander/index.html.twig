@@ -14,7 +14,7 @@
 						<div class="card shadow-lg" style="width: 21rem;">
 							<img src="{{ item.banner }}" class="card-img-top" alt="Bannière {{ item.name }}">
 							<div class="card-body">
-								<h5 class="card-title text-center">{{ item.name }}</h5>
+								<h5 class="card-title text-center text-primary">{{ item.name }}</h5>
 								<div
 									class="card-text text-center">
 									{# <img src="{{ item.logo }}" class="card-img-top logoAsso my-2" alt="Logo {{ item.name }}"> #}
@@ -28,51 +28,77 @@
 										</a>
 									</p>
 									<p>
-										{% if getEventsAssoRecommender(item.organizationSlug) == 'Aucun événement à venir' %}
+										{% if getEventsAssoRecommender(item.organizationSlug, "Event") == 0 %}
 											Aucun événement à venir
 										{% else %}
-											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode}) }}">{{ getEventsAssoRecommender(item.organizationSlug) }}</a>
-											{# <a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug, 'page': 1, 'formTypes': 'Event'}) }}">{{ getEventsAssoRecommender(item.organizationSlug) }}</a> #}
+											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Event") }}
+												évènement(s) à venir</a>
 										{% endif %}
 									</p>
-									<p>{{ item.zipCode}}
-										{{ item.city }}</p>
-									<a class="btn btn-warning" href="{{ item.url }}" target='_blanck'>Sur HelloAsso</a>
-								</div>
+									{% if getEventsAssoRecommender(item.organizationSlug, "Donation") != 0 %}
+										<p>
+											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode, 'formTypes': 'Donation'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Donation") }}
+												formulaire(s) de dons</a>
+										</p>
+									{% endif %}
+									{# Membership #}
+									{% if getEventsAssoRecommender(item.organizationSlug, "Membership") != 0 %}
+									<p>
+										<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode,'formTypes': 'Membership'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Membership") }}
+											formulaire(s) d'adhésion</a>
+									</p>
+								{% endif %}
+								{# CrowdFunding #}
+								{% if getEventsAssoRecommender(item.organizationSlug, "CrowdFunding") != 0 %}
+									<p>
+										<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "CrowdFunding") }}
+											formulaire(s) d'appel à projet</a>
+									</p>
+								{% endif %}
+								{# Shop #}
+								{% if getEventsAssoRecommender(item.organizationSlug, "Shop") != 0 %}
+									<p>
+										<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Shop") }}
+											boutique(s)</a>
+									</p>
+								{% endif %}
+								<p>{{ item.zipCode}}
+									{{ item.city }}</p>
+								<a class="btn btn-warning" href="{{ item.url }}" target='_blanck'>Sur HelloAsso</a>
 							</div>
 						</div>
 					</div>
-				{% else %}
-					No data available.
-				{% endfor %}
-				<div class="col-12 pagination-container mt-3">
-					<nav aria-label="Admin navigation">
-						<ul class="pagination">
-							{% if page > 1 %}
-								<li class="page-item">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page - 1}) }}">
-										<span aria-hidden="true">&laquo;</span>
-									</a>
-								</li>
-							{% endif %}
-
-							{% for page in 1..pages %}
-								<li class="page-item{% if app.request.attributes.get('page') == page %} active{% endif %}">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page}) }}">{{ page }}</a>
-								</li>
-							{% endfor %}
-
-							{% if page < pages %}
-								<li class="page-item">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page + 1}) }}">
-										<span aria-hidden="true">&laquo;</span>
-									</a>
-								</li>
-							{% endif %}
-						</ul>
-					</nav>
 				</div>
+			{% else %}
+				No data available.
+			{% endfor %}
+			<div class="col-12 pagination-container mt-3">
+				<nav aria-label="Admin navigation">
+					<ul class="pagination">
+						{% if page > 1 %}
+							<li class="page-item">
+								<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page - 1}) }}">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+						{% endif %}
+
+						{% for page in 1..pages %}
+							<li class="page-item{% if app.request.attributes.get('page') == page %} active{% endif %}">
+								<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page}) }}">{{ page }}</a>
+							</li>
+						{% endfor %}
+
+						{% if page < pages %}
+							<li class="page-item">
+								<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page + 1}) }}">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+						{% endif %}
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</div>
-{% endblock %}
+</div>{% endblock %}
