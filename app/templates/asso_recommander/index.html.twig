@@ -10,6 +10,8 @@
 			<div class="border border-secondary mb-5 mx-5"></div>
 			<div class="row align-items-start mx-auto">
 				{% for item in data_forms %}
+				{% if not item %}
+				{% endif %}
 					<div class="col d-flex justify-content-around my-3">
 						<div class="card shadow-lg" style="width: 21rem;">
 							<img src="{{ item.banner }}" class="card-img-top" alt="Bannière {{ item.name }}">

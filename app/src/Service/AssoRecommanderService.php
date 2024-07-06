@@ -15,11 +15,12 @@ class AssoRecommanderService
         $this->entityManager = $entityManager;
     }
 
+    
     public function updateAssoRecommanderFromApi(string $organizationSlug)
     {
         $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}";
         $data = $this->helloAssoApiService->makeApiCall($url);
-
+        
         if ($data) {
             $assoRecommander = new AssoRecommander();
             // Définir organizationSlug

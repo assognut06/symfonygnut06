@@ -12,30 +12,42 @@ use App\Entity\AssoRecommander;
 use App\Repository\AssoRecommanderRepository;
 use App\Service\HelloAssoApiService; // Service dédié pour les appels API HelloAsso
 use App\Service\DataFilterAndPaginator;
+use App\Service\SpinnerService;
 
 class AssoRecommanderController extends AbstractController
 {
     private $assoRecommanderService;
     private $assoRecommanderRepository;
     private $helloAssoApiService;
+    private $spinnerService;
 
-    function __construct(AssoRecommanderService $assoRecommanderService, AssoRecommanderRepository $assoRecommanderRepository, HelloAssoApiService $helloAssoApiService)
+    function __construct(AssoRecommanderService $assoRecommanderService, 
+    AssoRecommanderRepository $assoRecommanderRepository, 
+    HelloAssoApiService $helloAssoApiService, SpinnerService $spinnerService)
     {
         $this->assoRecommanderService = $assoRecommanderService;
         $this->assoRecommanderRepository = $assoRecommanderRepository;
         $this->helloAssoApiService = $helloAssoApiService;
+        $this->spinnerService = $spinnerService;
     }
 
     #[Route('/asso/recommander/liste/{page}', name: 'app_asso_recommander', defaults: ['page' => 1])]
     public function index(PaginationService $paginationService, int $page): Response
     {
         $pagination = $paginationService->getPaginatedData(AssoRecommander::class, $page);
+
+        if(!$pagination)
+            $this->spinnerService->showSpinner();
+        else 
+            $this->spinnerService->hideSpinner();
+
         return $this->render('asso_recommander/index.html.twig', [
             'controller_name' => 'AssoRecommanderController',
             'data_forms' => $pagination['data'],
             'total' => $pagination['total'],
             'pages' => $pagination['pages'],
             'page' => $pagination['current_page'],
+            'spinner' => $this->spinnerService->getSpinner(),
         ]);
     }
 

@@ -27,7 +27,7 @@ class AdminAssoRecommanderController extends AbstractController
     public function index(PaginationService $paginationService, int $page): Response
     {
         $pagination = $paginationService->getPaginatedData(AssoRecommander::class, $page);
-
+        
         return $this->render('admin/asso_recommander/index.html.twig', [
             'assos' => $pagination['data'],
             'total' => $pagination['total'],
