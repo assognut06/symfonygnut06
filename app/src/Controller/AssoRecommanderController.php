@@ -45,12 +45,15 @@ class AssoRecommanderController extends AbstractController
         $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms?formTypes={$formTypes}";
     
         $data_forms = $this->helloAssoApiService->makeApiCall($url);
-        $filteredData = $dataFilterAndPaginator->filterAndSortData($data_forms['data']);
+        if ($formTypes === 'Event') {
+            $filteredData = $dataFilterAndPaginator->filterAndSortData($data_forms['data']);
+        }
+        else {
+            $filteredData = $data_forms['data'];
+        }
+
         $paginationResult = $dataFilterAndPaginator->paginateData($filteredData, $page);
-        // echo $url;
-        // dump($data_forms['data']);
-        // dump($paginationResult['items']);
-        // exit;
+
         return $this->render('asso_recommander/events.html.twig', [
             'data_forms' => $paginationResult['items'],
             'total' => $paginationResult['totalItems'],
@@ -64,7 +67,7 @@ class AssoRecommanderController extends AbstractController
     {
         $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms/{$formType}/{$formSlug}/public";
         $data_form = $this->helloAssoApiService->makeApiCall($url);
-
+dd($url);
         $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
 
         return $this->render('billetteries\detail.html.twig', [
