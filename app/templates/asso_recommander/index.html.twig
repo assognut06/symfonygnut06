@@ -51,14 +51,14 @@
 								{# CrowdFunding #}
 								{% if getEventsAssoRecommender(item.organizationSlug, "CrowdFunding") != 0 %}
 									<p>
-										<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "CrowdFunding") }}
+										<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode,'formTypes': 'CrowdFunding'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "CrowdFunding") }}
 											formulaire(s) d'appel à projet</a>
 									</p>
 								{% endif %}
 								{# Shop #}
 								{% if getEventsAssoRecommender(item.organizationSlug, "Shop") != 0 %}
 									<p>
-										<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Shop") }}
+										<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode,'formTypes': 'Shop'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Shop") }}
 											boutique(s)</a>
 									</p>
 								{% endif %}

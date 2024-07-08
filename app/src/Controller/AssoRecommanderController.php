@@ -48,10 +48,13 @@ class AssoRecommanderController extends AbstractController
         if ($formTypes === 'Event') {
             $filteredData = $dataFilterAndPaginator->filterAndSortData($data_forms['data']);
         }
+        elseif ($formTypes === 'Membership') {
+            $filteredData = $dataFilterAndPaginator->filterMemberShipSortData($data_forms['data']);
+        }
         else {
             $filteredData = $data_forms['data'];
         }
-
+        
         $paginationResult = $dataFilterAndPaginator->paginateData($filteredData, $page);
 
         return $this->render('asso_recommander/events.html.twig', [
@@ -70,7 +73,7 @@ class AssoRecommanderController extends AbstractController
 // dd($url);
         $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
 
-        return $this->render('billetteries\detail.html.twig', [
+        return $this->render('asso_recommander/detailsEvent.html.twig', [
             'data_actu' => $data_form,
             'googleMapsApiKey' => $googleMapsApiKey,
         ]);
