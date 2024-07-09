@@ -13,6 +13,7 @@ use App\Repository\AssoRecommanderRepository;
 use App\Service\HelloAssoApiService; // Service dédié pour les appels API HelloAsso
 use App\Service\DataFilterAndPaginator;
 
+#[Route('/assos/recommandees')]
 class AssoRecommanderController extends AbstractController
 {
     private $assoRecommanderService;
@@ -26,7 +27,7 @@ class AssoRecommanderController extends AbstractController
         $this->helloAssoApiService = $helloAssoApiService;
     }
 
-    #[Route('/asso/recommander/liste/{page}', name: 'app_asso_recommander', defaults: ['page' => 1])]
+    #[Route('/liste/{page}', name: 'app_asso_recommander', defaults: ['page' => 1])]
     public function index(PaginationService $paginationService, int $page): Response
     {
         $pagination = $paginationService->getPaginatedData(AssoRecommander::class, $page);
@@ -39,7 +40,7 @@ class AssoRecommanderController extends AbstractController
         ]);
     }
 
-    #[Route('/asso/recommander/events/{organizationSlug}/{formTypes}/{page}', name: 'app_asso_evenements', defaults: ['page' => 1, 'formTypes' => 'Event'])]
+    #[Route('/events/{organizationSlug}/{formTypes}/{page}', name: 'app_asso_evenements', defaults: ['page' => 1, 'formTypes' => 'Event'])]
     public function evenementsAssoRecommander(string $organizationSlug, int $page, string $formTypes, DataFilterAndPaginator $dataFilterAndPaginator): Response
     {
         $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms?formTypes={$formTypes}";
@@ -65,7 +66,7 @@ class AssoRecommanderController extends AbstractController
         ]);
     }
 
-    #[Route('/asso/recommander/detail/{organizationSlug}/{formType}/{formSlug}', name: 'app_asso_recommander_detail')]
+    #[Route('/detail/{organizationSlug}/{formType}/{formSlug}', name: 'app_asso_recommander_detail')]
     public function detailAssoRecommander(string $organizationSlug, string $formType, string $formSlug): Response
     {
         $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms/{$formType}/{$formSlug}/public";
