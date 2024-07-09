@@ -48,7 +48,7 @@ class AssoRecommanderController extends AbstractController
         if ($formTypes === 'Event') {
             $filteredData = $dataFilterAndPaginator->filterAndSortData($data_forms['data']);
         }
-        elseif ($formTypes === 'Membership') {
+        elseif ($formTypes === 'Membership' || $formTypes === 'CrowdFunding') {
             $filteredData = $dataFilterAndPaginator->filterMemberShipSortData($data_forms['data']);
         }
         else {
