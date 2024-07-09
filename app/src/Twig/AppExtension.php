@@ -84,7 +84,7 @@ class AppExtension extends AbstractExtension
         $data_forms = $this->helloAssoApiService->makeApiCall($url);
         if ($formTypes === 'Event') {
             $filteredData = $this->dataFilterAndPaginator->filterAndSortData($data_forms['data']);
-        } elseif ($formTypes === 'Membership') {
+        } elseif ($formTypes === 'Membership' || $formTypes === 'CrowdFunding') {
             $filteredData = $this->dataFilterAndPaginator->filterMemberShipSortData($data_forms['data']);
         } else {
             $filteredData = $data_forms['data'];

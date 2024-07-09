@@ -68,7 +68,7 @@
 				</div>
 				<div class="col-12 mt-4 text-center">
 					{% if app.request.headers.get('Referer') %}
-						<a class="btn btn-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}">Retour</a>
+						<a class="btn btn-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}"><i class="bi bi-skip-backward-circle text-white"></i> Retour</a>
 					{% else %}
 						<p>Impossible de retourner à la page précédente.</p>
 					{% endif %}
