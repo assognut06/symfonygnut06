@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Service\HelloAssoApiService; // Service dédié pour les appels API HelloAsso
 use App\Service\DataFilterAndPaginator;
 
+#[Route('/evenements')]
 class BilletteriesController extends AbstractController
 {
     private $helloAssoApiService;
@@ -20,7 +21,7 @@ class BilletteriesController extends AbstractController
         $this->dataFilterAndPaginator = $dataFilterAndPaginator;
     }
     
-    #[Route('/billetteries/{page}', name: 'app_billetteries', defaults: ['page' => 1])]
+    #[Route('/{page}', name: 'app_billetteries', defaults: ['page' => 1])]
     public function index(int $page): Response
     {
 
@@ -38,7 +39,7 @@ class BilletteriesController extends AbstractController
         ]);
     }
 
-    #[Route('/billetteries/{formType}/{slug}', name: 'app_billetteries_detail')]
+    #[Route('/{formType}/{slug}', name: 'app_billetteries_detail')]
     public function detail(string $formType, string $slug, Request $request): Response
     {
         $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO']  . "/forms/" . $formType . "/" . $slug . "/public";
