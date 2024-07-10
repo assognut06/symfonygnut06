@@ -18,3 +18,10 @@ $grid-breakpoints: (
   xxl: 1640px
 );
 $carousel-control-color: $warning;
+$carousel-indicator-active-bg: $warning;
+$carousel-control-opacity: 0.7;
+$carousel-control-width: 40px;
+$carousel-control-height: 40px;
+$carousel-control-hover-opacity: 1;
+$carousel-control-width: 25%;
+$carousel-transition-duration: 0.5s;
