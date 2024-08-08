@@ -28,7 +28,8 @@ class HelloAssoApiService
             return json_decode($response->getBody(), true);
         } catch (\Exception $e) {
             // Gérer l'exception ou la logger
-            return $e;
+            // return $e;
+            return false;
         }
     }
     // Autres méthodes pour interagir avec l'API HelloAsso...
