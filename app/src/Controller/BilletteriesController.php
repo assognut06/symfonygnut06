@@ -25,7 +25,7 @@ class BilletteriesController extends AbstractController
     public function index(int $page): Response
     {
 
-        $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO'] . "/forms?states=&formTypes=Event&pageSize=100";
+        $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO'] . "/forms?formTypes=Event&pageIndex=1&pageSize=100";
         $data_forms = $this->helloAssoApiService->makeApiCall($url);
         $filteredData = $this->dataFilterAndPaginator->filterAndSortData($data_forms['data']);
         $paginationResult = $this->dataFilterAndPaginator->paginateData($filteredData, $page);
