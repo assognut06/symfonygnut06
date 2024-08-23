@@ -1,6 +1,6 @@
 <main role="main">
     <!-- class="container bg-warning-subtle text-emphasis-warning py-5 fs-5" -->
-    <div id="carouselExampleCaptions" class="carousel slide carousel-fade mt-5" data-bs-ride="carousel">
+    {# <div id="carouselExampleCaptions" class="carousel slide carousel-fade mt-5" data-bs-ride="carousel">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
             <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -34,6 +34,18 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
+    </div> #}
+
+    <!-- Vidéo en tant que bannière -->
+    <div class="position-relative overflow-hidden mt-5 pt-3">
+        <video autoplay muted loop class="w-100">
+            <source src="{{ asset('videos/banner.mp4') }}" type="video/mp4">
+            Votre navigateur ne supporte pas la vidéo HTML5.
+        </video>
+        <div class="d-none d-md-block position-absolute top-50 start-50 translate-middle text-center text-white">
+            <h1 class="display-4">Offrons des ailes à l'imaginaire</h1>
+            <p class="lead">L'association Gnut 06, fer de lance de l'inclusion numérique, souhaite offrir de nouvelles perspectives à celles et ceux qui en rêvent.</p>
+        </div>
     </div>
     
     <h1 class="text-center my-5 text-primary shadow-lg">Association Gnut 06</h1>
