@@ -6,6 +6,8 @@
 parameters:
     helloasso.api_client_id: '%env(APICLIENTID)%'
     helloasso.api_client_secret: '%env(APICLIENTSECRET)%'
+    mailjet.api_key: '%env(APIMAILJET)%'
+    mailjet.api_secret: '%env(APIMAILJETSECRET)%'
 services:
     App\MessageHandler\NotificationHandler:
         tags: [messenger.message_handler]
