@@ -58,4 +58,9 @@ services:
 
     App\Service\DataFilterAndSortService:
         class: App\Service\DataFilterAndSortService
+
+    App\Service\MailjetService:
+        arguments:
+            $apiKey: '%env(APIMAILJET)%'
+            $apiSecret: '%env(APIMAILJETSECRET)%'
         
