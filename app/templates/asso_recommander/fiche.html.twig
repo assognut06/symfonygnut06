@@ -52,7 +52,7 @@
 					{# Shop #}
 					{% if getEventsAssoRecommender(data.organizationSlug, "Shop") != 0 %}
 						<p>
-							<a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode,'formTypes': 'Shop'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Shop") }}
+							<a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode,'formTypes': 'Shop'}) }}">{{ getEventsAssoRecommender(data.organizationSlug, "Shop") }}
 								boutique(s)</a>
 						</p>
 					{% endif %}
