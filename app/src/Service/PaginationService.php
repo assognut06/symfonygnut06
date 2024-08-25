@@ -30,12 +30,33 @@ class PaginationService
         $data = $repository->findBy([], [], $this->limit, $start);
         $total = count($repository->findAll());
         $pages = ceil($total / $this->limit);
+        $cities = $repository->findDistinctCities();
 
         return [
             'data' => $data,
             'total' => $total,
             'pages' => $pages,
-            'current_page' => $page
+            'current_page' => $page,
+            'cities' => $cities
+        ];
+    }
+
+    public function getPaginatedDataCity(string $entityClass, int $page, array $city): array
+    {
+        $start = $this->limit * ($page - 1);
+        $repository = $this->entityManager->getRepository($entityClass);
+
+        $data = $repository->findBy($city, [], $this->limit, $start);
+        $total = count($repository->findBy($city, []));
+        $pages = ceil($total / $this->limit);
+        $cities = $repository->findDistinctCities();
+
+        return [
+            'data' => $data,
+            'total' => $total,
+            'pages' => $pages,
+            'current_page' => $page,
+            'cities' => $cities
         ];
     }
 }

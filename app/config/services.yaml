@@ -8,6 +8,7 @@ parameters:
     helloasso.api_client_secret: '%env(APICLIENTSECRET)%'
     mailjet.api_key: '%env(APIMAILJET)%'
     mailjet.api_secret: '%env(APIMAILJETSECRET)%'
+    ohme.api_key: '%env(SECRETOHME)%'
 services:
     App\MessageHandler\NotificationHandler:
         tags: [messenger.message_handler]
@@ -63,4 +64,9 @@ services:
         arguments:
             $apiKey: '%env(APIMAILJET)%'
             $apiSecret: '%env(APIMAILJETSECRET)%'
+
+    App\Service\OhmeApiService:
+        arguments:
+            $slugAsso: '%env(SLUGASSO)%'
+            $secretOhme: '%env(SECRETOHME)%'
         

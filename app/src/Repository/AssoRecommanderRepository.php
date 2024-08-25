@@ -28,6 +28,19 @@ class AssoRecommanderRepository extends ServiceEntityRepository
 
         return $qb->getSingleScalarResult() > 0;
     }
+
+    public function findDistinctCities(): array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT DISTINCT a.city
+            FROM App\Entity\AssoRecommander a
+            ORDER BY a.city ASC'
+        );
+
+        return $query->getResult();
+    }
     
     //    /**
     //     * @return AssoRecommander[] Returns an array of AssoRecommander objects
