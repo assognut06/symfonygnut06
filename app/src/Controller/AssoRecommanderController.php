@@ -37,6 +37,21 @@ class AssoRecommanderController extends AbstractController
             'total' => $pagination['total'],
             'pages' => $pagination['pages'],
             'page' => $pagination['current_page'],
+            'cities' => $pagination['cities'],
+        ]);
+    }
+
+    #[Route('/ville/{city}/{page}', name: 'app_asso_recommander_ville', defaults: ['page' => 1])]
+    public function assoRecommanderByCity(PaginationService $paginationService,string $city, int $page): Response
+    {
+        $pagination = $paginationService->getPaginatedDataCity(AssoRecommander::class, $page, ['city' => $city]);
+        return $this->render('asso_recommander/index.html.twig', [
+            'data_forms' => $pagination['data'],
+            'total' => $pagination['total'],
+            'pages' => $pagination['pages'],
+            'page' => $pagination['current_page'],
+            'city' => $city,
+            'cities' => $pagination['cities'],
         ]);
     }
 
@@ -63,6 +78,7 @@ class AssoRecommanderController extends AbstractController
             'total' => $paginationResult['totalItems'],
             'pages' => $paginationResult['totalPages'],
             'page' => $paginationResult['currentPage'],
+            'city' => $paginationResult['city'],
         ]);
     }
 
