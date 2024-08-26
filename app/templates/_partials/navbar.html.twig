@@ -10,7 +10,7 @@
 		<div class="collapse navbar-collapse fs-5" id="navbarNavDropdown">
 			<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 				<li class="nav-item">
-					<a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" aria-current="page" href="{{ path('app_home') }}" data-bs-toggle="tooltip" data-bs-placement="bottom"  title="Accueil">
+					<a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" aria-current="page" href="{{ path('app_home') }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Accueil">
 						<i class="bi bi-house"></i>
 					</a>
 				</li>
@@ -43,9 +43,9 @@
 						<li>
 							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_asso_recommander' %}active{% endif %}" href="{{ path('app_asso_recommander') }}">Associations recommandeés</a>
 						</li>
-						<li>
+						{# <li>
 							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_associationsNice' %}active{% endif %}" href="{{ path('app_associations_nice') }}">Associations à Nice</a>
-						</li>
+						</li> #}
 						<li>
 							<a class="dropdown-item" href="https://mdph.departement06.fr/informations-pratiques/accueil-du-public-5391.html" target="_blank">MDPH des Alpes-Maritimes</a>
 						</li>
@@ -114,7 +114,7 @@
 					<li class="nav-item">
 						<a class="nav-link {% if app.request.attributes.get('_route') == 'app_profil' %}active{% endif %}" href="{{ path('app_profil') }}">Profil</a>
 					</li>
-          {% if app.user and is_granted('ROLE_ADMIN') %}
+					{% if app.user and is_granted('ROLE_ADMIN') %}
 						<li class="nav-item">
 							<a class="nav-link {% if app.request.attributes.get('_route') == 'admin_dashboard' %}active{% endif %}" href="{{ path('admin_dashboard') }}">Administration</a>
 						</li>
@@ -123,7 +123,7 @@
 						<a class="nav-link" href="{{ path('app_logout')}}">Déconnexion</a>
 					</li>
 				{% else %}
-					  <li class="nav-item">
+					<li class="nav-item">
 						<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_login') ? ' active' }}" href="{{ path('app_login')}}">Connexion</a>
 					</li>
 					<li class="nav-item">
