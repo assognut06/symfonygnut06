@@ -59,4 +59,17 @@ class PaginationService
             'cities' => $cities
         ];
     }
+
+    public function getPaginatedDataSearch(string $entityClass, string $search): array
+    {
+        $repository = $this->entityManager->getRepository($entityClass);
+
+        $data = $repository->findSearch($search);
+        $total = count($data);
+
+        return [
+            'data' => $data,
+            'total' => $total,
+        ];
+    }
 }

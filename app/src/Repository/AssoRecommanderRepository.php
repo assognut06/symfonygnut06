@@ -41,6 +41,18 @@ class AssoRecommanderRepository extends ServiceEntityRepository
 
         return $query->getResult();
     }
+
+    public function findSearch(string $search): array
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT a
+            FROM App\Entity\AssoRecommander a
+            WHERE a.name LIKE :search
+            ORDER BY a.name ASC'
+        )->setParameter('search', '%' . $search . '%');
+        return $query->getResult();
+    }
     
     //    /**
     //     * @return AssoRecommander[] Returns an array of AssoRecommander objects

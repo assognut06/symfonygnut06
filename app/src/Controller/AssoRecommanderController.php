@@ -55,6 +55,19 @@ class AssoRecommanderController extends AbstractController
         ]);
     }
 
+    #[Route('/search', name: 'app_asso_recommander_search')]
+    public function search(Request $request,PaginationService $paginationService): Response
+    {
+        $query = $request->query->get('query');
+        $pagination = $paginationService->getPaginatedDataSearch(AssoRecommander::class, $query, 1);
+        return $this->render('asso_recommander/index.html.twig', [
+            'data_forms' => $pagination['data'],
+            'total' => $pagination['total'],
+             'pages' => 1,
+            'page' => 1,
+        ]);
+    }
+
     #[Route('/events/{organizationSlug}/{formTypes}/{page}', name: 'app_asso_evenements', defaults: ['page' => 1, 'formTypes' => 'Event'])]
     public function evenementsAssoRecommander(string $organizationSlug, int $page, string $formTypes, DataFilterAndPaginator $dataFilterAndPaginator): Response
     {
@@ -78,7 +91,6 @@ class AssoRecommanderController extends AbstractController
             'total' => $paginationResult['totalItems'],
             'pages' => $paginationResult['totalPages'],
             'page' => $paginationResult['currentPage'],
-            'city' => $paginationResult['city'],
         ]);
     }
 

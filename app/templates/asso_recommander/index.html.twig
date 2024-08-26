@@ -6,12 +6,38 @@
 {% block body %}
 	<div class="container pt-0">
 		<div class="mx-3">
-			<h2 class="my-5 text-primary text-center">Associations à recommander 
+			<h2 class="my-3 text-primary text-center">Associations à recommander
 				{% if app.request.attributes.get('_route') == 'app_asso_recommander_ville' %}
-					à {{ city }}
+					à
+					{{ city }}
 				{% endif %}
 			</h2>
-			<div class="border border-secondary mb-5 mx-5"></div>
+			<div class="row justify-content-center">
+				<div class="col-md-6">
+					<form method="GET" action="{{ path('app_asso_recommander_search') }}" class="mt-2">
+						<div class="mb-3">
+							<input type="text" name="query" class="form-control" placeholder="Rechercher une association">
+						</div>
+						<div class="d-grid">
+							<button type="submit" class="btn btn-primary">Rechercher</button>
+						</div>
+					</form>
+				</div>
+				{% if app.request.attributes.get('_route') == 'app_asso_recommander_search' %}
+					<div class="col-12 mt-3 text-center">
+						<a href="{{ path('app_asso_recommander') }}" class="btn btn-outline-success">Retour</a>
+					</div>
+				{% endif %}
+			</div>
+
+			{% if assos is defined %}
+				<ul>
+					{% for asso in assos %}
+						<li>{{ asso.name }}</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+			<div class="border border-secondary mb-5 mx-5 mt-4"></div>
 			<div class="row align-items-start mx-auto">
 				{% for item in data_forms %}
 					<div class="col d-flex justify-content-around my-3">
@@ -68,7 +94,7 @@
 						</div>
 					</div>
 				{% else %}
-					No data available.
+					Si vous ne trouvez pas d'association dans la base de données, il est possible que l'association n'ait pas été enregistrée correctement ou qu'elle n'ait pas mis à jour ses informations récemment.
 				{% endfor %}
 				<div class="col-12 pagination-container mt-3">
 					<nav aria-label="Admin navigation">
