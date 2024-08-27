@@ -1,0 +1,25 @@
+<div class="text-center">
+	<button class="btn btn-warning" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Choisir votre ville</button>
+</div>
+
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+	<div class="offcanvas-header">
+		<h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Choisir votre ville</h5>
+		<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+		<ul class="nav flex-column">
+			<li class="nav-item">
+				<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_asso_recommander') ? ' active' : '' }}" href="{{ path('app_asso_recommander') }}">Toutes</a>
+			</li>
+			{% for city in cities %}
+				<li class="nav-item">
+					<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_asso_recommander_ville' and app.request.get('city') == city.city) ? ' active' : '' }}" href="{{ path('app_asso_recommander_ville', {'city': city.city}) }}">{{ city.city }}</a>
+				</li>
+			{% endfor %}
+			<li class="nav-item">
+				<a class="nav-link disabled">A venir</a>
+			</li>
+		</ul>
+	</div>
+</div>
