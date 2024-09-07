@@ -21,7 +21,7 @@
 					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nos Hubs</a>
 					<ul class="dropdown-menu">
 						<li>
-							<a class="dropdown-item" href="https://framevr.io/vfl-ivc-bky" target="_blank">Notre Métavers</a>
+							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_metavers' %}active{% endif %}" href="{{ path('app_metavers')}}">Notre Métavers</a>
 						</li>
 						<li>
 						<li>
