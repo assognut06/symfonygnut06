@@ -19,6 +19,7 @@
 			<a href="{{ path('app_adhesion') }}" class="badge text-bg-primary p-4 text-uppercase">Adhérer</a>
 		</h3>
 	{% endif %}
+	{% if app.request.attributes.get('_route') != 'app_metavers' %}
 	<h3 class="text-center mb-5">
 	<a href="https://framevr.io/vfl-ivc-bky" class="btn btn-warning position-relative fs-2 text-light" target="_blank">
   Notre Métavers
@@ -28,6 +29,7 @@
   </span>
 </a>
 	</h3>
+	{% endif %}
 
 	{% if app.request.attributes.get('_route') == 'app_asso_recommander' or app.request.attributes.get('_route') == 'app_asso_recommander_ville' or app.request.attributes.get('_route') == 'app_asso_evenements' %}
 		{% include '_partials/nav_offcanvas_city.html.twig' %}
