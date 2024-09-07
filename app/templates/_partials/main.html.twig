@@ -1,14 +1,14 @@
 <main role="main">
-		<div class="position-relative overflow-hidden mt-5 pt-3"> <video autoplay muted loop class="w-100">
+	<div class="position-relative overflow-hidden mt-5 pt-3">
+		<video autoplay muted loop class="w-100">
 			<source src="{{ asset('videos/banner.mp4') }}" type="video/mp4">
 			Votre navigateur ne supporte pas la vidéo HTML5.
 		</video>
-			<div class="position-absolute top-50 start-50 translate-middle text-center text-white">
-		{# <h2 class="display-4 fs-2 fs-md-2 fs-lg-3">Offrons des ailes à l'imaginaire</h2>
-		<p class="lead fs-6 fs-md-5 fs-lg-4">L'association Gnut 06, fer de lance de l'inclusion numérique, souhaite offrir de nouvelles perspectives à celles et ceux qui en rêvent.</p> #}
+		<div
+			class="position-absolute top-50 start-50 translate-middle text-center text-white">{# <h2 class="display-4 fs-2 fs-md-2 fs-lg-3">Offrons des ailes à l'imaginaire</h2>
+						<p class="lead fs-6 fs-md-5 fs-lg-4">L'association Gnut 06, fer de lance de l'inclusion numérique, souhaite offrir de nouvelles perspectives à celles et ceux qui en rêvent.</p> #}
+		</div>
 	</div>
-	</div>
-
 
 
 	<h1 class="text-center my-5 text-primary shadow-lg">Association Gnut 06</h1>
@@ -20,15 +20,15 @@
 		</h3>
 	{% endif %}
 	{% if app.request.attributes.get('_route') != 'app_metavers' %}
-	<h3 class="text-center mb-5">
-	<a href="https://framevr.io/vfl-ivc-bky" class="btn btn-warning position-relative fs-2 text-light" target="_blank">
-  Notre Métavers
-  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-    New
-    <span class="visually-hidden">unread messages</span>
-  </span>
-</a>
-	</h3>
+		<h3 class="text-center mb-5">
+			<a href="https://framevr.io/vfl-ivc-bky" class="btn btn-warning position-relative fs-2 text-light" target="_blank">
+				Notre Métavers
+				<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+					New
+					<span class="visually-hidden">unread messages</span>
+				</span>
+			</a>
+		</h3>
 	{% endif %}
 
 	{% if app.request.attributes.get('_route') == 'app_asso_recommander' or app.request.attributes.get('_route') == 'app_asso_recommander_ville' or app.request.attributes.get('_route') == 'app_asso_evenements' %}
