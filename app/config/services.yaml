@@ -69,4 +69,8 @@ services:
         arguments:
             $slugAsso: '%env(SLUGASSO)%'
             $secretOhme: '%env(SECRETOHME)%'
+
+    App\Service\ApiFrameVrService:
+        arguments:
+            $apiKey: '%env(APIFRAMEVR)%'
         

@@ -6,7 +6,7 @@
 		</video>
 		<div
 			class="position-absolute top-50 start-50 translate-middle text-center text-white">{# <h2 class="display-4 fs-2 fs-md-2 fs-lg-3">Offrons des ailes à l'imaginaire</h2>
-						<p class="lead fs-6 fs-md-5 fs-lg-4">L'association Gnut 06, fer de lance de l'inclusion numérique, souhaite offrir de nouvelles perspectives à celles et ceux qui en rêvent.</p> #}
+										<p class="lead fs-6 fs-md-5 fs-lg-4">L'association Gnut 06, fer de lance de l'inclusion numérique, souhaite offrir de nouvelles perspectives à celles et ceux qui en rêvent.</p> #}
 		</div>
 	</div>
 
@@ -31,9 +31,13 @@
 		</h3>
 	{% endif %}
 
-	{% if app.request.attributes.get('_route') == 'app_asso_recommander' or app.request.attributes.get('_route') == 'app_asso_recommander_ville' or app.request.attributes.get('_route') == 'app_asso_evenements' %}
+	{% if app.request.attributes.get('_route') in ['app_asso_recommander', 'app_asso_recommander_ville', 'app_asso_evenements'] and cities is defined %}
 		{% include '_partials/nav_offcanvas_city.html.twig' %}
 	{% endif %}
+
+	{# {% if app.request.attributes.get('_route') == 'app_asso_recommander' or app.request.attributes.get('_route') == 'app_asso_recommander_ville' or app.request.attributes.get('_route') == 'app_asso_evenements' %}
+			{% include '_partials/nav_offcanvas_city.html.twig' %}
+		{% endif %} #}
 	{% for label, flashes in app.session.flashbag.all() %}
 		{% for flash in flashes %}
 			{% set alertClass = 'info' %}

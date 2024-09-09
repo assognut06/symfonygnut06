@@ -42,8 +42,8 @@
 							{% if item.description is defined and item.description %}
 								<p class="text-justify">{{ item.description|slice(0, 200) }}...
 									<br>
-									<a href="{{ path('app_asso_recommander_detail', {'organizationSlug': item.organizationSlug, 'formType': item.formType,'formSlug': item.formSlug}) }}">
-										En savoir +
+									<a class="icon-link icon-link-hover" href="{{ path('app_asso_recommander_detail', {'organizationSlug': item.organizationSlug, 'formType': item.formType,'formSlug': item.formSlug}) }}">
+										En savoir +<i class="bi bi-arrow-right" aria-hidden="true"><use xlink:href="#arrow-right"></use></i>
 									</a>
 								</p>
 							{% endif %}
