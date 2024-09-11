@@ -6,11 +6,12 @@
  * which should already be in your base.html.twig.
  */
 import './styles/app.scss';
-const $ = require('jquery');
+import $ from 'jquery';
 // this "modifies" the jquery module: adding behavior to it
 // the bootstrap module doesn't export/return anything
 import 'bootstrap';
-require('bootstrap-icons/font/bootstrap-icons.css');
+import 'bootstrap-icons/font/bootstrap-icons.css';
+// require('bootstrap-icons/font/bootstrap-icons.css');
 
 jQuery(function($) {
     console.log('ready');
