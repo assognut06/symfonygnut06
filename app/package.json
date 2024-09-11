@@ -18,7 +18,7 @@
     "@babel/core": "^7.24.7",
     "@babel/preset-env": "^7.24.7",
     "@popperjs/core": "^2.11.8",
-    "@symfony/webpack-encore": "^4.6.1",
+    "@symfony/webpack-encore": "^4.7.0",
     "file-loader": "^6.2.0",
     "jquery": "^3.7.1",
     "sass": "^1.77.6",
