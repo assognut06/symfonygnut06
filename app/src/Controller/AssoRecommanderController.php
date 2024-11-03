@@ -36,7 +36,7 @@ class AssoRecommanderController extends AbstractController
     {
         $pagination = $paginationService->getPaginatedData(AssoRecommander::class, $page);
 
-        if(!$pagination)
+        if(!$pagination['data'] === false)
             $this->spinnerService->showSpinner();
         else 
             $this->spinnerService->hideSpinner();
