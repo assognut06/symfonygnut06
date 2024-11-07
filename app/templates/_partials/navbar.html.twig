@@ -23,7 +23,7 @@
 						<li>
 							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_metavers' %}active{% endif %}" href="{{ path('app_metavers')}}">Notre Métavers</a>
 						</li>
-						<li>
+						<li></li>
 						<li>
 							<a class="dropdown-item" href="https://gnut06.sharepoint.com/sites/Gnut06" target="_blank">Le Hub Gnut 06 sur notre portail Microsoft</a>
 						</li>
@@ -48,8 +48,8 @@
 							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_asso_recommander' %}active{% endif %}" href="{{ path('app_asso_recommander') }}">Associations recommandeés</a>
 						</li>
 						{# <li>
-							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_associationsNice' %}active{% endif %}" href="{{ path('app_associations_nice') }}">Associations à Nice</a>
-						</li> #}
+													<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_associationsNice' %}active{% endif %}" href="{{ path('app_associations_nice') }}">Associations à Nice</a>
+												</li> #}
 						<li>
 							<a class="dropdown-item" href="https://mdph.departement06.fr/informations-pratiques/accueil-du-public-5391.html" target="_blank">MDPH des Alpes-Maritimes</a>
 						</li>
@@ -92,7 +92,7 @@
 					<a class="nav-link" href="https://gnut06-my.sharepoint.com/:p:/g/personal/gnut_gnut06_org/EWF1GZ9xibdFlb59cTLDpt4B1DtbBnk526A6JjOu-0dP0A?rtime=0eCPW1Mr3Eg" target="_blank">Présentation</a>
 				</li>
 				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Soutenir GNUT 06</a>
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nous Soutenir</a>
 					<ul class="dropdown-menu">
 						<li>
 							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_adhesion' %}active{% endif %}" href="{{ path('app_adhesion') }}">Adhésion</a>
@@ -111,29 +111,37 @@
 				<li class="nav-item">
 					<a class="nav-link {% if app.request.attributes.get('_route') == 'app_contact' %}active{% endif %}" href="{{ path('app_contact') }}">Contact</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link {% if app.request.attributes.get('_route') == 'app_aPropos' %}active{% endif %}" href="{{ path('app_a_propos') }}">A propos</a>
-				</li>
-				{% if app.user %}
-					<li class="nav-item">
-						<a class="nav-link {% if app.request.attributes.get('_route') == 'app_profil' %}active{% endif %}" href="{{ path('app_profil') }}">Profil</a>
-					</li>
-					{% if app.user and is_granted('ROLE_ADMIN') %}
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Gnut 06</a>
+					<ul class="dropdown-menu">
 						<li class="nav-item">
-							<a class="nav-link {% if app.request.attributes.get('_route') == 'admin_dashboard' %}active{% endif %}" href="{{ path('admin_dashboard') }}">Administration</a>
+							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_a_propos' %}active{% endif %}" href="{{ path('app_a_propos') }}">A propos</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_presse' %}active{% endif %}" href="{{ path('app_presse') }}">Presse</a>
+						</li>
+					</ul>
+					{% if app.user %}
+						<li class="nav-item">
+							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_profil' %}active{% endif %}" href="{{ path('app_profil') }}">Profil</a>
+						</li>
+						{% if app.user and is_granted('ROLE_ADMIN') %}
+							<li class="nav-item">
+								<a class="nav-link {% if app.request.attributes.get('_route') == 'admin_dashboard' %}active{% endif %}" href="{{ path('admin_dashboard') }}">Administration</a>
+							</li>
+						{% endif %}
+						<li class="nav-item">
+							<a class="nav-link" href="{{ path('app_logout')}}">Déconnexion</a>
+						</li>
+					{% else %}
+						<li class="nav-item">
+							<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_login') ? ' active' }}" href="{{ path('app_login')}}">Connexion</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_register') ? ' active' }}" href="{{ path('app_register')}}">Inscription</a>
 						</li>
 					{% endif %}
-					<li class="nav-item">
-						<a class="nav-link" href="{{ path('app_logout')}}">Déconnexion</a>
-					</li>
-				{% else %}
-					<li class="nav-item">
-						<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_login') ? ' active' }}" href="{{ path('app_login')}}">Connexion</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_register') ? ' active' }}" href="{{ path('app_register')}}">Inscription</a>
-					</li>
-				{% endif %}
+				</li>
 			</ul>
 		</div>
 	</div>
