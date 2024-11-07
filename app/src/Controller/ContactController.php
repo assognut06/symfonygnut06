@@ -1,13 +1,15 @@
 <?php
+// src/Controller/ContactController.php
 
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use GuzzleHttp\Client;
 
 class ContactController extends AbstractController
 {
@@ -24,6 +26,7 @@ class ContactController extends AbstractController
             $email = $request->request->get('email');
             $tel = $request->request->get('tel');
             $message = $request->request->get('message');
+            $recaptchaResponse = $request->request->get('g-recaptcha-response');
 
             // Validation de l'adresse email
             $emailConstraint = new EmailConstraint();
@@ -38,11 +41,27 @@ class ContactController extends AbstractController
                 }
             }
 
+            // Vérifier la réponse reCAPTCHA
+            $client = new Client();
+            $response = $client->request('POST', 'https://www.google.com/recaptcha/api/siteverify', [
+                'form_params' => [
+                    'secret' => $_ENV['NOCAPTCHA_SECRET'],
+                    'response' => $recaptchaResponse,
+                    'remoteip' => $request->getClientIp()
+                ]
+            ]);
+
+            $responseData = json_decode($response->getBody());
+
+            if (!$responseData->success || $responseData->score < 0.5) {
+                $errors[] = 'La vérification reCAPTCHA a échoué. Veuillez réessayer.';
+            }
+
             if (empty($errors)) {
                 // Construire le message
                 $body = "Prénom : $firstName\nNom : $lastName\nEmail : $email\nTéléphone : $tel\nMessage : $message";
                 $subject = 'Message du site Gnut06.org';
-                $to = 'gnut@gnut.eu';
+                $to = 'gnut@gnut06.org';
                 $headers = 'From: ' . $email . "\r\n" .
                     'Reply-To: ' . $email . "\r\n" .
                     'Content-Type: text/plain; charset=UTF-8' . "\r\n" .
@@ -61,6 +80,7 @@ class ContactController extends AbstractController
         return $this->render('contact/index.html.twig', [
             'message_envoye' => $messageEnvoye,
             'errors' => $errors,
+            'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
         ]);
     }
 }

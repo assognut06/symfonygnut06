@@ -5,7 +5,7 @@
 {% block body %}
 <div class="container pt-2">
     <div class="row py-2 mx-5">
-        <h1 class="text-center mb-5"><i class="bi bi-person-lines-fill me-3"></i>Une question contactez-nous !</h1>
+        <h1 class="text-center mb-5 text-primary"><i class="bi bi-person-lines-fill me-3"></i>Une question contactez-nous !</h1>
         
         {% if message_envoye %}
             <p class="alert alert-success">Votre message a bien été envoyé.</p>
@@ -30,6 +30,9 @@
                     <textarea name="message" rows="5" class="form-control" placeholder="Entrer ici votre message*" aria-label="message" required></textarea>
                 </div>
                 <div class="col-12 text-center">
+                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                </div>
+                <div class="col-12 text-center">
                     <button type="submit" name="envoyer" value="Envoyer" class="btn btn-primary">Envoyer votre message</button>
                 </div>
             </form>
@@ -39,5 +42,12 @@
         </div>
     </div>
 </div>
+<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+<script>
+    grecaptcha.ready(function() {
+        grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
+            document.getElementById('g-recaptcha-response').value = token;
+        });
+    });
+</script>
 {% endblock %}
-
