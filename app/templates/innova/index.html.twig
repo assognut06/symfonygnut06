@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}INN^OVA et Gnut 06
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-5">
+		<h2 class="text-primary">Découvrez la puissance de l’intelligence artificielle pour votre image de marque !</h2>
+		<p>Nous vous proposons la conception de vidéos de présentation innovantes et captivantes, créées grâce aux dernières avancées en intelligence artificielle. Nos services incluent :</p>
+		<ul>
+			<li>
+				<strong>Analyse de votre marque :</strong>
+				Compréhension approfondie de votre identité et de vos valeurs pour une vidéo parfaitement alignée avec votre image.</li>
+			<li>
+				<strong>Création de contenu personnalisé :</strong>
+				Utilisation de l’IA pour générer des scripts et des visuels uniques, adaptés à vos besoins spécifiques.</li>
+			<li>
+				<strong>Montage professionnel :</strong>
+				Intégration harmonieuse de tous les éléments pour une vidéo fluide et engageante.</li>
+			<li>
+				<strong>Optimisation pour les plateformes :</strong>
+				Adaptation de la vidéo pour une diffusion optimale sur les réseaux sociaux, sites web et autres canaux de communication.</li>
+		</ul>
+		<div class="text-center">
+			<video controls autoplay loop muted style="width: 100%; height: auto;">
+				<source src="{{ asset('videos/innova/INN^OVA MISSION.mp4') }}" type="video/mp4">
+				Your browser does not support the video tag.
+			</video>
+		</div>
+		<p>Avec notre expertise en intelligence artificielle, nous transformons votre vision en une réalité visuelle impressionnante. Faites passer votre message de manière percutante et moderne !</p>
+		<p>
+			<strong>Commandez-nous dès aujourd’hui pour donner vie à votre projet vidéo.</strong>
+		</p>
+	</div>
+	<div class="my-5">
+		<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="https://www.helloasso.com/associations/gnut-06/boutiques/innova/widget" style="width: 100%; height: 1000px; border: none;"></iframe>
+	</div>
+{% endblock %}
