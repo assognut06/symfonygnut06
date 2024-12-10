@@ -15,7 +15,7 @@ class EmailController extends AbstractController
     public function sendEmail(MailerInterface $mailer): Response
     {
         $email = (new Email())
-            ->from('gnut@gnut.eu') // Remplacez par votre adresse email d'envoi
+            ->from('gnut@gnut06.org') // Remplacez par votre adresse email d'envoi
             ->to('gnut@gnut.eu') // Remplacez par l'adresse email du destinataire
             ->subject('Test d\'envoi d\'email avec Symfony Mailer')
             ->text('Ceci est un test d\'envoi d\'email.')
