@@ -7,6 +7,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use GuzzleHttp\Client;
@@ -14,7 +16,7 @@ use GuzzleHttp\Client;
 class ContactController extends AbstractController
 {
     #[Route('/contact', name: 'app_contact')]
-    public function contact(Request $request, ValidatorInterface $validator): Response
+    public function contact(Request $request, ValidatorInterface $validator, MailerInterface $mailer): Response
     {
         $messageEnvoye = false;
         $errors = [];
@@ -52,28 +54,34 @@ class ContactController extends AbstractController
             ]);
 
             $responseData = json_decode($response->getBody());
+            
+            if ($_ENV['APP_ENV'] === 'dev') {
+                $responseData->score = 0.9;
+                $responseData->success = true;
+            }
 
             if (!$responseData->success || $responseData->score < 0.5) {
                 $errors[] = 'La vérification reCAPTCHA a échoué. Veuillez réessayer.';
             }
 
             if (empty($errors)) {
-                // Construire le message
-                $body = "Prénom : $firstName\nNom : $lastName\nEmail : $email\nTéléphone : $tel\nMessage : $message";
-                $subject = 'Message du site Gnut06.org';
-                $to = 'gnut@gnut06.org';
-                $headers = 'From: ' . $email . "\r\n" .
-                    'Reply-To: ' . $email . "\r\n" .
-                    'Content-Type: text/plain; charset=UTF-8' . "\r\n" .
-                    'Content-Transfer-Encoding: 8bit' . "\r\n" .
-                    'X-Mailer: PHP/' . phpversion();
+                 // Construire le message
+                 $body = "Prénom : $firstName\nNom : $lastName\nEmail : $email\nTéléphone : $tel\nMessage : $message";
 
-                // Envoyer l'email
-                if (mail($to, $subject, $body, $headers)) {
-                    $messageEnvoye = true;
-                } else {
-                    $errors[] = "L'envoi de l'email a échoué. Veuillez réessayer plus tard.";
-                }
+                 // Créer l'email
+                 $emailMessage = (new Email())
+                     ->from($email)
+                     ->to('gnut@gnut06.org')
+                     ->subject('Message du site Gnut06.org')
+                     ->text($body);
+ 
+                 // Envoyer l'email
+                 try {
+                     $mailer->send($emailMessage);
+                     $messageEnvoye = true;
+                 } catch (\Exception $e) {
+                     $errors[] = "L'envoi de l'email a échoué. Veuillez réessayer plus tard.";
+                 }
             }
         }
 

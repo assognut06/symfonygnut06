@@ -20,13 +20,16 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use GuzzleHttp\Client;
 
 class RegistrationController extends AbstractController
 {
 
-    public function __construct(private EmailVerifier $emailVerifier, private LoggerInterface $logger, 
-    private MessageBusInterface $bus, )
-    {
+    public function __construct(
+        private EmailVerifier $emailVerifier,
+        private LoggerInterface $logger,
+        private MessageBusInterface $bus,
+    ) {
         $this->emailVerifier = $emailVerifier;
         $this->logger = $logger;
         $this->bus = $bus;
@@ -40,33 +43,63 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
+            $recaptchaResponse = $request->request->get('g-recaptcha-response');
+            // Vérifier la réponse reCAPTCHA
+            $client = new Client();
+            $response = $client->request('POST', 'https://www.google.com/recaptcha/api/siteverify', [
+                'form_params' => [
+                    'secret' => $_ENV['NOCAPTCHA_SECRET'],
+                    'response' => $recaptchaResponse,
+                    'remoteip' => $request->getClientIp()
+                ]
+            ]);
+
+            $responseData = json_decode($response->getBody());
+
+            if ($_ENV['APP_ENV'] === 'dev') {
+                $responseData->score = 0.9;
+                $responseData->success = true;
+            }
+
+            if (!$responseData->success || $responseData->score < 0.5) {
+                $this->addFlash('danger', 'La vérification reCAPTCHA a échoué. Veuillez réessayer.');
+                return $this->render('registration/register.html.twig', [
+                    'registrationForm' => $form,
+                    'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
+                ]);
+            } else {
+                // encode the plain password
+                $user->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $user,
+                        $form->get('plainPassword')->getData()
+                    )
+                );
+
+
+                $entityManager->persist($user);
+                $entityManager->flush();
+                $sms = new Notification("L'inscription à été effectuée" . $user->getUserIdentifier());
+                $this->bus->dispatch($sms);
+                // generate a signed url and email it to the user
+                $this->emailVerifier->sendEmailConfirmation(
+                    'app_verify_email',
                     $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+                    (new TemplatedEmail())
+                        ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
+                        ->to($user->getEmail())
+                        ->subject('Veuillez confirmer votre adresse e-mail sur Gnut 06.')
+                        ->htmlTemplate('registration/confirmation_email.html.twig')
+                );
 
-            $entityManager->persist($user);
-            $entityManager->flush();
-            $sms = new Notification("L'inscription à été effectuée" . $user->getUserIdentifier());
-            $this->bus->dispatch($sms);
-            // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
-                    ->to($user->getEmail())
-                    ->subject('Veuillez confirmer votre adresse e-mail sur Gnut 06.')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
-
-            $this->addFlash('danger', 'Un email de confirmation a été envoyé à votre adresse email. Veuillez consulter votre boîte mail pour confirmer votre inscription.');
-            return $security->login($user, 'form_login', 'main');
+                $this->addFlash('danger', 'Un email de confirmation a été envoyé à votre adresse email. Veuillez consulter votre boîte mail pour confirmer votre inscription.');
+                return $security->login($user, 'form_login', 'main');
+            }
         }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
+            'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
         ]);
     }
 
@@ -117,16 +150,17 @@ class RegistrationController extends AbstractController
         }
 
         // generate a signed url and email it to the user
-        $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
-                    ->to($user->getEmail())
-                    ->subject('Veuillez confirmer votre adresse e-mail sur Gnut 06.')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
-            $this->addFlash('danger', 'Un email de confirmation a été envoyé à votre adresse email. Veuillez consulter votre boîte mail pour confirmer votre inscription.');
+        $this->emailVerifier->sendEmailConfirmation(
+            'app_verify_email',
+            $user,
+            (new TemplatedEmail())
+                ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
+                ->to($user->getEmail())
+                ->subject('Veuillez confirmer votre adresse e-mail sur Gnut 06.')
+                ->htmlTemplate('registration/confirmation_email.html.twig')
+        );
+        $this->addFlash('danger', 'Un email de confirmation a été envoyé à votre adresse email. Veuillez consulter votre boîte mail pour confirmer votre inscription.');
 
-            return $this->redirectToRoute('app_home');
+        return $this->redirectToRoute('app_home');
     }
-           
 }
