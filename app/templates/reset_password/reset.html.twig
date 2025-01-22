@@ -1,26 +1,52 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Réinitialiser votre mot de passe
-{% endblock %}
+{% block title %}Réinitialiser votre mot de passe{% endblock %}
 
 {% block body %}
-	<div class="container mt-5">
-		<div class="row justify-content-center">
-			<div class="col-md-6">
-				<h1 class="text-center mb-4">Réinitialiser votre mot de passe</h1>
-				<div class="card p-4 shadow">
-					{{ form_start(resetForm, {'attr': {'class': 'g-3', 'novalidate': true}}) }}
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    {% for flash_success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+    {% endfor %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="text-center mb-4 text-primary">Réinitialiser votre mot de passe</h2>
+                <div class="card p-4 shadow">
+                    {{ form_errors(resetForm) }}
+                    {{ form_start(resetForm, {'attr': {'class': 'g-3'}}) }}
 					<div class="mb-3">
-						{{ form_label(resetForm.plainPassword, 'Nouveau mot de passe', {'label_attr': {'class': 'form-label'}}) }}
-						{{ form_widget(resetForm.plainPassword, {'attr': {'class': 'form-control', 'placeholder': 'Entrez votre nouveau mot de passe'}}) }}
-						{{ form_errors(resetForm.plainPassword, {'attr': {'class': 'form-text text-danger'}}) }}
+						{{ form_row(resetForm.plainPassword.first, {
+                            'label': 'Mot de passe',
+                            'attr': {'class': 'form-control'}
+                        }) }}
 					</div>
-					<div class="text-center">
-						<button type="submit" class="btn btn-primary">Réinitialiser le mot de passe</button>
+					<div class="mb-3">
+						{{ form_row(resetForm.plainPassword.second, {
+                            'label': 'Confirmez le mot de passe',
+                            'attr': {'class': 'form-control'}
+                        }) }}
 					</div>
-					{{ form_end(resetForm) }}
-				</div>
-			</div>
-		</div>
-	</div>
+					{# recaptcha input #}
+					<div class="col-12 text-center">
+						<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+					</div>
+					{# ------ #}
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Réinitialiser le mot de passe</button>
+                    </div>
+                    {{ form_end(resetForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+	<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+	 <script>
+		    grecaptcha.ready(function() {
+		        grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
+		            document.getElementById('g-recaptcha-response').value = token;
+		        });
+		    });
+		</script>
 {% endblock %}

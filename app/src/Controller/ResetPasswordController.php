@@ -19,6 +19,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
+use GuzzleHttp\Client;
 
 #[Route('/reset-password')]
 class ResetPasswordController extends AbstractController
@@ -28,8 +29,7 @@ class ResetPasswordController extends AbstractController
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
         private EntityManagerInterface $entityManager
-    ) {
-    }
+    ) {}
 
     /**
      * Display & process form to request a password reset.
@@ -108,26 +108,56 @@ class ResetPasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             // A password reset token should be used only once, remove it.
             $this->resetPasswordHelper->removeResetRequest($token);
 
-            // Encode(hash) the plain password, and set it.
-            $encodedPassword = $passwordHasher->hashPassword(
-                $user,
-                $form->get('plainPassword')->getData()
-            );
+            $recaptchaResponse = $request->request->get('g-recaptcha-response');
+            // Vérifier la réponse reCAPTCHA
+            $client = new Client();
+            $response = $client->request('POST', 'https://www.google.com/recaptcha/api/siteverify', [
+                'form_params' => [
+                    'secret' => $_ENV['NOCAPTCHA_SECRET'],
+                    'response' => $recaptchaResponse,
+                    'remoteip' => $request->getClientIp()
+                ]
+            ]);
 
-            $user->setPassword($encodedPassword);
-            $this->entityManager->flush();
+            $responseData = json_decode($response->getBody());
 
-            // The session is cleaned up after the password has been changed.
-            $this->cleanSessionAfterReset();
+            if ($_ENV['APP_ENV'] === 'dev') {
+                $responseData->score = 0.9;
+                $responseData->success = true;
+            }
 
-            return $this->redirectToRoute('app_login');
+            if (!$responseData->success || $responseData->score < 0.5) {
+                $this->addFlash('danger', 'La vérification reCAPTCHA a échoué. Veuillez réessayer.');
+                return $this->render('reset_password/reset.html.twig', [
+                    'resetForm' => $form,
+                    'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
+                ]);
+            } else {
+                // Encode(hash) the plain password, and set it.
+                $encodedPassword = $passwordHasher->hashPassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                );
+
+                $user->setPassword($encodedPassword);
+                $this->entityManager->flush();
+
+                // The session is cleaned up after the password has been changed.
+                $this->cleanSessionAfterReset();
+
+                $this->addFlash('success', 'Votre mot de passe à étè modifier vous pouvez vous connecter avec.');
+
+                return $this->redirectToRoute('app_login');
+            }
         }
 
         return $this->render('reset_password/reset.html.twig', [
             'resetForm' => $form,
+            'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
         ]);
     }
 
@@ -165,8 +195,7 @@ class ResetPasswordController extends AbstractController
             ->htmlTemplate('reset_password/email.html.twig')
             ->context([
                 'resetToken' => $resetToken,
-            ])
-        ;
+            ]);
 
         $mailer->send($email);
 

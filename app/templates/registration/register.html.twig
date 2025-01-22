@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register
+{% block title %}S'enregistrer
 {% endblock %}
 
 {% block body %}
@@ -31,10 +31,15 @@
 					</div>
 					<div class="mb-3 form-check">
 						{{ form_row(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
-							<label for="{{ registrationForm.agreeTerms.vars.id }}" class="form-check-label">
-							{# {{ registrationForm.agreeTerms.vars.label }} #}
+						<label
+							for="{{ registrationForm.agreeTerms.vars.id }}" class="form-check-label">{# {{ registrationForm.agreeTerms.vars.label }} #}
 						</label>
 					</div>
+					{# recaptcha input #}
+					<div class="col-12 text-center">
+						<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+					</div>
+					{# ------- #}
 					<div class="text-center">
 						<button type="submit" class="btn btn-primary">S'enregistrer</button>
 					</div>
@@ -43,4 +48,12 @@
 			</div>
 		</div>
 	</div>
+	 <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+	 <script>
+		    grecaptcha.ready(function() {
+		        grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
+		            document.getElementById('g-recaptcha-response').value = token;
+		        });
+		    });
+		</script>
 {% endblock %}
