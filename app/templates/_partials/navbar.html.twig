@@ -121,6 +121,9 @@
 							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_a_propos' %}active{% endif %}" href="{{ path('app_a_propos') }}">A propos</a>
 						</li>
 						<li class="nav-item">
+							<a class="nav-link" href="https://consulting.gnut06.org" target="_blank">Digital consulting</a>
+						</li>
+						<li class="nav-item">
 							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_presse' %}active{% endif %}" href="{{ path('app_presse') }}">Presse</a>
 						</li>
 						<li class="nav-item">
@@ -129,9 +132,9 @@
 						<li class="nav-item">
 							<a class="nav-link" href="https://gnut06-my.sharepoint.com/:p:/g/personal/gnut_gnut06_org/EfyFOJO-1cxCkWKTgRVERswB35uK2tR_dApRhRAC6_40_Q?e=Sbzd2f" target="_blank">Rapport Financier 2024</a>
 						</li>
-						<li class="nav-item">
+						{# <li class="nav-item">
 							<a class="nav-link" href="https://gnut06-my.sharepoint.com/:p:/g/personal/gnut_gnut06_org/EbRDBWWlvnpHpXtsbJzwBmMBpmWKHSrmAYqPdRW92EJ8mQ?e=xgDynm" target="_blank">Budget 2025</a>
-						</li>
+						</li> #}
 					</ul>
 					{% if app.user %}
 						<li class="nav-item">
