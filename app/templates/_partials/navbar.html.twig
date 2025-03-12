@@ -47,6 +47,9 @@
 						<li>
 							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_asso_recommander' %}active{% endif %}" href="{{ path('app_asso_recommander') }}">Associations recommandeés</a>
 						</li>
+						<li>
+							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_agent_handicap' %}active{% endif %}" href="{{ path('app_agent_handicap') }}">Agent AI handicap</a>
+						</li>
 						{# <li>
 													<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_associationsNice' %}active{% endif %}" href="{{ path('app_associations_nice') }}">Associations à Nice</a>
 												</li> #}

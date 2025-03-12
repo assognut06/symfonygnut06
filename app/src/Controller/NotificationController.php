@@ -62,7 +62,7 @@ class NotificationController extends AbstractController
             return new Response('OK');
 
         }  catch (\Exception $e) {
-            return "Erreur callBack: " . $e;
+            return new Response('Erreur callBack: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
 
         }
     }
