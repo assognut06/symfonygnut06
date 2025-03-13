@@ -81,18 +81,24 @@ class RegistrationController extends AbstractController
                 $entityManager->flush();
                 $sms = new Notification("L'inscription à été effectuée" . $user->getUserIdentifier());
                 $this->bus->dispatch($sms);
-                // generate a signed url and email it to the user
-                $this->emailVerifier->sendEmailConfirmation(
-                    'app_verify_email',
-                    $user,
-                    (new TemplatedEmail())
-                        ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
-                        ->to($user->getEmail())
-                        ->subject('Veuillez confirmer votre adresse e-mail sur Gnut 06.')
-                        ->htmlTemplate('registration/confirmation_email.html.twig')
-                );
+                try {
+                    // generate a signed url and email it to the user
+                    $this->emailVerifier->sendEmailConfirmation(
+                        'app_verify_email',
+                        $user,
+                        (new TemplatedEmail())
+                            ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
+                            ->to($user->getEmail())
+                            ->subject('Veuillez confirmer votre adresse e-mail sur Gnut 06.')
+                            ->htmlTemplate('registration/confirmation_email.html.twig')
+                    );
 
-                $this->addFlash('danger', 'Un email de confirmation a été envoyé à votre adresse email. Veuillez consulter votre boîte mail pour confirmer votre inscription.');
+                    $this->addFlash('danger', 'Un email de confirmation a été envoyé à votre adresse email. Veuillez consulter votre boîte mail pour confirmer votre inscription.');
+                } catch (\Exception $e) {
+                    $this->logger->error('Erreur lors de l\'envoi de l\'email de confirmation d\'inscription', ['exception' => $e]);
+                    $this->addFlash('danger', 'Un problème est survenu lors de l\'envoi de l\'email de confirmation d\'inscription. Veuillez réessayer.');
+                }
+
                 return $security->login($user, 'form_login', 'main');
             }
         }
