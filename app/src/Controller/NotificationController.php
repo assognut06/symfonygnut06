@@ -53,7 +53,7 @@ class NotificationController extends AbstractController
             $formattedData = print_r($data, true);
             $email = (new Email())
                 ->from('gnut@gnut06.org')
-                ->to('gnut@gnut.eu')
+                ->to('gnut@gnut06.org')
                 ->subject('Notification Data')
                 ->text('Voici les données de la notification : ' . $formattedData);
     
