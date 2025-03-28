@@ -6,6 +6,10 @@
   "directories": {
     "test": "tests"
   },
+  "engines": {
+    "node": "^20.17.0 || >=22.9.0",
+    "npm": ">=11.2.0"
+  },
   "dependencies": {
     "bootstrap-icons": "^1.11.3",
     "node-fs-extra": "^0.8.2",

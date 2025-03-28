@@ -59,9 +59,13 @@ RUN apt-get update && apt-get install -y \
 software-properties-common \
 npm
 
-RUN npm install npm@latest -g && \
-npm install n -g && \
-n latest
+# Install Node.js and npm
+RUN npm install -g n
+RUN n 20.17.0  # Install a compatible version of Node.js
+RUN npm install -g npm@11.2.0
+#RUN npm install npm@latest -g && \
+#npm install n -g && \
+#n latest
 
 # Configuration de Xdebug
 COPY ./config/xdebug.ini /etc/php/8.2/apache2/conf.d/30-xdebug.ini
