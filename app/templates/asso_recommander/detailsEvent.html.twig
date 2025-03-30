@@ -1,0 +1,185 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ data_actu.title }}
+{% endblock %}
+
+{% block body %}
+	<div class="container pt-0">
+		<div class="mx-3">
+			{% if data_actu.banner is defined and data_actu.banner.publicUrl %}
+				<img src="{{ data_actu.banner.publicUrl }}" class="card-img-top" alt="Bannière de {{ data_actu.title }}">
+			{% endif %}
+			<h2 class="my-5 text-primary text-center">{{ data_actu.title }}</h2>
+			<div class="border border-secondary mb-5 mx-5 "></div>
+			<div class="row justify-content-center">
+				{% if data_actu.logo is defined and data_actu.logo.publicUrl %}
+					<div class="col-12 col-lg-4 text-center my-5">
+						<img src="{{ data_actu.logo.publicUrl }}" class="card-img-top logoAsso shadow-lg" alt="Logo de {{ data_actu.title }}">
+					</div>
+				{% endif %}
+				{% if data_actu.description is defined and data_actu.description %}
+					<div class="col-12 text-center">
+						<p class="fs-4">{{ data_actu.description|nl2br }}</p>
+					</div>
+				{% endif %}
+				{% if data_actu.saleEndDate is defined and data_actu.saleEndDate %}
+					<div class="col-12 text-center">
+						<div class="alert alert-danger text-center mx-5 shadow-lg rounded-pill" role="alert">
+							<p>Date limite de réservation :
+								{{ data_actu.saleEndDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}</p>
+							{% if data_actu.saleEndDate > "now"|date('Y-m-d') %}
+								{% set endDate = data_actu.saleEndDate|date('Y-m-d') %}
+								{% set now = "now"|date('Y-m-d') %}
+								{% if endDate > now %}
+									{% set interval = date(endDate).diff(date(now)) %}
+									<strong>Expire dans
+										{{ interval.days }}
+										jours.</strong>
+								{% endif %}
+							{% endif %}
+						</div>
+					</div>
+				{% endif %}
+
+				{% if data_actu.endDate is defined and data_actu.endDate %}
+					<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center">
+						{% if data_actu.place is defined and data_actu.place %}
+							<h5>{{ data_actu.place.name }}</h5>
+							<div>
+								<p>Adresse :
+									{{ data_actu.place.address }}<br>{{ data_actu.place.zipCode }}
+									{{ data_actu.place.city }}
+								</p>
+							</div>
+						{% endif %}
+					</div>
+					<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center">
+						<div class="alert alert-danger text-center mx-5 mb-5 mt-2 shadow-lg rounded-pill" role="alert">
+							{% set endDate = data_actu.endDate|date('Y-m-d') %}
+							{% set now = "now"|date('Y-m-d') %}
+							{% if endDate > now %}
+								{% set interval = date(endDate).diff(date(now)) %}
+								<strong>Expire dans
+									{{ interval.days }}
+									jours.</strong>
+							{% endif %}
+						</div>
+						<div class="alert alert-success text-center mx-5 mb-5 shadow-lg rounded-pill" role="alert">
+							{% if data_actu.startDate is defined and data_actu.startDate %}
+								Débute le
+								{{ data_actu.startDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}<br>
+							{% endif %}
+							Fini le
+							{{ data_actu.endDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}
+						</div>
+					</div>
+
+					<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center mt-3">
+						{% if data_actu.place is defined and data_actu.place %}
+							<iframe width="100%" height="450" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}&q={{ data_actu.place.name|url_encode }},{{ data_actu.place.address|url_encode }}+{{ data_actu.place.zipCode }}+{{ data_actu.place.city|url_encode }},{{ data_actu.place.country }}"></iframe>
+						{% endif %}
+					</div>
+
+				{% endif %}
+				{% if data_actu.tiers is defined and data_actu.tiers %}
+					<div class="col-12">
+						<table class="table table-success table-striped mt-5">
+							<thead>
+								<tr>
+									<th scope="col">Formule</th>
+									<th scope="col">Description</th>
+									<th scope="col">Tarif</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for tier in data_actu.tiers %}
+									<tr>
+										<th scope="row">
+											{% if tier.label is defined and tier.label %}
+												{{ tier.label }}
+											{% else %}
+												Formule
+												{{ loop.index }}
+											{% endif %}
+										</th>
+										<td>
+											{% if tier.description is defined and tier.description %}
+												{{ tier.description }}
+											{% endif %}
+
+										</td>
+										<td>
+											{% if tier.price is defined and tier.price %}
+												{{ (tier.price / 100)|number_format(2, ',', ' ') }}
+												€
+											{% endif %}
+										</td>
+
+									</tr>
+								{% else %}
+									<tr>
+										<td colspan="3">Aucune formule disponible.</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				{% endif %}
+				<div class="col-12 mt-3 text-center">
+					{% if data_actu.saleEndDate is defined and data_actu.saleEndDate < "now"|date('Y-m-d') %}
+						<div class="alert alert-danger text-center mx-5 shadow-lg rounded-pill text-primary" role="alert">
+							<strong>
+								<i class="bi bi-door-closed-fill"></i>Les réservations sont closes.</strong>
+						</div>
+					{% else %}
+						<button class="btn btn-warning text-primary" data-bs-toggle="modal" data-bs-target="#modal_tier">
+							{% if app.request.attributes.get('formType') == 'Event' %}
+								<i class="bi bi-calendar-event-fill text-primary"></i>
+								Réserver
+							{% elseif app.request.attributes.get('formType') == 'Donation' %}
+								<i class="bi text-primary bi-check"></i>
+								Faire un don
+							{% elseif app.request.attributes.get('formType') == 'Membership' %}
+								<i class="bi text-primary bi-person-badge-fill"></i>
+								Adhérer
+							{% elseif app.request.attributes.get('formType') == 'CrowdFunding' %}
+								<i class="bi text-primary bi-people-fill"></i>
+								Soutenir
+							{% elseif app.request.attributes.get('formType') == 'Shop' %}
+								<i class="bi text-primary bi-shop"></i>
+								Acheter
+							{% endif %}
+						</button>
+						<!-- Modal -->
+						<div class="modal fade modal-{% if app.request.attributes.get('formType') == 'Donation' %}xl{% else %}lg{% endif %}" id="modal_tier" tabindex="-1" aria-labelledby="ModalLabel_tier" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h1 class="modal-title fs-5" id="ModalLabel_tier">{{ data_actu.title }}</h1>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="{{ data_actu.widgetFullUrl }}" style="width: 100%; height: 750px; border: none;"></iframe>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+				</div>
+				<div class="col-12 mt-4 text-center">
+					{% if app.request.headers.get('Referer') %}
+						<a class="btn btn-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}">
+							<i class="bi bi-skip-backward-circle text-white"></i>
+							Retour</a>
+					{% else %}
+						<p>Impossible de retourner à la page précédente.</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

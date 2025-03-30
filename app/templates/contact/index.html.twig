@@ -1,43 +1,64 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contactez-nous - GNUT 06{% endblock %}
-
-{% block body %}
-<div class="pt-2">
-    <div class="row py-2 mx-5">
-        <h1 class="text-center mb-5"><i class="bi bi-person-lines-fill me-3"></i>Une question contactez-nous !</h1>
-        
-        {% if message_envoye %}
-            <p class="alert alert-success">Votre message a bien été envoyé.</p>
-        {% endif %}
-
-        <div class="col-12 col-lg-7 order-lg-2">
-            <p><span class="text-danger">*</span> : champ obligatoire</p>
-            <form class="row g-4 mb-5" method="POST" action="{{ path('app_contact') }}">
-                <div class="col-lg-6">
-                    <input type="text" class="form-control" name="first_name" placeholder="Prénom*" aria-label="First name" required>
-                </div>
-                <div class="col-lg-6">
-                    <input type="text" class="form-control" name="last_name" placeholder="Nom*" aria-label="Last name" required>
-                </div>
-                <div class="col-lg-6">
-                    <input type="email" class="form-control" placeholder="Email*" name="email" aria-label="email" required>
-                </div>
-                <div class="col-lg-6">
-                    <input type="tel" class="form-control" placeholder="Numéro de téléphone" name="tel" aria-label="telephone">
-                </div>
-                <div class="col-12">
-                    <textarea name="message" rows="5" class="form-control" placeholder="Entrer ici votre message*" aria-label="message" required></textarea>
-                </div>
-                <div class="col-12 text-center">
-                    <button type="submit" name="envoyer" value="Envoyer" class="btn btn-primary">Envoyer votre message</button>
-                </div>
-            </form>
-        </div>
-        <div class="col-12 col-lg-5 text-center order-lg-1">
-            <img class="img-fluid shadow-lg rounded-3" src="/images/monceau/image_parc.jpg" alt="Parc Monceau">
-        </div>
-    </div>
-</div>
+{% block title %}Contactez-nous - GNUT 06
 {% endblock %}
 
+{% block body %}
+	<div class="container pt-2">
+		<div class="row py-2 mx-5">
+			<h1 class="text-center mb-5 text-primary">
+				<i class="bi bi-person-lines-fill me-3"></i>Une question contactez-nous !</h1>
+			{% if message_envoye %}
+				<p class="alert alert-success">Votre message a bien été envoyé.</p>
+			{% endif %}
+			{% if errors is not empty %}
+				<div class="alert alert-danger">
+					<ul>
+						{% for error in errors %}
+							<li>{{ error }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% endif %}
+			<div class="col-12 col-lg-7 order-lg-2">
+				<p>
+					<span class="text-danger">*</span>
+					: champ obligatoire</p>
+				<form class="row g-4 mb-5" method="POST" action="{{ path('app_contact') }}">
+					<div class="col-lg-6">
+						<input type="text" class="form-control" name="first_name" placeholder="Prénom*" aria-label="First name" required>
+					</div>
+					<div class="col-lg-6">
+						<input type="text" class="form-control" name="last_name" placeholder="Nom*" aria-label="Last name" required>
+					</div>
+					<div class="col-lg-6">
+						<input type="email" class="form-control" placeholder="Email*" name="email" aria-label="email" required>
+					</div>
+					<div class="col-lg-6">
+						<input type="tel" class="form-control" placeholder="Numéro de téléphone" name="tel" aria-label="telephone">
+					</div>
+					<div class="col-12">
+						<textarea name="message" rows="5" class="form-control" placeholder="Entrer ici votre message*" aria-label="message" required></textarea>
+					</div>
+					<div class="col-12 text-center">
+						<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+					</div>
+					<div class="col-12 text-center">
+						<button type="submit" name="envoyer" value="Envoyer" class="btn btn-primary">Envoyer votre message</button>
+					</div>
+				</form>
+			</div>
+			<div class="col-12 col-lg-5 text-center order-lg-1">
+				<img class="img-fluid shadow-lg rounded-3" src="/images/monceau/image_parc.jpg" alt="Parc Monceau">
+			</div>
+		</div>
+	</div>
+	 <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+	 <script>
+	    grecaptcha.ready(function() {
+	        grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
+	            document.getElementById('g-recaptcha-response').value = token;
+	        });
+	    });
+	</script>
+{% endblock %}

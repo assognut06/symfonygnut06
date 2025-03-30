@@ -19,6 +19,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
+use GuzzleHttp\Client;
 
 #[Route('/reset-password')]
 class ResetPasswordController extends AbstractController
@@ -28,13 +29,12 @@ class ResetPasswordController extends AbstractController
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
         private EntityManagerInterface $entityManager
-    ) {
-    }
+    ) {}
 
     /**
      * Display & process form to request a password reset.
      */
-    #[Route('', name: 'app_forgot_password_request', methods: ['GET'])]
+    #[Route('', name: 'app_forgot_password_request')]
     public function request(Request $request, MailerInterface $mailer, TranslatorInterface $translator): Response
     {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
@@ -50,7 +50,6 @@ class ResetPasswordController extends AbstractController
 
         return $this->render('reset_password/request.html.twig', [
             'requestForm' => $form,
-            'currentDate' => new \DateTime()
         ]);
     }
 
@@ -75,7 +74,7 @@ class ResetPasswordController extends AbstractController
      * Validates and process the reset URL that the user clicked in their email.
      */
     #[Route('/reset/{token}', name: 'app_reset_password')]
-    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, string $token = null): Response
+    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, ?string $token = null): Response
     {
         if ($token) {
             // We store the token in session and remove it from the URL, to avoid the URL being
@@ -86,6 +85,7 @@ class ResetPasswordController extends AbstractController
         }
 
         $token = $this->getTokenFromSession();
+
         if (null === $token) {
             throw $this->createNotFoundException('No reset password token found in the URL or in the session.');
         }
@@ -108,26 +108,56 @@ class ResetPasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             // A password reset token should be used only once, remove it.
             $this->resetPasswordHelper->removeResetRequest($token);
 
-            // Encode(hash) the plain password, and set it.
-            $encodedPassword = $passwordHasher->hashPassword(
-                $user,
-                $form->get('plainPassword')->getData()
-            );
+            $recaptchaResponse = $request->request->get('g-recaptcha-response');
+            // Vérifier la réponse reCAPTCHA
+            $client = new Client();
+            $response = $client->request('POST', 'https://www.google.com/recaptcha/api/siteverify', [
+                'form_params' => [
+                    'secret' => $_ENV['NOCAPTCHA_SECRET'],
+                    'response' => $recaptchaResponse,
+                    'remoteip' => $request->getClientIp()
+                ]
+            ]);
 
-            $user->setPassword($encodedPassword);
-            $this->entityManager->flush();
+            $responseData = json_decode($response->getBody());
 
-            // The session is cleaned up after the password has been changed.
-            $this->cleanSessionAfterReset();
+            if ($_ENV['APP_ENV'] === 'dev') {
+                $responseData->score = 0.9;
+                $responseData->success = true;
+            }
 
-            return $this->redirectToRoute('app_home');
+            if (!$responseData->success || $responseData->score < 0.5) {
+                $this->addFlash('danger', 'La vérification reCAPTCHA a échoué. Veuillez réessayer.');
+                return $this->render('reset_password/reset.html.twig', [
+                    'resetForm' => $form,
+                    'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
+                ]);
+            } else {
+                // Encode(hash) the plain password, and set it.
+                $encodedPassword = $passwordHasher->hashPassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                );
+
+                $user->setPassword($encodedPassword);
+                $this->entityManager->flush();
+
+                // The session is cleaned up after the password has been changed.
+                $this->cleanSessionAfterReset();
+
+                $this->addFlash('success', 'Votre mot de passe à étè modifier vous pouvez vous connecter avec.');
+
+                return $this->redirectToRoute('app_login');
+            }
         }
 
         return $this->render('reset_password/reset.html.twig', [
             'resetForm' => $form,
+            'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
         ]);
     }
 
@@ -161,18 +191,17 @@ class ResetPasswordController extends AbstractController
         $email = (new TemplatedEmail())
             ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
             ->to($user->getEmail())
-            ->subject('Your password reset request')
+            ->subject('Votre demande de réinitialisation de mot de passe sur Gnut 06')
             ->htmlTemplate('reset_password/email.html.twig')
             ->context([
                 'resetToken' => $resetToken,
-            ])
-        ;
+            ]);
 
         $mailer->send($email);
 
         // Store the token object in session for retrieval in check-email route.
         $this->setTokenObjectInSession($resetToken);
 
-        return $this->redirectToRoute('app_check_email');
+        return $this->redirectToRoute('app_profil');
     }
 }

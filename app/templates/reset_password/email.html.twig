@@ -1,0 +1,13 @@
+<div style="text-align: center;">
+	<a href="https://gnut06.org"><img src="https://www.gnut06.org/images/logo_trans-min.png" alt="Logo Gnut 06" style="max-width: 50px; margin: 1em;"></a>
+</div>
+
+<h1>Bonjour !</h1>
+
+<p>Pour réinitialiser votre mot de passe, veuillez visiter le lien suivant</p>
+
+<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">Lien de réinitialisation de votre mot de passe</a>
+
+<p>Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+
+<p>Cordialement !</p>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		<!-- Include header -->
+		<script src= "https://code.jquery.com/jquery-3.7.1.min.js"integrity= "sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"> 
+        </script> 
+		{% include 'admin/_partials/header.html.twig' %}
+		{% block stylesheets %}{{ encore_entry_link_tags('app') }}{% endblock %}
+	</head>
+	<body>
+		<!-- Include navbar -->
+		{% include 'admin/_partials/navbar.html.twig' %}
+
+
+		{% include 'admin/_partials/nav_tabs.html.twig' %}
+		<!-- Spinner de Chargement -->
+		
+
+		<!-- Display flash messages -->
+		{% for type, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ type }} text-center" role="alert">{{ message }}</div>
+			{% endfor %}
+		{% endfor %}
+
+		<!-- Body content -->
+	
+		{% include('_partials/loader.html.twig') %}
+		
+		{% block body %}{% endblock %}
+		
+
+		<!-- Include footer -->
+		{% include 'admin/_partials/footer.html.twig' %}
+
+		<!-- Include scripts -->
+		{% include 'admin/_partials/scripts.html.twig' %}
+
+		<!-- Include javascripts -->
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+			   <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var loader = document.getElementById('loader');
+
+                function showLoader() {
+                    loader.style.display = 'block';
+                }
+
+                function hideLoader() {
+                    loader.style.display = 'none';
+                }
+
+                // Show loader on page load
+                showLoader();
+
+                window.addEventListener('load', function() {
+                    hideLoader();
+                });
+
+                // Show loader on page navigation (e.g., internal links)
+                document.querySelectorAll('a').forEach(function(link) {
+                    link.addEventListener('click', function(event) {
+                        if (link.href && link.href.startsWith(window.location.origin)) {
+                            showLoader();
+                        }
+                    });
+                });
+
+                // Handle form submissions
+                document.querySelectorAll('form').forEach(function(form) {
+                    form.addEventListener('submit', function() {
+                        showLoader();
+                    });
+                });
+            });
+        </script>
+		{% endblock %}
+	</body>
+</html>

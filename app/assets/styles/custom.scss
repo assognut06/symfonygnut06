@@ -1,0 +1,31 @@
+$success: #49D38A;
+$warning: #FFBE58;
+$danger: #FF1C2F;
+$primary: #4C40CF;
+$secondary: #E882E8;
+$dark: #333333;
+$light: #F2F2F2;
+$font-size-base: 1.25rem;
+$box-shadow-lg: 0 1rem 3rem rgba($secondary, .175);
+$box-shadow: 0 .5rem 1rem rgba($secondary, .15);
+$box-shadow-sm: 0 .125rem .25rem rgba($secondary, .075);
+$pagination-active-bg: $success;
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1730px
+);
+$carousel-control-color: $warning;
+$carousel-indicator-active-bg: $warning;
+$carousel-control-opacity: 0.7;
+$carousel-control-width: 40px;
+$carousel-control-height: 40px;
+$carousel-control-hover-opacity: 1;
+$carousel-control-width: 25%;
+$carousel-transition-duration: 0.5s;
+$nav-tabs-border-color: $primary;
+$offcanvas-horizontal-width: 250px;
+$nav-underline-link-active-color: $warning;

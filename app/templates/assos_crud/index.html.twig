@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AssoRecommander index{% endblock %}
+
+{% block body %}
+    <h1>AssoRecommander index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>OrganizationSlug</th>
+                <th>Banner</th>
+                <th>FiscalReceiptEligibility</th>
+                <th>FiscalReceiptIssuanceEnabled</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Logo</th>
+                <th>Name</th>
+                <th>City</th>
+                <th>ZipCode</th>
+                <th>Description</th>
+                <th>Url</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for asso_recommander in asso_recommanders %}
+            <tr>
+                <td>{{ asso_recommander.id }}</td>
+                <td>{{ asso_recommander.organizationSlug }}</td>
+                <td>{{ asso_recommander.banner }}</td>
+                <td>{{ asso_recommander.fiscalReceiptEligibility ? 'Yes' : 'No' }}</td>
+                <td>{{ asso_recommander.fiscalReceiptIssuanceEnabled ? 'Yes' : 'No' }}</td>
+                <td>{{ asso_recommander.type }}</td>
+                <td>{{ asso_recommander.category }}</td>
+                <td>{{ asso_recommander.logo }}</td>
+                <td>{{ asso_recommander.name }}</td>
+                <td>{{ asso_recommander.city }}</td>
+                <td>{{ asso_recommander.zipCode }}</td>
+                <td>{{ asso_recommander.description }}</td>
+                <td>{{ asso_recommander.url }}</td>
+                <td>{{ asso_recommander.CreatedAt ? asso_recommander.CreatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ asso_recommander.UpdatedAt ? asso_recommander.UpdatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_assos_crud_show', {'id': asso_recommander.id}) }}">show</a>
+                    <a href="{{ path('app_assos_crud_edit', {'id': asso_recommander.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="16">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_assos_crud_new') }}">Create new</a>
+{% endblock %}

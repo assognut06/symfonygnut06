@@ -1,0 +1,53 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Payers index{% endblock %}
+
+{% block body %}
+    <h1>Payers index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>ZipCode</th>
+                <th>Country</th>
+                <th>Company</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for payer in payers %}
+            <tr>
+                <td>{{ payer.id }}</td>
+                <td>{{ payer.email }}</td>
+                <td>{{ payer.address }}</td>
+                <td>{{ payer.city }}</td>
+                <td>{{ payer.zipCode }}</td>
+                <td>{{ payer.country }}</td>
+                <td>{{ payer.company }}</td>
+                <td>{{ payer.firstName }}</td>
+                <td>{{ payer.lastName }}</td>
+                <td>{{ payer.createdAt ? payer.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ payer.updatedAt ? payer.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_admin_payers_show', {'id': payer.id}) }}">show</a>
+                    <a href="{{ path('app_admin_payers_edit', {'id': payer.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="12">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_payers_new') }}">Create new</a>
+{% endblock %}

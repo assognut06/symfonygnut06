@@ -6,6 +6,9 @@
 parameters:
     helloasso.api_client_id: '%env(APICLIENTID)%'
     helloasso.api_client_secret: '%env(APICLIENTSECRET)%'
+    mailjet.api_key: '%env(APIMAILJET)%'
+    mailjet.api_secret: '%env(APIMAILJETSECRET)%'
+    ohme.api_key: '%env(SECRETOHME)%'
 services:
     App\MessageHandler\NotificationHandler:
         tags: [messenger.message_handler]
@@ -39,3 +42,35 @@ services:
             - '@request_stack'
             - '%env(APICLIENTID)%'
             - '%env(APICLIENTSECRET)%'
+
+    App\Service\HelloAssoApiService:
+        class: App\Service\HelloAssoApiService
+        arguments:
+            $helloAssoAuthService: '@App\Service\HelloAssoAuthService'
+
+    # Configuration spécifique pour votre service de pagination
+    App\Service\PaginationService:
+        class: App\Service\PaginationService
+        arguments:
+            $limit: 12 # Vous pouvez définir une valeur par défaut différente pour 'limit' ici si nécessaire
+
+    App\Service\AssoRecommanderService:
+        class: App\Service\AssoRecommanderService
+
+    App\Service\DataFilterAndSortService:
+        class: App\Service\DataFilterAndSortService
+
+    App\Service\MailjetService:
+        arguments:
+            $apiKey: '%env(APIMAILJET)%'
+            $apiSecret: '%env(APIMAILJETSECRET)%'
+
+    App\Service\OhmeApiService:
+        arguments:
+            $slugAsso: '%env(SLUGASSO)%'
+            $secretOhme: '%env(SECRETOHME)%'
+
+    App\Service\ApiFrameVrService:
+        arguments:
+            $apiKey: '%env(APIFRAMEVR)%'
+        

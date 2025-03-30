@@ -1,0 +1,62 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Payers{% endblock %}
+
+{% block body %}
+    <h1>Payers</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ payer.id }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ payer.email }}</td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td>{{ payer.address }}</td>
+            </tr>
+            <tr>
+                <th>City</th>
+                <td>{{ payer.city }}</td>
+            </tr>
+            <tr>
+                <th>ZipCode</th>
+                <td>{{ payer.zipCode }}</td>
+            </tr>
+            <tr>
+                <th>Country</th>
+                <td>{{ payer.country }}</td>
+            </tr>
+            <tr>
+                <th>Company</th>
+                <td>{{ payer.company }}</td>
+            </tr>
+            <tr>
+                <th>FirstName</th>
+                <td>{{ payer.firstName }}</td>
+            </tr>
+            <tr>
+                <th>LastName</th>
+                <td>{{ payer.lastName }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ payer.createdAt ? payer.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ payer.updatedAt ? payer.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_payers_index') }}">back to list</a>
+
+    <a href="{{ path('app_admin_payers_edit', {'id': payer.id}) }}">edit</a>
+
+    {{ include('admin_payers/_delete_form.html.twig') }}
+{% endblock %}
