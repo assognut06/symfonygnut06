@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New AssoRecommander{% endblock %}
+
+{% block body %}
+    <h1>Create new AssoRecommander</h1>
+
+    {{ include('assos_crud/_form.html.twig') }}
+
+    <a href="{{ path('app_assos_crud_index') }}">back to list</a>
+{% endblock %}

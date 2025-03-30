@@ -1,0 +1,92 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Hello AdminUserController!
+{% endblock %}
+
+{% block body %}
+	<div class="container pt-0">
+		<div class="mx-4">
+			<h2 class="my-4 text-primary text-center">Les utilisateur de Gnut06.org</h2>
+			<div class="border border-secondary mb-4 mx-5"></div>
+
+			<div class="row align-items-start mx-auto">
+				<div class="col-12">
+					<table class="table table-success table-striped">
+						<thead>
+							<tr>
+								<th scope="col">id</th>
+								<th scope="col">Email</th>
+								<th scope="col">Roles</th>
+								<th scope="col">Vérifiè</th>
+								<th scope="col">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% set i = 0 %}
+							{% if users is defined %}
+								{% for user in users %}
+									<tr>
+										<td>{{ user.id }}</td>
+										<td>{{ user.email }}</td>
+										<td>{{ user.roles | join(' - ') }}</td>
+										<td>{{ user.isVerified }}</td>
+										<td class="d-flex">
+											<form action="{{ path('app_admin_user_delete', {'id': user.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+												<input type="hidden" name="_method" value="DELETE">
+												<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+												<button class="btn btn-danger text-white" type="submit">Supprimer</button>
+											</form>
+											<form action="{{ path('app_admin_user_promote', {'id': user.id}) }}" method="post">
+												<input type="hidden" name="_token" value="{{ csrf_token('promote_user' ~ user.id) }}">
+												<button class="btn btn-success mx-1" type="submit">Promouvoir</button>
+											</form>
+										</td>
+									</tr>
+									</tr>
+									{% set i = i + 1 %}
+								{% endfor %}
+							{% else %}
+								No data available.
+							{% endif %}
+							<tr>
+								<td class="text-end" scope="row" colspan="10">
+									<strong class="text-primary">Soit
+										{{ i }}
+										Uilisateurs sur {{ total }}
+									</tr>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-12 pagination-container mt-3">
+					<nav aria-label="Admin navigation">
+						<ul class="pagination">
+							{% if page > 1 %}
+								<li class="page-item">
+									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page - 1}) }}">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+							{% endif %}
+
+							{% for page in 1..pages %}
+								<li class="page-item{% if app.request.attributes.get('page') == page %} active{% endif %}">
+									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page}) }}">{{ page }}</a>
+								</li>
+							{% endfor %}
+
+							{% if page < pages %}
+								<li class="page-item">
+									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page + 1}) }}">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+							{% endif %}
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

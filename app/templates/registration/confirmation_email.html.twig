@@ -1,11 +1,18 @@
-<h1>Hi! Please confirm your email!</h1>
+<div style="text-align: center;">
+	<a href="https://gnut06.org"><img src="https://www.gnut06.org/images/logo_trans-min.png" alt="Logo Gnut 06" style="max-width: 50px; margin: 1em;"></a>
+</div>
+
+<h1>Bonjour ! <br>
+Veuillez confirmer votre adresse e-mail !</h1>
 
 <p>
-    Please confirm your email address by clicking the following link: <br><br>
-    <a href="{{ signedUrl|raw }}">Confirm my Email</a>.
-    This link will expire in {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
+	Veuillez confirmer votre adresse e-mail en cliquant sur le lien suivant :
+	<br><br>
+	<a href="{{ signedUrl|raw }}">Confirmer mon e-mail</a>.
+		    Ce lien expirera dans
+	{{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
 </p>
 
 <p>
-    Cheers!
+	Cordialement !
 </p>

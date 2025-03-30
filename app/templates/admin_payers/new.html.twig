@@ -1,0 +1,11 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}New Payers{% endblock %}
+
+{% block body %}
+    <h1>Create new Payers</h1>
+
+    {{ include('admin_payers/_form.html.twig') }}
+
+    <a href="{{ path('app_admin_payers_index') }}">back to list</a>
+{% endblock %}

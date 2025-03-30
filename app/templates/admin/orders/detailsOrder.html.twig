@@ -1,0 +1,71 @@
+{% extends 'admin/iframe.html.twig' %}
+
+{% block title %}Détails Commandes
+{% endblock %}
+
+{% block body %}
+
+<div class="container pt-0">
+    <div class="mx-3">
+        <h2 class="my-5 text-primary text-center">Détails de la commande numéro : {{ app.request.attributes.get('id') }}</h2>
+        <div class="border border-secondary mb-5 "></div>
+        <div class="row justify-content-center">
+            <div class="col">
+                <p>
+                    {% if data_forms is not null %}
+                        {% if data_forms.payer.company is defined %}
+                            Société : {{ data_forms.payer.company|e }}<br>
+                        {% endif %}
+                        Nom : {{ (data_forms.user.lastName is defined and data_forms.user.lastName is not empty ? data_forms.user.lastName : (data_forms.payer.lastName is defined ? data_forms.payer.lastName : ''))|e }}<br>
+                        Prénom : {{ (data_forms.user.firstName is defined and data_forms.user.firstName is not empty ? data_forms.user.firstName : (data_forms.payer.firstName is defined ? data_forms.payer.firstName : ''))|e }}<br>
+                        Email : {{ data_forms.payer.email|e }}<br>
+                        {% if data_forms.payer.address is defined %}
+                            Adresse : {{ data_forms.payer.address|e }}<br>
+                            Code postal : {{ data_forms.payer.zipCode|e }}<br>
+                            Ville : {{ data_forms.payer.city|e }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col">
+                    <p>
+                        <h5>{{ data_forms.order.formName }}</h5>
+                        <div class="border border-secondary mb-5"></div>
+                        {% if data_forms.tierDescription is defined %}
+                            <p>{{ data_forms.tierDescription|nl2br }}</p>
+                        {% endif %}
+                         Date : {{ data_forms.order.date|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}<br>
+                        <div class="border border-secondary mb-5"></div>
+                        Type : {{ data_forms.order.formType|e }}<br>
+                        {% if data_forms.payments is defined %}
+                            Mode de paiement : {{ data_forms.payments[0].paymentMeans|e }}<br>
+                            Référence payment : {{ data_forms.payments[0].id|e }}<br>
+                            Montant : {{ formattedPrice(data_forms.amount) }}<br>
+                        {% endif %}
+                        
+                        {% if data_forms.ticketUrl is defined %}
+                            <a class="btn btn-warning mt-3" href="{{ data_forms.ticketUrl }}" target="_blank">Ticket</a>
+                        {% endif %}
+                        {{ data_forms.membershipCardUrl is defined ? ('<a class="btn btn-warning mt-3" href="' ~ data_forms.membershipCardUrl ~ '" target="_blank">Carte d\'adhérant</a>')|raw : '' }}
+                    </p>
+                </div>
+                {% if data_forms.payer.company is defined and data_forms.payer.address is defined %}
+                    <div class="col">
+                        <iframe width="100%" height="450" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}
+                        &q={{ data_forms.payer.company|replace({' ': '+'})|e }},{{ data_forms.payer.address|replace({' ': '+'})|e ~ "+" ~ data_forms.payer.zipCode|e ~ "+" ~ data_forms.payer.city|replace({' ': '+'})|e }},{{ data_forms.payer.country|e }}">
+                        </iframe>
+                    </div>
+                {% elseif data_forms.payer.address is defined %}
+                    <div class="col">
+                        <iframe width="100%" height="450" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}
+                        &q={{ data_forms.payer.lastName|replace({' ': '+'})|e }}+{{ data_forms.payer.firstName|replace({' ': '+'})|e }},{{ data_forms.payer.address|replace({' ': '+'})|e ~ "+" ~ data_forms.payer.zipCode|e ~ "+" ~ data_forms.payer.city|replace({' ': '+'})|e }},{{ data_forms.payer.country|e }}">
+                        </iframe>
+                    </div>
+                {% endif %}
+            {% else %}
+                <p>Aucun billet</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

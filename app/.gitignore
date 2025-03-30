@@ -1,6 +1,8 @@
 
 ###> symfony/framework-bundle ###
 /.env
+/.env.ovh
+/.env.gnut06
 /.env.test
 /.env.local.php
 /.env.*.local
@@ -10,6 +12,8 @@
 /var/
 /vendor/
 /node_modules/
+/pass/
+/run.sh
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
@@ -33,3 +37,5 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+aa0c32cd17552d2deace476f932e3f55.txt

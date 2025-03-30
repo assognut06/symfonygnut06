@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Associations à recommander
+{% endblock %}
+
+{% block body %}
+	<div class="container pt-0">
+		<div class="mx-3">
+			<h2 class="my-3 text-primary text-center">Associations à recommander
+				{% if app.request.attributes.get('_route') == 'app_asso_recommander_ville' %}
+					à
+					{{ city }}
+				{% endif %}
+			</h2>
+			<div class="row justify-content-center">
+				<div class="col-md-6">
+					<form method="GET" action="{{ path('app_asso_recommander_search') }}" class="mt-2">
+						<div class="mb-3">
+							<input type="text" name="query" class="form-control" placeholder="Rechercher une association">
+						</div>
+						<div class="d-grid">
+							<button type="submit" class="btn btn-primary">Rechercher</button>
+						</div>
+					</form>
+				</div>
+				{% if app.request.attributes.get('_route') == 'app_asso_recommander_search' %}
+					<div class="col-12 mt-3 text-center">
+						<a href="{{ path('app_asso_recommander') }}" class="btn btn-outline-success">Retour</a>
+					</div>
+				{% endif %}
+			</div>
+
+			{% if assos is defined %}
+				<ul>
+					{% for asso in assos %}
+						<li>{{ asso.name }}</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+			<div class="border border-secondary mb-5 mx-5 mt-4"></div>
+			<div class="row align-items-start mx-auto">
+				{% for item in data_forms %}
+					<div class="col d-flex justify-content-around my-3">
+						<div class="card shadow-lg" style="width: 21rem;">
+							<img src="{{ item.banner }}" class="card-img-top" alt="Bannière {{ item.name }}">
+							<div class="card-body">
+								<h5 class="card-title text-center text-primary">{{ item.name }}</h5>
+								<div class="card-text text-center">
+									<img class="card-img-top logoAsso my-2" src="{{ item.logo }}" alt="Logo de l'association {{ item.name }}"/>
+									<br>
+									<p>{{ item.category }}</p>
+									<p class="text-justify">{{ item.description|slice(0, 200) }}...<br>
+										<a class="icon-link icon-link-hover" href="{{ path('app_asso_recommander_fiche', {'organizationSlug': item.organizationSlug}) }}">
+											En savoir +<i class="bi bi-arrow-right" aria-hidden="true"><use xlink:href="#arrow-right"></use></i>
+										</a>
+									</p>
+									<p>
+										{% if getEventsAssoRecommender(item.organizationSlug, "Event") == 0 %}
+											Aucun événement à venir
+										{% else %}
+											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Event") }}
+												évènement(s) à venir</a>
+										{% endif %}
+									</p>
+									{% if getEventsAssoRecommender(item.organizationSlug, "Donation") != 0 %}
+										<p>
+											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode, 'formTypes': 'Donation'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Donation") }}
+												formulaire(s) de dons</a>
+										</p>
+									{% endif %}
+									{% if getEventsAssoRecommender(item.organizationSlug, "Membership") != 0 %}
+										<p>
+											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode,'formTypes': 'Membership'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Membership") }}
+												formulaire(s) d'adhésion</a>
+										</p>
+									{% endif %}
+									{% if getEventsAssoRecommender(item.organizationSlug, "CrowdFunding") != 0 %}
+										<p>
+											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode,'formTypes': 'CrowdFunding'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "CrowdFunding") }}
+												formulaire(s) d'appel à projet</a>
+										</p>
+									{% endif %}
+									{% if getEventsAssoRecommender(item.organizationSlug, "Shop") != 0 %}
+										<p>
+											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode,'formTypes': 'Shop'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Shop") }}
+												boutique(s)</a>
+										</p>
+									{% endif %}
+									<p>{{ item.zipCode }}
+										{{ item.city }}</p>
+									<a class="btn btn-warning" href="{{ item.url }}" target='_blanck'>Sur HelloAsso</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% else %}
+					Si vous ne trouvez pas d'association dans la base de données, il est possible que l'association n'ait pas été enregistrée correctement ou qu'elle n'ait pas mis à jour ses informations récemment.
+				{% endfor %}
+				<div class="col-12 pagination-container mt-3">
+					<nav aria-label="Admin navigation">
+						<ul class="pagination">
+							{% if page > 1 %}
+								<li class="page-item">
+									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page - 1, 'city': city is defined ? city : null}) }}">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+							{% endif %}
+
+							{% for page in 1..pages %}
+								<li class="page-item{% if app.request.attributes.get('page') == page %} active{% endif %}">
+									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page, 'city': city is defined ? city : null}) }}">{{ page }}</a>
+								</li>
+							{% endfor %}
+
+							{% if page < pages %}
+								<li class="page-item">
+									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page + 1, 'city': city is defined ? city : null}) }}">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+							{% endif %}
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

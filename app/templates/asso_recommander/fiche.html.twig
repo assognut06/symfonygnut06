@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Association à Nice
+{% endblock %}
+
+{% block body %}
+	<div class="container pt-0">
+		<div class="text-center">
+			<img src="{{ data.banner }}" class="img-fluid mx-auto d-block" alt="Bannière {{ data.name }}">
+		</div>
+		<div class="mx-3">
+			<h2 class="my-5 text-primary text-center">{{ data.name|e }}</h2>
+			<div class="border border-secondary mb-5 mx-5 "></div>
+			<div class="row justify-content-center">
+				<div class="col-12 text-center">
+					<img src="{{ data.logo }}" alt="Logo {{ data.name|e }}" class="mx-auto logoAssoFiche">
+				</div>
+				<div class="col-12 my-4 text-center">
+					<p
+						class="fs-4">
+						{# Convertir la description avec des sauts de ligne après chaque point #}
+						{{ data.description|replace({'.': '.<br>'})|raw }}
+					</p>
+					<p>
+						{% if getEventsAssoRecommender(data.organizationSlug, "Event") == 0 %}
+							Aucun événement à venir
+						{% else %}
+							<a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode}) }}">{{ getEventsAssoRecommender(data.organizationSlug, "Event") }}
+								évènement(s) à venir</a>
+						{% endif %}
+					</p>
+					{% if getEventsAssoRecommender(data.organizationSlug, "Donation") != 0 %}
+						<p>
+							<a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode, 'formTypes': 'Donation'}) }}">{{ getEventsAssoRecommender(data.organizationSlug, "Donation") }}
+								formulaire(s) de dons</a>
+						</p>
+					{% endif %}
+					{# Membership #}
+					{% if getEventsAssoRecommender(data.organizationSlug, "Membership") != 0 %}
+						<p>
+							<a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode,'formTypes': 'Membership'}) }}">{{ getEventsAssoRecommender(data.organizationSlug, "Membership") }}
+								formulaire(s) d'adhésion</a>
+						</p>
+					{% endif %}
+					{# CrowdFunding #}
+					{% if getEventsAssoRecommender(data.organizationSlug, "CrowdFunding") != 0 %}
+						<p>
+							<a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode,'formTypes': 'CrowdFunding'}) }}">{{ getEventsAssoRecommender(data.organizationSlug, "CrowdFunding") }}
+								formulaire(s) d'appel à projet</a>
+						</p>
+					{% endif %}
+					{# Shop #}
+					{% if getEventsAssoRecommender(data.organizationSlug, "Shop") != 0 %}
+						<p>
+							<a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode,'formTypes': 'Shop'}) }}">{{ getEventsAssoRecommender(data.organizationSlug, "Shop") }}
+								boutique(s)</a>
+						</p>
+					{% endif %}
+				</div>
+				<div class="col-12 col-xxl-4 fs-4 text-center">{{ data.type == "Association1901Rig" ? "Association loi 1901 : " : "" }}
+					{{ data.category|e }}</div>
+				<div class="col-12 col-xxl-4 fs-4 text-center">{{ data.zipCode|e }}
+					{{ data.city|e }}</div>
+				{# <div class="col-12 col-xxl-4 mb-4 fs-4 text-center">RNA : {{ data.rnaNumber|e }}</div> #}
+				<div class="col-12 fs-4 my-4 text-center">
+					<a class="btn btn-warning" href="{{ data.url|e }}" target="_blank" rel="noopener noreferrer">{{ data.name }}
+						chez Helloasso</a>
+				</div>
+				<div class="col-12 mt-4 text-center">
+					{% if app.request.headers.get('Referer') %}
+						<a class="btn btn-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}"><i class="bi bi-skip-backward-circle text-white"></i> Retour</a>
+					{% else %}
+						<p>Impossible de retourner à la page précédente.</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

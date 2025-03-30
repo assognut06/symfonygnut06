@@ -1,62 +1,58 @@
 <main role="main">
-    <!-- class="container bg-warning-subtle text-emphasis-warning py-5 fs-5" -->
-    <div id="carouselExampleCaptions" class="carousel slide carousel-fade" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        </div>
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="{{ asset('images/inclusion1.jpg') }}" class="d-block w-100" alt="inclusion">
-                <div class="carousel-caption d-md-block">
-                    <h5><strong class="fs-1 text-dark"></strong></h5>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="{{ asset('images/womanvr.jpg') }}" class="d-block w-100" alt="femme avec casque vr">
-                <div class="carousel-caption d-md-block">
-                    <h5><strong class="fs-1">L'inclusion technologique, un chemin naturel</strong></h5>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="{{ asset('images/handicap.jpg') }}" class="d-block w-100" alt="ourson peluche dans hopital">
-                <div class="carousel-caption d-md-block">
-                    <h5><strong class="fs-1">Ensemble élevons la tolérance</strong></h5>
-                </div>
-            </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
-    
-    <h1 class="text-center my-5 text-success shadow-lg">Association Gnut 06</h1>
+	<div class="position-relative overflow-hidden mt-5 pt-3">
+		<video autoplay muted loop class="w-100">
+			<source src="{{ asset('videos/banner.mp4') }}" type="video/mp4">
+			Votre navigateur ne supporte pas la vidéo HTML5.
+		</video>
+		<div
+			class="position-absolute top-50 start-50 translate-middle text-center text-white">{# <h2 class="display-4 fs-2 fs-md-2 fs-lg-3">Offrons des ailes à l'imaginaire</h2>
+										<p class="lead fs-6 fs-md-5 fs-lg-4">L'association Gnut 06, fer de lance de l'inclusion numérique, souhaite offrir de nouvelles perspectives à celles et ceux qui en rêvent.</p> #}
+		</div>
+	</div>
 
-    <h3 class="text-center mb-4">Des Mondes Virtuels, des Liens Réels : L'Inclusion à Portée de Main</h3>
-    {% if app.request.attributes.get('_route') != 'app_adhesion' %}
-        <h3 class="text-center mb-5 fs-1"><a href="?page=adhesion" class="badge text-bg-success p-4 text-uppercase">Adhérer</a></h3>
-    {% endif %}
-{% for label, flashes in app.session.flashbag.all() %}
-    {% for flash in flashes %}
-        {% set alertClass = 'info' %}
-        {% if label == 'success' %}
-            {% set alertClass = 'success' %}
-        {% elseif label == 'warning' %}
-            {% set alertClass = 'warning' %}
-        {% elseif label == 'danger' %}
-            {% set alertClass = 'danger' %}
-        {% elseif label == 'error' %}
-            {% set alertClass = 'danger' %}
-        {% elseif label == 'info' %}
-            {% set alertClass = 'info' %}
-        {% endif %}
-        <div class="alert alert-{{ alertClass }}" role="alert">{{ flash }}</div>
-    {% endfor %}
-{% endfor %}
+
+	<h1 class="text-center my-5 text-primary shadow-lg">Association Gnut 06</h1>
+
+	<h3 class="text-center mb-4">Des Mondes Virtuels, des Liens Réels : L'Inclusion à Portée de Main</h3>
+	{% if app.request.attributes.get('_route') != 'app_adhesion' %}
+		<h3 class="text-center mb-5 fs-1">
+			<a href="{{ path('app_adhesion') }}" class="badge text-bg-primary p-4 text-uppercase">Adhérer</a>
+		</h3>
+	{% endif %}
+	{% if app.request.attributes.get('_route') != 'app_metavers' %}
+		<h3 class="text-center mb-5">
+			<a href="https://framevr.io/vfl-ivc-bky" class="btn btn-warning position-relative fs-2 text-light" target="_blank">
+				Notre Métavers
+				<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+					New
+					<span class="visually-hidden">unread messages</span>
+				</span>
+			</a>
+		</h3>
+	{% endif %}
+
+	{% if app.request.attributes.get('_route') in ['app_asso_recommander', 'app_asso_recommander_ville', 'app_asso_evenements'] and cities is defined %}
+		{% include '_partials/nav_offcanvas_city.html.twig' %}
+	{% endif %}
+
+	{# {% if app.request.attributes.get('_route') == 'app_asso_recommander' or app.request.attributes.get('_route') == 'app_asso_recommander_ville' or app.request.attributes.get('_route') == 'app_asso_evenements' %}
+			{% include '_partials/nav_offcanvas_city.html.twig' %}
+		{% endif %} #}
+	{% for label, flashes in app.session.flashbag.all() %}
+		{% for flash in flashes %}
+			{% set alertClass = 'info' %}
+			{% if label == 'success' %}
+				{% set alertClass = 'success' %}
+			{% elseif label == 'warning' %}
+				{% set alertClass = 'warning' %}
+			{% elseif label == 'danger' %}
+				{% set alertClass = 'danger' %}
+			{% elseif label == 'error' %}
+				{% set alertClass = 'danger' %}
+			{% elseif label == 'info' %}
+				{% set alertClass = 'info' %}
+			{% endif %}
+			<div class="alert alert-{{ alertClass }} text-center" role="alert">{{ flash }}</div>
+		{% endfor %}
+	{% endfor %}
 </main>

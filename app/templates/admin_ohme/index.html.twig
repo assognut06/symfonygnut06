@@ -1,0 +1,59 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Hello AdminOhmeController!
+{% endblock %}
+
+{% block body %}
+	<div class="container pt-0">
+		<div class="mx-4">
+			<h2 class="my-4 text-primary text-center">Les contacts de Gnut06.org</h2>
+			<div class="border border-secondary mb-4 mx-5"></div>
+
+			<div class="row align-items-start mx-auto">
+				<div class="col-12">
+					<table class="table table-success table-striped">
+						<thead>
+							<tr>
+								<th scope="col">id</th>
+								<th scope="col">Email</th>
+								<th scope="col">Prénom</th>
+								<th scope="col">Nom</th>
+								<th scope="col">Téléphone</th>
+                                <th scope="col">Tag(s)</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% set i = 0 %}
+							{% if contacts is defined %}
+								{% for contact in contacts.data %}
+									<tr>
+										<td>{{ contact.id }}</td>
+										<td>{{ contact.email }}</td>
+										<td>{{ contact.firstname | join(' - ') }}</td>
+										<td>{{ contact.lastname }}</td>
+										<td>{{ contact.phone }}</td>
+                                        <td>{{ contact.tags | join(' - ') }}</td>
+
+									</tr>
+								</tr>
+								{% set i = i + 1 %}
+							{% endfor %}
+						{% else %}
+							No data available.
+						{% endif %}
+						<tr>
+							<td class="text-end" scope="row" colspan="10">
+								<strong class="text-primary">Soit
+									{{ i }}
+									Contacts sur
+									{{ contacts.count }}
+								</tr>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+            {{ dump(contacts) }}
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Edit Payers{% endblock %}
+
+{% block body %}
+    <h1>Edit Payers</h1>
+    <div class="container text-center">
+      
+
+    {{ include('admin_payers/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_admin_payers_index') }}">back to list</a>
+
+    {{ include('admin_payers/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

@@ -6,19 +6,29 @@
   "directories": {
     "test": "tests"
   },
+  "engines": {
+    "node": "^20.17.0 || >=22.9.0",
+    "npm": ">=11.2.0"
+  },
   "dependencies": {
-    "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "node-fs-extra": "^0.8.2",
-    "webpack": "^5.91.0",
+    "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4",
     "webpack-node-externals": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.7",
-    "@babel/preset-env": "^7.24.7",
-    "@symfony/webpack-encore": "^4.6.1",
+    "@babel/core": "^7.26.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.21.0",
+    "@babel/preset-env": "^7.26.0",
+    "@popperjs/core": "^2.11.8",
+    "@symfony/webpack-encore": "^4.7.0",
+    "babel-loader": "^9.2.1",
+    "bootstrap": "^5.3.3",
     "file-loader": "^6.2.0",
+    "jquery": "^3.7.1",
+    "sass": "^1.80.6",
+    "sass-loader": "^14.0.0",
     "webpack-notifier": "^1.15.0"
   },
   "scripts": {

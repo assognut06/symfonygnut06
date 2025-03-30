@@ -1,23 +1,33 @@
 body {
   background-color: white;
+  color: #070716 !important; /* Couleur du texte par défaut */
 }
 .logoNavbar {
-  width: 50px;
+  width: 40px;
  }
 h1{
   text-align: center;
   color :darkolivegreen;
 }
 .logo_footer {
-  width: 70%;
+  /* width: 70%; */
   height: auto;
+}
+
+.carousel.pointer-event {
+  padding-top: 18px !important;
 }
 
 .logoBack{
   background-color: black;
 }
+
 .logoAsso{
-  width :80%;
+
+ width: 180px;
+}
+.logoAssoFiche{
+  width : 220px;
 }
 .emoji {
   font-size: 1.5rem; /* Adjust size of emojis */
@@ -26,6 +36,13 @@ h1{
 .pagination-container {
   display: flex;
   justify-content: center;
+}
+
+.logoAssoAdmin{
+  width :35px;
+}
+.text-justify {
+  text-align: justify;
 }
 
 .HaAuthorizeButton {

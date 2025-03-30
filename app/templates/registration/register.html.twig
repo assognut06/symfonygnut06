@@ -1,23 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}S'enregistrer
+{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
-
-    <h1>Register</h1>
-
-    {{ form_errors(registrationForm) }}
-
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+	{% for flash_error in app.flashes('verify_email_error') %}
+		<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+	{% endfor %}
+	<div class="container mt-5">
+		<div class="row justify-content-center">
+			<div class="col-md-6">
+				<h1 class="text-center mb-4">S'enregistrer</h1>
+				<div class="card p-4 shadow">
+					{{ form_errors(registrationForm) }}
+					{{ form_start(registrationForm, {'attr': {'class': 'g-3'}}) }}
+					<div class="mb-3">
+						{{ form_row(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+					</div>
+					<div class="mb-3">
+						{{ form_row(registrationForm.plainPassword.first, {
+                            'label': 'Mot de passe',
+                            'attr': {'class': 'form-control'}
+                        }) }}
+					</div>
+					<div class="mb-3">
+						{{ form_row(registrationForm.plainPassword.second, {
+                            'label': 'Confirmez le mot de passe',
+                            'attr': {'class': 'form-control'}
+                        }) }}
+					</div>
+					<div class="mb-3 form-check">
+						{{ form_row(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+						<label
+							for="{{ registrationForm.agreeTerms.vars.id }}" class="form-check-label">{# {{ registrationForm.agreeTerms.vars.label }} #}
+						</label>
+					</div>
+					{# recaptcha input #}
+					<div class="col-12 text-center">
+						<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+					</div>
+					{# ------- #}
+					<div class="text-center">
+						<button type="submit" class="btn btn-primary">S'enregistrer</button>
+					</div>
+					{{ form_end(registrationForm) }}
+				</div>
+			</div>
+		</div>
+	</div>
+	 <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+	 <script>
+		    grecaptcha.ready(function() {
+		        grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
+		            document.getElementById('g-recaptcha-response').value = token;
+		        });
+		    });
+		</script>
 {% endblock %}
