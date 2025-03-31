@@ -12,6 +12,10 @@ class DataFilterAndPaginator
                 // La clé 'endDate' n'existe pas, exclure cet élément
                 return false;
             }
+            if (!isset($entry['state']) || $entry['state'] !== 'Public') {
+                // La clé 'state' n'existe pas, ou différent de Public exclure cet élément
+                return false;
+            }
             $endDate = DateTime::createFromFormat(DateTime::ISO8601, $entry['endDate']);
             $now = new DateTime();
             return $endDate > $now;
