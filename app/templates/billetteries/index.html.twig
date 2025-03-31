@@ -31,14 +31,18 @@
 								</p>
 								<p class="text-justify">{{ item.description|slice(0, 200) }}...<br>
 									<a class="icon-link icon-link-hover" href="{{ path('app_billetteries_detail', {'formType': item.formType, 'slug': item.formSlug}) }}">
-										En savoir +<i class="bi bi-arrow-right" aria-hidden="true"><use xlink:href="#arrow-right"></use></i>
+										En savoir +<i class="bi bi-arrow-right" aria-hidden="true">
+											<use xlink:href="#arrow-right"></use>
+										</i>
 									</a>
 								</p>
 							</p>
 						</a>
 					</p>
 					<div class="text-center">
-						<button class="btn btn-warning text-primary" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.index }}"><i class="bi bi-calendar-event-fill text-primary"></i> Réserver</button>
+						<button class="btn btn-warning text-primary" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.index }}">
+							<i class="bi bi-calendar-event-fill text-primary"></i>
+							Réserver</button>
 					</div>
 
 					<!-- Modal -->
