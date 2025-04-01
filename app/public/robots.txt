@@ -20,4 +20,4 @@ Disallow: /send-test-email/
 Allow: /
 
 # Indiquer l'emplacement du fichier sitemap
-Sitemap: https://gnut06.org/sitemap.xml
+Sitemap: https://gnut06.org/sitemap
