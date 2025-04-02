@@ -1,33 +1,12 @@
-# --- .htaccess à mettre dans dans /public  
+<IfModule mod_rewrite.c>
+    RewriteEngine On
 
- 
- 
+    # Rediriger tout le trafic HTTP vers HTTPS (optionnel)
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-RewriteEngine On 
-
- 
- 
-
-# D'abord on redirige tout sur le https 
-
-RewriteCond %{HTTPS} !=on 
-
-RewriteRule ^(.*) https://%{SERVER_NAME}/$1 [R,L] 
-
- 
- 
-
-# Puis, toutes les urls en .css, .js, etc… sont servies directement 
-
-RewriteCond %{REQUEST_URI} \..+$ 
-
-RewriteCond %{REQUEST_URI} !\.html$ 
-
-RewriteRule .* - [L] 
-
- 
- 
-
-# Puis, les autres sont redirigées vers index.php 
-
-RewriteRule ^(.*)$ index.php [QSA,L] 
+    # Rediriger toutes les requêtes vers index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
