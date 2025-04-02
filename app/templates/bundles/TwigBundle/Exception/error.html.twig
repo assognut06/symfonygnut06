@@ -1,0 +1,14 @@
+{# filepath: templates/bundles/TwigBundle/Exception/error.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Erreur {{ status_code }} - {{ status_text }}
+{% endblock %}
+
+{% block body %}
+    <div class="container text-center mt-5">
+        <h1 class="text-danger">Erreur {{ status_code }} - {{ status_text }}</h1>
+        <p>Une erreur s'est produite. Veuillez réessayer plus tard.</p>
+        <a href="{{ path('app_home') }}" class="btn btn-primary">Retour à l'accueil</a>
+    </div>
+{% endblock %}
