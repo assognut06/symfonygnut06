@@ -1,9 +1,6 @@
 # Autoriser tous les robots
 User-agent: *
 
-# Bloquer l'indexation des URL en HTTP
-Disallow: http://
-
 # Bloquer l'accès à certaines sections sensibles
 Disallow: /admin/
 Disallow: /login/
@@ -15,9 +12,6 @@ Disallow: /mailjet/
 Disallow: /email/
 Disallow: /tooltip/
 Disallow: /send-test-email/
-
-# Autoriser tout le reste
-Allow: /
 
 # Indiquer l'emplacement du fichier sitemap
 Sitemap: https://gnut06.org/sitemap.xml

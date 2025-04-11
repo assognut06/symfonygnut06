@@ -2,8 +2,8 @@
     RewriteEngine On
 
     # Rediriger tout le trafic HTTP vers HTTPS (optionnel)
-    RewriteCond %{HTTPS} !=on
-    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    # RewriteCond %{HTTPS} !=on
+    # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
     # Rediriger toutes les requêtes vers index.php
     RewriteCond %{REQUEST_FILENAME} !-f
