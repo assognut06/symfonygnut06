@@ -44,9 +44,9 @@
 					</div>
 					<div class="alert alert-success text-center mx-5 mb-5 shadow-lg rounded-pill" role="alert">
 						Débute le
-						{{ data_actu.startDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}<br>
+						{{ data_actu.startDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}<br>
 						Fini le
-						{{ data_actu.endDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}
+						{{ data_actu.endDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}
 					</div>
 				</div>
 				<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center mt-3">
