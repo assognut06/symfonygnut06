@@ -10,7 +10,7 @@
 		{# {{ dump(item)}} #}
 		<p class="card-text">
         N° de commande : {{ item.id }} </br>
-        Le {{ item.order.date|format_datetime(pattern="d MMMM y 'à' HH'h'mm':'s", locale='fr') }}</br>
+        Le {{ item.order.date|format_datetime(pattern="d MMMM y 'à' HH'h'mm':'s", locale='fr', timezone='Europe/Paris') }}</br>
         Mode de paiement : {{ item.paymentMeans }}</br>
 		</p>
 		<p class="card-text">Total:

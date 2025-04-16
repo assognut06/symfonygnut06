@@ -9,7 +9,7 @@
 		{% endif %}
 		{# {{ dump(item)}} #}
 		<p class="card-text">Le
-			{{ item.order.date|format_datetime(pattern="d MMMM y 'à' HH'h'mm':'s", locale='fr') }}</p>
+			{{ item.order.date|format_datetime(pattern="d MMMM y 'à' HH'h'mm':'s", locale='fr', timezone='Europe/Paris') }}</p>
 		<p class="card-text">Total:
 			{{ formattedPrice(item.amount) }}
 		</p>

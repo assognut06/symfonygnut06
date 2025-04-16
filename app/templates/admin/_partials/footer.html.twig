@@ -6,7 +6,7 @@
       <li class="list-inline-item text-light">
         {% set jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'] %}
         {% set mois = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'] %}
-        Nous sommes le {{ 'now'|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }} - 
+        Nous sommes le {{ 'now'|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }} - 
       </li>
       <li class="list-inline-item">
         <a href="https://gnut06.org" target="_blank" class="link-light">&copy; Association Gnut 06 2025 - Version  4.2.0</a>

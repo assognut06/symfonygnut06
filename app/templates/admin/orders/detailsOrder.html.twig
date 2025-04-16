@@ -33,7 +33,7 @@
                         {% if data_forms.tierDescription is defined %}
                             <p>{{ data_forms.tierDescription|nl2br }}</p>
                         {% endif %}
-                         Date : {{ data_forms.order.date|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}<br>
+                         Date : {{ data_forms.order.date|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}<br>
                         <div class="border border-secondary mb-5"></div>
                         Type : {{ data_forms.order.formType|e }}<br>
                         {% if data_forms.payments is defined %}

@@ -28,7 +28,7 @@
             <div class="col">
                 <p>
                     N° de commande : {{ data_forms.order.id|e }}<br>
-                    Date : {{ data_forms.date|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}<br>
+                    Date : {{ data_forms.date|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}<br>
                     Type : {{ data_forms.order.formType|e }}<br>
                     Montant : {{ formattedPrice(data_forms.amount) }}<br>
                     Mode de paiement : {{ data_forms.paymentMeans|e }}<br>
