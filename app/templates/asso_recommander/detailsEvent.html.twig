@@ -27,7 +27,7 @@
 					<div class="col-12 text-center">
 						<div class="alert alert-danger text-center mx-5 shadow-lg rounded-pill" role="alert">
 							<p>Date limite de réservation :
-								{{ data_actu.saleEndDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr') }}</p>
+								{{ data_actu.saleEndDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}</p>
 							{% if data_actu.saleEndDate > "now"|date('Y-m-d') %}
 								{% set endDate = data_actu.saleEndDate|date('Y-m-d') %}
 								{% set now = "now"|date('Y-m-d') %}
