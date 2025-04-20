@@ -1,19 +1,19 @@
 <main role="main">
 	<div class="position-relative overflow-hidden">
-		<video autoplay muted loop class="w-100">
+		<video autoplay muted loop class="w-100" loading="lazy" poster="{{ asset('images/banner-placeholder.webp') }}">
 			<source src="{{ asset('videos/banner.mp4') }}" type="video/mp4">
 			Votre navigateur ne supporte pas la vidéo HTML5.
 		</video>
 		<div
 			class="position-absolute top-50 start-50 translate-middle text-center text-white">{# <h2 class="display-4 fs-2 fs-md-2 fs-lg-3">Offrons des ailes à l'imaginaire</h2>
-										<p class="lead fs-6 fs-md-5 fs-lg-4">L'association Gnut 06, fer de lance de l'inclusion numérique, souhaite offrir de nouvelles perspectives à celles et ceux qui en rêvent.</p> #}
+														<p class="lead fs-6 fs-md-5 fs-lg-4">L'association Gnut 06, fer de lance de l'inclusion numérique, souhaite offrir de nouvelles perspectives à celles et ceux qui en rêvent.</p> #}
 		</div>
 	</div>
 
 
 	<h1 class="text-center my-5 text-primary shadow-lg">Association Gnut 06</h1>
 
-	<h3 class="text-center mb-4">Des Mondes Virtuels, des Liens Réels : L'Inclusion à Portée de Main</h3>
+	<h3 class="text-center mb-4 fade-in">Des Mondes Virtuels, des Liens Réels : L'Inclusion à Portée de Main</h3>
 	{% if app.request.attributes.get('_route') != 'app_adhesion' %}
 		<h3 class="text-center mb-5 fs-1">
 			<a href="{{ path('app_adhesion') }}" class="badge text-bg-primary p-4 text-uppercase">Adhérer</a>
@@ -36,8 +36,8 @@
 	{% endif %}
 
 	{# {% if app.request.attributes.get('_route') == 'app_asso_recommander' or app.request.attributes.get('_route') == 'app_asso_recommander_ville' or app.request.attributes.get('_route') == 'app_asso_evenements' %}
-			{% include '_partials/nav_offcanvas_city.html.twig' %}
-		{% endif %} #}
+				{% include '_partials/nav_offcanvas_city.html.twig' %}
+			{% endif %} #}
 	{% for label, flashes in app.session.flashbag.all() %}
 		{% for flash in flashes %}
 			{% set alertClass = 'info' %}
@@ -52,7 +52,7 @@
 			{% elseif label == 'info' %}
 				{% set alertClass = 'info' %}
 			{% endif %}
-			<div class="alert alert-{{ alertClass }} text-center" role="alert">{{ flash }}</div>
+			<div class="alert alert-{{ alertClass }} text-center fade-in" role="alert">{{ flash }}</div>
 		{% endfor %}
 	{% endfor %}
 </main>
