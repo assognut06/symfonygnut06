@@ -220,3 +220,17 @@ gmpx-store-locator {
 .image-zoom:hover {
   animation: zoom-in 0.3s forwards;
 }
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+  }
+  to {
+      opacity: 1;
+  }
+}
