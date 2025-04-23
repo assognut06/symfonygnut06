@@ -1,0 +1,84 @@
+{# templates/emails/bordereau_donateur.html.twig #}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Votre bordereau de suivi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #ffffff;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        p {
+            color: #555;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #f4f4f4;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div style="text-align: center;">
+            <a href="https://gnut06.org">
+                <img src="https://www.gnut06.org/images/logo_trans-min.png" alt="Logo Gnut 06" style="max-width: 50px; margin: 1em;">
+            </a>
+        </div>
+        <h1>Bonjour {{ donateur.prenom }} {{ donateur.nom }},</h1>
+        <p>Nous tenons à vous remercier encore une fois pour votre générosité et votre engagement envers notre cause. Grâce à des personnes comme vous, nous pouvons continuer à faire une réelle différence.</p>
+
+        <p>Comme promis, vous trouverez ci-joint votre **bordereau de suivi** pour le transport de votre don. Ce document vous permettra de suivre l'acheminement de vos casques jusqu'à leur destination finale.</p>
+
+        {% if numero_suivi %}
+            <p><strong>Votre numéro de suivi :</strong> <span style="color: #007bff;">{{ numero_suivi }}</span></p>
+            <p>Pour suivre l'état d'avancement de votre envoi, vous pouvez utiliser ce numéro sur le site du transporteur.</p>
+        {% endif %}
+
+        <p>En cas de questions ou si vous avez besoin d'une assistance supplémentaire, n'hésitez pas à nous contacter. Nous sommes là pour vous aider à chaque étape du processus.</p>
+
+        <p>Encore un grand merci pour votre précieux soutien !</p>
+        <p>Avec toute notre gratitude,<br>L'équipe Gnut 06</p>
+
+        <div class="footer">
+            <p>Vous pouvez nous joindre à tout moment à <a href="mailto:gnut@gnut06.org">gnut@gnut06.org</a>.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nouveau don reçu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #ffffff;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #f4f4f4;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div style="text-align: center;">
+            <a href="https://gnut06.org">
+                <img src="https://www.gnut06.org/images/logo_trans-min.png" alt="Logo Gnut 06" style="max-width: 50px; margin: 1em;">
+            </a>
+        </div>
+        <h1>Un nouveau don a été reçu !</h1>
+        <p>Nous avons le plaisir de vous informer qu’un nouveau don a été effectué par <strong>{{ donateur.nom }} {{ donateur.prenom }}</strong>. Voici toutes les informations dont vous avez besoin pour traiter ce don dans les meilleurs délais.</p>
+        
+        <p><strong>Informations sur le donateur :</strong></p>
+        <ul>
+            <li><strong>Nom :</strong> {{ donateur.nom }}</li>
+            <li><strong>Prénom :</strong> {{ donateur.prenom }}</li>
+            <li><strong>Email :</strong> {{ donateur.email }}</li>
+            <li><strong>Téléphone :</strong> {{ donateur.telephone|default('Non renseigné') }}</li>
+            <li><strong>Adresse :</strong> 
+                {{ donateur.getAdresse1 }}<br>
+                {% if donateur.getAdresse2 %}{{ donateur.getAdresse2 }}<br>{% endif %}
+                {{ donateur.getCodePostal }}, {{ donateur.ville }}<br>
+                {{ donateur.pays }}
+            </li>
+        </ul>
+
+        <p><strong>Détails du don :</strong></p>
+        <ul>
+            <li><strong>Nombre de casques :</strong> {{ don.casques|length }}</li>
+            <li><strong>Date du don :</strong> {{ don.dateCreation|date('d/m/Y H:i') }}</li>
+            {% if don.message %}
+            <li><strong>Message du donateur :</strong> {{ don.message }}</li>
+            {% endif %}
+            <li><strong>Statut du don :</strong> {{ don.statut }}</li>
+        </ul>
+
+        <p><strong>Liste des casques donnés :</strong></p>
+        <ul>
+            {% for casque in don.casques %}
+            <li>
+                <strong>Casque #{{ loop.index }} :</strong><br>
+                - Modèle : {{ casque.marque.nom|default('Non spécifié') }}<br>
+                - État : {{ casque.etat|default('Non spécifié') }}<br>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <p>Veuillez traiter ce don dans les plus brefs délais. Ensemble, continuons à faire avancer notre mission !</p>
+        <p>Merci pour votre dévouement,<br>L'équipe Gnut 06</p>
+    </div>
+</body>
+</html>
