@@ -1,0 +1,89 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}
+    {% if don %}
+        Casques du don #{{ don.id }}
+    {% else %}
+        Tous les casques
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">
+        {% if don %}
+            Casques associés au don #{{ don.id }}
+        {% else %}
+            Liste de tous les casques
+        {% endif %}
+    </h1>
+
+    <div style="width: 75%; margin: auto;">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Modèle</th>
+                <th>État</th>
+                <th>Donateur</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for casque in casques %}
+                <tr>
+                    <td>{{ casque.id }}</td>
+                    <td>{{ casque.marque.nom }}</td>
+                    <td>{{ casque.etat }}</td>
+                    <td>
+                        {% if casque.don and casque.don.donateur %}
+                            {{ casque.don.donateur.nom }} {{ casque.don.donateur.prenom }}
+                        {% else %}
+                            Donateur non spécifié
+                        {% endif %}
+                    </td>
+
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">Aucun casque trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+    {# Pagination #}
+    {% if casques.getTotalItemCount > 0 %}
+        <nav aria-label="Pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {# Bouton "Précédent" #}
+                <li class="page-item {% if casques.getCurrentPageNumber == 1 %}disabled{% endif %}">
+                    {% if casques.getCurrentPageNumber > 1 %}
+                        <a class="page-link" href="{{ path('admin_casques', {'id': don ? don.id : null, 'page': casques.getCurrentPageNumber - 1}) }}" aria-label="Précédent">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    {% else %}
+                        <span class="page-link" aria-hidden="true">&laquo;</span>
+                    {% endif %}
+                </li>
+
+                {# Numéros de page #}
+                {% for i in 1..casques.getPageCount %}
+                    <li class="page-item {{ i == casques.getCurrentPageNumber ? 'active' : '' }}">
+                        <a class="page-link" href="{{ path('admin_casques', {'id': don ? don.id : null, 'page': i}) }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
+
+                {# Bouton "Suivant" #}
+                <li class="page-item {% if casques.getCurrentPageNumber == casques.getPageCount %}disabled{% endif %}">
+                    {% if casques.getCurrentPageNumber < casques.getPageCount %}
+                        <a class="page-link" href="{{ path('admin_casques', {'id': don ? don.id : null, 'page': casques.getCurrentPageNumber + 1}) }}" aria-label="Suivant">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    {% else %}
+                        <span class="page-link" aria-hidden="true">&raquo;</span>
+                    {% endif %}
+                </li>
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}
