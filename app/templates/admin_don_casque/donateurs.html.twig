@@ -3,84 +3,173 @@
 {% block title %}Liste des donateurs{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Liste des donateurs</h1>
+<h1 class="mb-4">Liste des donateurs</h1>
 
-    <div style="margin: 10px;">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark text-center">
-                <tr>
-                    <th class="align-middle">Nom</th>
-                    <th class="align-middle">Prénom</th>
-                    <th class="align-middle">Email</th>
-                    <th class="align-middle">Téléphone</th>
-                    <th class="align-middle">Adresse 1</th>
-                    <th class="align-middle">Adresse 2</th>
-                    <th class="align-middle">Code Postal</th>
-                    <th class="align-middle">Ville</th>
-                    <th class="align-middle">Pays</th>
-                    <th class="align-middle">Actions</th>
+<style>
+    .btn-outline-societe {
+        color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    .btn-outline-societe:hover,
+    .btn-outline-societe.active {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    .btn-outline-physique {
+        color:rgb(194, 103, 214);
+        border-color:rgb(194, 103, 214);
+    }
+    .btn-outline-physique:hover,
+    .btn-outline-physique.active {
+        background-color:rgb(194, 103, 214);
+        color: white;
+    }
+
+    tr.row-societe td {
+        background-color:rgb(13, 110, 253);
+        color: white;
+    }
+
+    {# tr.row-physique td {
+        background-color:rgb(212, 19, 255);
+        color: white;
+    } #}
+
+    .btn-dons {
+    background-color: rgb(32, 201, 151);
+    color: white;
+    border: none;
+}
+
+.btn-dons:hover {
+    background-color: rgb(25, 176, 133);
+}
+
+</style>
+
+{# Boutons de filtrage #}
+<div class="d-flex justify-content-center mb-3">
+    <button class="btn btn-outline-primary filter-btn active" data-filter="all">Tous</button>
+    <button class="btn btn-outline-societe filter-btn ms-2" data-filter="societe">Société</button>
+    <button class="btn btn-outline-physique filter-btn ms-2" data-filter="personne_physique">Personne physique</button>
+</div>
+
+<div style="margin: 10px;">
+    <table class="table table-hover" id="donateurs-table">
+        <thead class="table-dark text-center">
+            <tr>
+                <th class="align-middle">Civ.</th>
+                <th class="align-middle">Nom</th>
+                <th class="align-middle">Prénom</th>
+                <th class="align-middle">Nom société</th>
+                <th class="align-middle">Siren</th>
+                <th class="align-middle">Email</th>
+                <th class="align-middle">Téléphone</th>
+                <th class="align-middle">Adresse 1</th>
+                <th class="align-middle">Adresse 2</th>
+                <th class="align-middle">Code Postal</th>
+                <th class="align-middle">Ville</th>
+                <th class="align-middle">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            {% for donateur in donateurs %}
+                {% set rowClass = donateur.typeDonateur == 'societe' ? 'row-societe' : 'row-physique' %}
+                <tr class="{{ rowClass }}" data-type="{{ donateur.typeDonateur }}">
+                    <td class="align-middle">{{ donateur.civilite }}</td>
+                    <td class="align-middle">{{ donateur.nom }}</td>
+                    <td class="align-middle">{{ donateur.prenom }}</td>
+
+                    {% if donateur.typeDonateur == "societe" %}
+                        <td class="align-middle">{{ donateur.getNomSociete }}</td>
+                        <td class="align-middle">{{ donateur.siren }}</td>
+                    {% else %}
+                        <td class="align-middle"></td>
+                        <td class="align-middle"></td>
+                    {% endif %}
+
+                    <td class="align-middle">{{ donateur.email }}</td>
+                    <td class="align-middle">{{ donateur.telephone }}</td>
+                    <td class="align-middle">{{ donateur.getAdresse1 }}</td>
+                    <td class="align-middle">{{ donateur.getAdresse2|default('') }}</td>
+                    <td class="align-middle">{{ donateur.getCodePostal }}</td>
+                    <td class="align-middle">{{ donateur.ville }}</td>
+                    <td class="align-middle">
+                        <a href="{{ path('admin_dons', {'id': donateur.id}) }}" class="btn btn-dons btn-sm">
+                            Voir ses dons
+                        </a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody class="text-center">
-                {% for donateur in donateurs %}
-                    <tr>
-                        <td class="align-middle">{{ donateur.nom }}</td>
-                        <td class="align-middle">{{ donateur.prenom }}</td>
-                        <td class="align-middle">{{ donateur.email }}</td>
-                        <td class="align-middle">{{ donateur.telephone }}</td>
-                        <td class="align-middle">{{ donateur.getAdresse1 }}</td>
-                        <td class="align-middle">{{ donateur.getAdresse2|default('') }}</td>
-                        <td class="align-middle">{{ donateur.getCodePostal }}</td>
-                        <td class="align-middle">{{ donateur.ville }}</td>
-                        <td class="align-middle">{{ donateur.pays }}</td>
-                        <td class="align-middle">
-                            <a href="{{ path('admin_dons', {'id': donateur.id}) }}" class="btn btn-primary btn-sm">
-                                Voir ses dons
-                            </a>
-                        </td>
-                    </tr>
+            {% else %}
+                <tr>
+                    <td colspan="12" class="text-center">Aucun donateur trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{# Pagination #}
+{% if donateurs.getTotalItemCount > 0 %}
+    <nav aria-label="Pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {# Précédent #}
+            <li class="page-item {% if donateurs.getCurrentPageNumber == 1 %}disabled{% endif %}">
+                {% if donateurs.getCurrentPageNumber > 1 %}
+                    <a class="page-link" href="{{ path('admin_donateurs', {'page': donateurs.getCurrentPageNumber - 1}) }}" aria-label="Précédent">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
                 {% else %}
-                    <tr>
-                        <td colspan="10" class="text-center">Aucun donateur trouvé.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                    <span class="page-link" aria-hidden="true">&laquo;</span>
+                {% endif %}
+            </li>
 
-    {# Pagination #}
-    {% if donateurs.getTotalItemCount > 0 %}
-        <nav aria-label="Pagination" class="mt-4">
-            <ul class="pagination justify-content-center">
-                {# Bouton "Précédent" #}
-                <li class="page-item {% if donateurs.getCurrentPageNumber == 1 %}disabled{% endif %}">
-                    {% if donateurs.getCurrentPageNumber > 1 %}
-                        <a class="page-link" href="{{ path('admin_donateurs', {'page': donateurs.getCurrentPageNumber - 1}) }}" aria-label="Précédent">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    {% else %}
-                        <span class="page-link" aria-hidden="true">&laquo;</span>
-                    {% endif %}
+            {# Pages #}
+            {% for i in 1..donateurs.getPageCount %}
+                <li class="page-item {{ i == donateurs.getCurrentPageNumber ? 'active' : '' }}">
+                    <a class="page-link" href="{{ path('admin_donateurs', {'page': i}) }}">{{ i }}</a>
                 </li>
+            {% endfor %}
 
-                {# Numéros de page #}
-                {% for i in 1..donateurs.getPageCount %}
-                    <li class="page-item {{ i == donateurs.getCurrentPageNumber ? 'active' : '' }}">
-                        <a class="page-link" href="{{ path('admin_donateurs', {'page': i}) }}">{{ i }}</a>
-                    </li>
-                {% endfor %}
+            {# Suivant #}
+            <li class="page-item {% if donateurs.getCurrentPageNumber == donateurs.getPageCount %}disabled{% endif %}">
+                {% if donateurs.getCurrentPageNumber < donateurs.getPageCount %}
+                    <a class="page-link" href="{{ path('admin_donateurs', {'page': donateurs.getCurrentPageNumber + 1}) }}" aria-label="Suivant">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                {% else %}
+                    <span class="page-link" aria-hidden="true">&raquo;</span>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+{% endif %}
 
-                {# Bouton "Suivant" #}
-                <li class="page-item {% if donateurs.getCurrentPageNumber == donateurs.getPageCount %}disabled{% endif %}">
-                    {% if donateurs.getCurrentPageNumber < donateurs.getPageCount %}
-                        <a class="page-link" href="{{ path('admin_donateurs', {'page': donateurs.getCurrentPageNumber + 1}) }}" aria-label="Suivant">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    {% else %}
-                        <span class="page-link" aria-hidden="true">&raquo;</span>
-                    {% endif %}
-                </li>
-            </ul>
-        </nav>
-    {% endif %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const tableRows = document.querySelectorAll('#donateurs-table tbody tr');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.getAttribute('data-filter');
+
+                // Retire la classe active de tous les boutons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Filtre les lignes
+                tableRows.forEach(row => {
+                    const typeDonateur = row.getAttribute('data-type');
+                    if (filter === 'all' || typeDonateur === filter) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
 {% endblock %}

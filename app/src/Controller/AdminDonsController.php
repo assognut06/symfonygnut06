@@ -140,25 +140,31 @@ public function adminDons(
     }
     
     
-    //Envoi du bordereau
+    // Envoi du bordereau
     #[Route('/admin/dons/{id}/send-bordereau', name: 'admin_send_bordereau', methods: ['POST'])]
     public function sendBordereau(Request $request, Don $don, MailerInterface $mailer, EntityManagerInterface $entityManager): Response
     {
+        // Vérifier si un partenaire logistique est associé au don
+        if (!$don->getPartenaireLogistique()) {
+            $this->addFlash('error', 'Le partenaire logistique est manquant ou invalide.');
+            return $this->redirectToRoute('admin_dons');
+        }
+    
         // Récupérer le fichier PDF et le numéro de suivi
         $bordereauFile = $request->files->get('bordereau');
         $numeroSuivi = trim($request->request->get('numero_suivi'));
-
+    
         if (!$bordereauFile) {
             $this->addFlash('error', 'Veuillez télécharger un fichier PDF.');
             return $this->redirectToRoute('admin_dons');
         }
-
+    
         // Mettre à jour le numéro de suivi (si fourni)
         if ($numeroSuivi) {
             $don->setNumeroSuivi($numeroSuivi);
             $entityManager->flush();
         }
-
+    
         try {
             // Création de l'email au donateur
             $emailDonateur = (new TemplatedEmail())
@@ -170,21 +176,21 @@ public function adminDons(
                     'donateur' => $don->getDonateur(),
                     'don' => $don,
                     'numero_suivi' => $numeroSuivi,
+                    'transporteur' => $don->getPartenaireLogistique(),  // Passer le partenaire logistique
                 ])
                 ->attachFromPath($bordereauFile->getPathname(), 'bordereau.pdf');
-
+    
             // Envoyer l'email
             $mailer->send($emailDonateur);
-
+    
             $don->setStatut('Bordereau envoyé');
             $entityManager->flush();
-
+    
             $this->addFlash('success', 'Le bordereau a été envoyé avec succès.');
         } catch (\Exception $e) {
             $this->addFlash('error', 'Une erreur est survenue lors de l\'envoi de l\'email : ' . $e->getMessage());
         }
-
+    
         return $this->redirectToRoute('admin_dons');
     }
-}
-
+    }
