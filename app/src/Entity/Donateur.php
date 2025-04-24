@@ -10,14 +10,11 @@ use Doctrine\Common\Collections\Collection;
 use App\Entity\Societe;
 use App\Entity\PersonnePhysique;
 use App\Entity\Don;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert; 
 
 #[ORM\Entity(repositoryClass: DonateurRepository::class)]
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name: "type_donateur", type: "string")]
-#[ORM\DiscriminatorMap(["societe" => Societe::class, "personne_physique" => PersonnePhysique::class])]
-#[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé.')] 
+#[ORM\DiscriminatorMap(["societe" => Societe::class, "personne_physique" => PersonnePhysique::class])] 
 abstract class Donateur
 {
     #[ORM\Id]
@@ -34,7 +31,7 @@ abstract class Donateur
     #[ORM\Column(length: 70)]
     private ?string $prenom = null;
 
-    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[ORM\Column(type: 'string', length: 180)]
     protected ?string $email = null;
 
     #[ORM\Column(length: 20)]
@@ -233,4 +230,14 @@ abstract class Donateur
 
         return $this;
     }
+
+    public function getTypeDonateur(): string
+    {
+        return match (true) {
+            $this instanceof \App\Entity\Societe => 'societe',
+            $this instanceof \App\Entity\PersonnePhysique => 'personne_physique',
+            default => 'inconnu',
+        };
+    }
+    
 }

@@ -31,9 +31,9 @@
 		<!-- Body content -->
 	
 		{% include('_partials/loader.html.twig') %}
-		
-		{% block body %}{% endblock %}
-		
+		<main>
+           {% block body %}{% endblock %}
+        </main>
 
 		<!-- Include footer -->
 		{% include 'admin/_partials/footer.html.twig' %}

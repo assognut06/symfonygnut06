@@ -64,21 +64,25 @@
         <h1>Bonjour {{ donateur.prenom }} {{ donateur.nom }},</h1>
         <p>Nous tenons à vous remercier encore une fois pour votre générosité et votre engagement envers notre cause. Grâce à des personnes comme vous, nous pouvons continuer à faire une réelle différence.</p>
 
-        <p>Comme promis, vous trouverez ci-joint votre **bordereau de suivi** pour le transport de votre don. Ce document vous permettra de suivre l'acheminement de vos casques jusqu'à leur destination finale.</p>
+        <p>Comme convenu, vous trouverez ci-joint votre **bordereau de suivi** pour le transport de votre don. Ce document vous permettra de suivre en temps réel l'acheminement de vos casques jusqu'à leur destination finale.</p>
 
-        {% if numero_suivi %}
-            <p><strong>Votre numéro de suivi :</strong> <span style="color: #007bff;">{{ numero_suivi }}</span></p>
-            <p>Pour suivre l'état d'avancement de votre envoi, vous pouvez utiliser ce numéro sur le site du transporteur.</p>
-        {% endif %}
-
-        <p>En cas de questions ou si vous avez besoin d'une assistance supplémentaire, n'hésitez pas à nous contacter. Nous sommes là pour vous aider à chaque étape du processus.</p>
-
-        <p>Encore un grand merci pour votre précieux soutien !</p>
-        <p>Avec toute notre gratitude,<br>L'équipe Gnut 06</p>
-
-        <div class="footer">
-            <p>Vous pouvez nous joindre à tout moment à <a href="mailto:gnut@gnut06.org">gnut@gnut06.org</a>.</p>
+            {% if transporteur.nom == 'Mondial Relay' %}
+                <p>📦 Votre colis sera expédié via <strong>Mondial Relay</strong>. Vous pouvez suivre l’envoi à l’aide du numéro présent dans le bordereau sur <a href="https://www.mondialrelay.fr/suivi-de-colis/">leur site de suivi</a>.</p>
+            {% elseif transporteur == 'UPS' %}
+                <p>📦 Votre colis est pris en charge par <strong>UPS</strong>. Pour suivre son acheminement, rendez-vous sur <a href="https://www.ups.com/track?loc=fr_FR">le site UPS</a> avec le numéro présent dans le bordereau.</p>
+            {% else %}
+                <p>📦 Le transporteur.nom utilisé pour votre don est : <strong>{{ transporteur.nom }}</strong>. Merci d'utiliser le numéro présent dans le bordereau pour le suivi de votre envoi.</p>
+            {% endif %}
+    
+            <p>Si vous avez des questions ou si vous avez besoin d'une aide supplémentaire, notre équipe est à votre disposition. N'hésitez pas à nous contacter, nous serons ravis de vous assister dans toutes les étapes du processus.</p>
+    
+            <p>Encore une fois, merci beaucoup pour votre soutien !</p>
+    
+            <p>Avec toute notre gratitude,<br>L'équipe Gnut 06</p>
+    
+            <div class="footer">
+                <p>Vous pouvez nous joindre à tout moment à <a href="mailto:gnut@gnut06.org">gnut@gnut06.org</a>.</p>
+            </div>
         </div>
-    </div>
-</body>
-</html>
+    </body>
+    </html>
