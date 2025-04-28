@@ -6,6 +6,15 @@
 <div class="container-fluid py-4" style="max-width: 95%; margin: auto;">
         <h1 class="mb-4 text-center">Liste des dons</h1>
         
+        {# Bouton retour #}
+        {% if donateur %}
+        <div class="mb-3" style="width: 75%; margin: auto;">
+            <a href="{{ app.request.headers.get('referer') }}" class="btn btn-secondary">
+                &larr; Retour
+            </a>
+        </div>
+        {% endif %}
+
         <div class="table-responsive p-1">
         <table class="table table-striped table-hover align-middle text-center w-100">
                 <thead class="table-dark">

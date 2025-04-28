@@ -1,0 +1,85 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Modifier Donateur{% endblock %}
+
+{% block body %}
+
+
+<div class="container mt-5">
+<h1 class="mb-4">Détails du donateur</h1>
+
+
+
+    <div id="donateur-details" class="card p-4 shadow-sm mb-4">
+        <div class="row">
+
+            {% if donateur.typeDonateur == 'societe' %}
+                <div class="col-md-6"><strong>Nom société :</strong> {{ donateur.nomSociete }}</div>
+                <div class="col-md-6"><strong>SIREN :</strong> {{ donateur.siren }}</div>
+            {% endif %}
+
+            <div class="col-md-6"><strong>Civilité :</strong> {{ donateur.civilite }}</div>
+            <div class="col-md-6"><strong>Nom :</strong> {{ donateur.nom }}</div>
+            <div class="col-md-6"><strong>Prénom :</strong> {{ donateur.prenom }}</div>
+            <div class="col-md-6"><strong>Email :</strong> {{ donateur.email }}</div>
+            <div class="col-md-6"><strong>Téléphone :</strong> {{ donateur.telephone }}</div>
+            <div class="col-md-6"><strong>Adresse ligne 1 :</strong> {{ donateur.adresse1 }}</div>
+            <div class="col-md-6"><strong>Adresse ligne 2 :</strong> {{ donateur.adresse2 }}</div>
+            <div class="col-md-6"><strong>Code postal :</strong> {{ donateur.codePostal }}</div>
+            <div class="col-md-6"><strong>Ville :</strong> {{ donateur.ville }}</div>
+            <div class="col-md-6"><strong>Pays :</strong> {{ donateur.pays }}</div>
+        </div>
+
+        {# Bouton retour #}
+       <div class="d-flex justify-content-between align-items-center mt-5">
+            <a href="{{ app.request.headers.get('referer') }}" class="btn btn-secondary">
+                &larr; Retour
+            </a>
+        
+            <button id="edit-button" class="btn btn-primary">Modifier</button>
+        </div>
+    </div>
+
+    <div id="donateur-form" style="display: none;" class="card p-4 shadow-sm">
+        {{ form_start(form) }}
+            <div class="row">
+            {% if donateur.typeDonateur == 'societe' %}
+                <div class="col-md-6 mb-3">{{ form_row(form.nom_societe) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.siren) }}</div>
+            {% endif %}
+                <div class="col-md-6 mb-3">{{ form_row(form.civilite) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.nom) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.prenom) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.email) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.telephone) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.adresse_1) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.adresse_2) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.code_postal) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.ville) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.pays) }}</div>
+            </div>
+            <div class="d-flex justify-content-between mt-4">
+                <button type="submit" class="btn btn-success">Enregistrer</button>
+                <button type="button" id="cancel-button" class="btn btn-secondary">Annuler</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+
+<script>
+    const editBtn = document.getElementById('edit-button');
+    const cancelBtn = document.getElementById('cancel-button');
+    const formDiv = document.getElementById('donateur-form');
+    const detailsDiv = document.getElementById('donateur-details');
+
+    editBtn.addEventListener('click', () => {
+        formDiv.style.display = 'block';
+        detailsDiv.style.display = 'none';
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        formDiv.style.display = 'none';
+        detailsDiv.style.display = 'block';
+    });
+</script>
+{% endblock %}

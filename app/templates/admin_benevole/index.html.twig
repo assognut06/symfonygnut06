@@ -1,0 +1,118 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Liste des bénévoles{% endblock %}
+
+{% block body %}
+<h1 class="mb-4">Liste des bénévoles</h1>
+
+<style>
+    /* Centrer verticalement et horizontalement les cellules du tableau */
+    table th, table td {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    table {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+</style>
+
+
+<div class="d-flex align-items-center justify-content-around mb-4">
+    <input type="text" id="search-input" class="form-control" placeholder="Rechercher un bénévole..." style="max-width: 300px;">
+    <a href="{{ path('benevole_new') }}" class="btn btn-success ms-3" style="color: white">
+        + Ajouter un bénévole
+    </a>
+</div>
+
+
+<table class="table table-hover">
+    <thead class="table-dark text-center">
+        <tr>
+            <th>Type</th>
+            <th>Civ.</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Adresse 1</th>
+            <th>Adresse 2</th>
+            <th>Ville</th>
+            <th>Nous a trouvé par</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        {% for benevole in benevoles %}
+            <tr>
+                <td>{{ benevole.type }}</td>
+                <td>{{ benevole.civilite }}</td>
+                <td>{{ benevole.nom }}</td>
+                <td>{{ benevole.prenom }}</td>
+                <td>{{ benevole.email }}</td>
+                <td>{{ benevole.telephone }}</td>
+                <td>{{ benevole.adresse1 }}</td>
+                <td>{{ benevole.adresse2 }}</td>
+                <td>{{ benevole.ville }}</td>
+                <td>{{ benevole.getAssoTrouvePar }}</td>
+                <td class="d-flex flex-column justify-content-around">
+                    <a href="{{ path('benevole_edit', {'id': benevole.id}) }}" class="btn btn-sm btn-primary mb-2">Modifier</a>
+                    <a href="{{ path('benevole_delete', {'id': benevole.id}) }}" class="btn btn-sm btn-danger" style="color: white"
+                       onclick="return confirm('Supprimer ce bénévole ?');">Supprimer</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8" class="text-center">Aucun bénévole trouvé.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{# PAGINATION avec KnpPaginator si utilisé #}
+{% if benevoles is defined and benevoles.getTotalItemCount is defined %}
+    <nav aria-label="Pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item {% if benevoles.getCurrentPageNumber == 1 %}disabled{% endif %}">
+                {% if benevoles.getCurrentPageNumber > 1 %}
+                    <a class="page-link" href="{{ path('app_benevole', {'page': benevoles.getCurrentPageNumber - 1}) }}">&laquo;</a>
+                {% else %}
+                    <span class="page-link">&laquo;</span>
+                {% endif %}
+            </li>
+
+            {% for i in 1..benevoles.getPageCount %}
+                <li class="page-item {% if i == benevoles.getCurrentPageNumber %}active{% endif %}">
+                    <a class="page-link" href="{{ path('app_benevole', {'page': i}) }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+
+            <li class="page-item {% if benevoles.getCurrentPageNumber == benevoles.getPageCount %}disabled{% endif %}">
+                {% if benevoles.getCurrentPageNumber < benevoles.getPageCount %}
+                    <a class="page-link" href="{{ path('app_benevole', {'page': benevoles.getCurrentPageNumber + 1}) }}">&raquo;</a>
+                {% else %}
+                    <span class="page-link">&raquo;</span>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('search-input');
+        const rows = document.querySelectorAll('table tbody tr');
+
+        input.addEventListener('input', () => {
+            const value = input.value.toLowerCase();
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(value) ? '' : 'none';
+            });
+        });
+    });
+</script>
+{% endblock %}

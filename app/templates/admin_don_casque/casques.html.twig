@@ -17,6 +17,16 @@
         {% endif %}
     </h1>
 
+
+    {% if don and don.donateur %}
+    {# Bouton retour #}
+    <div class="mb-3" style="width: 75%; margin: auto;">
+        <a href="{{ app.request.headers.get('referer') }}" class="btn btn-secondary">
+            &larr; Retour
+        </a>
+    </div>
+    {% endif %}
+
     <div style="width: 75%; margin: auto;">
     <table class="table table-striped table-hover">
         <thead class="table-dark">

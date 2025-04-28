@@ -27,14 +27,9 @@
     }
 
     tr.row-societe td {
-        background-color:rgb(13, 110, 253);
-        color: white;
+        background-color:rgb(182, 211, 255);
+       
     }
-
-    {# tr.row-physique td {
-        background-color:rgb(212, 19, 255);
-        color: white;
-    } #}
 
     .btn-dons {
     background-color: rgb(32, 201, 151);
@@ -46,16 +41,41 @@
     background-color: rgb(25, 176, 133);
 }
 
+.btn-outline-detail {
+    color: #1c4c84;
+    border-color: #1c4c84;
+    background-color: transparent;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-outline-detail:hover {
+    background-color: #1c4c84;
+    color: white;
+}
+
+
 </style>
 
-{# Boutons de filtrage #}
-<div class="d-flex justify-content-center mb-3">
-    <button class="btn btn-outline-primary filter-btn active" data-filter="all">Tous</button>
-    <button class="btn btn-outline-societe filter-btn ms-2" data-filter="societe">Société</button>
-    <button class="btn btn-outline-physique filter-btn ms-2" data-filter="personne_physique">Personne physique</button>
+{# Div avec les filtres et la recherche #}
+<div class="row mb-4">
+  <div class="col-12 d-flex flex-column align-items-center">
+    
+    <!-- Boutons de filtrage -->
+    <div class="d-flex justify-content-center gap-2 mb-3" style="width: 400px;">
+      <button class="btn btn-outline-primary filter-btn active" data-filter="all">Tous</button>
+      <button class="btn btn-outline-societe filter-btn" data-filter="societe">Société</button>
+      <button class="btn btn-outline-physique filter-btn" data-filter="personne_physique">Personne physique</button>
+    </div>
+
+    <!-- Barre de recherche -->
+    <div style="width: 370px;">
+      <input type="text" id="search-input" class="form-control" placeholder="Rechercher un donateur...">
+    </div>
+    
+  </div>
 </div>
 
-<div style="margin: 10px;">
+<div style="margin: 5px;">
     <table class="table table-hover" id="donateurs-table">
         <thead class="table-dark text-center">
             <tr>
@@ -85,20 +105,38 @@
                         <td class="align-middle">{{ donateur.getNomSociete }}</td>
                         <td class="align-middle">{{ donateur.siren }}</td>
                     {% else %}
-                        <td class="align-middle"></td>
-                        <td class="align-middle"></td>
+                        <td class="align-middle"><img src="{{ asset('images/no-data.png') }}" alt="no-data"></td>
+                        <td class="align-middle"><img src="{{ asset('images/no-data.png') }}" alt="no-data"></td>
                     {% endif %}
 
                     <td class="align-middle">{{ donateur.email }}</td>
                     <td class="align-middle">{{ donateur.telephone }}</td>
                     <td class="align-middle">{{ donateur.getAdresse1 }}</td>
-                    <td class="align-middle">{{ donateur.getAdresse2|default('') }}</td>
+
+                    {% if donateur.getAdresse2 %}
+                        <td class="align-middle">{{ donateur.getAdresse2 }}</td>
+                    {% else %}
+                        <td class="align-middle"><img src="{{ asset('images/no-data.png') }}" alt="no-data"></td>
+                    {% endif %}
+                    
                     <td class="align-middle">{{ donateur.getCodePostal }}</td>
                     <td class="align-middle">{{ donateur.ville }}</td>
-                    <td class="align-middle">
+                    <td class="align-middle d-flex flex-column gap-1">
                         <a href="{{ path('admin_dons', {'id': donateur.id}) }}" class="btn btn-dons btn-sm">
                             Voir ses dons
                         </a>
+                        <div class="d-flex justify-content-center gap-1">
+                        <a href="{{ path('admin_donateur_details', {'id': donateur.id}) }}" class="btn btn-outline-detail btn-sm" title="Voir les détails">
+                    <i class="bi bi-eye"></i>
+                </a> 
+                
+                            <form method="post" action="{{ path('admin_donateur_delete', {'id': donateur.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce donateur ?');" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_donateur_' ~ donateur.id) }}">
+                                <button class="btn btn-outline-danger btn-sm" title="Supprimer">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             {% else %}
@@ -148,9 +186,21 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('search-input');
         const filterButtons = document.querySelectorAll('.filter-btn');
         const tableRows = document.querySelectorAll('#donateurs-table tbody tr');
 
+        // Recherche en direct
+        searchInput.addEventListener('input', () => {
+            const value = searchInput.value.toLowerCase();
+
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(value) ? '' : 'none';
+            });
+        });
+
+        // Filtrage des types de donateurs
         filterButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const filter = button.getAttribute('data-filter');
@@ -159,7 +209,7 @@
                 filterButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
 
-                // Filtre les lignes
+                // Filtre les lignes par type
                 tableRows.forEach(row => {
                     const typeDonateur = row.getAttribute('data-type');
                     if (filter === 'all' || typeDonateur === filter) {

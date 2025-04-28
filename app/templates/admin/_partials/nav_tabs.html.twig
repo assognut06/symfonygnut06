@@ -26,6 +26,9 @@
 		<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_admin_payers_index') ? ' active' : '' }}" href="{{ path('app_admin_payers_index') }}">Payeurs</a>
 	</li>
 	<li class="nav-item">
+		<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_benevole') ? ' active' : '' }}" href="{{ path('app_benevole') }}">Bénévoles</a>
+	</li>
+	<li class="nav-item">
 		<a class="nav-link{{ (app.request.attributes.get('_route') == 'admin_donateurs') ? ' active' : '' }}" href="{{ path('admin_donateurs') }}">Donateurs</a>
 	</li>
 	<li class="nav-item">
