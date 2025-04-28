@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Don;
 use App\Entity\Donateur;
 use App\Repository\DonRepository;
-use App\Repository\DonateurRepository;
 use App\Repository\CasqueRepository;
 use App\Repository\PartenaireLogistiqueRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,7 +35,7 @@ public function adminDons(
         $query = $donRepository->TrouveDonsParDonateur($donateur);
     } else {
         $query = $donRepository->createQueryBuilder('d')
-            ->orderBy('d.date_creation', 'DESC')
+            ->orderBy('d.id', 'DESC')
             ->getQuery();
     }
 
@@ -51,34 +50,6 @@ public function adminDons(
         'partenairesLogistiques' => $partenairesLogistiques,
     ]);
 }
-    
-
-    //Recupérer tous les donateurs
-    #[Route('/admin/donateurs', name: 'admin_donateurs')]
-    public function list(
-        Request $request,
-        DonateurRepository $donateurRepository,
-        PaginatorInterface $paginator
-    ): Response {
-        // Récupérer le numéro de la page depuis la requête
-        $page = $request->query->getInt('page', 1); 
-        $limit = 10;
-    
-        // Pagination des donateurs
-        $query = $donateurRepository->createQueryBuilder('d')
-            ->orderBy('d.nom', 'ASC')
-            ->getQuery();
-    
-        $donateurs = $paginator->paginate(
-            $query, 
-            $page, 
-            $limit
-        );
-    
-        return $this->render('admin_don_casque/donateurs.html.twig', [
-            'donateurs' => $donateurs,
-        ]);
-    }
     
 
     // Récupérer tous ou les casques associés au don
@@ -130,6 +101,8 @@ public function adminDons(
     
         // Mettre à jour directement le partenaire logistique du don
         $don->setPartenaireLogistique($partenaireLogistique);
+        $don->setDateMiseAJour(new \DateTime());
+
         $entityManager->flush();
     
         // Renvoyer une réponse JSON avec le nom du partenaire mis à jour
@@ -141,7 +114,7 @@ public function adminDons(
     
     
     // Envoi du bordereau
-    #[Route('/admin/dons/{id}/send-bordereau', name: 'admin_send_bordereau', methods: ['POST'])]
+    #[Route('/admin/dons/{id}/envoyer-bordereau', name: 'admin_send_bordereau', methods: ['POST'])]
     public function sendBordereau(Request $request, Don $don, MailerInterface $mailer, EntityManagerInterface $entityManager): Response
     {
         // Vérifier si un partenaire logistique est associé au don
@@ -176,7 +149,7 @@ public function adminDons(
                     'donateur' => $don->getDonateur(),
                     'don' => $don,
                     'numero_suivi' => $numeroSuivi,
-                    'transporteur' => $don->getPartenaireLogistique(),  // Passer le partenaire logistique
+                    'transporteur' => $don->getPartenaireLogistique(),
                 ])
                 ->attachFromPath($bordereauFile->getPathname(), 'bordereau.pdf');
     
@@ -184,6 +157,7 @@ public function adminDons(
             $mailer->send($emailDonateur);
     
             $don->setStatut('Bordereau envoyé');
+            $don->setDateMiseAJour(new \DateTime());
             $entityManager->flush();
     
             $this->addFlash('success', 'Le bordereau a été envoyé avec succès.');

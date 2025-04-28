@@ -1,0 +1,81 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ edit ? 'Modifier' : 'Ajouter' }} un Bénévole{% endblock %}
+
+{% block body %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="text-center mb-4">{{ edit ? 'Modifier' : 'Ajouter' }} un Bénévole</h1>
+
+            <div id="form-benevole" class="card p-4 shadow-lg rounded-4 border-0">
+                {{ form_start(form, {'attr': {'onsubmit': 'return validateRecaptcha("societe");'}}) }}
+                
+                        <h4 class="text-center mb-4 text-primary">Merci de saisir les informations du bénévole</h4>
+                        <p>
+                           <span class="text-danger">*</span>
+                           <span style="color: grey;">: champ obligatoire</span>
+                        </p>
+
+                        <div class="mb-3">
+                            {{ form_widget(form.type) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_widget(form.civilite) }}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_widget(form.nom) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_widget(form.prenom) }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                           {{ form_widget(form.email) }}
+                           <small class="text-danger">
+                               {{ form_errors(form.email)}}
+                           </small>
+                        </div>
+                        <div class="mb-3">
+                            {{ form_widget(form.telephone) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_widget(form.adresse_1) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_widget(form.adresse_2) }}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_widget(form.code_postal) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_widget(form.ville) }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            {{ form_widget(form.pays) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_widget(form.asso_trouve_par) }}
+                        </div>
+                         <div class="mb-3"> {{ form_label(form.cv) }} {{ form_widget(form.cv) }}
+                             {% if edit and benevole.cv %}
+                                 <p class="form-text text-muted">Fichier déjà téléversé : {{ benevole.cv }}</p>
+                             {% endif %} 
+                        </div>
+                        
+
+                    <button class="btn btn-success mt-3 w-100">
+                        {{ edit ? 'Enregistrer les modifications' : 'Ajouter le bénévole' }}
+                    </button>
+                {{ form_end(form) }}
+            </div>
+
+            <a href="{{ path('app_benevole') }}" class="btn btn-secondary mt-3 w-100">Retour à la liste</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
