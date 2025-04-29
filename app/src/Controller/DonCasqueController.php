@@ -25,20 +25,21 @@ class DonCasqueController extends AbstractController
     ): Response {
         $session = $request->getSession();
 
-        // Récupérer l'ID et l'email du donateur depuis la session
+        // Récupérer l'ID et l'email du donateur
         $donateurId = $session->get('selected_donateur_id');
-        $donateurEmail = $session->get('donateur_email');
 
-        if (!$donateurId || !$donateurEmail) {
+        if (!$donateurId) {
             throw $this->createNotFoundException('Aucun donateur sélectionné.');
         }
 
-        // Récupérer le donateur à partir de l'ID
         $donateur = $entityManager->getRepository(Donateur::class)->find($donateurId);
 
         if (!$donateur) {
             throw $this->createNotFoundException('Le donateur avec l\'ID ' . $donateurId . ' n\'existe pas.');
         }
+
+        // Récupérer l'email du donateur depuis la base de données
+        $donateurEmail = $donateur->getEmail();
 
         // Créer un nouveau don et l'associer au donateur
         $don = new Don();
