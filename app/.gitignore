@@ -14,6 +14,17 @@
 /node_modules/
 /pass/
 /run.sh
+
+# Ignorer Uploads (les cv et photo de profil)
+/public/uploads/cv/*
+/public/uploads/profilePictures/*
+
+# laisser les dossiers vides utiles au projet
+!public/uploads/.gitkeep
+!public/uploads/cv/.gitkeep
+!public/uploads/profilePictures/.gitkeep
+
+
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
