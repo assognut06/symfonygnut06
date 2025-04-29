@@ -11,19 +11,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface; // Ajouté pour gérer la session
 use GuzzleHttp\Client;
-use Symfony\Component\Form\FormError;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 class DonateurController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager) {}
 
     #[Route('/donateur/formulaire', name: 'donateur_formulaire')]
-    public function afficherFormulaires(Request $request): Response
+    public function afficherFormulaires(Request $request, SessionInterface $session): Response
     {
-        $session = $request->getSession();
-
         $donateurPhysique = new PersonnePhysique();
         $donateurSociete = new Societe();
 
@@ -48,13 +45,12 @@ class DonateurController extends AbstractController
                 $this->entityManager->flush();
 
                 $session->set('selected_donateur_id', $donateurPhysique->getId());
-                $session->set('donateur_email', $donateurPhysique->getEmail());
 
                 $this->addFlash('success', 'Personne physique créée avec succès !');
                 return $this->redirectToRoute('app_don_casque_new');
-            } catch (UniqueConstraintViolationException $e) {
-                $this->addFlash('danger', 'Cet e-mail est déjà utilisé.');
-            }
+             } catch (\Exception $e) {
+                 $this->addFlash('danger', 'Une erreur est survenue lors de l’enregistrement des données.');
+             }
         }
 
         // Société
@@ -75,8 +71,8 @@ class DonateurController extends AbstractController
 
                 $this->addFlash('success', 'Société créée avec succès !');
                 return $this->redirectToRoute('app_don_casque_new');
-            } catch (UniqueConstraintViolationException $e) {
-                $this->addFlash('danger', 'Cet e-mail est déjà utilisé.');
+            } catch (\Exception $e) {
+                $this->addFlash('danger', 'Une erreur est survenue lors de l’enregistrement des données.');
             }
         }
 

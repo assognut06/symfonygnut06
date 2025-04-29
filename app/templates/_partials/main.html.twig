@@ -52,7 +52,10 @@
 			{% elseif label == 'info' %}
 				{% set alertClass = 'info' %}
 			{% endif %}
-			<div class="alert alert-{{ alertClass }} text-center" role="alert">{{ flash }}</div>
+			<div class="alert alert-{{ alertClass }} text-center" role="alert">
+				{{ flash }}
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+			</div>
 		{% endfor %}
 	{% endfor %}
 </main>

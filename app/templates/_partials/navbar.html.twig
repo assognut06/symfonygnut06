@@ -15,9 +15,6 @@
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link {{ app.request.attributes.get('_route') == 'donateur_formulaire' ? 'active' : '' }}" href="{{ path('donateur_formulaire') }}">Effectuer un don de casque</a>
-				</li>
-				<li class="nav-item">
 					<a class="nav-link {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}" href="{{ path('app_billetteries') }}">Événements</a>
 				</li>
 				<li class="nav-item dropdown">
@@ -100,6 +97,9 @@
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nous Soutenir</a>
 					<ul class="dropdown-menu">
+						<li class="nav-item">
+							<a class="nav-link {{ app.request.attributes.get('_route') == 'donateur_formulaire' ? 'active' : '' }}" href="{{ path('donateur_formulaire') }}">Effectuer un don de casque</a>
+						</li>
 						<li>
 							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_adhesion' %}active{% endif %}" href="{{ path('app_adhesion') }}">Adhésion</a>
 						</li>

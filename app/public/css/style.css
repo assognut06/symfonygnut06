@@ -220,3 +220,21 @@ gmpx-store-locator {
 .image-zoom:hover {
   animation: zoom-in 0.3s forwards;
 }
+
+
+/* div adresse auto_complete */
+.autocomplete-suggestions {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 4px;
+  display: none;
+}
+.suggestion-item:hover {
+  background-color: #f0f0f0;
+}

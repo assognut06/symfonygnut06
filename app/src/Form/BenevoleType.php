@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use App\Form\EventListener\PremiereLettreMajuscule;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class BenevoleType extends AbstractType
 {
@@ -41,10 +43,27 @@ class BenevoleType extends AbstractType
             'attr' => ['placeholder' => 'Prénom*', 'class' => 'form-control']
         ])
         ->add('email', EmailType::class, [
-            'attr' => ['placeholder' => 'Email*', 'class' => 'form-control']
+            'attr' => ['placeholder' => 'Email*', 'class' => 'form-control'],
+            'constraints' => [
+                new Assert\Email([
+                    'message' => 'L\'adresse email n\'est pas valide.',
+                ]),
+                new Assert\NotBlank([
+                    'message' => 'L\'email ne peut pas être vide.',
+                ])
+            ],
         ])
         ->add('telephone', TextType::class, [
-            'attr' => ['placeholder' => 'Téléphone*', 'class' => 'form-control']
+            'attr' => ['placeholder' => 'Téléphone*', 'class' => 'form-control'],
+            'constraints' => [
+                new Assert\NotBlank([
+                    'message' => 'Le numéro de téléphone ne peut pas être vide.',
+                ]),
+                new Assert\Regex([
+                    'pattern' => '/^(\+33|0)[1-9](?:[\s\.]?\d{2}){4}$/',
+                    'message' => 'Veuillez entrer un numéro de téléphone valide.',
+                ])
+            ],
         ])
         ->add('adresse_1', TextType::class, [
             'attr' => ['placeholder' => 'Adresse ligne 1*', 'class' => 'form-control']
@@ -98,7 +117,8 @@ class BenevoleType extends AbstractType
             'attr' => ['class' => 'form-control', 'accept' => '.pdf']
         ]);
         
-        
+        $builder->addEventSubscriber(new PremiereLettreMajuscule());
+
 }
 
     public function configureOptions(OptionsResolver $resolver): void
