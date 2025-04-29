@@ -9,6 +9,9 @@ parameters:
     mailjet.api_key: '%env(APIMAILJET)%'
     mailjet.api_secret: '%env(APIMAILJETSECRET)%'
     ohme.api_key: '%env(SECRETOHME)%'
+    parameters:
+    photos_directory: '%kernel.project_dir%/public/uploads/profilePictures'
+
 services:
     App\MessageHandler\NotificationHandler:
         tags: [messenger.message_handler]

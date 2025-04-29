@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center my-4">Modifier votre photo de profil</h1>
+
+    <div class="container d-flex justify-content-center">
+        <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+            <div class="card-body">
+                {{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data' } }) }}
+                    <div class="mb-3">
+                        {{ form_label(form.photo) }}
+                        {{ form_widget(form.photo, { 'attr': { 'class': 'form-control' } }) }}
+                        {{ form_errors(form.photo) }}
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">
+                            {{ form.save.vars.label|default('Enregistrer') }}
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

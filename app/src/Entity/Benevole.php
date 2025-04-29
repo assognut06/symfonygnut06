@@ -59,6 +59,9 @@ class Benevole
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $cv = null;
 
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $commentaire = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -230,6 +233,18 @@ class Benevole
     public function setCv(?string $cv): static
     {
         $this->cv = $cv;
+
+        return $this;
+    }
+
+    public function getCommentaire(): ?string
+    {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire(?string $commentaire): static
+    {
+        $this->commentaire = $commentaire;
 
         return $this;
     }

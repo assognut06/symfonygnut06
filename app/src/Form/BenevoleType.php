@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class BenevoleType extends AbstractType
 {
@@ -71,23 +72,32 @@ class BenevoleType extends AbstractType
             'attr' => ['class' => 'form-select']
         ])
 
+        ->add('commentaire', TextareaType::class, [
+            'required' => false,
+            'attr' => [
+                'placeholder' => 'Votre commentaire (optionnel)',
+                'class' => 'form-control',
+                'rows' => 5, // nombre de lignes visibles
+            ],
+            'label' => 'Commentaire',
+        ])
+        
         ->add('cv', FileType::class, [
-            'label' => 'Votre CV (PDF ou DOC)',
-            'mapped' => false, // très important car ce champ ne correspond pas à une propriété directement modifiable de l'entité
+            'label' => 'Votre CV (PDF uniquement)',
+            'mapped' => false,
             'required' => false,
             'constraints' => [
                 new File([
                     'maxSize' => '5M',
                     'mimeTypes' => [
                         'application/pdf',
-                        'application/msword',
-                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                     ],
-                    'mimeTypesMessage' => 'Veuillez uploader un fichier PDF ou Word valide.',
+                    'mimeTypesMessage' => 'Veuillez uploader un fichier PDF valide.',
                 ])
             ],
-            'attr' => ['class' => 'form-control']
+            'attr' => ['class' => 'form-control', 'accept' => '.pdf']
         ]);
+        
         
 }
 

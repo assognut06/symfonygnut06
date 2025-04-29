@@ -59,8 +59,11 @@
                             {{ form_widget(form.pays) }}
                         </div>
                         <div class="mb-3">
-                            {{ form_widget(form.asso_trouve_par) }}
-                        </div>
+                        {{ form_widget(form.asso_trouve_par) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_widget(form.commentaire) }}
+                    </div>
                          <div class="mb-3"> {{ form_label(form.cv) }} {{ form_widget(form.cv) }}
                              {% if edit and benevole.cv %}
                                  <p class="form-text text-muted">Fichier déjà téléversé : {{ benevole.cv }}</p>
