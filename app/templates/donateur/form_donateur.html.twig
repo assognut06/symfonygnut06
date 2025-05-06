@@ -163,7 +163,12 @@
     }
 </script>
 
-{# Inclure le fichier JavaScript externe #}
-<script src="{{ asset('js/scripts.js') }}"></script> 
 
+{% endblock %}
+
+{% block javascripts %}
+    {# Inclure le fichier JavaScript externe #}
+    <script src="{{ asset('js/scripts.js') }}"></script> 
+    {{ parent() }}
+    <script src="{{ asset('js/adresse_auto_complete.js') }}"></script>
 {% endblock %}

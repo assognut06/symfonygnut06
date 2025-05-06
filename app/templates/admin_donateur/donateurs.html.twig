@@ -5,57 +5,6 @@
 {% block body %}
 <h1 class="mb-4">Liste des donateurs</h1>
 
-<style>
-    .btn-outline-societe {
-        color: #0d6efd;
-        border-color: #0d6efd;
-    }
-    .btn-outline-societe:hover,
-    .btn-outline-societe.active {
-        background-color: #0d6efd;
-        color: white;
-    }
-
-    .btn-outline-physique {
-        color:rgb(194, 103, 214);
-        border-color:rgb(194, 103, 214);
-    }
-    .btn-outline-physique:hover,
-    .btn-outline-physique.active {
-        background-color:rgb(194, 103, 214);
-        color: white;
-    }
-
-    tr.row-societe td {
-        background-color:rgb(182, 211, 255);
-       
-    }
-
-    .btn-dons {
-    background-color: rgb(32, 201, 151);
-    color: white;
-    border: none;
-}
-
-.btn-dons:hover {
-    background-color: rgb(25, 176, 133);
-}
-
-.btn-outline-detail {
-    color: #1c4c84;
-    border-color: #1c4c84;
-    background-color: transparent;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.btn-outline-detail:hover {
-    background-color: #1c4c84;
-    color: white;
-}
-
-
-</style>
-
 {# Div avec les filtres et la recherche #}
 <div class="row mb-4">
   <div class="col-12 d-flex flex-column align-items-center">
@@ -75,8 +24,8 @@
   </div>
 </div>
 
-<div style="margin: 5px;">
-    <table class="table table-hover" id="donateurs-table">
+    <div style="width: 98%; margin: auto;">
+    <table class="table table-3d" id="donateurs-table">
         <thead class="table-dark text-center">
             <tr>
                 <th class="align-middle">Civ.</th>

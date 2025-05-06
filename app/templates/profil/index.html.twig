@@ -116,7 +116,7 @@
 						{% if data_items['pagination'].pageIndex < data_items['pagination'].totalPages %}
 							<li class="page-item">
 								<a class="page-link" href="{{ path('app_profil_page', {'page': data_items['pagination'].pageIndex + 1, 'donnees': app.request.attributes.get('donnees') is defined and app.request.attributes.get('donnees') ? app.request.attributes.get('donnees') : 'orders'}) }}">
-									<span aria-hidden="true">&laquo;</span>
+									<span aria-hidden="true">&raquo;</span>
 								</a>
 							</li>
 						{% endif %}
