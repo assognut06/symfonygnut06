@@ -1,0 +1,262 @@
+/* Modern Nav Tabs */
+.nav-tabs {
+    border-bottom: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+/* Nav item spacing */
+.nav-tabs .nav-item {
+    margin-bottom: 0;
+}
+
+/* Nav links */
+.nav-tabs .nav-link {
+    border: none;
+    background: transparent;
+    color: #333;
+    font-weight: 500;
+    position: relative;
+    padding: 0.5rem 1rem;
+    
+    transition: all 0.3s ease;
+}
+
+/* Hover effect with underline */
+.nav-tabs .nav-link::after {
+    content: '';
+    display: block;
+    height: 3px;
+    background-color: #0d6efd;
+    width: 0;
+    transition: width 0.3s ease;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-radius: 2px;
+}
+
+.nav-tabs .nav-link:hover::after {
+    width: 100%;
+}
+
+/* Active tab */
+.nav-tabs .nav-link.active {
+    color: #0d6efd;
+    font-weight: 600;
+    background-color: #e7f1ff;
+    box-shadow: inset 0 -3px 0 #0d6efd;
+    
+}
+
+.nav-tabs .nav-link.active::after {
+    width: 100%;
+}
+
+/* Disabled tab */
+.nav-tabs .nav-link.disabled {
+    color: #ccc;
+    pointer-events: none;
+}
+
+
+
+/* ===== TABLE 3D STYLE ===== */
+.table-3d {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    background-color: white;
+    transform: perspective(1000px) rotateX(1deg);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.table-3d:hover {
+    transform: perspective(1000px) rotateX(0deg);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* ===== TABLE BASE ===== */
+table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table th,
+.table td {
+    vertical-align: middle !important;
+}
+
+/* Bouton de base */
+.btn {
+    border: none;
+    border-radius: 10px;
+    padding: 0.45rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Icône à gauche */
+.btn i {
+    font-size: 1rem;
+}
+
+/* CV (secondary style) */
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #dcdcdc;
+    color: #000;
+}
+
+/* Modifier (primary style) */
+.btn-primary {
+    background: linear-gradient(135deg, #4a90e2, #007bff);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #377fd2, #006ee0);
+    color: #fff;
+}
+
+/* Supprimer (danger style) */
+.btn-danger {
+    background: linear-gradient(135deg, #ff5f5f, #d90429);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #e14e4e, #c10325);
+    color: #fff;
+}
+
+/* Petit bouton (comme .btn-sm) */
+.btn-sm {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 8px;
+}
+
+/* btns */
+
+.btn-outline-physique {
+    color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-outline-physique:hover,
+.btn-outline-physique.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.btn-outline-societe {
+    color: rgb(194, 103, 214);
+    border-color: rgb(194, 103, 214);
+}
+
+.btn-outline-societe:hover,
+.btn-outline-societe.active {
+    background-color: rgb(194, 103, 214);
+    color: white;
+}
+
+.btn-dons, .btn-don-recu {
+    transition: background-color 0.2s ease, color 0.2s ease, border 0.2s ease;
+    background-color: rgb(32, 201, 151);
+    color: white;
+    border: none;
+}
+
+.btn-dons:hover, .btn-don-recu:hover {
+    background-color: white;
+    color: rgb(32, 201, 151);
+    border: 1px solid rgb(32, 201, 151);
+}
+
+.btn-outline-detail {
+    color: #1c4c84;
+    border-color: #1c4c84;
+    background-color: transparent;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-outline-detail:hover {
+    background-color: #1c4c84;
+    color: white;
+}
+
+.btn-outline-danger:hover{
+    background-color: #ff0000;
+    color: white;
+}
+
+.btn-info, .btn-modifier {
+    background:  rgb(0, 153, 255);
+    color: #fff;
+}
+
+.btn-info:hover, .btn-modifier:hover {
+    background-color: #fff;
+    border: 1px solid rgb(0, 153, 255);
+    color: rgb(0, 153, 255);
+}
+
+.btn-envoyer-bordereau {
+    color: white;
+    background-color:rgb(174, 0, 255);
+    border:0;
+}
+
+.btn-envoyer-bordereau:hover {
+    background-color: white;
+    color: rgb(174, 0, 255);
+    border: 1px solid rgb(174, 0, 255);
+}
+
+/* ===== ROW & LINE EFFECTS ===== */
+tr.row-societe td {
+    background-color: rgba(194, 103, 214, 0.101);
+}
+
+tbody tr {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa !important;
+}
+
+/* ===== PAGINATION ===== */
+.page-link {
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+}
+
+.page-link:hover {
+    background-color: #e2e6ea;
+}
+
+.page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+    font-weight: bold;
+}

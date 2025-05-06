@@ -5,21 +5,6 @@
 {% block body %}
 <h1 class="mb-4">Liste des bénévoles</h1>
 
-<style>
-    /* Centrer verticalement et horizontalement les cellules du tableau */
-    table th, table td {
-        vertical-align: middle;
-        text-align: center;
-    }
-
-    table {
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-</style>
-
-
 <div class="d-flex align-items-center justify-content-around mb-4">
     <input type="text" id="search-input" class="form-control" placeholder="Rechercher un bénévole..." style="max-width: 300px;">
     <a href="{{ path('benevole_new') }}" class="btn btn-success ms-3" style="color: white">
@@ -28,7 +13,7 @@
 </div>
 
 
-<table class="table table-hover">
+<table class="table table-3d">
     <thead class="table-dark text-center">
         <tr>
             <th>Type</th>
@@ -59,20 +44,24 @@
                 <td>{{ benevole.ville }}</td>
                 <td>{{ benevole.getAssoTrouvePar }}</td>
                  {# voir le cv #}
-                    <td>
-                        {% if benevole.cv %}
-                                <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#cvModal" data-cv-url="{{ asset('uploads/cv/' ~ benevole.cv) }}">
+                 <td>
+                    {% if benevole.cv %}
+                        <button class="btn btn-sm btn-secondary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#cvModal"
+                                data-cv-url="{{ asset('uploads/cv/' ~ benevole.cv) }}"
+                                data-nom="{{ benevole.nom }}"
+                                data-prenom="{{ benevole.prenom }}">
                             <i class="bi bi-eye"></i> CV
-                                </button>
-                        {% else %}
-                            Pas de CV
-                        {% endif %}
-                    </td>
-                    
-                     
+                        </button>
+                    {% else %}
+                        Pas de CV
+                    {% endif %}
+                </td>
+                
                 <td class="d-flex flex-column justify-content-around">
-                    <a href="{{ path('benevole_edit', {'id': benevole.id}) }}" class="btn btn-sm btn-primary mb-2">Modifier</a>
-                    <a href="{{ path('benevole_delete', {'id': benevole.id}) }}" class="btn btn-sm btn-danger" style="color: white"
+                    <a href="{{ path('benevole_edit', {'id': benevole.id}) }}" class="btn btn-sm mb-2 btn-modifier">Modifier</a>
+                    <a href="{{ path('benevole_delete', {'id': benevole.id}) }}" class="btn btn-sm btn-danger"
                        onclick="return confirm('Supprimer ce bénévole ?');">Supprimer</a>
                 </td>
             </tr>
@@ -127,22 +116,29 @@
   </div>
 </div>
 
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var cvModal = document.getElementById('cvModal');
+        var cvTitle = document.getElementById('cvModalLabel');
+        var iframe = document.getElementById('cvIframe');
+    
         cvModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
             var cvUrl = button.getAttribute('data-cv-url');
-            var iframe = document.getElementById('cvIframe');
+            var nom = button.getAttribute('data-nom');
+            var prenom = button.getAttribute('data-prenom');
+    
             iframe.src = cvUrl;
+            cvTitle.textContent = `CV de ${nom} ${prenom}`;
         });
     
         cvModal.addEventListener('hidden.bs.modal', function () {
-            var iframe = document.getElementById('cvIframe');
             iframe.src = '';
+            cvTitle.textContent = 'CV du bénévole';
         });
     });
-    </script>    
+    </script>       
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {

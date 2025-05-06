@@ -94,7 +94,7 @@ class BenevoleType extends AbstractType
         ->add('commentaire', TextareaType::class, [
             'required' => false,
             'attr' => [
-                'placeholder' => 'Votre commentaire (optionnel)',
+                'placeholder' => 'Votre commentaire ici...',
                 'class' => 'form-control',
                 'rows' => 5, // nombre de lignes visibles
             ],

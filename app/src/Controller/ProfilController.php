@@ -32,7 +32,7 @@ class ProfilController extends AbstractController
         $user = $this->getUser();
         $userEmail = urlencode($user->getUserIdentifier());
         $page = $request->query->get('page', 1);
-        $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO']  . "/items?userSearchKey=" . $userEmail . "&pageIndex=" . $page . "&pageSize=4&withDetails=false&sortOrder=Desc&sortField=Date&itemStates=Processed";
+        $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO']  . "/items?userSearchKey=" . $userEmail . "&pageIndex=" . $page . "&pageSize=4&withDetails=false&sortOrder=Desc&sortField=Date&itemStates=Processed&withCount=true";
 
         $data_items = $this->helloAssoApiService->makeApiCall($url);
         // dump($user);
@@ -80,7 +80,7 @@ class ProfilController extends AbstractController
         $pageSize = 4;
         $sortOrder = "Desc";
         $sortField = "Date";
-        $url = "https://api.helloasso.com/v5/organizations/$slugAsso/$base?userSearchKey=$userEmail&pageIndex=$page&pageSize=$pageSize&withDetails=false&sortOrder=$sortOrder&sortField=$sortField";
+        $url = "https://api.helloasso.com/v5/organizations/$slugAsso/$base?userSearchKey=$userEmail&pageIndex=$page&pageSize=$pageSize&withDetails=false&sortOrder=$sortOrder&sortField=$sortField&withCount=true";
     
         if ($type === 'orders') {
             $url .= "&itemStates=Processed";

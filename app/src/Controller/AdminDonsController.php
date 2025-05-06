@@ -111,6 +111,22 @@ public function adminDons(
             'nom' => $partenaireLogistique->getNom(),
         ]);
     }
+
+
+    #[Route('/admin/dons/{id}/update-statut', name: 'admin_update_statut', methods: ['POST'])]
+    public function updateStatut(Request $request, Don $don, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('update_statut' . $don->getId(), $request->request->get('_token'))) {
+            if ($don->getStatut() === 'Bordereau envoyé') {
+                $don->setStatut('Don reçu');
+                $em->flush();
+                $this->addFlash('success', 'Le don a été marqué comme reçu.');
+            }
+        }
+    
+        return $this->redirectToRoute('admin_dons');
+    }
+
     
     
     // Envoi du bordereau

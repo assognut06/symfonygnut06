@@ -116,7 +116,7 @@
 							{% if page < pages %}
 								<li class="page-item">
 									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page + 1, 'city': city is defined ? city : null}) }}">
-										<span aria-hidden="true">&laquo;</span>
+										<span aria-hidden="true">&raquo;</span>
 									</a>
 								</li>
 							{% endif %}
