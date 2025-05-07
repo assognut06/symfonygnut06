@@ -18,11 +18,13 @@
 # Ignorer Uploads (les cv et photo de profil)
 /public/uploads/cv/*
 /public/uploads/profilePictures/*
+/public/uploads/logo_entreprises/*
 
 # laisser les dossiers vides utiles au projet
 !public/uploads/.gitkeep
 !public/uploads/cv/.gitkeep
 !public/uploads/profilePictures/.gitkeep
+!public/uploads/logo_entreprises/.gitkeep
 
 
 ###< symfony/framework-bundle ###
