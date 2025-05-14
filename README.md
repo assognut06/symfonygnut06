@@ -39,4 +39,13 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    docker compose up --build
    ```
 
+3. **Pour les utilisateurs de Mac M1/M2 (puce Apple Silicon)**
+
+   Certaines images Docker comme mysql:5.7 ne sont pas disponibles pour l’architecture ARM utilisée par les Mac M1/M2.
+   Pour éviter les erreurs du type no matching manifest for linux/arm64/v8, il faut forcer l'utilisation d'une architecture x86 :
+
+   ```bash
+   DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose up --build
+   ```
+
    
