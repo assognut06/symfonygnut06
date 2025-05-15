@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\EventListener\PremiereLettreMajuscule;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 
 class PersonnePhysiqueType extends AbstractType
@@ -20,8 +21,8 @@ class PersonnePhysiqueType extends AbstractType
         $builder
             ->add('civilite', ChoiceType::class, [
                 'choices' => [
-                    'Monsieur' => 'M.',
-                    'Madame' => 'Mme',
+                    'M.' => 'M.',
+                    'Mme' => 'Mme',
                 ],
                 'placeholder' => 'Civilité*',
                 'attr' => ['class' => 'form-select']
@@ -68,8 +69,9 @@ class PersonnePhysiqueType extends AbstractType
             ->add('ville', TextType::class, [
                 'attr' => ['placeholder' => 'Ville*', 'class' => 'form-control']
             ])
-            ->add('pays', TextType::class, [
-                'attr' => ['placeholder' => 'Pays*', 'class' => 'form-control']
+             ->add('pays', HiddenType::class, [
+                        'data' => 'France',
+                        'mapped' => true, 
             ]);
 
             $builder->addEventSubscriber(new PremiereLettreMajuscule());

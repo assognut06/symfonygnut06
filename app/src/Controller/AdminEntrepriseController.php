@@ -29,7 +29,7 @@ class AdminEntrepriseController extends AbstractController
         // Récupérer toutes les entreprises
         $entreprises = $entrepriseRepository->findAll();
 
-        return $this->render('admin/entreprise/index.html.twig', [
+        return $this->render('admin_entreprise/index.html.twig', [
             'entreprises' => $entreprises,
         ]);
     }
@@ -56,7 +56,7 @@ class AdminEntrepriseController extends AbstractController
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    $this->addFlash('error', 'Erreur lors de l\'upload du logo.');
+                    $this->addFlash('danger', 'Erreur lors de l\'upload du logo.');
                     return $this->render('admin_entreprise/new.html.twig', [
                         'form' => $form->createView(),
                     ]);
@@ -106,7 +106,7 @@ class AdminEntrepriseController extends AbstractController
                     $logoFile->move($logoDirectory, $newFilename);
     
                 } catch (FileException $e) {
-                    $this->addFlash('error', 'Erreur lors de l\'upload du logo.');
+                    $this->addFlash('danger', 'Erreur lors de l\'upload du logo.');
                     return $this->render('admin_entreprise/edit.html.twig', [
                         'form' => $form->createView(),
                         'entreprise' => $entreprise,
@@ -129,7 +129,7 @@ class AdminEntrepriseController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'entreprise_delete', methods: ['POST'])]
+    #[Route('/admin/entreprise/{id}/delete', name: 'entreprise_delete', methods: ['POST'])]
     public function delete(Request $request, Entreprise $entreprise, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete' . $entreprise->getId(), $request->request->get('_token'))) {

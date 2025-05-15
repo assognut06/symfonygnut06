@@ -16,6 +16,9 @@ use Symfony\Component\Mime\Address;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+
 
 class AdminDonsController extends AbstractController
 {
@@ -127,60 +130,93 @@ public function adminDons(
         return $this->redirectToRoute('admin_dons');
     }
 
-    
+  
+    #[Route('/admin/dons/{id}/annuler-statut', name: 'admin_annuler_statut', methods: ['POST'])]
+    public function annulerStatut(Request $request, Don $don, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('annuler_statut' . $don->getId(), $request->request->get('_token'))) {
+            $don->setStatut('Bordereau envoyé');
+            $em->flush();
+            $this->addFlash('success', 'Statut annulé avec succès.');
+        }
+
+        return $this->redirectToRoute('admin_dons');
+    }
+
     
     // Envoi du bordereau
     #[Route('/admin/dons/{id}/envoyer-bordereau', name: 'admin_send_bordereau', methods: ['POST'])]
-    public function sendBordereau(Request $request, Don $don, MailerInterface $mailer, EntityManagerInterface $entityManager): Response
-    {
+    public function sendBordereau(
+        Request $request,
+        Don $don,
+        MailerInterface $mailer,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger
+    ): Response {
         // Vérifier si un partenaire logistique est associé au don
         if (!$don->getPartenaireLogistique()) {
-            $this->addFlash('error', 'Le partenaire logistique est manquant ou invalide.');
+            $this->addFlash('danger', 'Le partenaire logistique est manquant ou invalide.');
             return $this->redirectToRoute('admin_dons');
         }
-    
+
         // Récupérer le fichier PDF et le numéro de suivi
         $bordereauFile = $request->files->get('bordereau');
         $numeroSuivi = trim($request->request->get('numero_suivi'));
-    
+
         if (!$bordereauFile) {
-            $this->addFlash('error', 'Veuillez télécharger un fichier PDF.');
+            $this->addFlash('danger', 'Veuillez télécharger un fichier PDF.');
             return $this->redirectToRoute('admin_dons');
         }
-    
+
+        // Enregistrement du fichier dans le dossier uploads/bordereau
+        $originalFilename = pathinfo($bordereauFile->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeFilename = $slugger->slug($originalFilename);
+        $newFilename = $safeFilename . '-' . uniqid() . '.' . $bordereauFile->guessExtension();
+
+        try {
+            $bordereauFile->move(
+                $this->getParameter('bordereau_directory'),
+                $newFilename
+            );
+            // Stocker le nom du fichier ou son chemin relatif dans la BDD
+            $don->setBordereau($newFilename);
+        } catch (FileException $e) {
+            $this->addFlash('danger', 'Erreur lors de l\'enregistrement du fichier : ' . $e->getMessage());
+            return $this->redirectToRoute('admin_dons');
+        }
+
         // Mettre à jour le numéro de suivi (si fourni)
         if ($numeroSuivi) {
             $don->setNumeroSuivi($numeroSuivi);
-            $entityManager->flush();
         }
-    
+
         try {
             // Création de l'email au donateur
             $emailDonateur = (new TemplatedEmail())
                 ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
                 ->to($don->getDonateur()->getEmail())
                 ->subject('Votre bordereau de suivi')
-                ->htmlTemplate('admin_don_casque/email_bordereau.html.twig') 
+                ->htmlTemplate('admin_don_casque/email_bordereau.html.twig')
                 ->context([
                     'donateur' => $don->getDonateur(),
                     'don' => $don,
                     'numero_suivi' => $numeroSuivi,
                     'transporteur' => $don->getPartenaireLogistique(),
                 ])
-                ->attachFromPath($bordereauFile->getPathname(), 'bordereau.pdf');
-    
+                ->attachFromPath($this->getParameter('bordereau_directory') . '/' . $don->getBordereau());
+
             // Envoyer l'email
             $mailer->send($emailDonateur);
-    
+
             $don->setStatut('Bordereau envoyé');
             $don->setDateMiseAJour(new \DateTime());
             $entityManager->flush();
-    
+
             $this->addFlash('success', 'Le bordereau a été envoyé avec succès.');
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Une erreur est survenue lors de l\'envoi de l\'email : ' . $e->getMessage());
+            $this->addFlash('danger', 'Une erreur est survenue lors de l\'envoi de l\'email : ' . $e->getMessage());
         }
-    
+
         return $this->redirectToRoute('admin_dons');
     }
-    }
+}

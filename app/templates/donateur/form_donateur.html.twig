@@ -7,142 +7,362 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <h1 class="text-center mb-4 text-primary">Effectuer un don de casque</h1>
-            
+
             <div class="text-center mb-4">
                 <button id="btn-physique" class="btn btn-outline-primary me-2">Personne Physique</button>
                 <button id="btn-societe" class="btn btn-outline-secondary">Société</button>
             </div>
-            
+
             {# Formulaire Personne Physique #}
             <div id="form-physique" class="card p-4 shadow-lg rounded-4 border-0" style="display: block;">
                 {{ form_start(form_physique, {'attr': {'onsubmit': 'return validateRecaptcha("physique");'}}) }}
-                   <h4 class="text-center mb-4 text-primary">Merci de saisir vos informations</h4>
-                   <p>
-                      <span class="text-danger">*</span>
-                      <span style="color: grey;">: champ obligatoire</span>
-                   </p>
-            
-                    {# Champs du formulaire personne physique #}
+
+                <div id="physique-step-1">
+                    <h4 class="text-center mb-4 text-primary">Merci de saisir vos informations</h4>
+
                     <div class="mb-3">
                         {{ form_widget(form_physique.civilite) }}
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="mb-3">
                             {{ form_widget(form_physique.nom) }}
                         </div>
-                        <div class="col-md-6 mb-3">
-                                {{ form_widget(form_physique.prenom) }}
-                            </div>
+                        <div class="mb-3">
+                            {{ form_widget(form_physique.prenom) }}
+                        </div>
+                  
+                    <div class="mb-3">
+                        {{ form_widget(form_physique.email) }}
+                        <small class="text-danger">{{ form_errors(form_physique.email) }}</small>
+                    </div>
+                    <div class="mb-3">
+                        {{ form_widget(form_physique.telephone) }}
+                    </div>
+
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-primary mt-3 ms-auto" onclick="goToStep('physique', 2)">Suivant</button>
+                    </div>
+                    
+
+                
+                </div>
+
+                <div id="physique-step-2" style="display:none;">
+                    <h4 class="text-center mb-4 text-primary">Votre adresse</h4>
+
+                    <div class="mb-3">
+                        {{ form_widget(form_physique.adresse_1) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_widget(form_physique.adresse_2) }}
+                    </div>
+                    <div class="mb-3">
+                            {{ form_widget(form_physique.code_postal) }}
                         </div>
                         <div class="mb-3">
-                           {{ form_widget(form_physique.email) }}
-                           <small class="text-danger">
-                               {{ form_errors(form_physique.email)}}
-                           </small>
+                            {{ form_widget(form_physique.ville) }}
                         </div>
                     
-                        <div class="mb-3">
-                            {{ form_widget(form_physique.telephone) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_widget(form_physique.adresse_1) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_widget(form_physique.adresse_2) }}
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_widget(form_physique.code_postal) }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form_widget(form_physique.ville) }}
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            {{ form_widget(form_physique.pays) }}
-                        </div>
-    
-                        {# Champ caché pour reCAPTCHA #}
-                        <input type="hidden" id="g-recaptcha-response-physique" name="g-recaptcha-response">
-    
-                    <button class="btn btn-primary w-100 mt-3">Enregistrer</button>
+                    <div class="mb-3">
+                        {{ form_widget(form_physique.pays) }}
+                    </div>
+
+                    <input type="hidden" id="g-recaptcha-response-physique" name="g-recaptcha-response">
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" onclick="goToStep('physique', 1)">Retour</button>
+                        <button class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </div>
+
                 {{ form_end(form_physique) }}
             </div>
 
             {# Formulaire Société #}
             <div id="form-societe" class="card p-4 shadow-lg rounded-4 border-0" style="display: none;">
                 {{ form_start(form_societe, {'attr': {'onsubmit': 'return validateRecaptcha("societe");'}}) }}
-                
-                        <h4 class="text-center mb-4 text-primary">Merci de saisir vos informations</h4>
-                        <p>
-                           <span class="text-danger">*</span>
-                           <span style="color: grey;">: champ obligatoire</span>
-                        </p>
-                  
-                        {# Champs du formulaire société #}
+
+                <div id="societe-step-1">
+                    <h4 class="text-center mb-4 text-primary">Informations personnelles</h4>
+
+                    <div class="mb-3">
+                        {{ form_widget(form_societe.civilite) }}
+                    </div>
                         <div class="mb-3">
-                            {{ form_widget(form_societe.civilite) }}
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_widget(form_societe.nom) }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form_widget(form_societe.prenom) }}
-                            </div>
+                            {{ form_widget(form_societe.nom) }}
                         </div>
                         <div class="mb-3">
-                            {{ form_widget(form_societe.nom_societe) }}
+                            {{ form_widget(form_societe.prenom) }}
+                        </div>
+                   
+                    <div class="mb-3">
+                        {{ form_widget(form_societe.nom_societe) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_widget(form_societe.siren) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_widget(form_societe.email) }}
+                        <small class="text-danger">{{ form_errors(form_societe.email) }}</small>
+                    </div>
+                    <div class="mb-3">
+                        {{ form_widget(form_societe.telephone) }}
+                    </div>
+
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-primary mt-3 ms-auto" onclick="goToStep('societe', 2)">Suivant</button>
+                    </div>
+                </div>
+
+                <div id="societe-step-2" style="display:none;">
+                    <h4 class="text-center mb-4 text-primary">Adresse</h4>
+
+                    <div class="mb-3">
+                        {{ form_widget(form_societe.adresse_1) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_widget(form_societe.adresse_2) }}
+                    </div>
+                        <div class="mb-3">
+                            {{ form_widget(form_societe.code_postal) }}
                         </div>
                         <div class="mb-3">
-                            {{ form_widget(form_societe.siren) }}
+                            {{ form_widget(form_societe.ville) }}
                         </div>
-                        <div class="mb-3">
-                           {{ form_widget(form_societe.email) }}
-                           <small class="text-danger">
-                               {{ form_errors(form_societe.email)}}
-                           </small>
-                        </div>
-                        <div class="mb-3">
-                            {{ form_widget(form_societe.telephone) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_widget(form_societe.adresse_1) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_widget(form_societe.adresse_2) }}
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_widget(form_societe.code_postal) }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form_widget(form_societe.ville) }}
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            {{ form_widget(form_societe.pays) }}
-                        </div>
-        
-                        {# Champ caché pour reCAPTCHA #}
-                        <input type="hidden" id="g-recaptcha-response-societe" name="g-recaptcha-response">
-        
-                        <button class="btn btn-primary w-100 mt-3">Enregistrer</button>
+                    
+                    <div class="mb-3">
+                        {{ form_widget(form_societe.pays) }}
+                    </div>
+
+                    <input type="hidden" id="g-recaptcha-response-societe" name="g-recaptcha-response">
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" onclick="goToStep('societe', 1)">Retour</button>
+                        <button class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </div>
+
                 {{ form_end(form_societe) }}
             </div>
         </div>
     </div>
 </div>
 
-{# Script reCAPTCHA #}
 <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
 <script>
     grecaptcha.ready(function() {
         grecaptcha.execute('{{ site_key }}', { action: 'submit' }).then(function(token) {
-            // Pour le formulaire Personne Physique
             document.getElementById('g-recaptcha-response-physique').value = token;
-            
-            // Pour le formulaire Société
+            document.getElementById('g-recaptcha-response-societe').value = token;
+        });
+    });
+
+    function validateRecaptcha(formType) {
+        let token = document.getElementById('g-recaptcha-response-' + formType).value;
+        if (!token) {
+            alert('Veuillez compléter la vérification reCAPTCHA.');
+            return false;
+        }
+        return true;
+    }
+
+    document.getElementById('btn-physique').addEventListener('click', () => {
+        document.getElementById('form-physique').style.display = 'block';
+        document.getElementById('form-societe').style.display = 'none';
+    });
+
+    document.getElementById('btn-societe').addEventListener('click', () => {
+        document.getElementById('form-physique').style.display = 'none';
+        document.getElementById('form-societe').style.display = 'block';
+    });
+
+function goToStep(type, step) {
+    if (step === 2) {
+        const step1 = document.querySelectorAll(`#${type}-step-1 input, #${type}-step-1 select`);
+        let valid = true;
+
+        step1.forEach(field => {
+            if (field.required && !field.value.trim()) {
+                field.classList.add('is-invalid');
+                valid = false;
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+
+        if (!valid) {
+            return;
+        }
+    }
+
+    document.getElementById(`${type}-step-1`).style.display = (step === 1) ? 'block' : 'none';
+    document.getElementById(`${type}-step-2`).style.display = (step === 2) ? 'block' : 'none';
+}
+
+</script>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/scripts.js') }}"></script>
+    {{ parent() }}
+    <script src="{{ asset('js/adresse_auto_complete.js') }}"></script>
+{% endblock %}
+
+
+
+{# {% extends 'base.html.twig' %}
+
+{% block title %}Créer un Donateur{% endblock %}
+
+{% block body %}
+
+<style>
+    .civilite{
+        width:24%;
+    }
+    .nom, .prenom {
+        width: 38%;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h1 class="text-center mb-4 text-primary">Effectuer un don de casque</h1>
+
+            <div class="text-center mb-4">
+                <button id="btn-physique" class="btn btn-outline-primary me-2">Personne Physique</button>
+                <button id="btn-societe" class="btn btn-outline-secondary">Société</button>
+            </div>
+
+            <!-- Formulaire Personne Physique  -->
+            <div id="form-physique" class="card p-4 shadow-lg rounded-4 border-0" style="display: block;">
+                {{ form_start(form_physique, {'attr': {'onsubmit': 'return validateRecaptcha("physique");'}}) }}
+                <h4 class="text-center mb-4 text-primary">Merci de saisir vos informations</h4>
+                <p>
+                    <span class="text-danger">*</span>
+                    <span style="color: grey;">: champ obligatoire</span>
+                </p>
+
+                <div class="row">
+                    <div class="civilite mb-3">
+                        {{ form_widget(form_physique.civilite) }}
+                    </div>
+                    <div class="nom mb-3">
+                        {{ form_widget(form_physique.nom) }}
+                    </div>
+                    <div class="prenom mb-3">
+                        {{ form_widget(form_physique.prenom) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-7 mb-3">
+                        {{ form_widget(form_physique.email) }}
+                        <small class="text-danger">{{ form_errors(form_physique.email) }}</small>
+                    </div>
+                    <div class="col-md-5 mb-3">
+                        {{ form_widget(form_physique.telephone) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                        {{ form_widget(form_physique.adresse_1) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_widget(form_physique.adresse_2) }}
+                    </div>
+               
+
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        {{ form_widget(form_physique.code_postal) }}
+                    </div>
+                    <div class="col-md-7 mb-3">
+                        {{ form_widget(form_physique.ville) }}
+                    </div>
+                </div>
+
+                {{ form_widget(form_physique.pays) }}
+
+                <input type="hidden" id="g-recaptcha-response-physique" name="g-recaptcha-response">
+
+                <button class="btn btn-primary w-100 mt-3">Enregistrer</button>
+                {{ form_end(form_physique) }}
+            </div>
+
+            <!-- Formulaire Société --> 
+            <div id="form-societe" class="card p-4 shadow-lg rounded-4 border-0" style="display: none;">
+                {{ form_start(form_societe, {'attr': {'onsubmit': 'return validateRecaptcha("societe");'}}) }}
+                <h4 class="text-center mb-4 text-primary">Merci de saisir vos informations</h4>
+                <p>
+                    <span class="text-danger">*</span>
+                    <span style="color: grey;">: champ obligatoire</span>
+                </p>
+
+                <div class="row">
+                    <div class="civilite mb-3">
+                        {{ form_widget(form_societe.civilite) }}
+                    </div>
+                    <div class="nom mb-3">
+                        {{ form_widget(form_societe.nom) }}
+                    </div>
+                    <div class="prenom mb-3">
+                        {{ form_widget(form_societe.prenom) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-7 mb-3">
+                        {{ form_widget(form_societe.nom_societe) }}
+                    </div>
+                    <div class="col-md-5 mb-3">
+                        {{ form_widget(form_societe.siren) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-7 mb-3">
+                        {{ form_widget(form_societe.email) }}
+                        <small class="text-danger">{{ form_errors(form_societe.email) }}</small>
+                    </div>
+                    <div class="col-md-5 mb-3">
+                        {{ form_widget(form_societe.telephone) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_widget(form_societe.adresse_1) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_widget(form_societe.adresse_2) }}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        {{ form_widget(form_societe.code_postal) }}
+                    </div>
+                    <div class="col-md-7 mb-3">
+                        {{ form_widget(form_societe.ville) }}
+                    </div>
+                </div>
+
+                {{ form_widget(form_societe.pays, {'attr': {'type': 'hidden'}}) }}
+
+                <input type="hidden" id="g-recaptcha-response-societe" name="g-recaptcha-response">
+
+                <button class="btn btn-primary w-100 mt-3">Enregistrer</button>
+                {{ form_end(form_societe) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script reCAPTCHA -->
+<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function (token) {
+            document.getElementById('g-recaptcha-response-physique').value = token;
             document.getElementById('g-recaptcha-response-societe').value = token;
         });
     });
@@ -157,18 +377,16 @@
 
         if (!recaptchaResponse) {
             alert('Veuillez compléter la vérification reCAPTCHA.');
-            return false; // Empêcher la soumission du formulaire
+            return false;
         }
-        return true; // Autoriser la soumission du formulaire
+        return true;
     }
 </script>
-
-
 {% endblock %}
 
 {% block javascripts %}
-    {# Inclure le fichier JavaScript externe #}
     <script src="{{ asset('js/scripts.js') }}"></script> 
     {{ parent() }}
     <script src="{{ asset('js/adresse_auto_complete.js') }}"></script>
-{% endblock %}
+{% endblock %} #}
+

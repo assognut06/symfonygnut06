@@ -1,217 +1,220 @@
 {% extends 'admin/base.html.twig' %}
-
 {% block title %}Liste des dons{% endblock %}
-
 {% block body %}
-
 <div class="container-fluid py-4" style="max-width: 98%; margin: auto;">
-        <h1 class="mb-4 text-center">Liste des dons</h1>
-        
-        {# Bouton retour #}
-        {% if donateur %}
-        <div class="mb-3" style="width: 75%; margin: auto;">
+    <h1 class="mb-4 text-center">Liste des dons</h1>
+
+    {# Bouton retour #}
+    {% if donateur %}
+        <div class="mb-3 text-center">
             <a href="{{ app.request.headers.get('referer') }}" class="btn btn-secondary">
                 &larr; Retour
             </a>
         </div>
-        {% endif %}
+    {% endif %}
 
-        <table class="table table-striped align-middle text-center w-100 table-3d">
-                <thead class="table-dark">
-                    <tr>
-                        <th class="align-middle">Date de création</th>
-                        <th class="align-middle">Donateur</th>
-                        <th class="align-middle">Message</th>
-                        <th class="align-middle">Mode de livraison</th>
-                        <th class="align-middle">Partenaire logistique</th>
-                        <th class="align-middle">Actions</th>
-                        <th class="align-middle">Statut</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for don in dons %}
-                        <tr data-don-id="{{ don.id }}">
-                            <td>{{ don.dateCreation|date('d/m/Y H:i') }}</td>
-        
-                            <td>
-                                {{ don.donateur.nom }} {{ don.donateur.prenom }}<br>
-                                <small class="text-muted">{{ don.donateur.email }}</small>
-                            </td>
-        
-                            <td>{{ don.message|default('Aucun message') }}</td>
-        
-                            <td>{{ don.modeLivraison ? don.modeLivraison.nom : 'Non spécifié' }}</td>
-        
-                            <td>
-                                {% if don.modeLivraison and don.modeLivraison.nom == 'Expédition' %}
-                                    <span class="logistique-text d-block mb-1">{{ don.partenaireLogistique ? don.partenaireLogistique.nom : 'Non spécifié' }}</span>
-                                    
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <select class="logistique-select form-select form-select-sm d-none me-2 w-auto">
-                                            <option value="">Sélectionner une agence</option>
-                                            {% for partenaire in partenairesLogistiques %}
-                                                <option value="{{ partenaire.id }}" {% if don.partenaireLogistique and partenaire.id == don.partenaireLogistique.id %}selected{% endif %}>{{ partenaire.nom }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <button class="btn btn-sm btn-primary edit-logistique-btn" style="background-color:rgb(0, 153, 255); border:0;">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
+    <table class="table table-striped align-middle text-center w-100 table-3d">
+        <thead class="table-dark">
+            <tr>
+                <th>Date de création</th>
+                <th>Donateur</th>
+                <th>Message</th>
+                <th>Mode de livraison</th>
+                <th>Partenaire logistique</th>
+                <th>Actions</th>
+                <th>Bordereau</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for don in dons %}
+                <tr data-don-id="{{ don.id }}">
+                    <td>{{ don.dateCreation|date('d/m/Y H:i') }}</td>
+                    <td>
+                        {{ don.donateur.nom }} {{ don.donateur.prenom }}<br>
+                        <small class="text-muted">{{ don.donateur.email }}</small>
+                    </td>
+                    <td>{{ don.message|default('Aucun message') }}</td>
+                    <td>{{ don.modeLivraison ? don.modeLivraison.nom : 'Non spécifié' }}</td>
+                    <td>
+                        {% if don.modeLivraison and don.modeLivraison.nom == 'Expédition' %}
+                            <span class="logistique-text d-block mb-1">
+                                {{ don.partenaireLogistique ? don.partenaireLogistique.nom : 'Non spécifié' }}
+                            </span>
+                            <div class="d-flex align-items-center justify-content-center">
+                                <select class="logistique-select form-select form-select-sm d-none me-2 w-auto">
+                                    <option value="">Sélectionner une agence</option>
+                                    {% for partenaire in partenairesLogistiques %}
+                                        <option value="{{ partenaire.id }}"
+                                            {% if don.partenaireLogistique and partenaire.id == don.partenaireLogistique.id %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            {{ partenaire.nom }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-sm btn-primary edit-logistique-btn"
+                                        style="background-color:rgb(0, 153, 255); border:0;">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                            </div>
+                        {% else %}
+                            <img src="{{ asset('images/no-data.png') }}" alt="no-data">
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column gap-2">
+                            <a href="{{ path('admin_casques', {'id': don.id}) }}" class="btn btn-info btn-sm">
+                                Voir les casques
+                            </a>
+                            {% if don.modeLivraison and don.modeLivraison.nom == 'Expédition' %}
+                                <button class="btn btn-sm toggle-form btn-envoyer-bordereau">Envoyer le bordereau</button>
+                                <form class="send-bordereau-form d-none mt-2" method="POST"
+                                      action="{{ path('admin_send_bordereau', {'id': don.id}) }}"
+                                      enctype="multipart/form-data">
+                                    <div class="mb-2">
+                                        <label class="form-label">Bordereau PDF</label>
+                                        <input type="file" name="bordereau" class="form-control form-control-sm"
+                                               accept=".pdf" required>
                                     </div>
-                                {% else %}
-                                    /
-                                {% endif %}
-                            </td>
-        
-                            <td>
-                                <div class="d-flex flex-column gap-2">
-                                    <a href="{{ path('admin_casques', {'id': don.id}) }}" class="btn btn-info btn-sm">
-                                        Voir les casques
-                                    </a>
-        
-                                    {% if don.modeLivraison and don.modeLivraison.nom == 'Expédition' %}
-                                        <button class="btn btn-sm toggle-form btn-envoyer-bordereau">Envoyer le bordereau</button>
-        
-                                        <form class="send-bordereau-form d-none mt-2" method="POST" action="{{ path('admin_send_bordereau', {'id': don.id}) }}" enctype="multipart/form-data">
-                                            <div class="mb-2">
-                                                <label class="form-label">Bordereau PDF</label>
-                                                <input type="file" name="bordereau" class="form-control form-control-sm" accept=".pdf" required>
-                                            </div>
-                                            <div class="mb-2">
-                                                <label class="form-label">Numéro de suivi (optionnel)</label>
-                                                <input type="text" name="numero_suivi" class="form-control form-control-sm">
-                                            </div>
-                                            <div class="d-flex justify-content-between">
-                                                <button type="submit" class="btn btn-success btn-sm">Envoyer par mail</button>
-                                                <button type="button" class="btn btn-secondary btn-sm cancel-form">Annuler</button>
-                                            </div>
-                                        </form>
-                                    {% endif %}
-                                </div>
-                            </td>
-        
-                            <td>
-                                {{ don.statut }}
-                            
-                                {% if don.statut == 'Bordereau envoyé' %}
-                                <form method="POST" action="{{ path('admin_update_statut', {'id': don.id}) }}" class="mt-2">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('update_statut' ~ don.id) }}">
-                                    <button type="submit" class="btn btn-success btn-sm btn-don-recu">
-                                        Marquer comme <br>"Don reçu"
-                                    </button>
+                                    <div class="mb-2">
+                                        <label class="form-label">Numéro de suivi (optionnel)</label>
+                                        <input type="text" name="numero_suivi" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <button type="submit" class="btn btn-success btn-sm">Envoyer par mail</button>
+                                        <button type="button" class="btn btn-secondary btn-sm cancel-form">Annuler</button>
+                                    </div>
                                 </form>
                             {% endif %}
-                            </td>
-                            
-                        </tr>
+                        </div>
+                    </td>
+                    <td>
+                        {% if don.bordereau %}
+                            <a href="{{ asset('uploads/bordereau/' ~ don.bordereau) }}" target="_blank"
+                               class="btn btn-sm btn-secondary">
+                                <i class="bi bi-eye"></i> Voir
+                            </a>
+                            {% else %}
+                            <img src="{{ asset('images/no-data.png') }}" alt="no-data">
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ don.statut }}
+                        {% if don.statut == 'Bordereau envoyé' %}
+                            <form method="POST" action="{{ path('admin_update_statut', {'id': don.id}) }}" class="mt-2">
+                                <input type="hidden" name="_token" value="{{ csrf_token('update_statut' ~ don.id) }}">
+                                <button type="submit" class="btn btn-success btn-sm btn-don-recu">
+                                    Marquer comme <br>"Don reçu"
+                                </button>
+                            </form>
+                        {% elseif don.statut == 'Don reçu' %}
+                            <form method="POST" action="{{ path('admin_annuler_statut', {'id': don.id}) }}" class="mt-2">
+                                <input type="hidden" name="_token" value="{{ csrf_token('annuler_statut' ~ don.id) }}">
+                                <button type="submit" class="btn btn-warning btn-sm">
+                                    Annuler le statut
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8" class="text-center text-muted">Aucun don trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {# Pagination #}
+    {% if dons.getTotalItemCount > 0 %}
+        <nav aria-label="Pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if dons.getCurrentPageNumber == 1 %}disabled{% endif %}">
+                    {% if dons.getCurrentPageNumber > 1 %}
+                        <a class="page-link" href="{{ path('admin_dons', {'page': dons.getCurrentPageNumber - 1}) }}" aria-label="Précédent">
+                            &laquo;
+                        </a>
                     {% else %}
-                        <tr>
-                            <td colspan="7" class="text-center text-muted">Aucun don trouvé.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-
-            {#paginatio#}
-            {% if dons.getTotalItemCount > 0 %}
-            <nav aria-label="Pagination" class="mt-4">
-                <ul class="pagination justify-content-center">
-                    {# Bouton "Précédent" #}
-                    <li class="page-item {% if dons.getCurrentPageNumber == 1 %}disabled{% endif %}">
-                        {% if dons.getCurrentPageNumber > 1 %}
-                            <a class="page-link" href="{{ path('admin_dons', {'page': dons.getCurrentPageNumber - 1}) }}" aria-label="Précédent">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        {% else %}
-                            <span class="page-link" aria-hidden="true">&laquo;</span>
-                        {% endif %}
+                        <span class="page-link">&laquo;</span>
+                    {% endif %}
+                </li>
+                {% for i in 1..dons.getPageCount %}
+                    <li class="page-item {% if i == dons.getCurrentPageNumber %}active{% endif %}">
+                        <a class="page-link" href="{{ path('admin_dons', {'page': i}) }}">{{ i }}</a>
                     </li>
-        
-                    {# Numéros de page #}
-                    {% for i in 1..dons.getPageCount %}
-                        <li class="page-item {{ i == dons.getCurrentPageNumber ? 'active' : '' }}">
-                            <a class="page-link" href="{{ path('admin_dons', {'page': i}) }}">{{ i }}</a>
-                        </li>
-                    {% endfor %}
-        
-                    {# Bouton "Suivant" #}
-                    <li class="page-item {% if dons.getCurrentPageNumber == dons.getPageCount %}disabled{% endif %}">
-                        {% if dons.getCurrentPageNumber < dons.getPageCount %}
-                            <a class="page-link" href="{{ path('admin_dons', {'page': dons.getCurrentPageNumber + 1}) }}" aria-label="Suivant">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        {% else %}
-                            <span class="page-link" aria-hidden="true">&raquo;</span>
-                        {% endif %}
-                    </li>
-                </ul>
-            </nav>
-             {% endif %}
-            {#fin paginatio#}
-        </div>
-
-    </div>
+                {% endfor %}
+                <li class="page-item {% if dons.getCurrentPageNumber == dons.getPageCount %}disabled{% endif %}">
+                    {% if dons.getCurrentPageNumber < dons.getPageCount %}
+                        <a class="page-link" href="{{ path('admin_dons', {'page': dons.getCurrentPageNumber + 1}) }}" aria-label="Suivant">
+                            &raquo;
+                        </a>
+                    {% else %}
+                        <span class="page-link">&raquo;</span>
+                    {% endif %}
+                </li>
+            </ul>
+        </nav>
+    {% endif %}
+</div>
 {% endblock %}
 
-
 {% block javascripts %}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Gérer l'édition du partenaire logistique
-            document.querySelectorAll('.edit-logistique-btn').forEach(button => {
-                button.addEventListener('click', async () => {
-                    const cell = button.closest('td');
-                    const textSpan = cell.querySelector('.logistique-text');
-                    const selectField = cell.querySelector('.logistique-select');
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Gérer l'édition du partenaire logistique
+        document.querySelectorAll('.edit-logistique-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                const cell = button.closest('td');
+                const textSpan = cell.querySelector('.logistique-text');
+                const selectField = cell.querySelector('.logistique-select');
 
-                    if (textSpan.classList.contains('d-none')) {
-                        // Afficher un loader
-                        button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Chargement...';
-
-                        try {
-                            const response = await fetch(`/admin/dons/${cell.closest('tr').dataset.donId}/update-partenaire`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ partenaire_id: selectField.value })
-                            });
-
-                            if (!response.ok) {
-                                throw new Error('Erreur lors de la mise à jour.');
-                            }
-
-                            const data = await response.json();
-                            textSpan.textContent = data.nom || 'Non spécifié';
-                        } catch (error) {
-                            alert(`Erreur : ${error.message}`);
-                        } finally {
-                            // Réinitialiser le bouton
-                            button.innerHTML = '<i class="bi bi-pencil"></i>';
-                        }
+                if (textSpan.classList.contains('d-none')) {
+                    button.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+                    try {
+                        const response = await fetch(`/admin/dons/${cell.closest('tr').dataset.donId}/update-partenaire`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ partenaire_id: selectField.value })
+                        });
+                        if (!response.ok) throw new Error('Erreur réseau');
+                        const data = await response.json();
+                        textSpan.textContent = data.nom || 'Non spécifié';
+                    } catch (error) {
+                        alert("Erreur lors de la mise à jour : " + error.message);
+                    } finally {
+                        button.innerHTML = '<i class="bi bi-pencil"></i>';
                     }
+                }
 
-                    textSpan.classList.toggle('d-none');
-                    selectField.classList.toggle('d-none');
-                });
-            });
-
-            // Gérer l'affichage du formulaire pour le bordereau
-            document.querySelectorAll('.toggle-form').forEach(button => {
-                button.addEventListener('click', () => {
-                    const form = button.nextElementSibling;
-                    form.classList.remove('d-none');
-                    button.classList.add('d-none');
-                });
-            });
-
-            // Gérer l'annulation du formulaire
-            document.querySelectorAll('.cancel-form').forEach(button => {
-                button.addEventListener('click', () => {
-                    const form = button.closest('.send-bordereau-form');
-                    form.classList.add('d-none');
-                    form.reset();
-                    form.previousElementSibling.classList.remove('d-none');
-                });
+                textSpan.classList.toggle('d-none');
+                selectField.classList.toggle('d-none');
             });
         });
-    </script>
+
+        // Gérer l'affichage du formulaire pour le bordereau
+        document.querySelectorAll('.toggle-form').forEach(button => {
+            button.addEventListener('click', () => {
+                const form = button.nextElementSibling;
+                if (form) {
+                    form.classList.remove('d-none');
+                    button.classList.add('d-none');
+                }
+            });
+        });
+
+        // Gérer l'annulation du formulaire
+        document.querySelectorAll('.cancel-form').forEach(button => {
+            button.addEventListener('click', () => {
+                const form = button.closest('.send-bordereau-form');
+                if (form) {
+                    form.classList.add('d-none');
+                    form.reset();
+                    form.previousElementSibling?.classList.remove('d-none');
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}
