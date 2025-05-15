@@ -61,7 +61,7 @@ class AdminDonateurController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
             $this->addFlash('success', 'Le donateur a été modifié.');
-            return $this->redirectToRoute('admin_donateur_show', ['id' => $donateur->getId()]);
+            return $this->redirectToRoute('admin_donateurs', ['id' => $donateur->getId()]);
         }
     
         return $this->render('admin_donateur/details.html.twig', [

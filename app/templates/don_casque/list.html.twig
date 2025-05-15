@@ -1,18 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Casques Donnés{% endblock %}
+{% block title %}Merci pour vos Dons !{% endblock %}
 
 {% block body %}
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-10">
-                <!-- Titre avec un design moderne -->
+
+                <!-- Bloc de remerciement stylisé -->
+                <div class="p-4 mb-5 text-center" style="background-color: #f0f8ff; border-radius: 12px;">
+                    <h2 class="mb-3" style="color: #007bff;">🙏 Merci pour votre générosité !</h2>
+                    <p style="font-size: 1.1rem; color: #333;">
+                        Grâce à vous, plusieurs personnes pourront bénéficier d'une meilleure sécurité. 
+                        Chaque casque donné est un pas vers un monde plus solidaire.
+                    </p>
+                </div>
+
+                <!-- Titre de la liste -->
                 <h1 class="text-center mb-4 text-primary">
                     <i class="bi bi-box-seam me-2"></i>Liste des Casques que j'ai donnés
                 </h1>
 
                 {% if dons|length == 0 %}
-                    <!-- Message d'alerte si aucun don n'est trouvé -->
+                    <!-- Message si aucun don -->
                     <div class="alert alert-warning d-flex align-items-center" role="alert">
                         <i class="bi bi-exclamation-triangle-fill me-2"></i>
                         Aucun don enregistré pour ce donateur.

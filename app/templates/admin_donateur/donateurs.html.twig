@@ -75,10 +75,10 @@
                             Voir ses dons
                         </a>
                         <div class="d-flex justify-content-center gap-1">
-                        <a href="{{ path('admin_donateur_details', {'id': donateur.id}) }}" class="btn btn-outline-detail btn-sm" title="Voir les détails">
-                    <i class="bi bi-eye"></i>
-                </a> 
-                
+                            <a href="{{ path('admin_donateur_details', {'id': donateur.id}) }}" class="btn btn-outline-detail btn-sm" title="Voir les détails">
+                                <i class="bi bi-eye"></i>
+                            </a> 
+                        
                             <form method="post" action="{{ path('admin_donateur_delete', {'id': donateur.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce donateur ?');" style="display:inline;">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete_donateur_' ~ donateur.id) }}">
                                 <button class="btn btn-outline-danger btn-sm" title="Supprimer">

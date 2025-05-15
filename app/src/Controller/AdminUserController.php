@@ -73,10 +73,10 @@ class AdminUserController extends AbstractController
     
                 $this->addFlash('success', 'Utilisateur supprimé avec succès.');
             } else {
-                $this->addFlash('error', 'Token de sécurité invalide.');
+                $this->addFlash('danger', 'Token de sécurité invalide.');
             }
         } else {
-            $this->addFlash('error', 'Méthode non autorisée pour cette action.');
+            $this->addFlash('danger', 'Méthode non autorisée pour cette action.');
         }
     
         return $this->redirectToRoute('app_admin_user');

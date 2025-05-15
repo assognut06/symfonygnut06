@@ -11,6 +11,8 @@ parameters:
     ohme.api_key: '%env(SECRETOHME)%'
     parameters:
     photos_directory: '%kernel.project_dir%/public/uploads/profilePictures'
+    bordereau_directory: '%kernel.project_dir%/public/uploads/bordereau'
+
 
 services:
     App\MessageHandler\NotificationHandler:

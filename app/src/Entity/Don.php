@@ -47,6 +47,9 @@ class Don
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $numero_suivi = null;
 
+    #[ORM\Column(length: 150, nullable: true)]
+    private ?string $bordereau = null;
+
     public function __construct()
     {
         $this->casques = new ArrayCollection();
@@ -169,6 +172,18 @@ class Don
     public function setNumeroSuivi(?string $numero_suivi): static
     {
         $this->numero_suivi = $numero_suivi;
+        return $this;
+    }
+
+    public function getBordereau(): ?string
+    {
+        return $this->bordereau;
+    }
+
+    public function setBordereau(?string $bordereau): static
+    {
+        $this->bordereau = $bordereau;
+
         return $this;
     }
 }

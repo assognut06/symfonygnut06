@@ -1,4 +1,24 @@
-table, .nav-item {
+body {
+    background: url('img09.jpg') no-repeat center center / cover fixed;
+}
+
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+  }
+  
+  h1, h2 {
+      color: white;
+  }
+
+  table, .nav-item {
     font-size: 18px;
 }
 
@@ -7,12 +27,13 @@ table, .nav-item {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    max-width: 1300px;
+    max-width: 1000px;
     margin:20px auto 40px auto;
     justify-content: center;
-    background: linear-gradient(90deg, #e1faff, #f5f7fa);
+    background: linear-gradient(90deg, #000000, #abacaf);
     border-radius: 12px;
     padding: 1rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .nav-tabs .nav-item {
@@ -23,7 +44,9 @@ table, .nav-item {
 
 .nav-tabs .nav-link {
     border-radius: 8px;
-    padding: 0.75rem 1rem;
+    /* padding: 0.75rem 1rem; */
+    padding: 0.45rem 1rem;
+    font-size: 0.85rem;
     color: #333;
     font-weight: 500;
     transition: all 0.3s ease;
@@ -72,7 +95,7 @@ table, .nav-item {
     opacity: 1;
 }
 
-/* === SLIDING LINE ANIMATION (optionnel mais stylé) === */
+/* === SLIDING LINE ANIMATION === */
 .nav-tabs .nav-link::before {
     content: '';
     position: absolute;
@@ -176,7 +199,9 @@ table {
     border-radius: 8px;
 }
 
-/* btns */
+.filter-btn {
+    background-color: white;
+}
 
 .btn-outline-physique {
     color: #0d6efd;
@@ -269,9 +294,8 @@ tbody tr {
 }
 
 tbody tr:hover {
-    transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    background-color: #f8f9fa !important;
+    background-color: #f8f9fa;
 }
 
 /* ===== PAGINATION ===== */

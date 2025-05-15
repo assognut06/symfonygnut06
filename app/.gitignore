@@ -19,12 +19,14 @@
 /public/uploads/cv/*
 /public/uploads/profilePictures/*
 /public/uploads/logo_entreprises/*
+/public/uploads/bordereau/*
 
 # laisser les dossiers vides utiles au projet
 !public/uploads/.gitkeep
 !public/uploads/cv/.gitkeep
 !public/uploads/profilePictures/.gitkeep
 !public/uploads/logo_entreprises/.gitkeep
+!public/uploads/bordereau/.gitkeep
 
 
 ###< symfony/framework-bundle ###

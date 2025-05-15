@@ -61,7 +61,7 @@ class UserController extends AbstractController
                     $this->addFlash('success', 'Votre photo de profil a bien été mise à jour.');
                 } catch (FileException $e) {
                     // Message flash en cas d'erreur
-                    $this->addFlash('error', 'Une erreur est survenue lors de l\'upload de votre photo. Veuillez réessayer.');
+                    $this->addFlash('danger', 'Une erreur est survenue lors de l\'upload de votre photo. Veuillez réessayer.');
                 }
             }
 
