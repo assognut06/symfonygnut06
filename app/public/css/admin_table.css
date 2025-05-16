@@ -370,3 +370,38 @@ tbody tr:hover {
 .send-bordereau-form .cancel-form:hover {
     color: #0a58ca;
 }
+
+
+
+/*footer*/
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+  background: linear-gradient(to right, #0d6efd, #0a58ca); /* joli dégradé bleu */
+  color: #ffffff;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  font-size: 0.9rem;
+}
+
+footer .list-inline {
+  margin: 0;
+  padding: 0;
+}
+
+footer .list-inline-item {
+  margin: 0 10px;
+}
+
+footer a.link-light {
+  color: #f8f9fa;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer a.link-light:hover {
+  color: #ffc107; /* jaune clair au survol */
+  text-decoration: underline;
+}
