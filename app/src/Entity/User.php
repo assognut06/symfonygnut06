@@ -43,6 +43,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isVerified = false;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $profile_picture;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -127,6 +130,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->isVerified = $isVerified;
 
+        return $this;
+    }
+
+    public function getProfilePicture(): ?string
+    {
+        return $this->profile_picture;
+    }
+    
+    public function setProfilePicture(?string $profile_picture): self
+    {
+        $this->profile_picture = $profile_picture;
         return $this;
     }
 }

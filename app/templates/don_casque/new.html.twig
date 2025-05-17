@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un Don{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h1 class="text-center mb-4">Bienvenue  {{ donateur.civilite }} {{ donateur.nom }}</h1>
+                <div class="card p-4 shadow">
+                {{ form_start(form, {'attr': {'class': 'g-3'}}) }}
+                
+                    <h4 class="text-center mb-4 text-primary">Merci de compléter les informations ci-dessous</h4>
+                    <p>
+                       <span class="text-danger">*</span>
+                       <span style="color: grey;">: champ obligatoire</span>
+                    </p>
+                    
+                    <div class="mb-3">
+                        {{ form_row(form.nombre_casques, {
+                            'attr': {'class': 'form-control', 'min': 1}
+                        }) }}
+                    </div>
+
+                    <!-- Conteneur pour les formulaires de casques -->
+                    <div id="casques-container" data-prototype="{{ form_widget(form.casques.vars.prototype) | e('html_attr') }}" class="row">
+                        {# Les champs des casques seront ajoutés ici dynamiquement #}
+                    </div>
+
+                    <div id="additional-fields" style="display: none;">
+                        <div class="mb-3">
+                            {{ form_row(form.modeLivraison, {'attr': {'class': 'form-select'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(form.message, {
+                                'label': 'Message (facultatif)',
+                                'attr': {'class': 'form-control', 'rows': 3}
+                            }) }}
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Soumettre</button>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Page chargée, initialisation du script...');
+
+            // Récupérer les éléments nécessaires
+            const casquesContainer = document.querySelector('#casques-container');
+            const casquePrototype = casquesContainer?.getAttribute('data-prototype');
+            const additionalFields = document.querySelector('#additional-fields');
+
+            if (!casquePrototype) {
+                console.error('Le prototype des casques n\'est pas défini.');
+                return;
+            }
+
+            // Récupérer le champ "nombre_casques"
+            const nombreCasquesField = document.querySelector('#don_casque_nombre_casques');
+
+            // Ajouter un écouteur d'événements sur le champ "nombre_casques"
+            nombreCasquesField.addEventListener('input', function () {
+                const nombreCasques = parseInt(nombreCasquesField.value, 10);
+
+                if (isNaN(nombreCasques) || nombreCasques < 1) {
+                    casquesContainer.innerHTML = '';
+                    additionalFields.style.display = 'none';
+                    return;
+                }
+
+                // Afficher les champs supplémentaires
+                additionalFields.style.display = 'block';
+
+                // Nettoyer le conteneur avant d'ajouter de nouveaux champs
+                casquesContainer.innerHTML = '';
+
+                // Ajouter les champs pour chaque casque
+                for (let i = 0; i < nombreCasques; i++) {
+                    const casqueForm = document.createElement('div');
+
+                    // Déterminer la classe de colonne : col-md-6 ou col-md-12
+                    const isOdd = (nombreCasques % 2 !== 0); // Vérifier si le nombre est impair
+                    const isLast = (i === nombreCasques - 1); // Vérifier si c'est le dernier élément
+
+                    if (isOdd && isLast) {
+                        casqueForm.classList.add('col-md-12', 'mb-3'); // Pleine largeur pour le dernier si impair
+                    } else {
+                        casqueForm.classList.add('col-md-6', 'mb-3'); // Demi-largeur sinon
+                    }
+
+                    // Encapsuler le formulaire dans un cadre
+                    casqueForm.innerHTML = `
+                        <div class="card p-3 shadow">
+                            <h6 class="card-title">Casque ${i + 1}</h6>
+                            <div class="card-body">
+                                ${casquePrototype.replace(/__name__/g, i)}
+                            </div>
+                        </div>
+                    `;
+                    casquesContainer.appendChild(casqueForm);
+                }
+            });
+        });
+    </script>
+{% endblock %}

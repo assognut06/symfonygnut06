@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Merci pour votre don</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #ffffff;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        p {
+            color: #555;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #f4f4f4;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div style="text-align: center;">
+            <a href="https://gnut06.org">
+                <img src="https://www.gnut06.org/images/logo_trans-min.png" alt="Logo Gnut 06" style="max-width: 50px; margin: 1em;">
+            </a>
+        </div>
+        <h1>Bonjour {{ donateur.prenom }},</h1>
+        <p>Nous tenons à vous remercier du fond du cœur pour votre générosité et votre engagement envers notre cause. Grâce à des personnes comme vous, nous pouvons continuer à faire une différence.</p>
+
+        {% if don.getModeLivraison.nom == 'Expédition' %}
+            <p>Dans les prochains jours, vous recevrez un e-mail contenant tous les détails relatifs à l'envoi de votre don. Nous veillerons à ce que tout se passe sans accroc.</p>
+        {% elseif don.getModeLivraison.nom == 'Dépôt' %}
+            <p>Nous serons ravis de vous accueillir dans nos locaux pour récupérer votre don. Si vous avez besoin d'un créneau spécifique, n'hésitez pas à nous contacter.</p>
+        {% endif %}
+
+        <p>Pour rappel, voici les informations concernant votre don :</p>
+
+        <ul>
+            <li><strong>Nombre de casques :</strong> {{ don.casques|length }}</li>
+            <li><strong>Date du don :</strong> {{ don.dateCreation|date('d/m/Y') }}</li>
+        </ul>
+
+        <p><strong>Liste des casques donnés :</strong></p>
+        <ul>
+            {% for casque in don.casques %}
+                <li>
+                    <strong>Casque #{{ loop.index }} :</strong><br>
+                    - Modèle : {{ casque.marque.nom|default('Non spécifié') }}<br>
+                    - État : {{ casque.etat|default('Non spécifié') }}<br>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <p>Nous vous tiendrons informé(e) dès que votre don sera traité. Encore mille mercis pour votre soutien précieux !</p>
+        <p>Avec toute notre gratitude,<br>L'équipe Gnut 06</p>
+        <div class="footer">
+            <p>Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à <a href="mailto:gnut@gnut06.org">gnut@gnut06.org</a>.</p>
+        </div>
+    </div>
+</body>
+</html>

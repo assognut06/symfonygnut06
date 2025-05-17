@@ -1,0 +1,53 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Ajouter une entreprise{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+            <div class="card p-4 shadow-sm">
+                    <h1 class="text-center mb-5" style="color:black;">Ajouter une entreprise</h1>
+                    {{ form_start(form) }}
+
+                        <div class="mb-4">
+                            {{ form_label(form.nom) }}
+                            {{ form_widget(form.nom) }}
+                            {{ form_errors(form.nom) }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form_label(form.logo) }}
+                            {{ form_widget(form.logo) }}
+                            {{ form_errors(form.logo) }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form_label(form.url) }}
+                            {{ form_widget(form.url) }}
+                            {{ form_errors(form.url) }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form_label(form.email) }}
+                            {{ form_widget(form.email) }}
+                            {{ form_errors(form.email) }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form_label(form.telephone) }}
+                            {{ form_widget(form.telephone) }}
+                            {{ form_errors(form.telephone) }}
+                        </div>
+
+                        <div class="d-flex justify-content-center mt-4">
+                            <button type="submit" class="btn btn-success">Créer</button>
+                            <a href="{{ path('app_entreprise') }}" class="btn btn-secondary ms-2">Annuler</a>
+                        </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

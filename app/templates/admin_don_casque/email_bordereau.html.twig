@@ -1,0 +1,88 @@
+{# templates/emails/bordereau_donateur.html.twig #}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Votre bordereau de suivi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #ffffff;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        p {
+            color: #555;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #f4f4f4;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div style="text-align: center;">
+            <a href="https://gnut06.org">
+                <img src="https://www.gnut06.org/images/logo_trans-min.png" alt="Logo Gnut 06" style="max-width: 50px; margin: 1em;">
+            </a>
+        </div>
+        <h1>Bonjour {{ donateur.prenom }},</h1>
+        <p>Nous tenons à vous remercier encore une fois pour votre générosité et votre engagement envers notre cause. Grâce à des personnes comme vous, nous pouvons continuer à faire une réelle différence.</p>
+
+        <p>Comme convenu, vous trouverez ci-joint votre **bordereau de suivi** pour le transport de votre don. Ce document vous permettra de suivre en temps réel l'acheminement de vos casques jusqu'à leur destination finale.</p>
+
+            {% if transporteur.nom == 'Mondial Relay' %}
+                <p>📦 Votre colis sera expédié via <strong>Mondial Relay</strong>. Vous pouvez suivre l’envoi à l’aide du numéro présent dans le bordereau sur <a href="https://www.mondialrelay.fr/suivi-de-colis/">leur site de suivi</a>.</p>
+            {% elseif transporteur == 'UPS' %}
+                <p>📦 Votre colis est pris en charge par <strong>UPS</strong>. Pour suivre son acheminement, rendez-vous sur <a href="https://www.ups.com/track?loc=fr_FR">le site UPS</a> avec le numéro présent dans le bordereau.</p>
+            {% else %}
+                <p>📦 Le transporteur.nom utilisé pour votre don est : <strong>{{ transporteur.nom }}</strong>. Merci d'utiliser le numéro présent dans le bordereau pour le suivi de votre envoi.</p>
+            {% endif %}
+    
+            <p>Si vous avez des questions ou si vous avez besoin d'une aide supplémentaire, notre équipe est à votre disposition. N'hésitez pas à nous contacter, nous serons ravis de vous assister dans toutes les étapes du processus.</p>
+    
+            <p>Encore une fois, merci beaucoup pour votre soutien !</p>
+    
+            <p>Avec toute notre gratitude,<br>L'équipe Gnut 06</p>
+    
+            <div class="footer">
+                <p>Vous pouvez nous joindre à tout moment à <a href="mailto:gnut@gnut06.org">gnut@gnut06.org</a>.</p>
+            </div>
+        </div>
+    </body>
+    </html>

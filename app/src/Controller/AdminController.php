@@ -76,24 +76,24 @@ class AdminController extends AbstractController
     
         switch ($donnees) {
             case 'orders':
-                $url = $baseUrl . "/items?pageIndex=" . $page . "&pageSize=15&withDetails=true&sortOrder=Desc&sortField=Date&itemStates=Processed";
+                $url = $baseUrl . "/items?pageIndex=" . $page . "&pageSize=15&withDetails=true&sortOrder=Desc&sortField=Date&itemStates=Processed&withCount=true";
                 if ($formType !== '1' && $formSlug !== '1') {
-                    $url = $baseUrl . "/forms/" . $formType . "/" . $formSlug . "/items?pageIndex=" . $page . "&pageSize=15&withDetails=true&sortOrder=Desc&sortField=Date&itemStates=Processed";
+                    $url = $baseUrl . "/forms/" . $formType . "/" . $formSlug . "/items?pageIndex=" . $page . "&pageSize=15&withDetails=true&sortOrder=Desc&sortField=Date&itemStates=Processed&withCount=true";
                 }
                 if ($tierTypes !== '1') {
-                    $url = $baseUrl . "/items?pageIndex=" . $page . "&pageSize=15&tierTypes=" . $tierTypes . "&withDetails=true&sortOrder=Desc&sortField=Date&itemStates=Processed";
+                    $url = $baseUrl . "/items?pageIndex=" . $page . "&pageSize=15&tierTypes=" . $tierTypes . "&withDetails=true&sortOrder=Desc&sortField=Date&itemStates=Processed&withCount=true";
                 }
                 break;
             case 'payments':
-                $url = $baseUrl . "/payments?pageIndex=" . $page . "&pageSize=15&withDetails=true&sortOrder=Desc&sortField=Date&states=Authorized";
+                $url = $baseUrl . "/payments?pageIndex=" . $page . "&pageSize=15&withDetails=true&sortOrder=Desc&sortField=Date&states=Authorized&withCount=true";
                 if ($formType !== '1') {
-                    $url = $baseUrl . "/payments/search?pageSize=15&formType=" . $formType . "&sortOrder=Desc&sortField=Date&states=Authorized";
+                    $url = $baseUrl . "/payments/search?pageSize=15&formType=" . $formType . "&sortOrder=Desc&sortField=Date&states=Authorized&withCount=true";
                 }
                 break;
         }
     
         return $url;
-    }
+    }    
 
     private function buildDetaislUrl($type, $id) {
         $baseUrl = "https://api.helloasso.com/v5";

@@ -93,7 +93,7 @@ class RegistrationController extends AbstractController
                             ->htmlTemplate('registration/confirmation_email.html.twig')
                     );
 
-                    $this->addFlash('danger', 'Un email de confirmation a été envoyé à votre adresse email. Veuillez consulter votre boîte mail pour confirmer votre inscription.');
+                    $this->addFlash('success', 'Un email de confirmation a été envoyé à votre adresse email. Veuillez consulter votre boîte mail pour confirmer votre inscription.');
                 } catch (\Exception $e) {
                     $this->logger->error('Erreur lors de l\'envoi de l\'email de confirmation d\'inscription', ['exception' => $e]);
                     $this->addFlash('danger', 'Un problème est survenu lors de l\'envoi de l\'email de confirmation d\'inscription. Veuillez réessayer.');

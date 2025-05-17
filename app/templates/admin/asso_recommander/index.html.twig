@@ -6,7 +6,7 @@
 {% block body %}
 	<div class="container pt-0">
 		<div class="mx-4">
-			<h2 class="my-4 text-primary text-center">Les Associations recommandées par Gnut06.org</h2>
+			<h2 class="my-4 text-center">Les Associations recommandées par Gnut06.org</h2>
 			<div class="text-center my-4"> <form action="{{ path('app_asso_update_data') }}" method="post">
         			<button type="submit" class="btn btn-primary">Update All Associations</button>
     		</form>
@@ -88,7 +88,7 @@
 						{% if page < pages %}
 							<li class="page-item">
 								<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page + 1}) }}">
-									<span aria-hidden="true">&laquo;</span>
+									<span aria-hidden="true">&raquo;</span>
 								</a>
 							</li>
 						{% endif %}
