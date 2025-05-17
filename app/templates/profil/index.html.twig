@@ -8,10 +8,38 @@
 {% block body %}
 	<h2 class="text-center">Profil de utilisateur</h2>
 
+	<div class="text-center my-4">
+    {% if user.profilePicture %}
+        <!-- Photo de profil existante -->
+        <img src="{{ asset('uploads/profilePictures/' ~ user.profilePicture) }}" 
+             class="rounded-circle shadow mb-3" 
+             style="width: 150px; height: 150px; object-fit: cover;">
+        <div>
+            <a href="{{ path('edit_profile_picture') }}" class="btn btn-primary me-2">
+				<i class="bi bi-pencil"></i>
+            </a>
+            <a href="{{ path('delete_profile_picture') }}" class="btn btn-danger">
+				<i class="bi bi-trash" style="color:white"></i>
+            </a>
+        </div>
+    {% else %}
+        <!-- Photo anonyme par défaut -->
+        <img src="{{ asset('images/user_profil.jpg') }}" 
+             class="rounded-circle shadow mb-3" 
+             style="width: 150px; height: 150px; object-fit: cover;">
+        <div>
+            <a href="{{ path('edit_profile_picture') }}" class="btn btn-primary">
+                <i class="fas fa-pencil-alt"></i> Ajouter une photo
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+
 	<div class="text-center">
 		<p>Identifiant :
 			{{ user.id }}</p>
-		<p class="fs-4">Email :
+		<p class="fs-4">
 			{{ user.email }} <i class="bi bi-patch-check {{ user.isVerified == 1 ? 'text-success' : 'text-danger' }}"></i> {% if user.isVerified == 0 %}<a href="{{ path('app_verify_email_renew', {'id': user.id}) }}">Demander un nouveau envoi d'email de confirmation</a>{% endif %}</p>
 			{% if data_items['data'] is not empty %}
 				{# {{  dump (data_items['data'][0].payer.firstName) }} #}
@@ -88,7 +116,7 @@
 						{% if data_items['pagination'].pageIndex < data_items['pagination'].totalPages %}
 							<li class="page-item">
 								<a class="page-link" href="{{ path('app_profil_page', {'page': data_items['pagination'].pageIndex + 1, 'donnees': app.request.attributes.get('donnees') is defined and app.request.attributes.get('donnees') ? app.request.attributes.get('donnees') : 'orders'}) }}">
-									<span aria-hidden="true">&laquo;</span>
+									<span aria-hidden="true">&raquo;</span>
 								</a>
 							</li>
 						{% endif %}

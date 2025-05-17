@@ -11,6 +11,7 @@
         </script> 
 		{% include 'admin/_partials/header.html.twig' %}
 		{% block stylesheets %}{{ encore_entry_link_tags('app') }}{% endblock %}
+		<link rel="stylesheet" href="{{ asset('css/admin_table.css') }}">
 	</head>
 	<body>
 		<!-- Include navbar -->
@@ -31,9 +32,9 @@
 		<!-- Body content -->
 	
 		{% include('_partials/loader.html.twig') %}
-		
-		{% block body %}{% endblock %}
-		
+		<main>
+           {% block body %}{% endblock %}
+        </main>
 
 		<!-- Include footer -->
 		{% include 'admin/_partials/footer.html.twig' %}

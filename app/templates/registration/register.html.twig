@@ -29,12 +29,15 @@
                             'attr': {'class': 'form-control'}
                         }) }}
 					</div>
+
 					<div class="mb-3 form-check">
-						{{ form_row(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
-						<label
-							for="{{ registrationForm.agreeTerms.vars.id }}" class="form-check-label">{# {{ registrationForm.agreeTerms.vars.label }} #}
-						</label>
-					</div>
+                    	{{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                    	<label class="form-check-label" for="{{ registrationForm.agreeTerms.vars.id }}">
+							Je suis en accord avec <a href="#" data-bs-toggle="modal" data-bs-target="#valuesModal">les valeurs de Gnut 06</a>
+                    	</label>
+                    	{{ form_errors(registrationForm.agreeTerms) }}
+                    </div>
+                    
 					{# recaptcha input #}
 					<div class="col-12 text-center">
 						<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
@@ -55,5 +58,9 @@
 		            document.getElementById('g-recaptcha-response').value = token;
 		        });
 		    });
-		</script>
+	</script>
+
+
+{% include '_partials/valeurs.html.twig' %}
+
 {% endblock %}

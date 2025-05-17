@@ -1,0 +1,108 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Liste des entreprises{% endblock %}
+
+{% block body %}
+<h1 class="mb-4">Liste des entreprises</h1>
+
+<div class="d-flex align-items-center justify-content-around mb-4">
+    <input type="text" id="search-input" class="form-control" placeholder="Rechercher une entreprise..." style="max-width: 300px;">
+    <a href="{{ path('entreprise_new') }}" class="btn btn-success ms-3" style="color: white">
+        + Ajouter une entreprise
+    </a>
+</div>
+
+<div style="width: 80%; margin: auto;">
+<table class="table table-3d">
+    <thead class="table-dark text-center">
+        <tr>
+            <th>Logo</th>
+            <th>Nom</th>
+            <th>URL</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        {% for entreprise in entreprises %}
+            <tr>
+                <td>
+                    {% if entreprise.logo %}
+                        <img src="{{ asset('uploads/logo_entreprises/' ~ entreprise.logo) }}" alt="Logo" style="max-height: 50px; border-radius: 50%">
+                    {% else %}
+                        Pas de logo
+                    {% endif %}
+                </td>
+                <td>{{ entreprise.nom }}</td>
+                <td>
+                    {% if entreprise.url %}
+                        <a href="{{ entreprise.url }}" target="_blank">{{ entreprise.url }}</a>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>{{ entreprise.email }}</td>
+                <td>{{ entreprise.telephone }}</td>
+                <td class="d-flex flex-column justify-content-around align-items-center">
+                    <a href="{{ path('entreprise_edit', {'id': entreprise.id}) }}" class="btn btn-sm mb-2 btn-modifier" style="width: 100px;">Modifier</a>
+                    <form method="post" action="{{ path('entreprise_delete', {'id': entreprise.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">
+                       <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entreprise.id) }}">
+                       <button class="btn btn-sm mb-2 btn-danger" style="width: 100px;">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7" class="text-center">Aucune entreprise trouvée.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{# PAGINATION avec KnpPaginator si utilisé #}
+{% if entreprises is defined and entreprises.getTotalItemCount is defined %}
+    <nav aria-label="Pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item {% if entreprises.getCurrentPageNumber == 1 %}disabled{% endif %}">
+                {% if entreprises.getCurrentPageNumber > 1 %}
+                    <a class="page-link" href="{{ path('app_entreprise', {'page': entreprises.getCurrentPageNumber - 1}) }}">&laquo;</a>
+                {% else %}
+                    <span class="page-link">&laquo;</span>
+                {% endif %}
+            </li>
+
+            {% for i in 1..entreprises.getPageCount %}
+                <li class="page-item {% if i == entreprises.getCurrentPageNumber %}active{% endif %}">
+                    <a class="page-link" href="{{ path('app_entreprise', {'page': i}) }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+
+            <li class="page-item {% if entreprises.getCurrentPageNumber == entreprises.getPageCount %}disabled{% endif %}">
+                {% if entreprises.getCurrentPageNumber < entreprises.getPageCount %}
+                    <a class="page-link" href="{{ path('app_entreprise', {'page': entreprises.getCurrentPageNumber + 1}) }}">&raquo;</a>
+                {% else %}
+                    <span class="page-link">&raquo;</span>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('search-input');
+        const rows = document.querySelectorAll('table tbody tr');
+
+        input.addEventListener('input', () => {
+            const value = input.value.toLowerCase();
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(value) ? '' : 'none';
+            });
+        });
+    });
+</script>
+{% endblock %}

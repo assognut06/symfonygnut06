@@ -1,0 +1,174 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Liste des donateurs{% endblock %}
+
+{% block body %}
+<h1 class="mb-4">Liste des donateurs</h1>
+
+{# Div avec les filtres et la recherche #}
+<div class="row mb-4">
+  <div class="col-12 d-flex flex-column align-items-center">
+    
+    <!-- Boutons de filtrage -->
+    <div class="d-flex justify-content-center gap-2 mb-3" style="width: 400px;">
+      <button class="btn btn-outline-primary filter-btn active" data-filter="all">Tous</button>
+      <button class="btn btn-outline-societe filter-btn" data-filter="societe">Société</button>
+      <button class="btn btn-outline-physique filter-btn" data-filter="personne_physique">Personne physique</button>
+    </div>
+
+    <!-- Barre de recherche -->
+    <div style="width: 370px;">
+      <input type="text" id="search-input" class="form-control" placeholder="Rechercher un donateur...">
+    </div>
+    
+  </div>
+</div>
+
+    <div style="width: 98%; margin: auto;">
+    <table class="table table-3d" id="donateurs-table">
+        <thead class="table-dark text-center">
+            <tr>
+                <th class="align-middle">Civ.</th>
+                <th class="align-middle">Nom</th>
+                <th class="align-middle">Prénom</th>
+                <th class="align-middle">Nom société</th>
+                <th class="align-middle">Siren</th>
+                <th class="align-middle">Email</th>
+                <th class="align-middle">Téléphone</th>
+                <th class="align-middle">Adresse 1</th>
+                <th class="align-middle">Adresse 2</th>
+                <th class="align-middle">Code Postal</th>
+                <th class="align-middle">Ville</th>
+                <th class="align-middle">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            {% for donateur in donateurs %}
+                {% set rowClass = donateur.typeDonateur == 'societe' ? 'row-societe' : 'row-physique' %}
+                <tr class="{{ rowClass }}" data-type="{{ donateur.typeDonateur }}">
+                    <td class="align-middle">{{ donateur.civilite }}</td>
+                    <td class="align-middle">{{ donateur.nom }}</td>
+                    <td class="align-middle">{{ donateur.prenom }}</td>
+
+                    {% if donateur.typeDonateur == "societe" %}
+                        <td class="align-middle">{{ donateur.getNomSociete }}</td>
+                        <td class="align-middle">{{ donateur.siren }}</td>
+                    {% else %}
+                        <td class="align-middle"><img src="{{ asset('images/no-data.png') }}" alt="no-data"></td>
+                        <td class="align-middle"><img src="{{ asset('images/no-data.png') }}" alt="no-data"></td>
+                    {% endif %}
+
+                    <td class="align-middle">{{ donateur.email }}</td>
+                    <td class="align-middle">{{ donateur.telephone }}</td>
+                    <td class="align-middle">{{ donateur.getAdresse1 }}</td>
+
+                    {% if donateur.getAdresse2 %}
+                        <td class="align-middle">{{ donateur.getAdresse2 }}</td>
+                    {% else %}
+                        <td class="align-middle"><img src="{{ asset('images/no-data.png') }}" alt="no-data"></td>
+                    {% endif %}
+                    
+                    <td class="align-middle">{{ donateur.getCodePostal }}</td>
+                    <td class="align-middle">{{ donateur.ville }}</td>
+                    <td class="align-middle d-flex flex-column gap-1">
+                        <a href="{{ path('admin_dons', {'id': donateur.id}) }}" class="btn btn-dons btn-sm">
+                            Voir ses dons
+                        </a>
+                        <div class="d-flex justify-content-center gap-1">
+                            <a href="{{ path('admin_donateur_details', {'id': donateur.id}) }}" class="btn btn-outline-detail btn-sm" title="Voir les détails">
+                                <i class="bi bi-eye"></i>
+                            </a> 
+                        
+                            <form method="post" action="{{ path('admin_donateur_delete', {'id': donateur.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce donateur ?');" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_donateur_' ~ donateur.id) }}">
+                                <button class="btn btn-outline-danger btn-sm" title="Supprimer">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="12" class="text-center">Aucun donateur trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{# Pagination #}
+{% if donateurs.getTotalItemCount > 0 %}
+    <nav aria-label="Pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {# Précédent #}
+            <li class="page-item {% if donateurs.getCurrentPageNumber == 1 %}disabled{% endif %}">
+                {% if donateurs.getCurrentPageNumber > 1 %}
+                    <a class="page-link" href="{{ path('admin_donateurs', {'page': donateurs.getCurrentPageNumber - 1}) }}" aria-label="Précédent">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                {% else %}
+                    <span class="page-link" aria-hidden="true">&laquo;</span>
+                {% endif %}
+            </li>
+
+            {# Pages #}
+            {% for i in 1..donateurs.getPageCount %}
+                <li class="page-item {{ i == donateurs.getCurrentPageNumber ? 'active' : '' }}">
+                    <a class="page-link" href="{{ path('admin_donateurs', {'page': i}) }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+
+            {# Suivant #}
+            <li class="page-item {% if donateurs.getCurrentPageNumber == donateurs.getPageCount %}disabled{% endif %}">
+                {% if donateurs.getCurrentPageNumber < donateurs.getPageCount %}
+                    <a class="page-link" href="{{ path('admin_donateurs', {'page': donateurs.getCurrentPageNumber + 1}) }}" aria-label="Suivant">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                {% else %}
+                    <span class="page-link" aria-hidden="true">&raquo;</span>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('search-input');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const tableRows = document.querySelectorAll('#donateurs-table tbody tr');
+
+        // Recherche en direct
+        searchInput.addEventListener('input', () => {
+            const value = searchInput.value.toLowerCase();
+
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(value) ? '' : 'none';
+            });
+        });
+
+        // Filtrage des types de donateurs
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.getAttribute('data-filter');
+
+                // Retire la classe active de tous les boutons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Filtre les lignes par type
+                tableRows.forEach(row => {
+                    const typeDonateur = row.getAttribute('data-type');
+                    if (filter === 'all' || typeDonateur === filter) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

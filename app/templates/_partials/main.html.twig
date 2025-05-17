@@ -52,7 +52,9 @@
 			{% elseif label == 'info' %}
 				{% set alertClass = 'info' %}
 			{% endif %}
-			<div class="alert alert-{{ alertClass }} text-center fade-in" role="alert">{{ flash }}</div>
+			<div class="alert alert-{{ alertClass }} text-center" role="alert">
+				{{ flash }}
+			</div>
 		{% endfor %}
 	{% endfor %}
 </main>

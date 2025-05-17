@@ -1,0 +1,159 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Liste des bénévoles{% endblock %}
+
+{% block body %}
+<h1 class="mb-4">Liste des bénévoles</h1>
+
+<div class="d-flex align-items-center justify-content-around mb-4">
+    <input type="text" id="search-input" class="form-control" placeholder="Rechercher un bénévole..." style="max-width: 300px;">
+    <a href="{{ path('benevole_new') }}" class="btn btn-success ms-3" style="color: white">
+        + Ajouter un bénévole
+    </a>
+</div>
+
+<div style="width: 98%; margin: auto;">
+<table class="table table-3d">
+    <thead class="table-dark text-center">
+        <tr>
+            <th>Type</th>
+            <th>Civ.</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Adresse 1</th>
+            <th>Adresse 2</th>
+            <th>Ville</th>
+            <th>Nous a trouvé par</th>
+            <th>CV</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        {% for benevole in benevoles %}
+            <tr>
+                <td>{{ benevole.type }}</td>
+                <td>{{ benevole.civilite }}</td>
+                <td>{{ benevole.nom }}</td>
+                <td>{{ benevole.prenom }}</td>
+                <td>{{ benevole.email }}</td>
+                <td>{{ benevole.telephone }}</td>
+                <td>{{ benevole.adresse1 }}</td>
+                <td>{{ benevole.adresse2 }}</td>
+                <td>{{ benevole.ville }}</td>
+                <td>{{ benevole.getAssoTrouvePar }}</td>
+                 {# voir le cv #}
+                 <td>
+                    {% if benevole.cv %}
+                        <button class="btn btn-sm btn-secondary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#cvModal"
+                                data-cv-url="{{ asset('uploads/cv/' ~ benevole.cv) }}"
+                                data-nom="{{ benevole.nom }}"
+                                data-prenom="{{ benevole.prenom }}">
+                            <i class="bi bi-eye"></i> CV
+                        </button>
+                    {% else %}
+                        Pas de CV
+                    {% endif %}
+                </td>
+                
+                <td class="d-flex flex-column justify-content-around">
+                    <a href="{{ path('benevole_edit', {'id': benevole.id}) }}" class="btn btn-sm mb-2 btn-modifier">Modifier</a>
+                    <a href="{{ path('benevole_delete', {'id': benevole.id}) }}" class="btn btn-sm btn-danger"
+                       onclick="return confirm('Supprimer ce bénévole ?');">Supprimer</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8" class="text-center">Aucun bénévole trouvé.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{# PAGINATION avec KnpPaginator si utilisé #}
+{% if benevoles is defined and benevoles.getTotalItemCount is defined %}
+    <nav aria-label="Pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item {% if benevoles.getCurrentPageNumber == 1 %}disabled{% endif %}">
+                {% if benevoles.getCurrentPageNumber > 1 %}
+                    <a class="page-link" href="{{ path('app_benevole', {'page': benevoles.getCurrentPageNumber - 1}) }}">&laquo;</a>
+                {% else %}
+                    <span class="page-link">&laquo;</span>
+                {% endif %}
+            </li>
+
+            {% for i in 1..benevoles.getPageCount %}
+                <li class="page-item {% if i == benevoles.getCurrentPageNumber %}active{% endif %}">
+                    <a class="page-link" href="{{ path('app_benevole', {'page': i}) }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+
+            <li class="page-item {% if benevoles.getCurrentPageNumber == benevoles.getPageCount %}disabled{% endif %}">
+                {% if benevoles.getCurrentPageNumber < benevoles.getPageCount %}
+                    <a class="page-link" href="{{ path('app_benevole', {'page': benevoles.getCurrentPageNumber + 1}) }}">&raquo;</a>
+                {% else %}
+                    <span class="page-link">&raquo;</span>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+{% endif %}
+
+<div class="modal fade" id="cvModal" tabindex="-1" aria-labelledby="cvModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cvModalLabel">CV du bénévole</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body" style="height: 80vh;">
+        <iframe id="cvIframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var cvModal = document.getElementById('cvModal');
+        var cvTitle = document.getElementById('cvModalLabel');
+        var iframe = document.getElementById('cvIframe');
+    
+        cvModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var cvUrl = button.getAttribute('data-cv-url');
+            var nom = button.getAttribute('data-nom');
+            var prenom = button.getAttribute('data-prenom');
+    
+            iframe.src = cvUrl;
+            cvTitle.textContent = `CV de ${nom} ${prenom}`;
+        });
+    
+        cvModal.addEventListener('hidden.bs.modal', function () {
+            iframe.src = '';
+            cvTitle.textContent = 'CV du bénévole';
+        });
+    });
+    </script>       
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('search-input');
+        const rows = document.querySelectorAll('table tbody tr');
+
+        input.addEventListener('input', () => {
+            const value = input.value.toLowerCase();
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(value) ? '' : 'none';
+            });
+        });
+    });
+</script>
+{% endblock %}
