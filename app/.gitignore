@@ -4,6 +4,7 @@
 /.env.test
 /.env.local.php
 /.env.*.local
+/.env.ovh
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /public/videos/
