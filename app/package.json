@@ -27,8 +27,8 @@
     "bootstrap": "^5.3.3",
     "file-loader": "^6.2.0",
     "jquery": "^3.7.1",
-    "sass": "^1.80.6",
-    "sass-loader": "^14.0.0",
+    "sass": "^1.89.0",
+    "sass-loader": "^14.1.1",
     "webpack-notifier": "^1.15.0"
   },
   "scripts": {
