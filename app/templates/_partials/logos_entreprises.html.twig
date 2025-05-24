@@ -10,7 +10,7 @@
         {% for entreprise in entreprises %}
           {% if entreprise.logo %}
           <div class="carrousel-slide">
-             <a href="{{ entreprise.url }}" target="_blank" rel="noopener noreferrer">
+             <a href="{{ entreprise.url }}" target="_blank" rel="noopener noreferrer" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{entreprise.nom }}">
                <img src="{{ asset('uploads/logo_entreprises/' ~ entreprise.logo) }}" alt="{{ entreprise.nom }}" class="carrousel-img">
              </a>
            </div>
