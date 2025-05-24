@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "bootstrap-icons": "^1.11.3",
+    "core-js": "^3.42.0",
     "node-fs-extra": "^0.8.2",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4",
@@ -24,11 +25,11 @@
     "@popperjs/core": "^2.11.8",
     "@symfony/webpack-encore": "^4.7.0",
     "babel-loader": "^9.2.1",
-    "bootstrap": "^5.3.3",
+    "bootstrap": "^5.3.6",
     "file-loader": "^6.2.0",
     "jquery": "^3.7.1",
-    "sass": "^1.80.6",
-    "sass-loader": "^14.0.0",
+    "sass": "^1.89.0",
+    "sass-loader": "^14.1.1",
     "webpack-notifier": "^1.15.0"
   },
   "scripts": {
