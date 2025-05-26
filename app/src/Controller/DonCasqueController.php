@@ -99,7 +99,7 @@ class DonCasqueController extends AbstractController
                 // Email à Gnut 06
                 $emailGnut = (new TemplatedEmail())
                     ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
-                    ->to('walid@gnut06.org') //Mail du sécuritariat
+                    ->to('doncasque@gnut06.org') //Mail du sécuritariat
                     ->subject('Nouveau don reçu')
                     ->htmlTemplate('don_casque/email_gnut_notification.html.twig')
                     ->context([
