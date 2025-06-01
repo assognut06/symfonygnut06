@@ -53,6 +53,15 @@ class BenevoleType extends AbstractType
                 ])
             ],
         ])
+        ->add('email_pro', EmailType::class, [
+            'required' => false,
+            'attr' => ['placeholder' => 'Email professionnel', 'class' => 'form-control'],
+            'constraints' => [
+                new Assert\Email([
+                    'message' => 'L\'adresse email n\'est pas valide.',
+                ]),
+            ],
+        ])
         ->add('telephone', TextType::class, [
             'attr' => ['placeholder' => 'Téléphone*', 'class' => 'form-control'],
             'constraints' => [
@@ -66,28 +75,33 @@ class BenevoleType extends AbstractType
             ],
         ])
         ->add('adresse_1', TextType::class, [
-            'attr' => ['placeholder' => 'Adresse ligne 1*', 'class' => 'form-control']
+            'required' => false,
+            'attr' => ['placeholder' => 'Adresse ligne 1', 'class' => 'form-control']
         ])
         ->add('adresse_2', TextType::class, [
             'required' => false,
             'attr' => ['placeholder' => 'Adresse ligne 2 (optionnelle)', 'class' => 'form-control']
         ])
         ->add('code_postal', TextType::class, [
-            'attr' => ['placeholder' => 'Code postal*', 'class' => 'form-control']
+            'required' => false,
+            'attr' => ['placeholder' => 'Code postal', 'class' => 'form-control']
         ])
         ->add('ville', TextType::class, [
-            'attr' => ['placeholder' => 'Ville*', 'class' => 'form-control']
+            'required' => false,
+            'attr' => ['placeholder' => 'Ville', 'class' => 'form-control']
         ])
         ->add('pays', TextType::class, [
-            'attr' => ['placeholder' => 'Pays*', 'class' => 'form-control']
+            'required' => false,
+            'attr' => ['placeholder' => 'Pays', 'class' => 'form-control']
         ])
         ->add('asso_trouve_par', ChoiceType::class, [
+            'required' => false,
             'choices' => [
                 'Site web' => 'Site web',
                 'Réseaux sociaux' => 'Réseaux sociaux',
                 'Autre' => 'Autre',
             ],
-            'placeholder' => 'Comment vous nous avez trouver ?*',
+            'placeholder' => 'Comment vous nous avez trouver ?',
             'attr' => ['class' => 'form-select']
         ])
 
