@@ -25,23 +25,26 @@ class Benevole
 
     #[ORM\Column(type: 'string', length: 180)]
     protected ?string $email = null;
+    
+    #[ORM\Column(length: 150, nullable: true)]
+    private ?string $email_pro = null;
 
     #[ORM\Column(length: 20)]
     private ?string $telephone = null;
 
-    #[ORM\Column(length: 300)]
+    #[ORM\Column(length: 300, nullable: true)]
     private ?string $adresse_1 = null;
 
     #[ORM\Column(length: 300, nullable: true)]
     private ?string $adresse_2 = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 10, nullable: true)]
     private ?string $code_postal = null;
 
-    #[ORM\Column(length: 150)]
+    #[ORM\Column(length: 150, nullable: true)]
     private ?string $ville = null;
 
-    #[ORM\Column(length: 150)]
+    #[ORM\Column(length: 150, nullable: true)]
     private ?string $pays = null;
 
     #[ORM\Column]
@@ -53,7 +56,7 @@ class Benevole
     #[ORM\Column(length: 70)]
     private ?string $type = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $asso_trouve_par = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -61,6 +64,7 @@ class Benevole
 
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $commentaire = null;
+
 
     public function getId(): ?int
     {
@@ -108,6 +112,18 @@ class Benevole
     public function setEmail(string $email): static
     {
         $this->email = $email;
+        return $this;
+    }
+    
+    public function getEmailPro(): ?string
+    {
+        return $this->email_pro;
+    }
+
+    public function setEmailPro(?string $email_pro): static
+    {
+        $this->email_pro = $email_pro;
+
         return $this;
     }
 
@@ -248,4 +264,5 @@ class Benevole
 
         return $this;
     }
+
 }

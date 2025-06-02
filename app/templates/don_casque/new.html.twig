@@ -3,7 +3,8 @@
 {% block title %}Créer un Don{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
+{% if donateur %}
+    <div id="divFormulaire" class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <h1 class="text-center mb-4">Bienvenue  {{ donateur.civilite }} {{ donateur.nom }}</h1>
@@ -47,8 +48,14 @@
             </div>
         </div>
     </div>
-
+    
     <script>
+        // Scroll vers l'élément "formulaire"
+        const divFormulaireElement = document.getElementById('divFormulaire');
+        if (divFormulaireElement) {
+            divFormulaireElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
         document.addEventListener('DOMContentLoaded', function () {
             console.log('Page chargée, initialisation du script...');
 
@@ -108,5 +115,17 @@
                 }
             });
         });
+
+
     </script>
-{% endblock %}
+    {% else %}
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-8 text-center">
+                    <h1 class="mb-4">Bienvenue sur la page de création de don</h1>
+                    <p>Pour créer un don, vous devez d'abord renseigner vos informations personnelles.</p>
+                    
+                    <a href="{{ path('donateur_formulaire') }}" class="btn btn-primary">Renseigner mes informations</a>
+                    </div>
+            </div>
+    {% endif %}
+    {% endblock %}

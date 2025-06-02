@@ -39,10 +39,36 @@
                 <td>{{ benevole.prenom }}</td>
                 <td>{{ benevole.email }}</td>
                 <td>{{ benevole.telephone }}</td>
-                <td>{{ benevole.adresse1 }}</td>
-                <td>{{ benevole.adresse2 }}</td>
-                <td>{{ benevole.ville }}</td>
-                <td>{{ benevole.getAssoTrouvePar }}</td>
+                <td>
+                    {% if benevole.adresse1 %}
+                        {{ benevole.adresse1 }}
+                    {% else %}
+                        <img src="{{ asset('images/no-data.png') }}" alt="no-data">
+                    {% endif %}
+                </td>
+                <td>
+                    {% if benevole.adresse2 %}
+                        {{ benevole.adresse2 }}
+                    {% else %}
+                        <img src="{{ asset('images/no-data.png') }}" alt="no-data">
+                    {% endif %}
+                </td>
+                <td>
+                    {% if benevole.ville %}
+                        {{ benevole.ville }}
+                    {% else %}
+                        <img src="{{ asset('images/no-data.png') }}" alt="no-data">
+                    {% endif %}
+                </td>
+                <td>
+                    {% if benevole.getAssoTrouvePar %}
+                        {{ benevole.getAssoTrouvePar }}
+                    {% else %}
+                        <img src="{{ asset('images/no-data.png') }}" alt="no-data">
+                    {% endif %}
+                </td>
+                               
+
                  {# voir le cv #}
                  <td>
                     {% if benevole.cv %}
@@ -55,7 +81,7 @@
                             <i class="bi bi-eye"></i> CV
                         </button>
                     {% else %}
-                        Pas de CV
+                        <img src="{{ asset('images/no-data.png') }}" alt="no-data">
                     {% endif %}
                 </td>
                 
