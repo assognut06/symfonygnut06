@@ -1,0 +1,26 @@
+<link href="https://cdn.jsdelivr.net/npm/tarteaucitronjs@1.21.0/css/tarteaucitron.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tarteaucitronjs@1.21.0/tarteaucitron.min.js"></script>
+<script>
+function initTarteaucitron() {
+  if (typeof tarteaucitron !== 'undefined') {
+    tarteaucitron.init({
+      privacyUrl: '/mention/legales',
+      hashtag: '#tarteaucitron',
+      cookieName: 'tarteaucitron',
+      orientation: 'popup',
+      showAlertSmall: false,
+      cookieslist: true,
+      highPrivacy: true,
+      iconPosition: 'BottomLeft'
+    });
+    tarteaucitron.user.gtagUa = 'G-0BTCZT3QCS';
+    tarteaucitron.user.awConversionId = 'AW-16920455195';
+    tarteaucitron.job = tarteaucitron.job || [];
+    tarteaucitron.job.push('gtag');
+    tarteaucitron.job.push('googleadwordsconversion');
+  } else {
+    setTimeout(initTarteaucitron, 100);
+  }
+}
+initTarteaucitron();
+</script>

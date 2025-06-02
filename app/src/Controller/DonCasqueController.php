@@ -29,7 +29,9 @@ class DonCasqueController extends AbstractController
         $donateurId = $session->get('selected_donateur_id');
 
         if (!$donateurId) {
-            throw $this->createNotFoundException('Aucun donateur sélectionné.');
+              return $this->render('don_casque/new.html.twig', [
+                  'donateur' => false
+              ]);
         }
 
         $donateur = $entityManager->getRepository(Donateur::class)->find($donateurId);
@@ -99,7 +101,9 @@ class DonCasqueController extends AbstractController
                 // Email à Gnut 06
                 $emailGnut = (new TemplatedEmail())
                     ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
-                    ->to('walid@gnut06.org') //Mail du sécuritariat
+                    ->to('doncasque@gnut06.org') //Mail du sécuritariat
+                    ->from(new Address('don.casque@gnut06.org', 'Don Casque'))
+                    ->to('gnut@gnut06.org') //Mail du sécuritariat
                     ->subject('Nouveau don reçu')
                     ->htmlTemplate('don_casque/email_gnut_notification.html.twig')
                     ->context([
@@ -133,7 +137,7 @@ class DonCasqueController extends AbstractController
         $donateurId = $session->get('selected_donateur_id');
 
         if (!$donateurId) {
-            throw $this->createNotFoundException('Aucun donateur sélectionné.');
+            return $this->redirectToRoute('donateur_formulaire');
         }
 
         // Récupérer le donateur à partir de l'ID
