@@ -9,6 +9,10 @@
 			<h2 class="my-4 text-center">Les utilisateur de Gnut06.org</h2>
 			<div class="border border-secondary mb-4 mx-5"></div>
 
+			<div class="mb-3">
+    			<input type="text" id="search-email" class="form-control" placeholder="Rechercher par email...">
+			</div>
+
 			<div class="row align-items-start mx-auto">
 				<div class="col-12">
 					<table class="table table-success table-striped">
@@ -37,8 +41,12 @@
 												<button class="btn btn-danger text-white" type="submit">Supprimer</button>
 											</form>
 											<form action="{{ path('app_admin_user_promote', {'id': user.id}) }}" method="post">
-												<input type="hidden" name="_token" value="{{ csrf_token('promote_user' ~ user.id) }}">
-												<button class="btn btn-success mx-1" type="submit">Promouvoir</button>
+    											<input type="hidden" name="_token" value="{{ csrf_token('promote_user' ~ user.id) }}">
+    											{% if 'ROLE_ADMIN' in user.roles %}
+        											<button class="btn btn-warning mx-1" type="submit">Rétrograder</button>
+    											{% else %}
+        											<button class="btn btn-success mx-1" type="submit">Promouvoir</button>
+    											{% endif %}
 											</form>
 										</td>
 									</tr>

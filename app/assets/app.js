@@ -28,3 +28,22 @@ document.addEventListener('DOMContentLoaded', function () {
     return new bootstrap.Tooltip(tooltipTriggerEl);
   });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('search-email');
+    const rows = document.querySelectorAll('tbody tr');
+
+    if (input) {
+        input.addEventListener('input', function () {
+            const query = input.value.toLowerCase();
+
+            rows.forEach(row => {
+                const emailCell = row.querySelector('td:nth-child(2)');
+                if (emailCell) {
+                    const email = emailCell.textContent.toLowerCase();
+                    row.style.display = email.includes(query) ? '' : 'none';
+                }
+            });
+        });
+    }
+});
