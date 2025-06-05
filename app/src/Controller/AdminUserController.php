@@ -41,7 +41,16 @@ class AdminUserController extends AbstractController
         }
     
         // Mettre à jour le rôle de l'utilisateur
-        $user->setRoles(['ROLE_ADMIN']);
+        if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+            // Rétrograder → ne laisser que ROLE_USER
+            $user->setRoles([]);
+            $this->addFlash('info', 'Utilisateur rétrogradé.');
+        } else {
+            // Promouvoir
+            $user->setRoles(['ROLE_ADMIN']);
+            $this->addFlash('success', 'Utilisateur promu.');
+        }
+
         $entityManager->flush();
     
         // Rediriger vers la liste des utilisateurs après la mise à jour
