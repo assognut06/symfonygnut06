@@ -38,7 +38,7 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    ```bash
    docker compose up --build
    ```
+..
 
-   
 
    
