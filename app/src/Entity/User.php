@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
+use App\Entity\Tih;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -47,6 +48,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean')]
     private bool $isTih = false;
+
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: Tih::class, cascade: ['persist', 'remove'])]
+    private ?Tih $tih = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $profile_picture;
@@ -203,4 +207,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->date_mise_a_jour = $date_mise_a_jour;
         return $this;
     }
+
+    public function getTih(): ?Tih
+    {
+        return $this->tih;
+    }
+
+    public function setTih(?Tih $tih): static
+    {
+        if ($tih !== null && $tih->getUser() !== $this) {
+            $tih->setUser($this);
+        }
+
+        $this->tih = $tih;
+        return $this;
+    }
+
 }
