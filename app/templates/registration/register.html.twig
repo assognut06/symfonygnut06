@@ -37,7 +37,12 @@
                     	</label>
                     	{{ form_errors(registrationForm.agreeTerms) }}
                     </div>
-                    
+                    <div class="mb-3 form-check">
+						{{ form_widget(registrationForm.isTih, {'attr': {'class': 'form-check-input'}}) }}
+						<label class="form-check-label" for="{{ registrationForm.isTih.vars.id }}">
+							Je m'inscris en tant que Travailleur Indépendant Handicapé (TIH)
+						</label>
+					</div>
 					{# recaptcha input #}
 					<div class="col-12 text-center">
 						<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">

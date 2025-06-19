@@ -55,7 +55,12 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096, // Vous pouvez omettre cette ligne si vous n'avez pas de maximum
                     ]),
                 ],
-            ]);
+            ])
+            ->add('isTih', CheckboxType::class, [
+                'label'    => 'Je suis une personne en situation de handicap (TIH)',
+                'required' => false,
+                'mapped'   => true,
+            ]);;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
