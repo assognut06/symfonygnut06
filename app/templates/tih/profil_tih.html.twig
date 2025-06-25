@@ -5,45 +5,88 @@
 <h2 class="text-center my-4">Espace TIH</h2>
 
 {% for message in app.flashes('success') %}
-    <div class="alert alert-success">{{ message }}</div>
+    <div class="alert alert-success shadow-sm">{{ message }}</div>
 {% endfor %}
 {% for message in app.flashes('danger') %}
-    <div class="alert alert-danger">{{ message }}</div>
+    <div class="alert alert-danger shadow-sm">{{ message }}</div>
 {% endfor %}
 
 {% if form is defined and form is not null %}
     <p class="text-center">Complétez votre profil TIH pour accéder à l'espace.</p>
-    <div class="container w-75">
+    <div class="container w-75 shadow p-4 rounded bg-white">
         {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <div class="text-center mt-3">
-                <button class="btn btn-success">Enregistrer</button>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.civilite, {'attr': {'class': 'form-select'}}) }}
             </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.prenom, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.emailPro, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.telephone, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.adresse, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form_row(form.codePostal, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-8 mb-3">
+                {{ form_row(form.ville, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.disponibilite, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.cv, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.competences, {'attr': {'class': 'form-control'}}) }}
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button class="btn btn-success px-4">Enregistrer</button>
+        </div>
         {{ form_end(form) }}
     </div>
 {% else %}
-    <div class="container shadow p-4">
-        <p><strong>Civilité :</strong> {{ tih.civilite }}</p>
-        <p><strong>Nom :</strong> {{ tih.nom }}</p>
-        <p><strong>Prénom :</strong> {{ tih.prenom }}</p>
-        <p><strong>Email Pro :</strong> {{ tih.emailPro }}</p>
-        <p><strong>Téléphone :</strong> {{ tih.telephone }}</p>
-        <p><strong>Adresse :</strong> {{ tih.adresse }}</p>
-        <p><strong>Code postal :</strong> {{ tih.codePostal }}</p>
-        <p><strong>Ville :</strong> {{ tih.ville }}</p>
-        <p><strong>Compétences :</strong> {{ tih.competences }}</p>
-        <p><strong>Disponibilité :</strong> {{ tih.disponibilite }}</p>
-        <p><strong>CV :</strong>
-            {% if tih.cv %}
-                <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank">Voir le CV</a>
-            {% else %}
-                Non fourni
-            {% endif %}
-        </p>
-        <div class="text-center mt-3">
-            <!-- Bouton désactivé ou futur -->
+    <div class="container shadow-lg p-4 rounded bg-white">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <p><strong>Civilité :</strong> {{ tih.civilite }}</p>
+                <p><strong>Nom :</strong> {{ tih.nom }}</p>
+                <p><strong>Prénom :</strong> {{ tih.prenom }}</p>
+                <p><strong>Email Pro :</strong> {{ tih.emailPro }}</p>
+                <p><strong>Téléphone :</strong> {{ tih.telephone }}</p>
+            </div>
+            <div class="col-12 col-md-6">
+                <p><strong>Adresse :</strong> {{ tih.adresse }}</p>
+                <p><strong>Code postal :</strong> {{ tih.codePostal }}</p>
+                <p><strong>Ville :</strong> {{ tih.ville }}</p>
+                <p><strong>Compétences :</strong> {{ tih.competences }}</p>
+                <p><strong>Disponibilité :</strong> {{ tih.disponibilite }}</p>
+                <p><strong>CV :</strong>
+                    {% if tih.cv %}
+                        <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank">Voir le CV</a>
+                    {% else %}
+                        Non fourni
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <div class="text-center mt-4">
             <button class="btn btn-secondary" disabled>Modification à venir</button>
         </div>
     </div>
 {% endif %}
+
+<div class="text-center my-4">
+    <a href="{{ path('app_logout') }}" class="btn btn-danger text-white">Se déconnecter</a>
+</div>
 {% endblock %}

@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class TihController extends AbstractController
 {
     #[Route('', name: 'espace_tih')]
-    public function dashboard(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function profiltih(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -66,6 +66,29 @@ class TihController extends AbstractController
             }
         }
 
+
+        // Si TIH existe déjà (mise à jour)
+        $form = $this->createForm(TihType::class, $tih);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $tih->setDateMiseAJour(new \DateTime());
+
+            /** @var UploadedFile|null $cvFile */
+            $cvFile = $form->get('cv')->getData();
+            if ($cvFile) {
+                $originalFilename = pathinfo($cvFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename)->lower();
+                $newFilename = uniqid() . '-' . $safeFilename . '.' . $cvFile->guessExtension();
+
+                $cvFile->move($this->getParameter('cv_tih_directory'), $newFilename);
+                $tih->setCv($newFilename);
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', 'Profil TIH mis à jour avec succès.');
+        }
         // SI TIH existe (créé juste avant ou déjà existant)
         return $this->render('tih/profil_tih.html.twig', [
             'tih' => $tih,
