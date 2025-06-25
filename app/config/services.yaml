@@ -12,6 +12,7 @@ parameters:
     parameters:
     photos_directory: '%kernel.project_dir%/public/uploads/profilePictures'
     bordereau_directory: '%kernel.project_dir%/public/uploads/bordereau'
+    cv_tih_directory: '%kernel.project_dir%/public/uploads/tihcv'
 
 
 services:
