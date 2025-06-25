@@ -15,7 +15,8 @@ parameters:
     nocaptcha.secret: '%env(NOCAPTCHA_SECRET)%'
     nocaptcha.sitekey: '%env(NOCAPTCHA_SITEKEY)%'
     app.env: '%env(APP_ENV)%'
-    
+    cv_tih_directory: '%kernel.project_dir%/public/uploads/tihcv'
+
 
 services:
     App\MessageHandler\NotificationHandler:
@@ -90,7 +91,7 @@ services:
             $recaptchaSecret: '%nocaptcha.secret%'
 
     App\Service\EmailService: ~
-    
+
     App\Controller\RegistrationController:
         arguments:
             $recaptchaSecret: '%nocaptcha.secret%'
