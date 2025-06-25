@@ -48,19 +48,7 @@ class TihType extends AbstractType
                     ])
                 ],
             ])
-            ->add('competences', TextareaType::class, ['required' => false])
-            ->add('dateCreation', DateTimeType::class, [
-                'widget' => 'single_text'
-            ])
-            ->add('dateMiseAJour', DateTimeType::class, [
-                'widget' => 'single_text'
-            ])
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'email',
-                
-                'label' => 'Utilisateur lié',
-            ]);
+            ->add('competences', TextareaType::class, ['required' => false]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
