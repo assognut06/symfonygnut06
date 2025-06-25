@@ -50,7 +50,7 @@ class Tih
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $ville = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $cv = null;
 
     #[ORM\Column(type: 'text', nullable: true)]

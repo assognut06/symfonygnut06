@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+{% block title %}Espace TIH{% endblock %}
+
+{% block body %}
+<h2 class="text-center my-4">Espace TIH</h2>
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">{{ message }}</div>
+{% endfor %}
+{% for message in app.flashes('danger') %}
+    <div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+
+{% if form is defined and form is not null %}
+    <p class="text-center">Complétez votre profil TIH pour accéder à l'espace.</p>
+    <div class="container w-75">
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <div class="text-center mt-3">
+                <button class="btn btn-success">Enregistrer</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% else %}
+    <div class="container shadow p-4">
+        <p><strong>Civilité :</strong> {{ tih.civilite }}</p>
+        <p><strong>Nom :</strong> {{ tih.nom }}</p>
+        <p><strong>Prénom :</strong> {{ tih.prenom }}</p>
+        <p><strong>Email Pro :</strong> {{ tih.emailPro }}</p>
+        <p><strong>Téléphone :</strong> {{ tih.telephone }}</p>
+        <p><strong>Adresse :</strong> {{ tih.adresse }}</p>
+        <p><strong>Code postal :</strong> {{ tih.codePostal }}</p>
+        <p><strong>Ville :</strong> {{ tih.ville }}</p>
+        <p><strong>Compétences :</strong> {{ tih.competences }}</p>
+        <p><strong>Disponibilité :</strong> {{ tih.disponibilite }}</p>
+        <p><strong>CV :</strong>
+            {% if tih.cv %}
+                <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank">Voir le CV</a>
+            {% else %}
+                Non fourni
+            {% endif %}
+        </p>
+        <div class="text-center mt-3">
+            <!-- Bouton désactivé ou futur -->
+            <button class="btn btn-secondary" disabled>Modification à venir</button>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

@@ -451,25 +451,34 @@
         <a href="#profile-nav" class="skip-link">Aller à la navigation du profil</a>
         <a href="#profile-content" class="skip-link">Aller au contenu du profil</a>
     </nav>
-
+    {% if app.user and app.user.isVerified and app.user.isTih %}
+        <div class="alert alert-info d-flex justify-content-between align-items-center mt-4 shadow-sm p-3">
+            <div>
+                <strong>Félicitations !</strong> Votre compte est vérifié et enregistré comme TIH.
+            </div>
+            <a href="{{ path('espace_tih') }}" class="btn btn-primary">
+                Accéder à l'espace TIH
+            </a>
+        </div>
+    {% endif %}
     <div class="w-100 bg-main pt-5 pb-5">
         <div class="container my-4 pt-3 bg-light rounded-5 shadow mb-0">
 
             <main id="main-content" role="main" aria-labelledby="profile-title">
                 <div class="row flex-column flex-md-row">
-                    
+
                     <!-- ✅ CORRECTION - Navigation accessible -->
-                    <nav id="profile-nav" 
-                         class="col-md-3 col-sm-4 my-2 sidebar-nav" 
+                    <nav id="profile-nav"
+                         class="col-md-3 col-sm-4 my-2 sidebar-nav"
                          aria-label="Navigation du profil utilisateur"
                          role="navigation">
-                        
+
                         <h2 class="visually-hidden">Menu du profil</h2>
-                        
-                        <ul class="nav nav-tabs flex-column text-center" 
-                            role="tablist" 
+
+                        <ul class="nav nav-tabs flex-column text-center"
+                            role="tablist"
                             aria-label="Sections du profil">
-                            
+
                             <li class="nav-item mb-2" role="presentation">
                                 <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'profile' or app.request.attributes.get('_route') == 'app_profil') ? ' active' : '' }}"
                                    href="{{ path('app_profil') }}"
@@ -477,9 +486,9 @@
                                    aria-controls="profile-content"
                                    aria-selected="{{ (app.request.attributes.get('donnees') == 'profile' or app.request.attributes.get('_route') == 'app_profil') ? 'true' : 'false' }}"
                                    aria-label="Voir et modifier les informations de profil">
-                                    <img src="{{ asset('images/webp/element-4.svg') }}" 
-                                         alt="" 
-                                         aria-hidden="true" 
+                                    <img src="{{ asset('images/webp/element-4.svg') }}"
+                                         alt=""
+                                         aria-hidden="true"
                                          style="width:18px; height:18px;">
                                     <span class="mt-1">Profil</span>
                                 </a>
@@ -492,9 +501,9 @@
                                    aria-controls="profile-content"
                                    aria-selected="{{ (app.request.attributes.get('donnees') == 'orders') ? 'true' : 'false' }}"
                                    aria-label="Consulter l'historique de vos commandes">
-                                    <img src="{{ asset('images/webp/cart-frame.svg') }}" 
-                                         alt="" 
-                                         aria-hidden="true" 
+                                    <img src="{{ asset('images/webp/cart-frame.svg') }}"
+                                         alt=""
+                                         aria-hidden="true"
                                          style="width:18px; height:18px;">
                                     <span class="mt-1">Commandes</span>
                                 </a>
@@ -507,9 +516,9 @@
                                    aria-controls="profile-content"
                                    aria-selected="{{ (app.request.attributes.get('donnees') == 'payments') ? 'true' : 'false' }}"
                                    aria-label="Consulter l'historique de vos paiements">
-                                    <img src="{{ asset('images/webp/cash.svg') }}" 
-                                         alt="" 
-                                         aria-hidden="true" 
+                                    <img src="{{ asset('images/webp/cash.svg') }}"
+                                         alt=""
+                                         aria-hidden="true"
                                          style="width:18px; height:18px;">
                                     <span class="mt-1">Paiements</span>
                                 </a>
@@ -518,9 +527,9 @@
                     </nav>
 
                     <!-- ✅ CORRECTION - Contenu principal accessible -->
-                    <div id="profile-content" 
-                         class="col-md-9 text-start p-3" 
-                         role="tabpanel" 
+                    <div id="profile-content"
+                         class="col-md-9 text-start p-3"
+                         role="tabpanel"
                          aria-labelledby="profile-title">
 
                         <!-- ✅ CORRECTION - En-tête utilisateur amélioré -->
@@ -528,21 +537,21 @@
                             <h1 id="profile-title" class="fs-4 mb-1">
                                 Bienvenue, {{ user.email }}
                             </h1>
-                            <p id="current-date" 
-                               class="text-muted" 
-                               aria-live="polite" 
+                            <p id="current-date"
+                               class="text-muted"
+                               aria-live="polite"
                                aria-label="Date du jour"></p>
                         </header>
 
                         <!-- ✅ CORRECTION - Carte profil accessible -->
-                        <section class="profile-card rounded mb-4" 
+                        <section class="profile-card rounded mb-4"
                                  aria-labelledby="profile-info-title">
-                            
+
                             <div class="profile-header"></div>
 
                             <div class="profile-avatar px-3">
                                 <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start">
-                                    
+
                                     {% if user.profilePicture %}
                                         <!-- ✅ Photo de profil existante -->
                                         <div class="text-center">
@@ -552,8 +561,8 @@
                                                  alt="Photo de profil de {{ user.email }}"
                                                  role="img">
                                             <div class="mt-3">
-                                                <a href="{{ path('edit_profile_picture') }}" 
-                                                   class="btn btn-primary me-2" 
+                                                <a href="{{ path('edit_profile_picture') }}"
+                                                   class="btn btn-primary me-2"
                                                    aria-label="Modifier la photo de profil">
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                     <span class="d-none d-sm-inline ms-1">Modifier</span>
@@ -590,26 +599,26 @@
                                     <div class="ms-md-4 mt-3 mt-md-0 text-center text-md-start">
                                         <h2 id="profile-info-title" class="fs-4 mb-3">
                                             {{ user.email }}
-                                            
+
                                             {% if user.isVerified == 1 %}
-                                                <span class="status-badge status-verified" 
+                                                <span class="status-badge status-verified"
                                                       aria-label="Compte vérifié">
                                                     <i class="bi bi-patch-check" aria-hidden="true"></i>
                                                     Vérifié
                                                 </span>
                                             {% else %}
-                                                <span class="status-badge status-unverified" 
+                                                <span class="status-badge status-unverified"
                                                       aria-label="Compte non vérifié">
                                                     <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                                                     Non vérifié
                                                 </span>
                                             {% endif %}
                                         </h2>
-                                        
+
                                         <p class="text-muted mb-2">
                                             <strong>Identifiant :</strong> {{ user.id }}
                                         </p>
-                                        
+
                                         {% if user.isVerified == 0 %}
                                             <div class="alert alert-warning" role="alert">
                                                 <h3 class="h6 mb-2">
@@ -617,7 +626,7 @@
                                                     Vérification requise
                                                 </h3>
                                                 <p class="mb-2">Votre compte n'est pas encore vérifié.</p>
-                                                <a href="{{ path('app_verify_email_renew', {'id': user.id}) }}" 
+                                                <a href="{{ path('app_verify_email_renew', {'id': user.id}) }}"
                                                    class="btn btn-warning btn-sm"
                                                    aria-label="Renvoyer l'email de confirmation pour vérifier votre compte">
                                                     <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
@@ -635,9 +644,9 @@
 
                         {% if section == 'profile' %}
                             <!-- ✅ CORRECTION - Formulaire du profil accessible -->
-                            <section class="profile-card p-4" 
+                            <section class="profile-card p-4"
                                      aria-labelledby="profile-form-title">
-                                
+
                                 <header class="mb-4">
                                     <h3 id="profile-form-title" class="h4">
                                         <i class="bi bi-person-gear me-2" aria-hidden="true"></i>
@@ -648,15 +657,15 @@
                                     </p>
                                 </header>
 
-                                <form action="#" 
-                                      method="post" 
-                                      class="needs-validation" 
+                                <form action="#"
+                                      method="post"
+                                      class="needs-validation"
                                       novalidate
                                       aria-describedby="form-help">
-                                    
+
                                     <fieldset>
                                         <legend class="visually-hidden">Informations personnelles</legend>
-                                        
+
                                         <div class="row">
                                             <!-- Colonne gauche -->
                                             <div class="col-12 col-md-6">
@@ -664,9 +673,9 @@
                                                     <label for="firstName" class="form-label">
                                                         Prénom <span class="required-field" aria-label="obligatoire">*</span>
                                                     </label>
-                                                    <input type="text" 
-                                                           class="form-control" 
-                                                           id="firstName" 
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           id="firstName"
                                                            name="firstName"
                                                            placeholder="Entrez votre prénom"
                                                            value="{{ data_items['data'][0].payer.firstName ?? '' }}"
@@ -683,9 +692,9 @@
                                                     <label for="address" class="form-label">
                                                         Adresse <span class="required-field" aria-label="obligatoire">*</span>
                                                     </label>
-                                                    <input type="text" 
-                                                           class="form-control" 
-                                                           id="address" 
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           id="address"
                                                            name="address"
                                                            placeholder="Entrez votre adresse"
                                                            value="{{ data_items['data'][0].payer.address ?? '' }}"
@@ -702,9 +711,9 @@
                                                     <label for="zipCode" class="form-label">
                                                         Code postal <span class="required-field" aria-label="obligatoire">*</span>
                                                     </label>
-                                                    <input type="text" 
-                                                           class="form-control" 
-                                                           id="zipCode" 
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           id="zipCode"
                                                            name="zipCode"
                                                            placeholder="Entrez votre code postal"
                                                            value="{{ data_items['data'][0].payer.zipCode ?? '' }}"
@@ -728,9 +737,9 @@
                                                     <label for="lastName" class="form-label">
                                                         Nom <span class="required-field" aria-label="obligatoire">*</span>
                                                     </label>
-                                                    <input type="text" 
-                                                           class="form-control" 
-                                                           id="lastName" 
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           id="lastName"
                                                            name="lastName"
                                                            placeholder="Entrez votre nom"
                                                            value="{{ data_items['data'][0].payer.lastName ?? '' }}"
@@ -747,9 +756,9 @@
                                                     <label for="city" class="form-label">
                                                         Ville <span class="required-field" aria-label="obligatoire">*</span>
                                                     </label>
-                                                    <input type="text" 
-                                                           class="form-control" 
-                                                           id="city" 
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           id="city"
                                                            name="city"
                                                            placeholder="Entrez votre ville"
                                                            value="{{ data_items['data'][0].payer.city ?? '' }}"
@@ -766,9 +775,9 @@
                                                     <label for="phone" class="form-label">
                                                         Numéro de téléphone <span class="required-field" aria-label="obligatoire">*</span>
                                                     </label>
-                                                    <input type="tel" 
-                                                           class="form-control" 
-                                                           id="phone" 
+                                                    <input type="tel"
+                                                           class="form-control"
+                                                           id="phone"
                                                            name="phone"
                                                            placeholder="Entrez votre numéro de téléphone"
                                                            value="{{ data_items['data'][0].payer.phone ?? '' }}"
@@ -797,7 +806,7 @@
                                     </div>
 
                                     <div class="text-center mt-4">
-                                        <button type="submit" 
+                                        <button type="submit"
                                                 class="btn-asso px-4"
                                                 role="button"
                                                 aria-describedby="save-help">
@@ -820,7 +829,7 @@
                                         Mes dernières commandes
                                     </h3>
                                 </header>
-                                
+
                                 {% if data_items is defined and data_items['data'] is not empty %}
                                     <div role="list" aria-label="Liste de vos commandes">
                                         {% for item in data_items['data'] %}
@@ -846,7 +855,7 @@
                                         Mes paiements
                                     </h3>
                                 </header>
-                                
+
                                 {% if data_items is defined and data_items['data'] is not empty %}
                                     <div role="list" aria-label="Liste de vos paiements">
                                         {% for item in data_items['data'] %}
@@ -863,7 +872,7 @@
                                 {% endif %}
                             </section>
                         {% endif %}
-                        
+
                     </div> <!-- Fin contenu principal -->
                 </div> <!-- Fin row -->
             </main>
@@ -876,14 +885,14 @@
             // Affichage de la date du jour
             const today = new Date();
             const options = {
-                year: 'numeric', 
-                month: 'long', 
+                year: 'numeric',
+                month: 'long',
                 day: 'numeric',
                 weekday: 'long'
             };
             const formattedDate = today.toLocaleDateString('fr-FR', options);
             const dateElement = document.getElementById('current-date');
-            
+
             if (dateElement) {
                 dateElement.textContent = formattedDate;
                 dateElement.setAttribute('aria-label', `Date du jour : ${formattedDate}`);
@@ -896,25 +905,25 @@
                     if (!form.checkValidity()) {
                         event.preventDefault();
                         event.stopPropagation();
-                        
+
                         // Focus sur le premier champ invalide
                         const firstInvalid = form.querySelector(':invalid');
                         if (firstInvalid) {
                             firstInvalid.focus();
                         }
-                        
+
                         // Annonce pour lecteurs d'écran
                         const announcement = document.createElement('div');
                         announcement.className = 'visually-hidden';
                         announcement.setAttribute('aria-live', 'assertive');
                         announcement.textContent = 'Veuillez corriger les erreurs dans le formulaire';
                         document.body.appendChild(announcement);
-                        
+
                         setTimeout(() => {
                             document.body.removeChild(announcement);
                         }, 3000);
                     }
-                    
+
                     form.classList.add('was-validated');
                 }, false);
             }
