@@ -30,14 +30,19 @@ class TihController extends AbstractController
         }
 
         $tih = $user->getTih();
+        $showForm = $request->query->get('edit') === '1' || !$tih;
 
-        // Si aucun TIH en base → on prépare la création
+        // Si aucun TIH, on prépare la création
         if (!$tih) {
             $tih = new Tih();
             $tih->setUser($user);
             $tih->setDateCreation(new \DateTime());
             $tih->setDateMiseAJour(new \DateTime());
+        }
 
+        $formView = null;
+
+        if ($showForm) {
             $form = $this->createForm(TihType::class, $tih);
             $form->handleRequest($request);
 
@@ -53,46 +58,20 @@ class TihController extends AbstractController
                     $tih->setCv($newFilename);
                 }
 
+                $tih->setDateMiseAJour(new \DateTime());
                 $em->persist($tih);
                 $em->flush();
 
-                $this->addFlash('success', 'Profil TIH créé avec succès.');
-                // ⚠️ On ne redirige PAS, on affiche les données directement
-            } else {
-                return $this->render('tih/profil_tih.html.twig', [
-                    'tih' => null, // pas encore créé
-                    'form' => $form->createView(),
-                ]);
-            }
-        }
-
-
-        // Si TIH existe déjà (mise à jour)
-        $form = $this->createForm(TihType::class, $tih);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $tih->setDateMiseAJour(new \DateTime());
-
-            /** @var UploadedFile|null $cvFile */
-            $cvFile = $form->get('cv')->getData();
-            if ($cvFile) {
-                $originalFilename = pathinfo($cvFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename)->lower();
-                $newFilename = uniqid() . '-' . $safeFilename . '.' . $cvFile->guessExtension();
-
-                $cvFile->move($this->getParameter('cv_tih_directory'), $newFilename);
-                $tih->setCv($newFilename);
+                $this->addFlash('success', 'Profil TIH enregistré avec succès.');
+                return $this->redirectToRoute('espace_tih');
             }
 
-            $em->flush();
-
-            $this->addFlash('success', 'Profil TIH mis à jour avec succès.');
+            $formView = $form->createView();
         }
-        // SI TIH existe (créé juste avant ou déjà existant)
+
         return $this->render('tih/profil_tih.html.twig', [
             'tih' => $tih,
-            'form' => null,
+            'form' => $formView,
         ]);
     }
 }
