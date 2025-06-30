@@ -12,7 +12,7 @@
 {% endfor %}
 
 {% if form is defined and form is not null %}
-    <p class="text-center">Complétez votre profil TIH pour accéder à l'espace.</p>
+    <p class="text-center">Complétez ou modifiez votre profil TIH</p>
     <div class="container w-75 shadow p-4 rounded bg-white">
         {{ form_start(form) }}
         <div class="row">
@@ -73,7 +73,7 @@
                 <p><strong>Disponibilité :</strong> {{ tih.disponibilite }}</p>
                 <p><strong>CV :</strong>
                     {% if tih.cv %}
-                        <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank">Voir le CV</a>
+                        <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>
                     {% else %}
                         Non fourni
                     {% endif %}
@@ -81,7 +81,7 @@
             </div>
         </div>
         <div class="text-center mt-4">
-            <button class="btn btn-secondary" disabled>Modification à venir</button>
+            <a href="{{ path('espace_tih', {'edit': '1'}) }}" class="btn btn-secondary">Modifier mes infos</a>
         </div>
     </div>
 {% endif %}
