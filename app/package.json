@@ -14,6 +14,7 @@
     "bootstrap-icons": "^1.11.3",
     "core-js": "^3.42.0",
     "node-fs-extra": "^0.8.2",
+    "select2": "^4.1.0-rc.0",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4",
     "webpack-node-externals": "^3.0.0"
