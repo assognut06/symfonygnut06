@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche TIH{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Liste des TIH</h2>
+
+    <div class="row">
+        {% for tih in tihs %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ tih.nom }} {{ tih.prenom }}</h5>
+                        <p class="card-text">
+                            <strong>Civilité :</strong> {{ tih.civilite }}<br>
+                            <strong>Email Pro :</strong> {{ tih.emailPro }}<br>
+                            <strong>Téléphone :</strong> {{ tih.telephone }}<br>
+                            <strong>Adresse :</strong> {{ tih.adresse }}, {{ tih.codePostal }} {{ tih.ville }}<br>
+                            <strong>Compétences :</strong> {{ tih.competences|join(', ') }}<br>
+                            <strong>Disponibilité :</strong> {{ tih.disponibilite }}
+                        </p>
+                        {% if tih.cv %}
+                            <a href="{{ asset('uploads/cv/' ~ tih.cv) }}" target="_blank" class="btn btn-primary btn-sm">Voir le CV</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <p class="text-center">Aucun TIH trouvé.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

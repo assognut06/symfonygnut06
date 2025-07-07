@@ -152,6 +152,11 @@
 								<a class="nav-link {% if app.request.attributes.get('_route') == 'admin_dashboard' %}active{% endif %}" href="{{ path('admin_dashboard') }}">Administration</a>
 							</li>
 						{% endif %}
+						{% if app.user and is_granted('ROLE_ADMIN') or is_granted('ROLE_ENTREPRISE') %}
+							<li class="nav-item">
+								<a class="nav-link {% if app.request.attributes.get('_route') == 'app_tih_search' %}active{% endif %}" href="{{ path('app_tih_search') }}">Recherche de tih</a>
+							</li>
+						{% endif %}
 						<li class="nav-item">
 							<a class="nav-link" href="{{ path('app_logout')}}">Déconnexion</a>
 						</li>

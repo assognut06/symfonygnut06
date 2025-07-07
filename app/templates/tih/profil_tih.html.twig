@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+{% block title %}Espace TIH{% endblock %}
+
+{% block body %}
+<h2 class="text-center my-4">Espace TIH</h2>
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success shadow-sm">{{ message }}</div>
+{% endfor %}
+{% for message in app.flashes('danger') %}
+    <div class="alert alert-danger shadow-sm">{{ message }}</div>
+{% endfor %}
+
+{% if form is defined and form is not null %}
+    <p class="text-center">Complétez ou modifiez votre profil TIH</p>
+    <div class="container w-75 shadow p-4 rounded bg-white">
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.civilite, {'attr': {'class': 'form-select'}}) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.prenom, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.emailPro, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.telephone, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.adresse, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form_row(form.codePostal, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-8 mb-3">
+                {{ form_row(form.ville, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.siret, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.disponibilite, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.cv, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.competences, {'attr': {'id': 'tih_competences'}}) }}
+            </div>
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.attestationTih, {'attr': {'class': 'form-control'}}) }}
+
+                <p class="mt-2">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalAttestations">
+                        Quelles attestations sont acceptées ?
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button class="btn btn-success px-4">Enregistrer</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% else %}
+    <div class="container shadow-lg p-4 rounded bg-white">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <p><strong>Civilité :</strong> {{ tih.civilite }}</p>
+                <p><strong>Nom :</strong> {{ tih.nom }}</p>
+                <p><strong>Prénom :</strong> {{ tih.prenom }}</p>
+                <p><strong>Email Pro :</strong> {{ tih.emailPro }}</p>
+                <p><strong>Téléphone :</strong> {{ tih.telephone }}</p>
+            </div>
+            <div class="col-12 col-md-6">
+                <p><strong>Adresse :</strong> {{ tih.adresse }}</p>
+                <p><strong>Code postal :</strong> {{ tih.codePostal }}</p>
+                <p><strong>Ville :</strong> {{ tih.ville }}</p>
+                <p><strong>Compétences :</strong>
+                    {% if tih.competences|length > 0 %}
+                        {{ tih.competences|join(', ') }}
+                    {% else %}
+                        Aucune compétence renseignée
+                    {% endif %}
+                </p>
+                <p><strong>Disponibilité :</strong> {{ tih.disponibilite }}</p>
+                <p><strong>CV :</strong>
+                    {% if tih.cv %}
+                        <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>
+                    {% else %}
+                        Non fourni
+                    {% endif %}
+                </p>
+                <p><strong>SIRET :</strong> {{ tih.siret }}</p>
+                <p><strong>Attestation TIH :</strong>
+                    {% if tih.attestationTih %}
+                        <a href="{{ asset('uploads/tihattest/' ~ tih.attestationTih) }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir l'attestation</a>
+                    {% else %}
+                        Non fournie
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ path('espace_tih', {'edit': '1'}) }}" class="btn btn-secondary">Modifier mes infos</a>
+        </div>
+    </div>
+{% endif %}
+
+<div class="text-center my-4">
+    <a href="{{ path('app_logout') }}" class="btn btn-danger text-white">Se déconnecter</a>
+</div>
+
+<!-- Modal attestations acceptées -->
+<div class="modal fade" id="modalAttestations" tabindex="-1" aria-labelledby="modalAttestationsLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAttestationsLabel">Attestations acceptées</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <p>Attestations acceptées pour la reconnaissance administrative du handicap :</p>
+        <ul>
+          <li>Reconnaissance de la Qualité de Travailleur Handicapé (RQTH) délivrée par la MDPH</li>
+          <li>Rente pour Accident du Travail ou Maladie Professionnelle (ATMP)</li>
+          <li>Pension d’invalidité</li>
+          <li>Pension militaire d’invalidité</li>
+          <li>Carte mobilité inclusion avec la mention « invalidité »</li>
+          <li>Allocation Adulte Handicapé (AAH)</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
