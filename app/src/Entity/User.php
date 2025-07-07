@@ -45,10 +45,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
-
-    #[ORM\Column(type: 'boolean')]
-    private bool $isTih = false;
-
+    
     #[ORM\OneToOne(mappedBy: 'user', targetEntity: Tih::class, cascade: ['persist', 'remove'])]
     private ?Tih $tih = null;
 
@@ -162,18 +159,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    public function isTih(): bool
-    {
-        return $this->isTih;
-    }
-
-    public function setIsTih(bool $isTih): static
-    {
-        $this->isTih = $isTih;
-        return $this;
-    }
-
 
     public function getProfilePicture(): ?string
     {

@@ -1,50 +1,35 @@
 <!DOCTYPE html>
 <html lang="fr">
-	<head>
-		<meta charset="UTF-8">
-		<title>
-			{% block title %}Welcome!
-			{% endblock %}
-		</title>
-		<!-- Include header -->
-		{#  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-		#}
-		{% include '_partials/header.html.twig' %}
-		{% block stylesheets %}
-			{{ encore_entry_link_tags('app') }}
-		{% endblock %}
-		{% include '_partials/tarteaucitron.html.twig' %}
-	</head>
-	<body>
-		<!-- Include navbar -->
-		{% include '_partials/navbar.html.twig' %}
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
 
-		<!-- Include main content -->
-		{% include '_partials/main.html.twig' %}
+        {% include '_partials/header.html.twig' %}
 
-		<!-- Display flash messages -->
-		{% for type, messages in app.flashes %}
-			{% for message in messages %}
-				<div class="alert alert-{{ type }}" role="alert">{{ message }}</div>
-			{% endfor %}
-		{% endfor %}
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
 
-		<!-- Body content -->
-		{% block body %}{% endblock %}
+        {% include '_partials/tarteaucitron.html.twig' %}
+    </head>
+    <body>
+        {% include '_partials/navbar.html.twig' %}
+        {% include '_partials/main.html.twig' %}
 
-		<!-- Include footer -->
-		{% include '_partials/footer.html.twig' %}
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type }}" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
 
-		<!-- Include scripts -->
-		{% include '_partials/scripts.html.twig' %}
+        {% block body %}{% endblock %}
 
+        {% include '_partials/footer.html.twig' %}
+        {% include '_partials/scripts.html.twig' %}
+        {% include '_partials/agent_ai.html.twig' %}
 
-		{# Include agent AI #}
-		{% include '_partials/agent_ai.html.twig' %}
-
-		<!-- Include javascripts -->
-		{% block javascripts %}
-			{{ encore_entry_script_tags('app') }}
-		{% endblock %}
-	</body>
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </body>
 </html>
