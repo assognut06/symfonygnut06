@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\EntrepriseTihMessage;
+use App\Entity\Competence;
 
 
 #[ORM\Entity(repositoryClass: TihRepository::class)]
@@ -53,8 +54,14 @@ class Tih
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $cv = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $competences = null;
+    #[ORM\Column(type: 'json', nullable: true)]
+    private array $competences = [];
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $siret = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $attestationTih = null;
 
     #[ORM\OneToMany(mappedBy: 'tih', targetEntity: EntrepriseTihMessage::class, cascade: ['persist', 'remove'])]
     private Collection $messages;
@@ -66,6 +73,7 @@ class Tih
     public function __construct()
     {
         $this->messages = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -191,14 +199,37 @@ class Tih
         $this->cv = $cv; return $this; 
     }
 
-    public function getCompetences(): ?string 
-    { 
-        return $this->competences; 
+    public function getCompetences(): array
+    {
+        return $this->competences;
     }
 
-    public function setCompetences(?string $competences): static 
-    { 
-        $this->competences = $competences; return $this; 
+    public function setCompetences(array $competences): static
+    {
+        $this->competences = $competences;
+        return $this;
+    }
+
+    public function getSiret(): ?string
+    {
+        return $this->siret;
+    }
+
+    public function setSiret(?string $siret): static
+    {
+        $this->siret = $siret;
+        return $this;
+    }
+
+    public function getAttestationTih(): ?string
+    {
+        return $this->attestationTih;
+    }
+
+    public function setAttestationTih(?string $attestationTih): static
+    {
+        $this->attestationTih = $attestationTih;
+        return $this;
     }
 
     public function getUser(): ?User 

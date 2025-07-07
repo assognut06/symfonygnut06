@@ -28,3 +28,5 @@
         btnPhysique.classList.remove('btn-primary');
         btnPhysique.classList.add('btn-outline-primary');
     });
+
+

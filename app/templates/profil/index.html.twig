@@ -452,13 +452,16 @@
         <a href="#profile-nav" class="skip-link">Aller à la navigation du profil</a>
         <a href="#profile-content" class="skip-link">Aller au contenu du profil</a>
     </nav>
-    {% if app.user and app.user.isVerified and app.user.isTih %}
-        <div class="alert alert-info d-flex justify-content-between align-items-center mt-4 shadow-sm p-3">
-            <div>
-                <strong>Félicitations !</strong> Votre compte est vérifié et enregistré comme TIH.
-            </div>
+    {% if app.user and app.user.tih is null %}
+        <div class="text-center my-4">
+            <a href="{{ path('espace_tih') }}" class="btn btn-success">
+                Voulez-vous vous inscrire en tant que TIH ?
+            </a>
+        </div>
+    {% else %}
+        <div class="text-center my-4">
             <a href="{{ path('espace_tih') }}" class="btn btn-primary">
-                Accéder à l'espace TIH
+                Accéder à votre espace TIH
             </a>
         </div>
     {% endif %}
