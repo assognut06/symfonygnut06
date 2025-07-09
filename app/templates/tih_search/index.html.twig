@@ -20,9 +20,7 @@
                             <strong>Compétences :</strong> {{ tih.competences|join(', ') }}<br>
                             <strong>Disponibilité :</strong> {{ tih.disponibilite }}
                         </p>
-                        {% if tih.cv %}
-                            <a href="{{ asset('uploads/cv/' ~ tih.cv) }}" target="_blank" class="btn btn-primary btn-sm">Voir le CV</a>
-                        {% endif %}
+                        <a href="{{ path('app_tih_details', {'id': tih.id}) }}" class="btn btn-primary btn-sm">Voir les détails</a>
                     </div>
                 </div>
             </div>

@@ -20,4 +20,19 @@ class TihSearchController extends AbstractController
             'tihs' => $tihs,
         ]);
     }
+
+
+    #[Route('/tih/{id}', name: 'app_tih_details')]
+    public function details(TIHRepository $tihRepository, int $id): Response
+    {
+        $tih = $tihRepository->find($id);
+
+        if (!$tih) {
+            throw $this->createNotFoundException('TIH non trouvé.');
+        }
+
+        return $this->render('tih_search/details.html.twig', [
+            'tih' => $tih,
+        ]);
+    }
 }
