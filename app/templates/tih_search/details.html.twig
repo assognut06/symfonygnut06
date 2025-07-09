@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails TIH{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Détails du TIH</h2>
+
+    <div class="card mx-auto shadow rounded" style="max-width: 600px;">
+        <div class="card-body">
+            <h5 class="card-title text-center">{{ tih.nom }} {{ tih.prenom }}</h5>
+            <hr>
+            <p class="card-text">
+                <strong>Civilité :</strong> {{ tih.civilite }}<br>
+                <strong>Email Pro :</strong> 
+                <a href="mailto:{{ tih.emailPro }}" class="text-decoration-none">{{ tih.emailPro }}</a><br>
+                <strong>Téléphone :</strong> 
+                <a href="tel:{{ tih.telephone }}" class="text-decoration-none">{{ tih.telephone }}</a><br>
+                <strong>Numéro de Siret :</strong> {{ tih.siret }}<br>
+                <strong>Adresse :</strong> {{ tih.adresse }}, {{ tih.codePostal }} {{ tih.ville }}<br>
+                <strong>Compétences :</strong> {{ tih.competences|join(', ') }}<br>
+                <strong>Disponibilité :</strong> {{ tih.disponibilite }}<br>
+            </p>
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                {% if tih.cv %}
+                    <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank" class="btn btn-secondary btn-sm">
+                        <i class="bi bi-file-earmark-person"></i> Voir le CV
+                    </a>
+                {% endif %}
+                {% if tih.attestationTih %}
+                    <a href="{{ asset('uploads/tihattest/' ~ tih.attestationTih) }}" target="_blank" class="btn btn-secondary btn-sm">
+                        <i class="bi bi-file-earmark-person"></i> Voir l'attestation TIH
+                    </a>
+                {% endif %}
+                <a href="{{ path('app_tih_search') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
