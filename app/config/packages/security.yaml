@@ -16,15 +16,19 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            custom_authenticators:
+                - App\Security\GoogleAuthenticator
+                - App\Security\OutlookAuthenticator
             form_login:
                 login_path: app_login
                 check_path: app_login
-                default_target_path: app_profil # Redirige vers la route de profil après connexion
+                default_target_path: app_profil
                 enable_csrf: true
             logout:
                 path: app_logout
-                # where to redirect after logout
-                # target: app_any_route
+                target: app_login
+            access_denied_url: app_login
+            entry_point: form_login
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -35,6 +39,10 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/connect/outlook, roles: PUBLIC_ACCESS }
+        - { path: ^/connect/google, roles: PUBLIC_ACCESS }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

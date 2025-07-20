@@ -12,7 +12,10 @@ parameters:
     parameters:
     photos_directory: '%kernel.project_dir%/public/uploads/profilePictures'
     bordereau_directory: '%kernel.project_dir%/public/uploads/bordereau'
-
+    nocaptcha.secret: '%env(NOCAPTCHA_SECRET)%'
+    nocaptcha.sitekey: '%env(NOCAPTCHA_SITEKEY)%'
+    app.env: '%env(APP_ENV)%'
+    
 
 services:
     App\MessageHandler\NotificationHandler:
@@ -79,3 +82,16 @@ services:
         arguments:
             $apiKey: '%env(APIFRAMEVR)%'
         
+    App\Service\RecaptchaVerifier:
+        arguments:
+            $client: '@http_client'
+            $secretKey: '%nocaptcha.secret%'
+            $appEnv: '%app.env%'
+            $recaptchaSecret: '%nocaptcha.secret%'
+
+    App\Service\EmailService: ~
+    
+    App\Controller\RegistrationController:
+        arguments:
+            $recaptchaSecret: '%nocaptcha.secret%'
+            $appEnv: '%app.env%'
