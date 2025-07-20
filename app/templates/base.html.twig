@@ -7,15 +7,20 @@
 			{% endblock %}
 		</title>
 		<!-- Include header -->
-		{#  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+		{#   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 		#}
 		{% include '_partials/header.html.twig' %}
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
-		{% include '_partials/tarteaucitron.html.twig' %}
+		{% include '_partials/analytics.html.twig' %}
 	</head>
 	<body>
+		<!-- Google Tag Manager (noscript) -->
+		<noscript>
+			<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PQ7V88VV" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+		</noscript>
+		<!-- End Google Tag Manager (noscript) -->
 		<!-- Include navbar -->
 		{% include '_partials/navbar.html.twig' %}
 
@@ -45,6 +50,7 @@
 		<!-- Include javascripts -->
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
+			<script defer data-cfasync='false' src='https://s.clickiocdn.com/t/243913_wv.js'></script>
 		{% endblock %}
 	</body>
 </html>
