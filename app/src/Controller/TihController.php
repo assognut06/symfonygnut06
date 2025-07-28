@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Tih;
-use App\Entity\Competence;
 use App\Form\TihType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +27,7 @@ class TihController extends AbstractController
         $tih = $user->getTih();
         $showForm = $request->query->get('edit') === '1' || !$tih;
 
-        // Si aucun TIH, on prépare la création
+        // Création d'un nouveau TIH s'il n'existe pas
         if (!$tih) {
             $tih = new Tih();
             $tih->setUser($user);
@@ -43,6 +42,7 @@ class TihController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
+                // ✅ Gestion du fichier CV
                 /** @var UploadedFile|null $cvFile */
                 $cvFile = $form->get('cv')->getData();
                 if ($cvFile) {
@@ -54,6 +54,7 @@ class TihController extends AbstractController
                     $tih->setCv($newFilename);
                 }
 
+                // ✅ Gestion du fichier Attestation TIH
                 /** @var UploadedFile|null $attestationFile */
                 $attestationFile = $form->get('attestationTih')->getData();
                 if ($attestationFile) {
@@ -65,19 +66,7 @@ class TihController extends AbstractController
                     $tih->setAttestationTih($newFilename);
                 }
 
-                // ✅ Récupération des compétences sélectionnées (liste d'objets)
-                $selectedCompetences = $form->get('competences')->getData();
-                $competenceNames = [];
-
-                foreach ($selectedCompetences as $competence) {
-                    /** @var Competence $competence */
-                    $competenceNames[] = $competence->getName();
-                }
-
-                // ✅ Stockage sous forme de tableau JSON
-                $tih->setCompetences($competenceNames);
-
-                // ✅ Ajout du ROLE_TIH si pas déjà présent
+                // ✅ Ajout du rôle ROLE_TIH si non présent
                 $roles = $user->getRoles();
                 if (!in_array('ROLE_TIH', $roles)) {
                     $roles[] = 'ROLE_TIH';
@@ -85,6 +74,8 @@ class TihController extends AbstractController
                 }
 
                 $tih->setDateMiseAJour(new \DateTime());
+
+                // Enregistrement
                 $em->persist($tih);
                 $em->flush();
 
