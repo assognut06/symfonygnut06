@@ -57,6 +57,7 @@ $(document).ready(function() {
         select.select2({
             placeholder: "Sélectionnez vos compétences",
             width: '100%',
+            height: '100%',
             allowClear: true
         });
     }

@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contacter {{ tih.prenom }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="mb-4">Contacter {{ tih.prenom }} {{ tih.nom }}</h2>
+
+    <div class="card shadow-sm rounded">
+        <div class="card-body">
+            {{ form_start(form) }}
+
+            <div class="mb-3">{{ form_row(form.nom) }}</div>
+            <div class="mb-3">{{ form_row(form.prenom) }}</div>
+            <div class="mb-3">{{ form_row(form.entreprise) }}</div>
+            <div class="mb-3">{{ form_row(form.telephone) }}</div>
+            <div class="mb-3">{{ form_row(form.email) }}</div>
+            <div class="mb-3">{{ form_row(form.subject) }}</div>
+            <div class="mb-3">{{ form_row(form.message) }}</div>
+
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-send"></i> Envoyer
+            </button>
+            <a href="{{ path('app_tih_details', {'id': tih.id}) }}" class="btn btn-secondary ms-2">
+                Annuler
+            </a>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
