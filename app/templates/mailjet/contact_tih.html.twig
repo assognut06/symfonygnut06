@@ -1,0 +1,32 @@
+<h3>Expéditeur :</h3>
+<p>{{ prenom }} {{ nom }}</p>
+{% if entreprise %}
+<p>Entreprise : {{ entreprise }}</p>
+{% endif %}
+<p>Téléphone : {{ telephone }}</p>
+<p>Email : {{ email }}</p>
+
+<h3>Message :</h3>
+<p>{{ message|nl2br }}</p>
+
+<hr style="margin: 30px 0;">
+
+<table style="font-family: Arial, sans-serif; color: #000;">
+  <tr>
+    <td>
+      <img src="cid:eye-image" alt="Œil GNUT06" width="100" style="border-radius: 50%; border: 2px solid #000;" />
+    </td>
+    <td style="padding-left: 15px;">
+      <p style="margin: 0; font-size: 14px;">
+        Venez découvrir
+        <a href="https://www.gnut06.org/metavers" style="color: #3b50f2; text-decoration: none;">notre Métavers Handi-3D</a>
+      </p>
+      <h2 style="margin: 5px 0 0; font-size: 18px; color: #228877;">ASSOCIATION<br>GNUT 06</h2>
+      <p style="margin: 10px 0 0; font-weight: bold;">Gérald Col</p>
+      <p style="margin: 0;">Président</p>
+      <p style="margin: 5px 0 0; font-size: 16px; color: #228877;">06 66 21 56 87</p>
+      <p style="margin: 0;"><a href="mailto:gnut@gnut06.org" style="color: #228877;">gnut@gnut06.org</a></p>
+      <p style="margin: 0;"><a href="https://gnut06.org" style="color: #228877;">https://gnut06.org</a></p>
+    </td>
+  </tr>
+</table>
