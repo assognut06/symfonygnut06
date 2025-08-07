@@ -12,8 +12,6 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 #[Route('/tih')]
 class TihSearchController extends AbstractController
@@ -28,9 +26,8 @@ class TihSearchController extends AbstractController
         ]);
     }
 
-
     #[Route('/tih/{id}', name: 'app_tih_details')]
-    public function details(TIHRepository $tihRepository, int $id): Response
+    public function details(TihRepository $tihRepository, int $id): Response
     {
         $tih = $tihRepository->find($id);
 
@@ -89,22 +86,25 @@ class TihSearchController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            $body = <<<EOT
-                <b>Expéditeur :</b><br>
-                {$data['prenom']} {$data['nom']}<br>
-                Entreprise : {$data['entreprise']}<br>
-                Téléphone : {$data['telephone']}<br>
-                Email : {$data['email']}<br><br>
-
-                <b>Message :</b><br>
-                {$data['message']}
-                EOT;
+            $htmlContent = $this->renderView('mailjet/contact_tih.html.twig', [
+                'prenom' => $data['prenom'],
+                'nom' => $data['nom'],
+                'entreprise' => $data['entreprise'],
+                'telephone' => $data['telephone'],
+                'email' => $data['email'],
+                'message' => $data['message'],
+            ]);
 
             $email = (new Email())
                 ->from('gnut@gnut06.org')
                 ->to($tih->getEmailPro())
+                //  ->addTo('gnut@gnut06.org')
                 ->subject($data['subject'])
-                ->html(nl2br($body));
+                ->html($htmlContent)
+                ->embedFromPath(
+                    $this->getParameter('kernel.project_dir') . '/public/images/logo_trans-min_300.png',
+                    'eye-image'
+                );
 
             $mailer->send($email);
 
