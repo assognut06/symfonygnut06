@@ -67,6 +67,18 @@ RUN npm install -g npm@11.2.0
 #npm install n -g && \
 #n latest
 
+# SSL : Génération du certificat et configuration Apache
+EXPOSE 443
+RUN apt-get update && apt-get install -y openssl
+RUN mkdir -p /etc/apache2/ssl && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/apache2/ssl/apache.key \
+    -out /etc/apache2/ssl/apache.crt \
+    -subj "/C=FR/ST=France/L=Paris/O=Dev/OU=Dev/CN=localhost"
+RUN a2enmod ssl
+COPY ./config/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+RUN a2ensite default-ssl
+
 # Configuration de Xdebug
 COPY ./config/xdebug.ini /etc/php/8.2/apache2/conf.d/30-xdebug.ini
 COPY ./config/xdebug.ini /etc/php/8.2/cli/conf.d/30-xdebug.ini
