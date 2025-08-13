@@ -22,7 +22,6 @@ libonig-dev \
 libxslt-dev \
 libcurl4-openssl-dev \
 libgd-dev \
-libc-client-dev \
 libssl-dev \
 libkrb5-dev
 
@@ -43,8 +42,6 @@ mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 # Configure and install extensions
 RUN docker-php-ext-configure intl
 RUN docker-php-ext-install pdo pdo_mysql mysqli gd opcache intl zip calendar dom mbstring gd xsl && a2enmod rewrite
-RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-&& docker-php-ext-install imap
 RUN pecl install apcu && docker-php-ext-enable apcu
 
 # Use the mlocati installer for additional extensions
@@ -56,8 +53,10 @@ RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
 RUN apt-get update && apt-get install -y \
-software-properties-common \
-npm
+    curl \
+    ca-certificates
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+RUN apt-get update && apt-get install -y nodejs
 
 # Install Node.js and npm
 RUN npm install -g n
