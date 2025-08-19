@@ -1,0 +1,106 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Les TIH de Gnut06.org{% endblock %}
+
+{% block body %}
+	<div class="container pt-0">
+		<div class="mx-4">
+			<h2 class="my-4 text-center">Les TIH de Gnut06.org</h2>
+			<div class="border border-secondary mb-4 mx-5"></div>
+
+			{# Recherche par email (GET) #}
+			<form method="get" action="{{ path('app_admin_tih', { page: 1 }) }}" class="mb-3">
+				<input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Rechercher par email..." autocomplete="off">
+			</form>
+
+			<div class="row align-items-start mx-auto">
+				<div class="col-12">
+					<table class="table table-success table-striped">
+						<thead>
+							<tr>
+								<th scope="col">id</th>
+								<th scope="col">Email</th>
+								<th scope="col">Roles</th>
+								<th scope="col">Vérifié</th>
+								<th scope="col">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% set i = 0 %}
+							{% if tihs is defined %}
+								{% for tih in tihs %}
+									{% set user = tih.user %}
+									<tr>
+										<td>{{ tih.id }}</td>
+										<td>{{ user ? user.email : '—' }}</td>
+										<td>
+											{% if user %}
+												{{ user.roles | join(' - ') }}
+											{% else %}
+												—
+											{% endif %}
+										</td>
+										<td>
+											{% if user is not null and user.isVerified is defined %}
+												{{ user.isVerified ? '1' : '0' }}
+											{% else %}
+												0
+											{% endif %}
+										</td>
+										<td class="d-flex">
+											<form action="{{ path('app_admin_tih_delete', {'id': tih.id}) }}" method="post" onsubmit="return confirm('Confirmer la suppression de ce TIH ?');">
+												<input type="hidden" name="_method" value="DELETE">
+												<input type="hidden" name="_token" value="{{ csrf_token('delete_tih' ~ tih.id) }}">
+												<button class="btn btn-danger text-white" type="submit">Supprimer</button>
+											</form>
+										</td>
+									</tr>
+									{% set i = i + 1 %}
+								{% endfor %}
+							{% else %}
+								<tr>
+									<td colspan="5" class="text-center">Aucun TIH trouvé.</td>
+								</tr>
+							{% endif %}
+
+							<tr>
+								<td class="text-end" scope="row" colspan="10">
+									<strong class="text-primary">Soit {{ i }} TIH sur {{ total }}</strong>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				{# Pagination #}
+				<div class="col-12 pagination-container mt-3">
+					<nav aria-label="Admin navigation">
+						<ul class="pagination">
+							{% if page > 1 %}
+								<li class="page-item">
+									<a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': page - 1, 'q': query}) }}">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+							{% endif %}
+
+							{% for p in 1..pages %}
+								<li class="page-item{% if page == p %} active{% endif %}">
+									<a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': p, 'q': query}) }}">{{ p }}</a>
+								</li>
+							{% endfor %}
+
+							{% if page < pages %}
+								<li class="page-item">
+									<a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': page + 1, 'q': query}) }}">
+										<span aria-hidden="true">&raquo;</span>
+									</a>
+								</li>
+							{% endif %}
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
