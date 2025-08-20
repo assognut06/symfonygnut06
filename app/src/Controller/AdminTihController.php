@@ -37,13 +37,63 @@ class AdminTihController extends AbstractController
         $pages = (int) ceil($total / self::PAGE_SIZE);
 
         return $this->render('admin/admin_tih/index.html.twig', [
-            'tihs'         => iterator_to_array($paginator),
-            'page'         => $page,
-            'pages'        => $pages,
-            'total'        => $total,
-            'page_size'    => self::PAGE_SIZE,
-            'query'        => $q,
+            'tihs'      => iterator_to_array($paginator),
+            'page'      => $page,
+            'pages'     => $pages,
+            'total'     => $total,
+            'page_size' => self::PAGE_SIZE,
+            'query'     => $q,
         ]);
+    }
+
+    #[Route('/admin/tih/validate/{id}', name: 'app_admin_tih_validate', methods: ['POST'])]
+    public function validate(Request $request, EntityManagerInterface $em, int $id): Response
+    {
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('validate_tih'.$id, $token)) {
+            $this->addFlash('danger', 'Token de sécurité invalide.');
+            return $this->redirectToRoute('app_admin_tih');
+        }
+
+        $tih = $em->getRepository(Tih::class)->find($id);
+        if (!$tih) {
+            throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
+        }
+
+        $tih->setIsValidate(true);
+        $tih->setValidationMessage(null);
+        $em->flush();
+
+        $this->addFlash('success', 'Profil TIH validé avec succès.');
+        return $this->redirectToRoute('app_admin_tih');
+    }
+
+    #[Route('/admin/tih/refuse/{id}', name: 'app_admin_tih_refuse', methods: ['POST'])]
+    public function refuse(Request $request, EntityManagerInterface $em, int $id): Response
+    {
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('refuse_tih'.$id, $token)) {
+            $this->addFlash('danger', 'Token de sécurité invalide.');
+            return $this->redirectToRoute('app_admin_tih');
+        }
+
+        $tih = $em->getRepository(Tih::class)->find($id);
+        if (!$tih) {
+            throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
+        }
+
+        // Message personnalisé saisi dans le modal
+        $message = trim((string) $request->request->get('validation_message', ''));
+        if ($message === '') {
+            $message = 'Vos informations ne sont pas correctes.';
+        }
+
+        $tih->setIsValidate(false);
+        $tih->setValidationMessage($message);
+        $em->flush();
+
+        $this->addFlash('success', 'Le profil TIH a été refusé avec un message personnalisé.');
+        return $this->redirectToRoute('app_admin_tih');
     }
 
     #[Route('/admin/tih/delete/{id}', name: 'app_admin_tih_delete', methods: ['POST', 'DELETE'])]
@@ -67,7 +117,6 @@ class AdminTihController extends AbstractController
             throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
         }
 
-        // On supprime uniquement le TIH (on ne touche pas au User ni aux demandes de reset)
         $em->remove($tih);
         $em->flush();
 
