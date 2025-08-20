@@ -6,7 +6,6 @@ use App\Entity\Tih;
 use App\Form\TihType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -27,12 +26,20 @@ class TihController extends AbstractController
         $tih = $user->getTih();
         $showForm = $request->query->get('edit') === '1' || !$tih;
 
-        // Création d'un nouveau TIH s'il n'existe pas
         if (!$tih) {
             $tih = new Tih();
             $tih->setUser($user);
             $tih->setDateCreation(new \DateTime());
             $tih->setDateMiseAJour(new \DateTime());
+            $tih->setIsValidate(false);
+        }
+
+        // Affiche le message de refus s'il existe puis l'efface
+        if ($tih->getValidationMessage()) {
+            $this->addFlash('danger', $tih->getValidationMessage());
+            $tih->setValidationMessage(null);
+            $em->persist($tih);
+            $em->flush();
         }
 
         $formView = null;
@@ -42,7 +49,6 @@ class TihController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                // ✅ Gestion du fichier CV
                 /** @var UploadedFile|null $cvFile */
                 $cvFile = $form->get('cv')->getData();
                 if ($cvFile) {
@@ -54,7 +60,6 @@ class TihController extends AbstractController
                     $tih->setCv($newFilename);
                 }
 
-                // ✅ Gestion du fichier Attestation TIH
                 /** @var UploadedFile|null $attestationFile */
                 $attestationFile = $form->get('attestationTih')->getData();
                 if ($attestationFile) {
@@ -66,7 +71,7 @@ class TihController extends AbstractController
                     $tih->setAttestationTih($newFilename);
                 }
 
-                // ✅ Ajout du rôle ROLE_TIH si non présent
+                // Ajout du rôle ROLE_TIH si non présent
                 $roles = $user->getRoles();
                 if (!in_array('ROLE_TIH', $roles)) {
                     $roles[] = 'ROLE_TIH';
@@ -74,12 +79,12 @@ class TihController extends AbstractController
                 }
 
                 $tih->setDateMiseAJour(new \DateTime());
+                $tih->setIsValidate(false); // retour en attente après modif
 
-                // Enregistrement
                 $em->persist($tih);
                 $em->flush();
 
-                $this->addFlash('success', 'Profil TIH enregistré avec succès.');
+                $this->addFlash('success', 'Votre profil est en attente de validation par un admin.');
                 return $this->redirectToRoute('espace_tih');
             }
 
