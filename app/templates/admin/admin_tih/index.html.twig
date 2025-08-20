@@ -3,104 +3,189 @@
 {% block title %}Les TIH de Gnut06.org{% endblock %}
 
 {% block body %}
-	<div class="container pt-0">
-		<div class="mx-4">
-			<h2 class="my-4 text-center">Les TIH de Gnut06.org</h2>
-			<div class="border border-secondary mb-4 mx-5"></div>
+<div class="container pt-0">
+  <div class="mx-4">
+    <h2 class="my-4 text-center">Les TIH de Gnut06.org</h2>
+    <div class="border border-secondary mb-4 mx-5"></div>
 
-			{# Recherche par email (GET) #}
-			<form method="get" action="{{ path('app_admin_tih', { page: 1 }) }}" class="mb-3">
-				<input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Rechercher par email..." autocomplete="off">
-			</form>
+    {% for message in app.flashes('success') %}
+      <div class="alert alert-success shadow-sm">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('danger') %}
+      <div class="alert alert-danger shadow-sm">{{ message }}</div>
+    {% endfor %}
 
-			<div class="row align-items-start mx-auto">
-				<div class="col-12">
-					<table class="table table-success table-striped">
-						<thead>
-							<tr>
-								<th scope="col">id</th>
-								<th scope="col">Email</th>
-								<th scope="col">Roles</th>
-								<th scope="col">Vérifié</th>
-								<th scope="col">Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% set i = 0 %}
-							{% if tihs is defined %}
-								{% for tih in tihs %}
-									{% set user = tih.user %}
-									<tr>
-										<td>{{ tih.id }}</td>
-										<td>{{ user ? user.email : '—' }}</td>
-										<td>
-											{% if user %}
-												{{ user.roles | join(' - ') }}
-											{% else %}
-												—
-											{% endif %}
-										</td>
-										<td>
-											{% if user is not null and user.isVerified is defined %}
-												{{ user.isVerified ? '1' : '0' }}
-											{% else %}
-												0
-											{% endif %}
-										</td>
-										<td class="d-flex">
-											<form action="{{ path('app_admin_tih_delete', {'id': tih.id}) }}" method="post" onsubmit="return confirm('Confirmer la suppression de ce TIH ?');">
-												<input type="hidden" name="_method" value="DELETE">
-												<input type="hidden" name="_token" value="{{ csrf_token('delete_tih' ~ tih.id) }}">
-												<button class="btn btn-danger text-white" type="submit">Supprimer</button>
-											</form>
-										</td>
-									</tr>
-									{% set i = i + 1 %}
-								{% endfor %}
-							{% else %}
-								<tr>
-									<td colspan="5" class="text-center">Aucun TIH trouvé.</td>
-								</tr>
-							{% endif %}
+    <form method="get" action="{{ path('app_admin_tih', { page: 1 }) }}" class="mb-3">
+      <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Rechercher par email..." autocomplete="off">
+    </form>
 
-							<tr>
-								<td class="text-end" scope="row" colspan="10">
-									<strong class="text-primary">Soit {{ i }} TIH sur {{ total }}</strong>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+    <div class="row align-items-start mx-auto">
+      <div class="col-12">
+        <table class="table table-success table-striped align-middle">
+          <thead>
+            <tr>
+              <th scope="col">id</th>
+              <th scope="col">Email</th>
+              <th scope="col">Roles</th>
+              <th scope="col">Statut</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set i = 0 %}
+            {% if tihs is defined %}
+              {% for tih in tihs %}
+                {% set user = tih.user %}
+                {% set modal_id = 'modal-tih-' ~ tih.id %}
+                <tr>
+                  <td>{{ tih.id }}</td>
+                  <td>{{ user ? user.email : '—' }}</td>
+                  <td>
+                    {% if user %}
+                      {{ user.roles | join(' - ') }}
+                    {% else %}
+                      —
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if tih.isValidate %}
+                      <span class="badge bg-success">Validé</span>
+                    {% else %}
+                      <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#{{ modal_id }}">
+                        En attente de validation
+                      </button>
+                    {% endif %}
+                  </td>
+                  <td class="d-flex gap-2">
+                    <form action="{{ path('app_admin_tih_delete', {'id': tih.id}) }}" method="post" onsubmit="return confirm('Confirmer la suppression de ce TIH ?');">
+                      <input type="hidden" name="_method" value="DELETE">
+                      <input type="hidden" name="_token" value="{{ csrf_token('delete_tih' ~ tih.id) }}">
+                      <button class="btn btn-danger text-white" type="submit">Supprimer</button>
+                    </form>
+                  </td>
+                </tr>
 
-				{# Pagination #}
-				<div class="col-12 pagination-container mt-3">
-					<nav aria-label="Admin navigation">
-						<ul class="pagination">
-							{% if page > 1 %}
-								<li class="page-item">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': page - 1, 'q': query}) }}">
-										<span aria-hidden="true">&laquo;</span>
-									</a>
-								</li>
-							{% endif %}
+                {# MODAL : détails + actions valider/refuser #}
+                <div class="modal fade" id="{{ modal_id }}" tabindex="-1" aria-labelledby="{{ modal_id }}Label" aria-hidden="true">
+                  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="{{ modal_id }}Label">Profil TIH #{{ tih.id }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <p><strong>Civilité :</strong> {{ tih.civilite ?: '—' }}</p>
+                            <p><strong>Nom :</strong> {{ tih.nom ?: '—' }}</p>
+                            <p><strong>Prénom :</strong> {{ tih.prenom ?: '—' }}</p>
+                            <p><strong>Email pro :</strong> {{ tih.emailPro ?: '—' }}</p>
+                            <p><strong>Téléphone :</strong> {{ tih.telephone ?: '—' }}</p>
+                            <p><strong>Adresse :</strong> {{ tih.adresse ?: '—' }}</p>
+                            <p><strong>Code postal :</strong> {{ tih.codePostal ?: '—' }}</p>
+                            <p><strong>Ville :</strong> {{ tih.ville ?: '—' }}</p>
+                          </div>
+                          <div class="col-md-6">
+                            <p><strong>SIRET :</strong> {{ tih.siret ?: '—' }}</p>
+                            <p><strong>Disponibilité :</strong> {{ tih.disponibilite ?: '—' }}</p>
+                            <p><strong>Compétences :</strong>
+                              {% if tih.competences|length > 0 %}
+                                {{ tih.competences|join(', ') }}
+                              {% else %}
+                                —
+                              {% endif %}
+                            </p>
+                            <p><strong>CV :</strong>
+                              {% if tih.cv %}
+                                <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>
+                              {% else %}
+                                —
+                              {% endif %}
+                            </p>
+                            <p><strong>Attestation TIH :</strong>
+                              {% if tih.attestationTih %}
+                                <a href="{{ asset('uploads/tihattest/' ~ tih.attestationTih) }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir l'attestation</a>
+                              {% else %}
+                                —
+                              {% endif %}
+                            </p>
+                            <p><strong>Créé le :</strong> {{ tih.dateCreation|date('d/m/Y H:i') }}</p>
+                            <p><strong>Mis à jour le :</strong> {{ tih.dateMiseAJour|date('d/m/Y H:i') }}</p>
+                          </div>
+                        </div>
 
-							{% for p in 1..pages %}
-								<li class="page-item{% if page == p %} active{% endif %}">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': p, 'q': query}) }}">{{ p }}</a>
-								</li>
-							{% endfor %}
+                        <hr class="my-3">
 
-							{% if page < pages %}
-								<li class="page-item">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': page + 1, 'q': query}) }}">
-										<span aria-hidden="true">&raquo;</span>
-									</a>
-								</li>
-							{% endif %}
-						</ul>
-					</nav>
-				</div>
-			</div>
-		</div>
-	</div>
+                        <div class="mb-2">
+                          <label for="validation_message_{{ tih.id }}" class="form-label">Message de refus (optionnel)</label>
+                          <textarea form="refuse-form-{{ tih.id }}" name="validation_message" id="validation_message_{{ tih.id }}" class="form-control" rows="2" placeholder="Expliquez la raison du refus..."></textarea>
+                          <small class="text-muted">Ce message apparaîtra en flash sur le profil TIH.</small>
+                        </div>
+                      </div>
+
+                      <div class="modal-footer d-flex justify-content-between">
+                        <form id="refuse-form-{{ tih.id }}" action="{{ path('app_admin_tih_refuse', {'id': tih.id}) }}" method="post" onsubmit="return confirm('Refuser ce profil TIH ?');">
+                          <input type="hidden" name="_token" value="{{ csrf_token('refuse_tih' ~ tih.id) }}">
+                          {# le textarea ci-dessus est lié à ce form via l’attribut form="" #}
+                          <button type="submit" class="btn btn-outline-danger">Refuser</button>
+                        </form>
+
+                        <div class="d-flex gap-2">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                          <form action="{{ path('app_admin_tih_validate', {'id': tih.id}) }}" method="post" onsubmit="return confirm('Valider ce profil TIH ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('validate_tih' ~ tih.id) }}">
+                            <button type="submit" class="btn btn-success">Valider</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% set i = i + 1 %}
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="5" class="text-center">Aucun TIH trouvé.</td>
+              </tr>
+            {% endif %}
+
+            <tr>
+              <td class="text-end" scope="row" colspan="10">
+                <strong class="text-primary">Soit {{ i }} TIH sur {{ total }}</strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-12 pagination-container mt-3">
+        <nav aria-label="Admin navigation">
+          <ul class="pagination">
+            {% if page > 1 %}
+              <li class="page-item">
+                <a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': page - 1, 'q': query}) }}">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+            {% endif %}
+
+            {% for p in 1..pages %}
+              <li class="page-item{% if page == p %} active{% endif %}">
+                <a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': p, 'q': query}) }}">{{ p }}</a>
+              </li>
+            {% endfor %}
+
+            {% if page < pages %}
+              <li class="page-item">
+                <a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': page + 1, 'q': query}) }}">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
