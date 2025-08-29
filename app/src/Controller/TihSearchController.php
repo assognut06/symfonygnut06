@@ -16,17 +16,21 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 #[Route('/tih')]
 class TihSearchController extends AbstractController
 {
-    #[Route('/tih_search', name: 'app_tih_search')]
+    #[Route('/tih_search', name: 'app_tih_search', methods: ['GET'])]
     public function index(TihRepository $tihRepository): Response
     {
-        $tihs = $tihRepository->findAll();
+        // ✅ Ne récupérer que les TIH validés
+        $tihs = $tihRepository->findBy(
+            ['isValidate' => true],
+            ['dateCreation' => 'DESC']
+        );
 
         return $this->render('tih_search/index.html.twig', [
             'tihs' => $tihs,
         ]);
     }
 
-    #[Route('/tih/{id}', name: 'app_tih_details')]
+    #[Route('/tih/{id}', name: 'app_tih_details', methods: ['GET'])]
     public function details(TihRepository $tihRepository, int $id): Response
     {
         $tih = $tihRepository->find($id);
@@ -40,7 +44,7 @@ class TihSearchController extends AbstractController
         ]);
     }
 
-    #[Route('/tih/{id}/contact', name: 'app_tih_contact')]
+    #[Route('/tih/{id}/contact', name: 'app_tih_contact', methods: ['GET', 'POST'])]
     public function contact(Request $request, MailerInterface $mailer, TihRepository $tihRepository, int $id): Response
     {
         $tih = $tihRepository->find($id);
@@ -52,32 +56,32 @@ class TihSearchController extends AbstractController
         $form = $this->createFormBuilder()
             ->add('nom', TextType::class, [
                 'label' => 'Votre nom',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('prenom', TextType::class, [
                 'label' => 'Votre prénom',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('entreprise', TextType::class, [
                 'label' => 'Nom de l\'entreprise',
                 'required' => false,
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('telephone', TextType::class, [
                 'label' => 'Téléphone',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('email', TextType::class, [
                 'label' => 'Adresse email',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('subject', TextType::class, [
                 'label' => 'Objet',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('message', TextareaType::class, [
                 'label' => 'Message',
-                'attr' => ['class' => 'form-control', 'rows' => 6]
+                'attr' => ['class' => 'form-control', 'rows' => 6],
             ])
             ->getForm();
 
@@ -87,24 +91,29 @@ class TihSearchController extends AbstractController
             $data = $form->getData();
 
             $htmlContent = $this->renderView('mailjet/contact_tih.html.twig', [
-                'prenom' => $data['prenom'],
-                'nom' => $data['nom'],
+                'prenom'     => $data['prenom'],
+                'nom'        => $data['nom'],
                 'entreprise' => $data['entreprise'],
-                'telephone' => $data['telephone'],
-                'email' => $data['email'],
-                'message' => $data['message'],
+                'telephone'  => $data['telephone'],
+                'email'      => $data['email'],
+                'message'    => $data['message'],
             ]);
 
             $email = (new Email())
                 ->from('gnut@gnut06.org')
                 ->to($tih->getEmailPro())
-                //  ->addTo('gnut@gnut06.org')
+                // ->addTo('gnut@gnut06.org')
                 ->subject($data['subject'])
                 ->html($htmlContent)
                 ->embedFromPath(
                     $this->getParameter('kernel.project_dir') . '/public/images/logo_trans-min_300.png',
                     'eye-image'
                 );
+
+            // (optionnel) utile pour pouvoir répondre directement au demandeur
+            if (!empty($data['email'])) {
+                $email->replyTo($data['email']);
+            }
 
             $mailer->send($email);
 
@@ -115,7 +124,7 @@ class TihSearchController extends AbstractController
 
         return $this->render('tih_search/contact.html.twig', [
             'form' => $form->createView(),
-            'tih' => $tih,
+            'tih'  => $tih,
         ]);
     }
 }

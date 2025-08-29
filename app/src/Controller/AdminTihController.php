@@ -24,7 +24,13 @@ class AdminTihController extends AbstractController
             ->orderBy('t.id', 'DESC');
 
         if ($q !== '') {
-            $qb->andWhere('u.email LIKE :q')->setParameter('q', '%'.$q.'%');
+            $needle = '%'.mb_strtolower($q).'%';
+
+            // Recherche sur email (utilisateur), nom et prénom (entité TIH)
+            $qb->andWhere('LOWER(u.email) LIKE :q 
+                           OR LOWER(COALESCE(t.nom, \'\')) LIKE :q
+                           OR LOWER(COALESCE(t.prenom, \'\')) LIKE :q')
+               ->setParameter('q', $needle);
         }
 
         $query = $qb

@@ -20,6 +20,9 @@
 		<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_admin_tih') ? ' active' : '' }}" href="{{ path('app_admin_tih') }}">Tih</a>
 	</li>
 	<li class="nav-item">
+		<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_admin_competence') ? ' active' : '' }}" href="{{ path('app_admin_competence') }}">Compétences</a>
+	</li>
+	<li class="nav-item">
 		<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_asso_recommander_new') ? ' active' : '' }}" href="{{ path('app_asso_recommander_new') }}">Ajout association</a>
 	</li>
 	<li class="nav-item">
