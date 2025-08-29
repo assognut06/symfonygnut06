@@ -4,31 +4,69 @@
 
 {% block body %}
 <div class="container my-5">
-    <h2 class="text-center mb-4">Liste des TIH</h2>
+  <h2 class="text-center mb-4">Liste des TIH</h2>
 
-    <div class="row">
-        {% for tih in tihs %}
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ tih.nom }} {{ tih.prenom }}</h5>
-                        <p class="card-text">
-                            <strong>Civilité :</strong> {{ tih.civilite }}<br>
-                            <strong>Email Pro :</strong> {{ tih.emailPro }}<br>
-                            <strong>Téléphone :</strong> {{ tih.telephone }}<br>
-                            <strong>Adresse :</strong> {{ tih.adresse }}, {{ tih.codePostal }} {{ tih.ville }}<br>
-                            <strong>Compétences :</strong> {{ tih.competences|join(', ') }}<br>
-                            <strong>Disponibilité :</strong> {{ tih.disponibilite }}
-                        </p>
-                        <a href="{{ path('app_tih_details', {'id': tih.id}) }}" class="btn btn-primary btn-sm">Voir les détails</a>
-                    </div>
-                </div>
-            </div>
-        {% else %}
-            <div class="col-12">
-                <p class="text-center">Aucun TIH trouvé.</p>
-            </div>
-        {% endfor %}
+  {# Champ de filtre live (utilise le script générique list-live-filter) #}
+  <div class="row mb-3">
+    <div class="col-12">
+      <input type="text"
+             class="form-control list-live-filter"
+             data-target="#tih-grid"
+             placeholder="Filtrer par nom, prénom, ville, email pro, compétence…"
+             autocomplete="off">
     </div>
+  </div>
+
+  {# Grille de cartes TIH #}
+  <div id="tih-grid" class="row">
+    {% for tih in tihs %}
+      {# Data-search : concatène les champs pertinents pour la recherche #}
+      <div class="col-md-4 mb-4"
+           data-search="{{
+             (
+               (tih.nom|default('')) ~ ' ' ~
+               (tih.prenom|default('')) ~ ' ' ~
+               (tih.ville|default('')) ~ ' ' ~
+               (tih.codePostal|default('')) ~ ' ' ~
+               (tih.adresse|default('')) ~ ' ' ~
+               (tih.emailPro|default('')) ~ ' ' ~
+               (tih.disponibilite|default('')) ~ ' ' ~
+               (tih.civilite|default('')) ~ ' ' ~
+               (tih.competences is defined and tih.competences ? tih.competences|join(' ') : '')
+             )|lower
+           }}">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">
+              {{ tih.nom|default('') }} {{ tih.prenom|default('') }}
+            </h5>
+
+            <p class="card-text">
+              <strong>Civilité :</strong> {{ tih.civilite|default('—') }}<br>
+              <strong>Email Pro :</strong> {{ tih.emailPro|default('—') }}<br>
+              <strong>Téléphone :</strong> {{ tih.telephone|default('—') }}<br>
+              <strong>Adresse :</strong>
+              {{ tih.adresse|default('—') }}{% if tih.codePostal or tih.ville %}, {% endif %}
+              {{ tih.codePostal|default('') }} {{ tih.ville|default('') }}<br>
+              <strong>Compétences :</strong>
+              {% if tih.competences is defined and tih.competences|length > 0 %}
+                {{ tih.competences|join(', ') }}
+              {% else %}
+                —
+              {% endif %}<br>
+              <strong>Disponibilité :</strong> {{ tih.disponibilite|default('—') }}
+            </p>
+
+            <a href="{{ path('app_tih_details', {'id': tih.id}) }}"
+               class="btn btn-primary btn-sm">Voir les détails</a>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-12">
+        <p class="text-center">Aucun TIH trouvé.</p>
+      </div>
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}

@@ -16,15 +16,20 @@
     {% endfor %}
 
     <form method="get" action="{{ path('app_admin_tih', { page: 1 }) }}" class="mb-3">
-      <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Rechercher par email..." autocomplete="off">
+      <input type="text" class="form-control table-live-filter"
+       data-target="#tih-table" data-cols="2,3,4"
+       placeholder="Filtrer par nom, prénom ou email…" autocomplete="off">
+
     </form>
 
     <div class="row align-items-start mx-auto">
       <div class="col-12">
-        <table class="table table-success table-striped align-middle">
+        <table id="tih-table" class="table table-success table-striped align-middle">
           <thead>
             <tr>
               <th scope="col">id</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Prenom</th>
               <th scope="col">Email</th>
               <th scope="col">Roles</th>
               <th scope="col">Statut</th>
@@ -39,6 +44,8 @@
                 {% set modal_id = 'modal-tih-' ~ tih.id %}
                 <tr>
                   <td>{{ tih.id }}</td>
+                  <td>{{ user ? tih.nom : '—' }}</td>
+                  <td>{{ user ? tih.prenom : '—' }}</td>
                   <td>{{ user ? user.email : '—' }}</td>
                   <td>
                     {% if user %}

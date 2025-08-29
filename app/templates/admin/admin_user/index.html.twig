@@ -10,12 +10,13 @@
 			<div class="border border-secondary mb-4 mx-5"></div>
 
 			<div class="mb-3">
-    			<input type="text" id="search-email" class="form-control" placeholder="Rechercher par email...">
-			</div>
+    			<input type="text" id="search-email" class="form-control table-live-filter"
+					data-target="#users-table" data-cols="2"
+					placeholder="Rechercher par email…">
 
 			<div class="row align-items-start mx-auto">
 				<div class="col-12">
-					<table class="table table-success table-striped">
+					<table id="users-table" class="table table-success table-striped">
 						<thead>
 							<tr>
 								<th scope="col">id</th>
