@@ -1,0 +1,112 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Admin • Compétences{% endblock %}
+
+{% block body %}
+<div class="container pt-0">
+  <div class="mx-4">
+    <h2 class="my-4 text-center">Les compétences</h2>
+    <div class="border border-secondary mb-4 mx-5"></div>
+
+    {# Flashs #}
+    {% for label, messages in app.flashes %}
+      {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endfor %}
+
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <form method="get" action="{{ path('app_admin_competence') }}">
+          <div class="input-group">
+            <input type="text" class="form-control table-live-filter"
+                data-target="#competence-table" data-cols="2"
+                placeholder="Filtrer par nom…" autocomplete="off">
+            <button class="btn btn-outline-secondary" type="submit">Rechercher</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-md-6">
+        <form method="post" action="{{ path('app_admin_competence_add') }}" class="d-flex" onsubmit="return (this.name.value.trim().length > 0);">
+          <input type="hidden" name="_token" value="{{ csrf_token('add_competence') }}">
+          <input type="text" name="name" class="form-control me-2" placeholder="Nouvelle compétence...">
+          <button type="submit" class="btn btn-success">Ajouter</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="row align-items-start mx-auto">
+      <div class="col-12">
+        <table id="competence-table" class="table table-success table-striped">
+          <thead>
+            <tr>
+              <th scope="col">id</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set i = 0 %}
+            {% if competences is defined and competences|length > 0 %}
+              {% for competence in competences %}
+                <tr>
+                  <td>{{ competence.id }}</td>
+                  <td>{{ competence.name }}</td>
+                  <td class="d-flex">
+                    <form action="{{ path('app_admin_competence_delete', {'id': competence.id}) }}" method="post" onsubmit="return confirm('Supprimer cette compétence ?');">
+                      <input type="hidden" name="_method" value="DELETE">
+                      <input type="hidden" name="_token" value="{{ csrf_token('delete_competence' ~ competence.id) }}">
+                      <button class="btn btn-danger text-white" type="submit">Supprimer</button>
+                    </form>
+                  </td>
+                </tr>
+                {% set i = i + 1 %}
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="3" class="text-center">Aucune compétence trouvée.</td></tr>
+            {% endif %}
+
+            <tr>
+              <td class="text-end" scope="row" colspan="3">
+                <strong class="text-primary">Soit {{ i }} compétence(s) sur {{ total }}</strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-12 pagination-container mt-3">
+        <nav aria-label="Admin navigation">
+          <ul class="pagination">
+            {% if page > 1 %}
+              <li class="page-item">
+                <a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': page - 1, 'q': query}) }}">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+            {% endif %}
+
+            {% for p in 1..pages %}
+              <li class="page-item{% if p == page %} active{% endif %}">
+                <a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': p, 'q': query}) }}">{{ p }}</a>
+              </li>
+            {% endfor %}
+
+            {% if page < pages %}
+              <li class="page-item">
+                <a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': page + 1, 'q': query}) }}">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
