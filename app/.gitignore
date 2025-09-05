@@ -18,6 +18,7 @@
 /public/uploads/profilePictures/*
 /public/uploads/logo_entreprises/*
 /public/uploads/bordereau/*
+/public/audios/*
 
 # laisser les dossiers vides utiles au projet
 !public/uploads/.gitkeep
@@ -25,6 +26,7 @@
 !public/uploads/profilePictures/.gitkeep
 !public/uploads/logo_entreprises/.gitkeep
 !public/uploads/bordereau/.gitkeep
+!public/audios/.gitkeep
 
 
 ###< symfony/framework-bundle ###
