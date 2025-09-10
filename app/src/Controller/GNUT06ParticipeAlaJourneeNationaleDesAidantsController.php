@@ -6,12 +6,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class GNUT06PparticipeAlaJourneeNationaleDesAidantsController extends AbstractController
+class GNUT06ParticipeAlaJourneeNationaleDesAidantsController extends AbstractController
 {
-    #[Route('/gnut_06/participe/ala/journee/nationale/des/aidants', name: 'appgnut_06_participe_ala_journee_nationale_des_aidants')]
+    #[Route('/gnut_06/participe_ala_journee_nationale_des_aidants', name: 'appgnut_06_participe_ala_journee_nationale_des_aidants')]
     public function index(): Response
     {
-        return $this->render('gnut06_pparticipe_ala_journee_nationale_des_aidants/index.html.twig', [
+        return $this->render('gnut06_participe_ala_journee_nationale_des_aidants/index.html.twig', [
             'controller_name' => 'GNUT06PparticipeAlaJourneeNationaleDesAidantsController',
         ]);
     }
