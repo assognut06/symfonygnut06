@@ -15,9 +15,20 @@
 						<i class="bi bi-house"></i>
 					</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}" href="{{ path('app_billetteries') }}">Événements</a>
+				<li class="nav-itemm dropdown">
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nos Activités</a>
+					<ul class="dropdown-menu">
+						<li>
+							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_billetteries' %}active{% endif %}" href="{{ path('app_billetteries') }}">Événements</a>
+						</li>
+						<li>
+							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_nice_fete_sa_rentree' %}active{% endif %}" href="{{ path('app_nice_fete_sa_rentree') }}">Nice Fête sa Rentréé</a>
+						</li>
+										</ul>
 				</li>
+				{# <li class="nav-item">
+					<a class="nav-link {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}" href="{{ path('app_billetteries') }}">Événements</a>
+				</li> #}
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nos Hubs</a>
 					<ul class="dropdown-menu">
