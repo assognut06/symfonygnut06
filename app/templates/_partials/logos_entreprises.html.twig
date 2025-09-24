@@ -1,205 +1,147 @@
-<h3 class="title-carrousel">Nos alliés dans nos actions</h3>
+<!-- Alliés / Partenaires -->
+<div class="bg-main w-100 py-5">
+    <div class="container text-center text-white">
+        <h2 class="mb-4">Nos alliés dans nos actions</h2>
 
-<div class="ligne-carroussel">
-  <button class="carrousel-btn prev" onclick="scrollCarrousel(-1)">&#10094;</button>
-  <button class="carrousel-btn next" onclick="scrollCarrousel(1)">&#10095;</button>
+        <div class="ligne-carroussel">
+            <button class="carrousel-btn prev" onclick="scrollCarrousel(-1)">&#10094;</button>
+            <button class="carrousel-btn next" onclick="scrollCarrousel(1)">&#10095;</button>
 
-  <div class="carrousel-container" id="carrouselContainer">
-    <div class="carrousel-wrapper" id="carrouselWrapper">
-      {% for i in 1..2 %}
-        {% for entreprise in entreprises %}
-          {% if entreprise.logo %}
-          <div class="carrousel-slide">
-             <a href="{{ entreprise.url }}" target="_blank" rel="noopener noreferrer" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{entreprise.nom }}">
-               <img src="{{ asset('uploads/logo_entreprises/' ~ entreprise.logo) }}" alt="{{ entreprise.nom }}" class="carrousel-img">
-             </a>
-           </div>
-          {% endif %}
-        {% endfor %}
-      {% endfor %}
+            <div class="carrousel-container" id="carrouselContainer">
+                <div class="carrousel-wrapper" id="carrouselWrapper">
+                    {% for i in 1..2 %}
+                        {% for entreprise in entreprises %}
+                            {% if entreprise.logo %}
+                                <div class="carrousel-slide">
+                                    <a href="{{ entreprise.url }}" target="_blank" rel="noopener noreferrer"
+                                       data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ entreprise.nom }}">
+                                        <img src="{{ asset('uploads/logo_entreprises/' ~ entreprise.logo) }}"
+                                             alt="{{ entreprise.nom }}" class="carrousel-img">
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
-<div class="marquee-container">
-  <div class="marquee" id="marqueeText">
-    Chez Gnut 06, nous croyons en la force du collectif. C’est pourquoi nous avons la chance d’être accompagnés par des structures variées — entreprises, associations, collectifs citoyens — qui partagent nos valeurs et soutiennent nos initiatives. Ces alliés, chacun à leur manière, contribuent à faire vivre nos projets, à enrichir nos actions sur le terrain et à renforcer notre impact local. Leur engagement à nos côtés est une source d’inspiration et de motivation au quotidien.
-  </div>
-</div>
 
 <style>
-  .title-carrousel {
-    color: #fff;
-    text-align: center;
-    margin-top: 40px;
-  }
+    .ligne-carroussel {
+        position: relative;
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
 
-  .ligne-carroussel {
-    position: relative;
-    width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
+    .carrousel-container {
+        overflow: hidden;
+        width: 85%;
+        max-width: 750px;
+        margin: 0 auto;
+    }
 
-  .carrousel-container {
-    overflow: hidden;
-    width: 85%; 
-    max-width: 750px;
-    margin: 0 auto;
-  }
+    .carrousel-wrapper {
+        display: flex;
+        transition: transform 0.5s ease;
+        width: fit-content;
+    }
 
-  .carrousel-wrapper {
-    display: flex;
-    transition: transform 0.5s ease;
-    width: fit-content;
-  }
-
-  .carrousel-slide {
-    min-width: 120px; 
-    height: 120px; 
-    margin: 0 15px;
-    background-color: #fff;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .carrousel-img {
-    max-width: 100px;
-    max-height: 100px; 
-    object-fit: contain;
-    transition: transform 0.3s;
-  }
-
-  .carrousel-slide:hover .carrousel-img {
-    transform: scale(1.1);
-  }
-
-  .carrousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(255,255,255,0.2);
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 10;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-  }
-
-  .ligne-carroussel:hover .carrousel-btn {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .carrousel-btn.prev {
-    left: 10px;
-  }
-
-  .carrousel-btn.next {
-    right: 10px;
-  }
-
-  @media (max-width: 600px) {
     .carrousel-slide {
-      min-width: 80px;
-      height: 80px;
-      margin: 0 8px;
+        min-width: 120px;
+        height: 120px;
+        margin: 0 15px;
+        background: #0f0f1a; /* fond sombre cohérent */
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background 0.3s ease;
+    }
+
+    .carrousel-slide:hover {
+        background: rgba(255,255,255,0.05);
     }
 
     .carrousel-img {
-      max-width: 60px;
-      max-height: 60px;
+        max-width: 100px;
+        max-height: 100px;
+        object-fit: contain;
+        transition: transform 0.3s ease;
     }
 
+    .carrousel-slide:hover .carrousel-img {
+        transform: scale(1.1);
+    }
+
+    /* Boutons navigation */
     .carrousel-btn {
-      font-size: 18px;
-      padding: 6px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(97deg, #D10ED1 12%, #5328C3 82%);
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 8px 12px;
+        z-index: 10;
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.3s ease, transform 0.2s;
     }
-  }
 
-  /* Texte défilant */
-  .marquee-container {
-    width: 80%;
-    overflow: hidden;
-    background: rgba(0,0,0,0.7);
-    margin: 20px auto;
-    padding: 12px 0;
-    border-radius: 8px;
-  }
-
-  .marquee {
-    display: inline-block;
-    white-space: nowrap;
-    color: #fff;
-    font-size: 1.05em;
-    padding-left: 100%;
-    animation: none;
-  }
-
-  .marquee.active {
-    animation: marquee-scroll 75s linear infinite;
-  }
-
-  @keyframes marquee-scroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
-  }
-
-  @media (max-width: 600px) {
-    .marquee {
-      font-size: 0.95em;
+    .ligne-carroussel:hover .carrousel-btn {
+        opacity: 1;
     }
-  }
+
+    .carrousel-btn:hover {
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .carrousel-btn.prev { left: 10px; }
+    .carrousel-btn.next { right: 10px; }
+
+    @media (max-width: 600px) {
+        .carrousel-slide {
+            min-width: 80px;
+            height: 80px;
+            margin: 0 8px;
+        }
+        .carrousel-img {
+            max-width: 60px;
+            max-height: 60px;
+        }
+        .carrousel-btn {
+            font-size: 16px;
+            padding: 6px 10px;
+        }
+    }
+
 </style>
 
 <script>
-  const wrapper = document.getElementById("carrouselWrapper");
-  let offset = 0;
-  const slideWidth = 150;
+    const wrapper = document.getElementById("carrouselWrapper");
+    let offset = 0;
+    const slideWidth = 150;
 
-  function scrollCarrousel(direction = 1) {
-    offset += direction * slideWidth;
+    function scrollCarrousel(direction = 1) {
+        offset += direction * slideWidth;
 
-    if (offset < 0) {
-      offset = wrapper.scrollWidth / 2 - slideWidth;
-    } else if (offset >= wrapper.scrollWidth / 2) {
-      offset = 0;
+        if (offset < 0) {
+            offset = wrapper.scrollWidth / 2 - slideWidth;
+        } else if (offset >= wrapper.scrollWidth / 2) {
+            offset = 0;
+        }
+
+        wrapper.style.transition = "transform 0.5s ease";
+        wrapper.style.transform = `translateX(-${offset}px)`;
     }
 
-    wrapper.style.transition = "transform 0.5s ease";
-    wrapper.style.transform = `translateX(-${offset}px)`;
-  }
+    // Auto scroll toutes les 3s
+    setInterval(() => scrollCarrousel(1), 3000);
 
-  // Auto scroll toutes les 3 secondes
-  setInterval(() => scrollCarrousel(1), 3000);
-
-  // Démarrer le texte défilant seulement quand l'utilisateur voit la section
-  document.addEventListener("DOMContentLoaded", () => {
-    const marquee = document.getElementById("marqueeText");
-    const triggerElement = document.querySelector(".title-carrousel");
-
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            marquee.classList.add("active");
-          } else {
-            marquee.classList.remove("active");
-          }
-        });
-      }, {
-        threshold: 0.3
-      });
-
-      observer.observe(triggerElement);
-    } else {
-      marquee.classList.add("active");
-    }
-  });
 </script>

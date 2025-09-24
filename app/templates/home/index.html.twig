@@ -1,204 +1,259 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil Gnut 06
-{% endblock %}
+{% block title %}Accueil Gnut 06{% endblock %}
 
 {% block body %}
-	<div class="container">
-		<div class="row mx-0 mt-5">
-			<div class="col-12 col-lg-6 ">
-				<div class="embed-responsive embed-responsive-16by9 mb-5 shadow-lg">
-					<video class="embed-responsive-item" width="100%" autoplay loop muted>
-						<source src="videos/gnut_06.mp4" type="video/mp4">
-						Votre navigateur ne supporte pas la lecture de vidéos.
-					</video>
-				</div>
-				<div class="mt-3 mt-lg-0 text-center py-3">
-					<h1 class="mb-4 text-primary shadow-lg rounded">GNUT 06 aux maisons des associations de la ville de Nice</h1>
-					<div class="alert alert-success" role="alert">
-						<h3 class="text-primary">Vivez une expérience immersive inoubliable avec l'association GNUT 06 !</h3>
-						<p class="fs-3 fw-bold">Réservez dès maintenant votre séance de réalité virtuelle de 30 minutes à partir de 19€.</p>
-						<p>Plongez dans des mondes extraordinaires et laissez-vous transporter par des aventures qui défient l'imagination.</p>
-						<p class="fs-3 text-danger fw-bold">De plus, nous offrons la gratuité pour les personnes en situation de handicap, car nous croyons en l'accessibilité pour tous.</p>
-						<p>Et si vous souhaitez simplement découvrir notre association et nos activités, venez profiter d'une visite gratuite.</p>
-						<p>Ne manquez pas cette occasion unique de vous évader du quotidien et d'explorer l'avenir de la technologie ludique.</p>
-						<p>Réservez votre place dès aujourd'hui en sélectionnant votre lieu ci-dessous et préparez-vous à être émerveillé !</p>
-						<a href="{{ path('app_billetteries') }}" class="btn btn-warning">
-							Voir toutes les dates</a>
-					</div>
-				</div>
-				<div class="mt-5">
-					<div id="carouselExampleAutoplaying_gnut_06" class="carousel slide shadow-lg" data-bs-ride="carousel">
-						<div class="carousel-indicators">
-							<button type="button" data-bs-target="#carouselExampleAutoplaying_gnut_06" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-							<button type="button" data-bs-target="#carouselExampleAutoplaying_gnut_06" data-bs-slide-to="1" aria-label="Slide 2"></button>
-							<button type="button" data-bs-target="#carouselExampleAutoplaying_gnut_06" data-bs-slide-to="2" aria-label="Slide 3"></button>
-							<button type="button" data-bs-target="#carouselExampleAutoplaying_gnut_06" data-bs-slide-to="3" aria-label="Slide 4"></button>
-							<button type="button" data-bs-target="#carouselExampleAutoplaying_gnut_06" data-bs-slide-to="4" aria-label="Slide 5"></button>
-							<button type="button" data-bs-target="#carouselExampleAutoplaying_gnut_06" data-bs-slide-to="5" aria-label="Slide 6"></button>
-						</div>
-						<div class="carousel-inner">
-							<div class="carousel-item active">
-								<img src="{{ asset('images/20240620/selection/20240620_132235.webp') }}" class="d-block w-100" alt="Permanence à Garibaldi">
-							</div>
-							<div class="carousel-item">
-								<img src="{{ asset('images/20240620/selection/20240620_132720.webp') }}" class="d-block w-100" alt="Permanence à Garibaldi">
-							</div>
-							<div class="carousel-item">
-								<img src="{{ asset('images/20240620/selection/20240620_135536.webp') }}" class="d-block w-100" alt="Permanence à Garibaldi">
-							</div>
-							<div class="carousel-item">
-								<img src="{{ asset('images/20240620/selection/20240620_140009.webp') }}" class="d-block w-100" alt="Permanence à Garibaldi">
-							</div>
-							<div class="carousel-item">
-								<img src="{{ asset('images/20240620/selection/20240620_140411.webp')}}" class="d-block w-100" alt="Permanence à Garibaldi">
-							</div>
-							<div class="carousel-item">
-								<img src="{{ asset('images/20240620/selection/20240620_140751.webp')}}" class="d-block w-100" alt="Permanence à Garibaldi">
-							</div>
-						</div>
-						<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying_gnut_06" data-bs-slide="prev">
-							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-							<span class="visually-hidden">Previous</span>
-						</button>
-						<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying_gnut_06" data-bs-slide="next">
-							<span class="carousel-control-next-icon" aria-hidden="true"></span>
-							<span class="visually-hidden">Next</span>
-						</button>
-					</div>
-				</div>
 
-			</div>
-			<div class="col-12 col-lg-6 mt-3 mt-lg-0 text-center py-3">
-				<p class="fs-4">
-					<strong>Gnut 06</strong>
-					est une association
-					<strong>dédiée à l'inclusion des personnes en situation de handicap grâce aux technologies innovantes.</strong>
-					Notre mission est d'utiliser des outils tels que la réalité virtuelle et la réalité augmentée<strong>
-						pour offrir des expériences concrètes et enrichissantes</strong>
-					aux personnes
-																																																																															      en situation de handicap,
-					<strong>favorisant ainsi leur intégration sociale et leur épanouissement.</strong>
-				</p>
+    <!-- Section Hero -->
+    <div class="bg-main w-100 py-5">
+        <div class="container row align-items-center gx-5 m-auto">
+            <div class="col-md-6 text-center text-md-start">
+                <h1 class="gradient-text text-main">GNUT 06</h1>
+                <h2>L’inclusion par la <br> Technologie</h2>
+                <p class="text">
+                    Gnut 06 est une association engagée pour l’inclusion des personnes en situation de handicap à travers l’innovation numérique. Découvrez nos actions, nos projets en réalité virtuelle et rejoignez-nous pour construire un impact social durable.
+                </p>
+                <a href="#" class="btn-neon text-white mt-3">Découvrez GNUT 06</a>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="{{ asset('images/webp/immersion-hero-accueil.webp') }}" class="img-fluid rounded-4" alt="Immersion GNUT 06">
+            </div>
+        </div>
+    </div>
 
-				<p class="fs-4">
-					<strong>Nous organisons des visites à l'hôpital et dans les maisons de retraite,</strong>
-					où nous proposons aux patients des moments d'évasion et de divertissement à travers l'utilisation de casques de réalité virtuelle.
-					<strong>Ces expériences immersives permettent aux personnes en situation de handicap de s'évader de leur environnement médicalisé</strong>
-					et de vivre des aventures virtuelles uniques, tout en stimulant leur imagination et leur bien-être.
-				</p>
+    <!-- Expérience immersive -->
+    <div class="bg-main w-100 py-5">
+        <div class="container row align-items-center gx-5 m-auto">
+            <div class="col-md-6 text-center mb-4 mb-md-0">
+                <img src="{{ asset('images/webp/immersion-group.webp') }}" class="img-fluid " alt="Groupe immersion">
+            </div>
+            <div class="col-md-6 text-center text-md-start">
+                <h2 class="text-main">Vivez une <span class="gradient-text">expérience immersive</span> inoubliable !</h2>
+                <p class="text">Réservez votre séance de réalité virtuelle de 30 minutes à partir de 19€</p>
+                <div class="d-flex flex-column flex-sm-row gap-3 mt-3 justify-content-center justify-content-md-start">
+                    <a href="#" class="btn-outline-gradient text-white">Réserver une séance</a>
+                    <a href="#" class="btn-outline-gradient text-white">Découvrez Handi-3D</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-				<p class="fs-4">Parallèlement,
-					<strong>nous proposons des stages d'initiation aux nouvelles technologies, ouverts à tous,</strong>
-					afin d'aider les personnes en situation de handicap
-																																																																															      à développer de nouvelles compétences et à découvrir de nouvelles possibilités dans le domaine des technologies.
-																																																																															      Ces stages leur offrent la possibilité d'acquérir des connaissances pratiques, de renforcer leur estime de soi et de favoriser leur autonomie.</p>
-				<video class="img-fluid shadow-lg" autoplay loop muted>
-					<source src="{{ asset('videos/9265abc0.mp4') }}" type="video/mp4">
-					Votre navigateur ne supporte pas la balise vidéo.
-				</video>
-				<br><br>
-				<p class="fs-4">
-					<strong>L'association Gnut 06 s'engage à promouvoir une société inclusive où tous les individus,</strong>
-					quel que soit leur handicap, ont la possibilité de participer pleinement à la vie sociale, culturelle et professionnelle.
-																																																							Nous croyons fermement que les technologies innovantes peuvent
-					<strong>jouer un rôle essentiel</strong>
-					dans ce processus d'inclusion, en ouvrant de nouvelles perspectives et en brisant les barrières.</p>
+    <!-- Explorez nos Hubs -->
+    <div class="bg-main w-100 py-5">
+        <div class="container text-center">
+            <h2>Explorez nos Hubs</h2>
+            <p class="text">
+                Nos activités sont conçues pour être accessibles à toutes et à tous. <br>
+                Explorez notre large éventail d'options adaptées à chaque besoin.
+            </p>
+            <div class="row g-4 justify-content-center">
+                <div class="col-sm-6 col-md-4">
+                    <div class="card text-center text-white bg-black h-100">
+                        <img src="{{ asset('images/webp/galerie-3d-GNUT.webp') }}" class="card-img-top img-fluid" alt="Galerie d'art GNUT">
+                        <div class="card-body">
+                            <h4 class="card-title">Galerie d'art GNUT</h4>
+                            <p class="card-text">Profitez d’une immersion totale dans notre galerie d’art virtuelle !</p>
+                            <a href="#" class="btn-outline-gradient">Visiter maintenant</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4">
+                    <div class="card text-center text-white bg-black h-100">
+                        <img src="{{ asset('images/webp/meteo3D.webp') }}" class="card-img-top img-fluid" alt="Météo 3D GNUT">
+                        <div class="card-body">
+                            <h4 class="card-title">Météo 3D GNUT</h4>
+                            <p class="card-text">Découvrez la météo en temps réel partout dans le monde !</p>
+                            <a href="#" class="btn-outline-gradient">Visiter maintenant</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4">
+                    <div class="card text-center text-white bg-black h-100">
+                        <img src="{{ asset('images/webp/galerie-3d-immo.webp') }}" class="card-img-top img-fluid" alt="3D Immo">
+                        <div class="card-body">
+                            <h4 class="card-title">3D Immo</h4>
+                            <p class="card-text">Visitez notre construction 3D !</p>
+                            <a href="#" class="btn-outline-gradient">Visiter maintenant</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-				<p class="fs-4">
-					<a href="{{ path('app_adhesion') }}">
-						<strong>Adhérez maintenant à l' Association Gnut 06</strong>
-					</a>, et devenez un acteur clé de notre lutte pour l'inclusion.
-																																																																															      Votre soutien nous permettra de continuer nos actions, d'améliorer la qualité de vie des personnes en situation de handicap et de promouvoir une société plus juste et égalitaire pour tous. Ensemble, construisons un monde où le handicap ne limite pas les possibilités, mais les enrichit.</p>
-			</div>
-		</div>
-		<div class="mt-3 mt-lg-0 text-center py-3">
-			<h1 class="text-center mb-4 text-primary">Découvrez notre projet au Passe Temps</h1>
-			<p class="fs-4">Je vous invite aujourd'hui à découvrir un projet qui ouvre de nouvelles perspectives à ceux qui en rêvent : des séances de réalité virtuelle dédiées aux personnes en situation de handicap, proposées au Passe Temps de l'association Loisir Séjours Côte d'Azur, en partenariat avec l'association Gnut 06.</p>
-			<h2 class="mt-5 mb-3 text-success">Imaginez...</h2>
-			<ul class="list-unstyled fs-4">
-				<li class="mb-2">Un fauteuil roulant qui s'envole pour survoler des paysages à couper le souffle.</li>
-				<li class="mb-2">Des mains qui interagissent avec un monde virtuel, redécouvrant le plaisir du mouvement.</li>
-				<li class="mb-2">Des sourires qui s'illuminent à la découverte d'univers insoupçonnés.</li>
-			</ul>
-			<p class="fs-4">C'est ce que la réalité virtuelle rend possible.</p>
-			<p class="fs-4">Grâce à cette technologie innovante, nous offrons aux participants l'opportunité de :</p>
-			<ul class="list-unstyled fs-4">
-				<li>S'évader du quotidien et vivre des expériences uniques, loin de toute contrainte.</li>
-				<li>Développer leurs capacités cognitives et motrices dans un environnement ludique et stimulant.</li>
-				<li>Rompre l'isolement et créer des liens sociaux forts, en partageant des émotions intenses.</li>
-			</ul>
-			<p class="fs-4">Au-delà de la technologie, c'est une aventure humaine que nous proposons.</p>
-			<p class="fs-4">Chaque séance est un moment privilégié où chacun peut exprimer sa singularité et ses émotions. Les animateurs, attentifs et bienveillants, accompagnent les participants dans leurs découvertes, les encourageant à dépasser leurs limites.</p>
-			<h2 class="mt-5 mb-3 fs-4 text-secondary">Pourquoi soutenir ce projet ?</h2>
-			<p class="fs-4">Parce que chaque personne, quel que soit son handicap, a le droit de rêver, de s'émerveiller et de vivre des expériences enrichissantes. Parce que la réalité virtuelle est un outil puissant pour favoriser l'inclusion et améliorer la qualité de vie de tous.</p>
-			<p class="fs-4">Rejoignez-nous pour offrir à ces personnes des horizons infinis !</p>
-			<p class="fs-4">Votre soutien financier nous permettra de pérenniser ce projet et d'ouvrir de nouvelles portes à toujours plus de bénéficiaires.</p>
-			<p class="fs-4 mb-5">Ensemble, faisons de la réalité virtuelle un vecteur d'épanouissement pour tous.</p>
-			<div class="text-center">
-				<a href="{{ path('app_don')}}" class="btn btn-primary">Soutenez le projet</a>
-			</div>
-			<div class="mt-5 mb-3 text-center">
-				<h2 class="mb-4 text-primary">Découvrez la Réalité Virtuelle avec
-					<strong>GNUT 06
-					</strong>!</h2>
-				<img src="images/webp/fotor-2024022019319.webp" class="img-fluid image-zoom" alt="famille et casque VR">
-				<p class="fs-4">
-					Vous rêvez d’explorer des mondes fantastiques, de combattre des dragons ou de danser au rythme de la musique dans un univers immersif ?<br>
-					L’association
-					<strong>Gnut 06</strong>
-					vous invite à plonger dans la Réalité Virtuelle grâce à ses casques
-					<strong>Meta Quest 2</strong>
-					et
-					<strong>Meta Quest 3s</strong>
-					!
-				</p>
+    <!-- Salles 3D -->
+    <div class="bg-main w-100 py-5">
+        <div class="container text-center text-md-start">
+            <h2>Découvrez nos Salles 3D Immersives</h2>
+            <p class="text">Plongez dans une expérience immersive unique qui transforme votre vision du monde numérique. Explorez les possibilités infinies et connectez-vous avec d'autres utilisateurs dans notre espace virtuel.</p>
+            <a href="{{ path('app_metavers') }}" class="btn-neon text-white mt-3">Explorer nos Salles 3D</a>
+        </div>
+    </div>
 
-				<h2>Pourquoi avons-nous choisi ces casques ?</h2>
-				<ul class="list-unstyled fs-4">
-					<li>
-						<strong>Autonomie totale :</strong>
-						Plus besoin de PC ou de câbles encombrants. Les Meta Quest sont des casques tout-en-un qui offrent une liberté de mouvement exceptionnelle.</li>
-					<li>
-						<strong>Qualité visuelle immersive :</strong>
-						Le Meta Quest 2 propose déjà une excellente résolution, tandis que le Meta Quest 3s va encore plus loin avec des performances visuelles améliorées et une expérience plus fluide.</li>
-					<li>
-						<strong>Une bibliothèque de contenus variée :</strong>
-						Accédez à des centaines de jeux, d’expériences interactives et d’applications créatives via le Meta Quest Store. Il y en a pour tous les goûts : aventure, sport, musique, création, etc.</li>
-					<li>
-						<strong>Accessibilité et simplicité :</strong>
-						Que vous soyez débutant ou passionné de technologie, les deux casques sont faciles à prendre en main et garantissent une expérience intuitive.</li>
-				</ul>
+    <!-- Évènements -->
+    <div class="bg-main w-100 py-5">
+        <div class="container text-white">
+            <h2 class="text-center">Évènements</h2>
+            <p class="text text-center">Restez connectés à nos prochaines sessions d'infos !</p>
+            <div id="carouselExampleIndicators" class="carousel slide">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="https://picsum.photos/1200/800" class="d-block w-100 img-fluid" alt="Évènement GNUT">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://picsum.photos/1200/800" class="d-block w-100 img-fluid" alt="Session GNUT">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://picsum.photos/1200/800" class="d-block w-100 img-fluid" alt="Conférence GNUT">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Précédent</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Suivant</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
-				<h3 class="text-primary">Réservez dès maintenant !</h3>
-				<p class="fs-4 mb-5">
-					La participation est ouverte à tous, mais les places sont limitées.<br>
-					Ne manquez pas l’occasion de découvrir la Réalité Virtuelle avec le Meta Quest 2 ou le Meta Quest 3s.<br>
-					Réservez votre séance immersive de 30 minutes pour seulement 19€.*
-				</p>
+    <!-- Comment aider -->
+    <div class="bg-main w-100 py-5">
+        <div class="container row align-items-center text-white gx-5 m-auto">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <h2 class="text-start">Comment vous pouvez nous aider</h2>
+                <p class="text">Votre soutien est essentiel pour notre mission. Découvrez comment vous pouvez faire une différence.</p>
+                <div class="row g-4">
+                    <div class="col-6 text-center text-md-start">
+                        <img src="{{ asset ('images/webp/send_money.svg') }}" style="width:64px;" alt="Don icon" />
+                        <h3>Faites un don</h3>
+                        <p>Aidez-nous à financer nos projets et initiatives.</p>
+                        <a href="#" class="btn-neon">Je donne</a>
+                    </div>
+                    <div class="col-6 text-center text-md-start">
+                        <img src="{{ asset ('images/webp/volunteer_activism.svg') }}" style="width:64px;" alt="Adhésion icon" />
+                        <h3>Devenez adhérent.e</h3>
+                        <p>Participez activement à nos activités et évènements.</p>
+                        <a href="#" class="btn-outline-gradient">J'adhère</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="{{ asset('images/webp/donner-adhérer.webp') }}" class="img-fluid rounded-4" alt="Soutenir GNUT">
+            </div>
+        </div>
+    </div>
 
-				<p class="fs-4 alert alert-danger">
-					*Les personnes en situation de handicap peuvent bénéficier de cette aventure gratuitement.
-				</p>
+    <!-- Logos partenaires -->
+    <div class="">
+        {{ render(controller('App\\Controller\\LogoEntrepriseController::logos')) }}
+    </div>
 
-				<p class="fs-4">
-					Sélectionnez votre lieu préféré et préparez-vous à plonger dans un monde où la technologie de pointe rencontre l’imaginaire.
-				</p>
-				<p class="fs-4">
-					C’est l’occasion idéale de s’évader du quotidien et d’explorer des univers au-delà des frontières du réel.
-				</p>
+    <!-- Notre équipe -->
+    <div class="bg-main w-100 py-5">
+        <div class="container text-white">
+            <h2 class="text-center">Notre Équipe Tech</h2>
+            <p class="text text-center">
+                Voici quelques-uns de nos bénévoles talentueux qui ont joué un rôle clé dans la conception,
+                le développement et la communication de nos projets web.
+                Comme eux, venez contribuer à une cause engageante et épanouissante.
+            </p>
 
-				<div class="text-center">
-					<a href="{{ path('app_billetteries') }}" class="btn btn-warning">
-						Voir toutes les dates
-					</a>
-				</div>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                <!-- Exemple carte -->
+                <div class="col d-flex">
+                    <div class="card text-center h-100">
+                        <img src="{{ asset('images/webp/Marjorie.webp') }}" class="card-img-top img-fluid" alt="Marjorie Ngoupende">
+                        <div class="card-body d-flex flex-column">
+                            <div>
+                                <h4 class="card-title">Marjorie Ngoupende</h4>
+                                <p class="card-text">UX-UI Designer / Accessibilité</p>
+                            </div>
+                            <div class="mt-auto d-flex justify-content-start">
+                                <a href="https://www.linkedin.com/in/marjorie-ngoupende/" class="rounded-circle bg-primary-light d-flex justify-content-center align-items-center linkedin-circle" style="width:36px;height:36px;">
+                                    <img src="{{ asset('images/webp/linkedin.svg') }}" style="width:18px;" alt="LinkedIn">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card -->
+                <div class="col d-flex">
+                    <div class="card text-center h-100" style="width: 18rem;">
+                        <img src="{{ asset('images/webp/Yann.webp') }}" class="card-img-top" alt="Yann Doublet">
+                        <div class="card-body d-flex flex-column">
+                            <div>
+                                <h4 class="card-title">Yann Doublet</h4>
+                                <p class="card-text">Développeur Full-Stack</p>
+                            </div>
+                            <div class="mt-auto d-flex justify-content-start">
+                                <div class="mt-auto d-flex justify-content-start">
+                                    <a href="https://fr.linkedin.com/in/yann-doublet-developpeur-web" class="rounded-circle bg-primary-light d-flex justify-content-center align-items-center linkedin-circle" style="width:36px;height:36px;">
+                                        <img src="{{ asset('images/webp/linkedin.svg') }}" style="width:18px;" alt="LinkedIn">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-				<p class="fs-4 text-center mt-4">
-					Nous sommes impatients de vous accueillir et de partager ensemble cette expérience unique. Rejoignez-nous pour franchir les portes de l’avenir de la technologie immersive !
-				</p>
+                <!-- Card -->
+                <div class="col d-flex">
+                    <div class="card text-center h-100" style="width: 18rem;">
+                        <img src="{{ asset('images/webp/Walid.webp') }}" class="card-img-top" alt="Walid Kherroubi">
+                        <div class="card-body d-flex flex-column">
+                            <div>
+                                <h4 class="card-title">Walid Kherroubi</h4>
+                                <p class="card-text">Développeur Back-end</p>
+                            </div>
+                            <div class="mt-auto d-flex justify-content-start">
+                                <div class="mt-auto d-flex justify-content-start">
+                                    <a href="https://www.linkedin.com/in/walid-kherroubi/" class="rounded-circle bg-primary-light d-flex justify-content-center align-items-center linkedin-circle" style="width:36px;height:36px;">
+                                        <img src="{{ asset('images/webp/linkedin.svg') }}" style="width:18px;" alt="LinkedIn">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-			</div>
-		</div>
-	</div>
+                <!-- Card -->
+                <div class="col d-flex">
+                    <div class="card text-center h-100" style="width: 18rem;">
+                        <img src="{{ asset('images/webp/Alexia.webp') }}" class="card-img-top" alt="Alexia Marcinno">
+                        <div class="card-body d-flex flex-column">
+                            <div>
+                                <h4 class="card-title">Alexia Marcinno</h4>
+                                <p class="card-text">Rédactrice web</p>
+                            </div>
+                            <div class="mt-auto d-flex justify-content-start">
+                                <div class="mt-auto d-flex justify-content-start">
+                                    <a href="https://www.linkedin.com/in/marjorie-ngoupende/" class="rounded-circle bg-primary-light d-flex justify-content-center align-items-center linkedin-circle" style="width:36px;height:36px;">
+                                        <img src="{{ asset('images/webp/linkedin.svg') }}" style="width:18px;" alt="LinkedIn">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="bg-main w-100 py-5">
+        <div class="container text-white text-center">
+            <h2>Vous avez des questions ?</h2>
+            <p class="text">Nous sommes là pour vous aider.</p>
+            <a href="{{ path('app_contact') }}" class="btn-outline-gradient {{ app.request.attributes.get('_route') == 'app_contact' ? 'active' : '' }}" >Nous contacter</a>
+        </div>
+    </div>
+
 {% endblock %}
