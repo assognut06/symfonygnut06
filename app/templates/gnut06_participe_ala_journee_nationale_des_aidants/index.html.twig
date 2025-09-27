@@ -4,93 +4,141 @@
 {% endblock %}
 
 {% block body %}
-	<style>
-		body {
-			background: var(--Color-Background, linear-gradient(180deg, #010208 16%, #010206 21%, #040008 25%, #010101 30%, #010101 34%, #010101 36%, #010101 100%));
-		}
-		h1 {
-			font-family: Orbitron;
-			font-size: 72px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-		}
+	    <style>
+        body {
+            background: var(--Color-Background, linear-gradient(180deg, #010208 16%, #010206 21%, #040008 25%, #010101 30%, #010101 34%, #010101 36%, #010101 100%));
+        }
+        h1 {
+            font-family: Orbitron;
+            font-size: clamp(24px, 5vw, 40px); /* Responsive font size */
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
 
-		h2 {
-			font-family: 'Orbitron', sans-serif;
-			font-size: 32px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-		}
-		h3 {
-			font-family: 'Orbitron', sans-serif;
-			font-size: 24px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-		}
-		p {
-			color: #FFF;
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(20px, 4vw, 32px); /* Responsive font size */
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+        h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(18px, 3vw, 24px); /* Responsive font size */
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+        p {
+            color: #FFF;
+            font-family: Poppins;
+            font-size: clamp(16px, 2.5vw, 20px); /* Responsive font size */
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1.6; /* Relative line height */
+        }
+        .slogan {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(20px, 4vw, 32px); /* Responsive font size */
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            background: var(--2, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-			/* Lead/Text Regular */
-			font-family: Poppins;
-			font-size: 20px;
-			font-style: normal;
-			font-weight: 400;
-			line-height: 36px; /* 180% */
-		}
-		.slogan {
-			font-family: 'Orbitron', sans-serif;
-			font-size: 32px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-			background: var(--2, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%));
-			-webkit-background-clip: text;
-			background-clip: text;
-			-webkit-text-fill-color: transparent;
-		}
+        .icon-feature {
+            font-size: 2.5rem;
+            color: #fff;
+            background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+        }
 
-		.icon-feature {
-			font-size: 2.5rem;
-			color: #fff;
-			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
-		}
+        .card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 15px;
+        }
 
-		.card {
-			background-color: rgba(255, 255, 255, 0.05);
-			border: none;
-			border-radius: 15px;
-		}
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(18px, 3vw, 24px); /* Responsive font size */
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
 
-		.card-title {
-			font-family: 'Orbitron', sans-serif;
-			font-size: 24px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-		}
+        .btn-primary {
+            border-radius: 5px;
+            background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+        }
 
-		.btn-primary {
-			border-radius: 5px;
-			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
-		}
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+        .btn-success {
+            border-radius: 5px;
+            background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+        }
+        .badge {
+            background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+        }
 
-		.btn-primary:hover {
-			background-color: #0b5ed7;
-		}
-		.btn-success {
-			border-radius: 5px;
-			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
-		}
-		.badge {
+        /* Responsive video container */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
 
-			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
-		}
-	</style>
+        .video-container video {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        /* Responsive buttons */
+        @media (max-width: 768px) {
+            .btn-lg {
+                font-size: 1rem;
+                padding: 0.75rem 1.5rem;
+            }
+            
+            .d-flex.gap-2 {
+                flex-direction: column;
+                gap: 0.5rem !important;
+            }
+            
+            .d-flex.gap-2 .btn {
+                width: 100%;
+            }
+        }
+
+        /* Responsive spacing */
+        @media (max-width: 576px) {
+            .container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+            .col-md-8.offset-md-2 {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+    </style>
 	<div class="text-center mb-4">
-		<img src="{{ asset('images/webp/GNUT_06-participe_a_la_Journee_Nationale_des_Aidants.webp') }}" alt="GNUT 06 participe à la Journée Nationale des Aidants" class="img-fluid rounded">
+		<picture class="d-block mx-auto" style="max-width:100%;">
+			<source type="image/webp" srcset="{{ asset('images/webp/GNUT_06-participe_a_la_Journee_Nationale_des_Aidants.webp') }}" sizes="(max-width: 768px) 100vw, 50vw">
+			<img src="{{ asset('images/webp/GNUT_06-participe_a_la_Journee_Nationale_des_Aidants.webp') }}"
+					 alt="GNUT 06 participe à la Journée Nationale des Aidants"
+					 class="img-fluid rounded"
+					 loading="lazy"
+					 style="width:100%;height:auto;object-fit:cover;">
+		</picture>
 	</div>
 	<div class="container mt-5">
 		<div class="row">
@@ -163,6 +211,13 @@
 
 			<div class="text-center mt-4">
 				<a href="https://calendly.com/gnut-gnut06/journee-nationale-des-aidants?back=1&month=2025-10" target="_blank" class="btn btn-primary btn-lg">Réservez votre place</a>
+			</div>
+		</div>
+		<div class="mt-4 text-center">
+			<div class="card card-body bg-transparent border-0">
+				<h3 class="card-title text-light">Vous voulez aider ?</h3>
+				<p class="card-text text-light">Participez en tant que bénévole lors de la Journée Nationale des Aidants.</p>
+				<a href="{{ path('app_benevole_jna') }}" class="btn btn-primary btn-lg" role="button" aria-label="Devenir bénévole à la JNA">Je veux être bénévole</a>
 			</div>
 		</div>
 	</div>
