@@ -1,64 +1,95 @@
 <header class="sticky-top">
-    <nav class="navbar navbar-expand-xl navbar-dark bg-navbar">
+    <nav class="navbar navbar-expand-xl navbar-dark bg-navbar" role="navigation" aria-label="Navigation principale">
         <div class="container-fluid">
             <!-- Logo -->
-            <a class="navbar-brand logoNavbar" href="{{ path('app_home') }}">
+            <a class="navbar-brand logoNavbar" href="{{ path('app_home') }}" aria-label="Accueil GNUT 06">
                 GNUT 06
             </a>
 
             <!-- Burger menu -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
-                    aria-expanded="false" aria-label="Toggle navigation">
+                    aria-expanded="false" aria-label="Ouvrir le menu">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <!-- Menu -->
             <div class="collapse navbar-collapse fs-5" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto mb-2 mb-xl-0 text-navbar w-100 justify-content-xl-evenly">
+
                     <li class="nav-item">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_a_propos' ? 'active' : '' }}"
-                           href="{{ path('app_a_propos') }}">Notre Mission</a>
+                           href="{{ path('app_a_propos') }}"
+                                {% if app.request.attributes.get('_route') == 'app_a_propos' %} aria-current="page"{% endif %}>
+                            Notre Mission
+                        </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}"
-                           href="{{ path('app_billetteries') }}">Réserver une activité</a>
+                           href="{{ path('app_billetteries') }}"
+                                {% if app.request.attributes.get('_route') == 'app_billetteries' %} aria-current="page"{% endif %}>
+                            Réserver une activité
+                        </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_metavers' ? 'active' : '' }}"
-                           href="{{ path('app_metavers') }}">Salles 3D immersives</a>
+                           href="{{ path('app_metavers') }}"
+                                {% if app.request.attributes.get('_route') == 'app_metavers' %} aria-current="page"{% endif %}>
+                            Salles 3D immersives
+                        </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_digital_consulting' ? 'active' : '' }}"
-                           href="{{ path('app_digital_consulting') }}">Digital Consulting</a>
+                           href="{{ path('app_digital_consulting') }}"
+                                {% if app.request.attributes.get('_route') == 'app_digital_consulting' %} aria-current="page"{% endif %}>
+                            Digital Consulting
+                        </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_don' ? 'active' : '' }}"
-                           href="{{ path('app_don') }}">Nous Soutenir</a>
+                           href="{{ path('app_don') }}"
+                                {% if app.request.attributes.get('_route') == 'app_don' %} aria-current="page"{% endif %}>
+                            Nous Soutenir
+                        </a>
                     </li>
 
                     {% if app.user %}
                         <li class="nav-item">
                             <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_profil' ? 'active' : '' }}"
-                               href="{{ path('app_profil') }}">Profil</a>
+                               href="{{ path('app_profil') }}"
+                                    {% if app.request.attributes.get('_route') == 'app_profil' %} aria-current="page"{% endif %}>
+                                Profil
+                            </a>
                         </li>
+
                         {% if is_granted('ROLE_ADMIN') %}
                             <li class="nav-item">
                                 <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
-                                   href="{{ path('admin_dashboard') }}">Administration</a>
+                                   href="{{ path('admin_dashboard') }}"
+                                        {% if app.request.attributes.get('_route') == 'admin_dashboard' %} aria-current="page"{% endif %}>
+                                    Administration
+                                </a>
                             </li>
                         {% endif %}
+
                         <li class="nav-item">
                             <a class="nav-link text-light" href="{{ path('app_logout') }}">Déconnexion</a>
                         </li>
+
                     {% else %}
                         <li class="nav-item d-flex flex-column flex-xl-row gap-2 mt-2 mt-xl-0">
                             <a href="{{ path('app_register') }}"
-                               class="btn-outline-gradient btn-sm text-white {{ app.request.attributes.get('_route') == 'app_register' ? ' active' }}">
+                               class="btn-outline-gradient btn-sm text-white {{ app.request.attributes.get('_route') == 'app_register' ? ' active' }}"
+                                    {% if app.request.attributes.get('_route') == 'app_register' %} aria-current="page"{% endif %}>
                                 Inscription
                             </a>
                             <a href="{{ path('app_login') }}"
-                               class="btn-neon btn-sm text-white {{ app.request.attributes.get('_route') == 'app_login' ? ' active' }}">
+                               class="btn-neon btn-sm text-white {{ app.request.attributes.get('_route') == 'app_login' ? ' active' }}"
+                                    {% if app.request.attributes.get('_route') == 'app_login' %} aria-current="page"{% endif %}>
                                 Connexion
                             </a>
                         </li>
