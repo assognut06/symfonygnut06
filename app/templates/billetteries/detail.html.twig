@@ -1,112 +1,158 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Details de la billetteries
-	{{ data_actu.title }}
-{% endblock %}
+{% block title %}Détails de la billetterie – {{ data_actu.title }}{% endblock %}
 
 {% block body %}
-	<div class="container pt-0">
-		<div class="mx-3">
-		{% if data_actu.banner is defined and data_actu.banner %}
-			<div class="embed-responsive embed-responsive-16by9 mb-5">
-				<img src="{{ data_actu.banner.publicUrl }}" class="embed-responsive-item img-fluid" alt="Banniére de {{ data_actu.title }}">
-			</div>
-		{% endif %}
-			<h2 class="my-5 text-primary text-center">{{ data_actu.title }}</h2>
-			<div class="border border-secondary mb-5 mx-5 "></div>
-			<div class="row justify-content-center">
-			{% if app.request.attributes.get('formType') == 'Event' %}
-				<div class="col-12 text-center">
-					<p class="fs-4">{{ data_actu.description|nl2br }}</p>
-				</div>
-				<div class="col-12 col-lg-4"></div>
-				<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center mt-3"></div>
-				<div class="col-12 col-lg-4"></div>
-				<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center">
-					<h5>{{ data_actu.place.name }}</h5>
-					<div>
-						<p>Adresse :
-							{{ data_actu.place.address }}<br>{{ data_actu.place.zipCode }}
-							{{ data_actu.place.city }}
-						</p>
-					</div>
-				</div>
-				<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center">
-					<div class="alert alert-danger text-center mx-5 mb-5 mt-2 shadow-lg rounded-pill" role="alert">
-						{% set endDate = data_actu.endDate|date('Y-m-d') %}
-						{% set now = "now"|date('Y-m-d') %}
-						{% if endDate > now %}
-							{% set interval = date(endDate).diff(date(now)) %}
-							<strong>Expire dans
-								{{ interval.days }}
-								jours.</strong>
-						{% endif %}
-					</div>
-					<div class="alert alert-success text-center mx-5 mb-5 shadow-lg rounded-pill" role="alert">
-						Débute le
-						{{ data_actu.startDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}<br>
-						Fini le
-						{{ data_actu.endDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}
-					</div>
-				</div>
-				<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center mt-3">
-					<iframe width="100%" height="450" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}&q={{ data_actu.place.name|url_encode }},{{ data_actu.place.address|url_encode }}+{{ data_actu.place.zipCode }}+{{ data_actu.place.city|url_encode }},{{ data_actu.place.country }}"></iframe>
-					{# <iframe width="100%" height="450" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key=GNUT06MAPAPI&q={{ data_actu.place.name|url_encode }},{{ data_actu.place.address|url_encode }}+{{ data_actu.place.zipCode }}+{{ data_actu.place.city|url_encode }},{{ data_actu.place.country }}">
-										                </iframe> #}
-				</div>
-				<div class="col-12">
-					<table class="table table-success table-striped mt-5">
-						<thead>
-							<tr>
-								<th scope="col">Formule</th>
-								<th scope="col">Description</th>
-								<th scope="col">Tarif</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% for tier in data_actu.tiers %}
-								<tr>
-									<th scope="row">{{ tier.label }}</th>
-									<td>{{ tier.description }}</td>
-									<td>{{ (tier.price / 100)|number_format(2, ',', ' ') }}€</td>
-								</tr>
-							{% else %}
-								<tr>
-									<td colspan="3">Aucune formule disponible.</td>
-								</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-				</div>
-				<div class="col-12 mt-3 text-center">
-					<button class="btn btn-warning text-primary" data-bs-toggle="modal" data-bs-target="#modal_tier"><i class="bi bi-calendar-event-fill text-primary"></i> Réserver</button>
-					<!-- Modal -->
-					<div class="modal fade modal-lg" id="modal_tier" tabindex="-1" aria-labelledby="ModalLabel_tier" aria-hidden="true">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h1 class="modal-title fs-5" id="ModalLabel_tier">{{ data_actu.title }}</h1>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-								</div>
-								<div class="modal-body">
-									<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="{{ data_actu.widgetFullUrl }}" style="width: 100%; height: 750px; border: none;"></iframe>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				{% endif %}
-				<div class="col-12 mt-4 text-center">
-					{% if app.request.headers.get('Referer') %}
-						<a class="btn btn-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}"><i class="bi bi-skip-backward-circle text-white"></i> Retour</a>
-					{% else %}
-						<p>Impossible de retourner à la page précédente.</p>
-					{% endif %}
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="bg-main w-100 d-flex justify-content-center pt-5 pb-5">
+        <div class="container row align-items-center justify-content-center g-5">
+            <div class="col-lg-6 col-12 text-center text-lg-start">
+                <h2 class="fw-bold">Mondes Virtuels, Liens Réels : L'Inclusion à Portée de main</h2>
+                <p class="lead">Venez découvrir nos actions sur place !</p>
+                <a href="#" class="btn-neon text-white mt-2">Découvrez GNUT 06</a>
+            </div>
+            <div class="col-lg-6 col-12">
+                <img src="{{ asset('images/webp/immersion-3.webp') }}" class="img-fluid rounded shadow" alt="Illustration immersion GNUT">
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-main w-100 pt-0">
+        <div class="container px-3">
+            {% if data_actu.banner is defined and data_actu.banner %}
+                <div class="mb-5">
+                    <img src="{{ data_actu.banner.publicUrl }}" class="w-100 h-100 object-fit-cover rounded shadow" alt="Bannière de {{ data_actu.title }}">
+                </div>
+            {% endif %}
+
+            <h2 class="my-5 text-center fw-bold">{{ data_actu.title }}</h2>
+
+            {% if app.request.attributes.get('formType') == 'Event' %}
+                <div class="row gy-4 justify-content-center">
+                    <!-- Description -->
+                    <div class="col-12">
+                        <p class="fs-5 text text-center">{{ data_actu.description|nl2br }}</p>
+                    </div>
+
+                    <!-- Infos pratiques -->
+{#                    <div class="col-md-6 col-lg-4 text-center">#}
+{#                        <h5 class="fw-bold text">{{ data_actu.place.name }}</h5>#}
+{#                        <p class="text mb-0">Adresse :</p>#}
+{#                        <p class="text">#}
+{#                            {{ data_actu.place.address }}<br>#}
+{#                            {{ data_actu.place.zipCode }} {{ data_actu.place.city }}<br>#}
+{#                            {{ data_actu.place.country }}#}
+{#                        </p>#}
+{#                    </div>#}
+
+                    <!-- Dates -->
+{#                    <div class="col-md-6 col-lg-4 text-center">#}
+{#                        <div class="alert alert-danger mx-auto mb-4 shadow-sm rounded-pill w-75" role="alert">#}
+{#                            {% set endDate = data_actu.endDate|date('Y-m-d') %}#}
+{#                            {% set now = "now"|date('Y-m-d') %}#}
+{#                            {% if endDate > now %}#}
+{#                                {% set interval = date(endDate).diff(date(now)) %}#}
+{#                                <strong>Expire dans {{ interval.days }} jours.</strong>#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                        <div class="alert alert-success mx-auto shadow-sm rounded-pill w-75" role="alert">#}
+{#                            Débute le<br>#}
+{#                            <strong>{{ data_actu.startDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}</strong><br>#}
+{#                            Fini le<br>#}
+{#                            <strong>{{ data_actu.endDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}</strong>#}
+{#                        </div>#}
+{#                    </div>#}
+
+                    <!-- Carte -->
+{#                    <div class="col-12 col-lg-8 text-center">#}
+{#                        <div class="ratio ratio-16x9 rounded shadow">#}
+{#                            <iframe#}
+{#                                    src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}&q={{ data_actu.place.name|url_encode }},{{ data_actu.place.address|url_encode }}+{{ data_actu.place.zipCode }}+{{ data_actu.place.city|url_encode }},{{ data_actu.place.country }}"#}
+{#                                    allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"#}
+{#                                    style="border:0"></iframe>#}
+{#                        </div>#}
+{#                    </div>#}
+
+                    <!-- Tarifs -->
+                    <div class="col-12">
+                        <div class="table-responsive d-none d-md-block">
+                            <table class="table table-striped table-hover mt-5 align-middle">
+                                <thead class="table-success">
+                                <tr>
+                                    <th scope="col">Formule</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Tarif</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for tier in data_actu.tiers %}
+                                    <tr>
+                                        <th scope="row">{{ tier.label }}</th>
+                                        <td>{{ tier.description }}</td>
+                                        <td class="fw-bold">{{ (tier.price / 100)|number_format(2, ',', ' ') }} €</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="3" class="text-center">Aucune formule disponible.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Version mobile en cartes -->
+                        <div class="d-block d-md-none">
+                            {% for tier in data_actu.tiers %}
+                                <div class="card mb-3 shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="card-title fw-bold">{{ tier.label }}</h5>
+                                        <p class="card-text">{{ tier.description }}</p>
+                                        <p class="fw-bold text-success mb-0">
+                                            {{ (tier.price / 100)|number_format(2, ',', ' ') }} €
+                                        </p>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <p class="text-center text-muted">Aucune formule disponible.</p>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+
+                    <!-- Réservation -->
+                    <div class="col-12 text-center">
+                        <button class="btn btn-outline-gradient text-white fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modal_tier">
+                             Réserver
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal réservation -->
+                <div class="modal fade modal-lg" id="modal_tier" tabindex="-1" aria-labelledby="ModalLabel_tier" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="ModalLabel_tier">{{ data_actu.title }}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+                            <div class="modal-body p-0">
+                                <iframe id="haWidget" src="{{ data_actu.widgetFullUrl }}" class="w-100 border-0" style="height: 80vh;"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Retour -->
+            <div class="col-12 mt-4 text-center pb-5">
+                {% if app.request.headers.get('Referer') %}
+                    <a class="text-white shadow-sm" href="{{ app.request.headers.get('Referer')|e('html_attr') }}">
+                        Retourner à la page précédente.
+
+                    </a>
+                {% else %}
+                    <p class="text-muted">Impossible de retourner à la page précédente.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
