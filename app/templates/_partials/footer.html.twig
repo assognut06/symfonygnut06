@@ -1,55 +1,58 @@
-<footer class="container-fluid logoBack text-light pt-5">
+<footer class="container-fluid logoBack text-light pt-5" role="contentinfo">
     <div class="container">
         <div class="row text-center text-md-start">
+
             <!-- Bloc logo & adresse -->
-            <div class="col-12 col-md-3 mb-4">
-                <h1 class="logo_footer">GNUT 06</h1>
-                <p class="text mb-0">
-                    9 Rue du Pont-Vieux <br>
-                    06300 NICE <br>
-                    FRANCE
-                </p>
+            <div class="col-12 col-md-3 mb-4" aria-labelledby="footer-logo">
+                <h1 id="footer-logo" class="logo_footer">GNUT 06</h1>
+                <address class="mb-0">
+                    <p class="text mb-0">
+                        9 Rue du Pont-Vieux <br>
+                        06300 NICE <br>
+                        FRANCE
+                    </p>
+                </address>
             </div>
 
             <!-- Bloc A propos -->
-            <div class="col-6 col-md-3 mb-4 section_footer">
-                <h3 class="title_footer">A propos</h3>
+            <nav class="col-6 col-md-3 mb-4 section_footer" aria-labelledby="footer-about">
+                <h3 id="footer-about" class="title_footer">À propos</h3>
                 <ul class="list-unstyled">
-                    <li><a href="{{ path('app_a_propos') }}">Qui sommes nous</a></li>
+                    <li><a href="{{ path('app_a_propos') }}">Qui sommes-nous</a></li>
                     <li><a href="{{ path('app_contact') }}">Nous contacter</a></li>
-                    <li><a href="{{ path('app_don') }}">Nous Soutenir</a></li>
+                    <li><a href="{{ path('app_don') }}">Nous soutenir</a></li>
                     <li><a href="{{ path('app_a_propos') }}">FAQ</a></li>
                 </ul>
-            </div>
+            </nav>
 
             <!-- Bloc Services -->
-            <div class="col-6 col-md-3 mb-4 section_footer">
-                <h3 class="title_footer">Services</h3>
+            <nav class="col-6 col-md-3 mb-4 section_footer" aria-labelledby="footer-services">
+                <h3 id="footer-services" class="title_footer">Services</h3>
                 <ul class="list-unstyled">
                     <li><a href="{{ path('app_billetteries') }}">Réserver une activité</a></li>
                     <li><a href="{{ path('app_metavers') }}">Salles 3D immersives</a></li>
                     <li><a href="{{ path('app_digital_consulting') }}">Digital consulting</a></li>
                 </ul>
-            </div>
+            </nav>
 
             <!-- Bloc Réseaux sociaux -->
-            <div class="col-12 col-md-3 mb-4">
-                <h3 class="title_footer">Suivez-nous</h3>
-                <div class="d-flex justify-content-center justify-content-md-start gap-3 mb-3">
-                    <a href="https://www.linkedin.com/in/gerald-col/" class="social_footer_link">
-                        <img src="{{ asset('images/webp/linkedin-white.svg') }}" alt="LinkedIn">
+            <div class="col-12 col-md-3 mb-4" aria-labelledby="footer-social">
+                <h3 id="footer-social" class="title_footer">Suivez-nous</h3>
+                <div class="d-flex justify-content-center justify-content-md-start gap-3 mb-3" role="navigation" aria-label="Réseaux sociaux">
+                    <a href="https://www.linkedin.com/in/gerald-col/" class="social_footer_link" aria-label="LinkedIn GNUT06">
+                        <img src="{{ asset('images/webp/linkedin-white.svg') }}" alt="">
                     </a>
-                    <a href="https://x.com/gerald_col" class="social_footer_link">
-                        <img src="{{ asset('images/webp/twitter-x.svg') }}" alt="Twitter/X">
+                    <a href="https://x.com/gerald_col" class="social_footer_link" aria-label="Twitter/X GNUT06">
+                        <img src="{{ asset('images/webp/twitter-x.svg') }}" alt="">
                     </a>
-                    <a href="https://www.instagram.com/gnut06/" class="social_footer_link">
-                        <img src="{{ asset('images/webp/instagram.svg') }}" alt="Instagram">
+                    <a href="https://www.instagram.com/gnut06/" class="social_footer_link" aria-label="Instagram GNUT06">
+                        <img src="{{ asset('images/webp/instagram.svg') }}" alt="">
                     </a>
-                    <a href="https://www.facebook.com/profile.php?id=61552595323696&locale=fr_FR" class="social_footer_link">
-                        <img src="{{ asset('images/webp/facebook.svg') }}" alt="Facebook">
+                    <a href="https://www.facebook.com/profile.php?id=61552595323696&locale=fr_FR" class="social_footer_link" aria-label="Facebook GNUT06">
+                        <img src="{{ asset('images/webp/facebook.svg') }}" alt="">
                     </a>
-                    <a href="https://www.youtube.com/@Gnut06/videos" class="social_footer_link">
-                        <img src="{{ asset('images/webp/youtube.svg') }}" alt="YouTube">
+                    <a href="https://www.youtube.com/@Gnut06/videos" class="social_footer_link" aria-label="YouTube GNUT06">
+                        <img src="{{ asset('images/webp/youtube.svg') }}" alt="">
                     </a>
                 </div>
                 <p class="small mb-0">2025 © GNUT06 Tout droit réservé.</p>
@@ -59,7 +62,8 @@
         <!-- Ligne de crédits -->
         <div class="text-center mt-4">
             <p class="text mb-0">
-                Conçu et développé avec 💙 par la <span style="color:#F86CF8;">GNUT Team</span>.
+                Conçu et développé avec 💙 par la
+                <span style="color:#F86CF8;">GNUT Team</span>.
                 <a href="#">Mentions légales</a>
             </p>
         </div>
