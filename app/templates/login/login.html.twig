@@ -1,81 +1,125 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion
-{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
-	<div class="container mt-5">
-		<div class="row justify-content-center">
+    <div class="container mt-5" role="main">
+        <div class="row justify-content-center">
 
-			<div class="col-md-6">
-				<form method="post" class="needs-validation" novalidate>
-					{% if error %}
-						<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-					{% endif %}
+            <div class="col-md-6">
+                <form method="post" class="needs-validation" novalidate aria-describedby="connexion-infos">
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert" aria-live="assertive">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
 
-					{% for message in app.flashes('error') %}
-						<div class="alert alert-danger">{{ message }}</div>
-					{% endfor %}
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger" role="alert" aria-live="assertive">{{ message }}</div>
+                    {% endfor %}
 
-					{% if app.session.get('_flash_error') %}
-						<div class="alert alert-danger">{{ app.session.get('_flash_error') }}</div>
-						{% do app.session.remove('_flash_error') %}
-					{% endif %}
+                    {% if app.session.get('_flash_error') %}
+                        <div class="alert alert-danger" role="alert" aria-live="assertive">
+                            {{ app.session.get('_flash_error') }}
+                        </div>
+                        {% do app.session.remove('_flash_error') %}
+                    {% endif %}
 
-					{% if app.user %}
-						<div class="mb-3">
-							Vous êtes connecté en tant que
-							{{ app.user.userIdentifier }},
-							<a href="{{ path('app_logout') }}">Déconnexion</a>
-						</div>
-					{% endif %}
+                    {% if app.user %}
+                        <div class="mb-3" role="status">
+                            Vous êtes connecté en tant que
+                            <strong>{{ app.user.userIdentifier }}</strong>,
+                            <a href="{{ path('app_logout') }}">Déconnexion</a>
+                        </div>
+                    {% endif %}
 
-					<h1 class="h3 mb-3 fw-normal">Veuillez vous connecter</h1>
-					<div class="card p-4 shadow">
-						<div class="form-floating mb-3">
-							<input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" placeholder="name@example.com" autocomplete="email" required autofocus>
-							<label for="username">Email</label>
-						</div>
-						<div class="form-floating mb-3">
-							<input type="password" name="_password" id="password" class="form-control" placeholder="Password" autocomplete="current-password" required>
-							<label for="password">Mot de passe</label>
-						</div>
+                    <h1 class="gradient-text text-center" id="connexion-title">GNUT 06</h1>
+                    <h2 class="h3 mb-3 fw-normal text-center" style="color: black !important;" id="connexion-subtitle">
+                        Connectez-vous à votre compte
+                    </h2>
+                    <p class="text-center" id="connexion-infos">
+                        Content de vous revoir ! <br>
+                        Veuillez saisir vos coordonnées.
+                    </p>
 
-						<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"><!-- Uncomment below for remember me functionality -->
-						<!-- <div class="checkbox mb-3">
-												            <label>
-												                <input type="checkbox" name="_remember_me"> Se souvenir de moi
-												            </label>
-												        </div> -->
-							<button class="w-100 btn btn-lg btn-primary" type="submit"> Se connecter</button>
-					</form>
-					<div class="my-4 text-center">
-						<a href="{{ path('app_forgot_password_request') }}">Mot de passe perdu</a>
-					</div>
+                    <div class="card p-4 shadow">
+                        <div class="form-floating mb-3">
+                            <input
+                                    type="email"
+                                    value="{{ last_username }}"
+                                    name="_username"
+                                    id="username"
+                                    class="form-control"
+                                    placeholder="name@example.com"
+                                    autocomplete="email"
+                                    required
+                                    autofocus
+                                    aria-required="true"
+                                    aria-describedby="username-help">
+                            <label for="username">Email</label>
+                            <small id="username-help" class="form-text text-muted">
+                                Entrez votre adresse email complète (ex : nom@domaine.com)
+                            </small>
+                        </div>
 
-					<div class="text-center">
-                        <p>Ou connectez-vous avec :</p>
-                        <a href="{{ path('connect_google_start') }}" class="btn btn-danger w-100">
-                            <i class="fab fa-google"></i> Se connecter avec Google
-                        </a>
+                        <div class="form-floating mb-3">
+                            <input
+                                    type="password"
+                                    name="_password"
+                                    id="password"
+                                    class="form-control"
+                                    placeholder="Mot de passe"
+                                    autocomplete="current-password"
+                                    required
+                                    aria-required="true"
+                                    aria-describedby="password-help">
+                            <label for="password">Mot de passe</label>
+                            <small id="password-help" class="form-text text-muted">
+                                Le mot de passe doit rester confidentiel.
+                            </small>
+                        </div>
 
-						 {# NOUVEAU bouton Outlook #}
-                        <a href="{{ path('connect_outlook_start') }}" class="btn btn-primary w-100" style="background-color: #0078D4;">
-                            <i class="fab fa-microsoft"></i> Se connecter avec Microsoft
-                        </a>
-						
-            		</div>
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-				</div>
+                        <button
+                                class="w-100 btn btn-lg btn-primary"
+                                type="submit"
+                                aria-label="Se connecter à votre compte">
+                            Se connecter
+                        </button>
+                    </div>
+                </form>
 
-			
+                <div class="my-4 text-center">
+                    <a href="{{ path('app_forgot_password_request') }}" aria-label="Mot de passe perdu, cliquez ici pour réinitialiser">
+                        Mot de passe perdu ?
+                    </a>
+                </div>
 
-			</div>
-		</div>
-	</div>
+                <div class="text-center pb-5" aria-labelledby="alt-login-title">
+                    <p id="alt-login-title">Ou connectez-vous avec :</p>
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-{% endblock %}
+                    <a href="{{ path('connect_google_start') }}"
+                       class="btn btn-danger w-100 mb-2"
+                       role="button"
+                       aria-label="Se connecter avec Google">
+                        <i class="fab fa-google" aria-hidden="true"></i> Se connecter avec Google
+                    </a>
+
+                    <a href="{{ path('connect_outlook_start') }}"
+                       class="btn btn-primary w-100"
+                       style="background-color: #0078D4;"
+                       role="button"
+                       aria-label="Se connecter avec Microsoft">
+                        <i class="fab fa-microsoft" aria-hidden="true"></i> Se connecter avec Microsoft
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block stylesheets %}
+        {{ parent() }}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% endblock %}
 {% endblock %}
