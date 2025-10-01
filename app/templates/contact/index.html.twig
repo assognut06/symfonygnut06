@@ -1,64 +1,142 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contactez-nous - GNUT 06
-{% endblock %}
+{% block title %}Contactez-nous - GNUT 06{% endblock %}
 
 {% block body %}
-	<div class="container pt-2">
-		<div class="row py-2 mx-5">
-			<h1 class="text-center mb-5 text-primary">
-				<i class="bi bi-person-lines-fill me-3"></i>Une question contactez-nous !</h1>
-			{% if message_envoye %}
-				<p class="alert alert-success">Votre message a bien été envoyé.</p>
-			{% endif %}
-			{% if errors is not empty %}
-				<div class="alert alert-danger">
-					<ul>
-						{% for error in errors %}
-							<li>{{ error }}</li>
-						{% endfor %}
-					</ul>
-				</div>
-			{% endif %}
-			<div class="col-12 col-lg-7 order-lg-2">
-				<p>
-					<span class="text-danger">*</span>
-					: champ obligatoire</p>
-				<form class="row g-4 mb-5" method="POST" action="{{ path('app_contact') }}">
-					<div class="col-lg-6">
-						<input type="text" class="form-control" name="first_name" placeholder="Prénom*" aria-label="First name" required>
-					</div>
-					<div class="col-lg-6">
-						<input type="text" class="form-control" name="last_name" placeholder="Nom*" aria-label="Last name" required>
-					</div>
-					<div class="col-lg-6">
-						<input type="email" class="form-control" placeholder="Email*" name="email" aria-label="email" required>
-					</div>
-					<div class="col-lg-6">
-						<input type="tel" class="form-control" placeholder="Numéro de téléphone" name="tel" aria-label="telephone">
-					</div>
-					<div class="col-12">
-						<textarea name="message" rows="5" class="form-control" placeholder="Entrer ici votre message*" aria-label="message" required></textarea>
-					</div>
-					<div class="col-12 text-center">
-						<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-					</div>
-					<div class="col-12 text-center">
-						<button type="submit" name="envoyer" value="Envoyer" class="btn btn-primary">Envoyer votre message</button>
-					</div>
-				</form>
-			</div>
-			<div class="col-12 col-lg-5 text-center order-lg-1">
-				<img class="img-fluid shadow-lg rounded-3" src="/images/webp/AG_1280x720.webp" alt="AG Gnut 06">
-			</div>
-		</div>
-	</div>
-	 <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
-	 <script>
-	    grecaptcha.ready(function() {
-	        grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
-	            document.getElementById('g-recaptcha-response').value = token;
-	        });
-	    });
-	</script>
+    <!-- Section Contact -->
+    <div class="bg-main w-100 d-flex justify-content-center pt-5 pb-5">
+        <div class="container row align-items-start justify-content-center g-5">
+
+            <!-- Partie gauche -->
+            <div class="col-12 col-lg-6 mb-4 mb-lg-0">
+                <h2>Nous Contacter</h2>
+                <p class="text">
+                    Pour toute question, n'hésitez pas à nous contacter via les informations ci-dessous.
+                </p>
+            </div>
+
+            <!-- Partie droite -->
+            <div class="col-12 col-lg-6 d-flex flex-column gap-4">
+
+                <!-- Email -->
+                <div class="d-flex align-items-start gap-3">
+                    <img src="{{ asset('images/webp/envelope.svg') }}" width="24" alt="">
+                    <div>
+                        <h3>Email</h3>
+                        <p class="text">contact@gnut06.fr</p>
+                    </div>
+                </div>
+
+                <!-- Téléphone -->
+                <div class="d-flex align-items-start gap-3">
+                    <img src="{{ asset('images/webp/phone.svg') }}" width="24" alt="">
+                    <div>
+                        <h3>Téléphone</h3>
+                        <p class="text">+33 6 66 21 56 87</p>
+                    </div>
+                </div>
+
+                <!-- Visio -->
+                <div class="d-flex align-items-start gap-3">
+                    <img src="{{ asset('images/webp/camera-reels.svg') }}" width="24" alt="">
+                    <div>
+                        <h3>Visio</h3>
+                        <p class="text">Réservez votre créneau dès maintenant.</p>
+                    </div>
+                </div>
+
+                <!-- Adresse -->
+                <div class="d-flex align-items-start gap-3">
+                    <img src="{{ asset('images/webp/map.svg') }}" width="24" alt="">
+                    <div>
+                        <h3>Bureau</h3>
+                        <p class="text">9 Rue du Pont-Vieux 06300 NICE FRANCE</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Formulaire -->
+    <div class="bg-main pt-2">
+        <div class="container py-5">
+            <h2 class="text-center mb-4">Besoin d'un projet ? Demandez un devis.</h2>
+            <p class="text text-center">Vous pouvez utiliser le formulaire disponible sur notre site.
+                Nous répondons généralement dans les 24 heures.
+            </p>
+
+            {% if message_envoye %}
+                <p class="alert alert-success text-center">Votre message a bien été envoyé.</p>
+            {% endif %}
+
+            {% if errors is not empty %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="m-auto col-12 col-lg-7">
+
+
+                <form class="row g-4 mb-5" method="POST" action="{{ path('app_contact') }}">
+                    <div class="col-lg-6">
+                        <label for="first_name" class="text">Prénom <span style="color: #FF1DBB;">*</span> </label>
+                        <input type="text" class="form-control" name="first_name" placeholder="Prénom" aria-label="First name" required>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="last_name" class="text">Nom <span style="color: #FF1DBB;">*</span> </label>
+                        <input type="text" class="form-control" name="last_name" placeholder="Nom" aria-label="Last name" required>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="email" class="text">Email <span style="color: #FF1DBB;">*</span> </label>
+                        <input type="email" class="form-control" name="email" placeholder="Email" aria-label="email" required>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="tel" class="text">Téléphone <span style="color: #FF1DBB;">*</span> </label>
+                        <input type="tel" class="form-control" name="tel" placeholder="+" aria-label="telephone">
+                    </div>
+                    <div class="col-lg-6">
+                        <p class="text">Type de projet <span style="color: #FF1DBB;">*</span></p>
+                        <input type="radio" id="website" name="drone" value="huey" checked />
+                        <label for="website" class="text">Site web simple</label> <br>
+                        <input type="radio" id="huey" name="drone" value="huey" checked />
+                        <label for="huey" class="text">Application mobile</label> <br>
+                        <input type="radio" id="huey" name="drone" value="huey" checked />
+                        <label for="huey" class="text">Salle 3D Immersive</label> <br>
+                        <input type="radio" id="huey" name="drone" value="huey" checked />
+                        <label for="huey" class="text">Grands projets</label>
+                    </div>
+                    <div class="col-12">
+                        <label for="message" class="text">Message</label>
+                        <textarea name="message" rows="5" class="form-control" placeholder="Tapez votre message..." aria-label="message" required></textarea>
+                    </div>
+
+                    <!-- Captcha -->
+                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                    <p class="text" style="color: #FF1DBB;"> Champs obligatoires <span class="">*</span></p>
+                    <!-- Bouton -->
+                    <div class="col-12 text-center">
+                        <button type="submit" name="envoyer" value="Envoyer" class="btn-neon">
+                            Soumettre
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recaptcha -->
+    <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+    <script>
+        grecaptcha.ready(function() {
+            grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
+                document.getElementById('g-recaptcha-response').value = token;
+            });
+        });
+    </script>
 {% endblock %}
