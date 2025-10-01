@@ -1,90 +1,125 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}S'enregistrer
-{% endblock %}
+{% block title %}S'enregistrer{% endblock %}
 
 {% block body %}
-	{% for flash_error in app.flashes('verify_email_error') %}
-		<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-	{% endfor %}
-	<div class="container mt-5">
-		<div class="row justify-content-center">
-			<div class="col-md-6">
-				<h1 class="text-center mb-4">S'enregistrer</h1>
-				<div class="card p-4 shadow">
-					{{ form_errors(registrationForm) }}
-					{{ form_start(registrationForm, {'attr': {'class': 'g-3'}}) }}
-					<div class="mb-3">
-						{{ form_row(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
-					</div>
-					<div class="mb-3">
-						{{ form_row(registrationForm.plainPassword.first, {
-                            'label': 'Mot de passe',
-                            'attr': {'class': 'form-control'}
-                        }) }}
-					</div>
-					<div class="mb-3">
-						{{ form_row(registrationForm.plainPassword.second, {
-                            'label': 'Confirmez le mot de passe',
-                            'attr': {'class': 'form-control'}
-                        }) }}
-					</div>
+    {% for flash_error in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert" aria-live="assertive">{{ flash_error }}</div>
+    {% endfor %}
 
-					<div class="mb-3 form-check">
-                    	{{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
-                    	<label class="form-check-label" for="{{ registrationForm.agreeTerms.vars.id }}">
-							Je suis en accord avec <a href="#" data-bs-toggle="modal" data-bs-target="#valuesModal">les valeurs de Gnut 06</a>
-                    	</label>
-                    	{{ form_errors(registrationForm.agreeTerms) }}
+    <div class="container mt-5" role="main">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center gradient-text mb-4" id="register-title">GNUT 06</h1>
+                <div>
+                    <h2 class="text-center" style="color: black !important;" id="register-subtitle">
+                        Créer un compte
+                    </h2>
+                    <p class="text-center" id="register-infos">Commencez votre voyage !</p>
+                </div>
+
+                <div class="card p-4 shadow">
+                    {{ form_errors(registrationForm) }}
+                    {{ form_start(registrationForm, {'attr': {'class': 'g-3', 'aria-describedby': 'register-infos'}}) }}
+
+                    <div class="mb-3">
+                        {{ form_row(registrationForm.email, {
+                            'attr': {
+                                'class': 'form-control',
+                                'aria-required': 'true',
+                                'autocomplete': 'email'
+                            }
+                        }) }}
                     </div>
-                    
-					{# recaptcha input #}
-					<div class="col-12 text-center">
-						<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-					</div>
-					{# ------- #}
-					<div class="text-center">
-						<button type="submit" class="btn btn-primary">S'enregistrer</button>
-					</div>
- <div class="text-center">
-                        <p>Ou connectez-vous avec :</p>
-                        <a href="{{ path('connect_google_start') }}" class="btn btn-danger w-100">
-                            <i class="fab fa-google"></i> Se connecter avec Google
+
+                    <div class="mb-3">
+                        {{ form_row(registrationForm.plainPassword.first, {
+                            'label': 'Mot de passe',
+                            'attr': {
+                                'class': 'form-control',
+                                'aria-required': 'true',
+                                'autocomplete': 'new-password',
+                                'aria-describedby': 'password-help'
+                            }
+                        }) }}
+                        <small id="password-help" class="form-text text-muted">
+                            Utilisez au moins 8 caractères, avec chiffres et lettres.
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_row(registrationForm.plainPassword.second, {
+                            'label': 'Confirmez le mot de passe',
+                            'attr': {
+                                'class': 'form-control',
+                                'aria-required': 'true',
+                                'autocomplete': 'new-password'
+                            }
+                        }) }}
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        {{ form_widget(registrationForm.agreeTerms, {
+                            'attr': {
+                                'class': 'form-check-input',
+                                'aria-required': 'true'
+                            }
+                        }) }}
+                        <label class="form-check-label" for="{{ registrationForm.agreeTerms.vars.id }}">
+                            Je suis en accord avec
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#valuesModal">les valeurs de Gnut 06</a>
+                        </label>
+                        {{ form_errors(registrationForm.agreeTerms) }}
+                    </div>
+
+                    {# reCAPTCHA input (caché aux lecteurs d’écran) #}
+                    <div class="col-12 text-center">
+                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" aria-hidden="true">
+                    </div>
+
+                    <div class="text-center mb-3">
+                        <button type="submit" class="btn btn-primary" aria-label="S'enregistrer et créer un compte">
+                            S'enregistrer
+                        </button>
+                    </div>
+
+                    <div class="text-center" aria-labelledby="alt-register-title">
+                        <p id="alt-register-title">Ou connectez-vous avec :</p>
+                        <a href="{{ path('connect_google_start') }}"
+                           class="btn btn-danger w-100 mb-2"
+                           role="button"
+                           aria-label="Se connecter avec Google">
+                            <i class="fab fa-google" aria-hidden="true"></i> Se connecter avec Google
                         </a>
 
-						 {# NOUVEAU bouton Outlook #}
-                        <a href="{{ path('connect_outlook_start') }}" class="btn btn-primary w-100" style="background-color: #0078D4;">
-                            <i class="fab fa-microsoft"></i> Se connecter avec Microsoft
+                        <a href="{{ path('connect_outlook_start') }}"
+                           class="btn btn-primary w-100"
+                           style="background-color: #0078D4;"
+                           role="button"
+                           aria-label="Se connecter avec Microsoft">
+                            <i class="fab fa-microsoft" aria-hidden="true"></i> Se connecter avec Microsoft
                         </a>
-						
-        	</div>
-					{{ form_end(registrationForm) }}
+                    </div>
 
-				</div>
-			
+                    {{ form_end(registrationForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
 
-			
-		</div>
-	</div>
+    <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+    <script>
+        grecaptcha.ready(function() {
+            grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
+                document.getElementById('g-recaptcha-response').value = token;
+            });
+        });
+    </script>
 
-		
+    {% include '_partials/valeurs.html.twig' %}
 
-	</div>
-	 <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
-	 <script>
-		    grecaptcha.ready(function() {
-		        grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
-		            document.getElementById('g-recaptcha-response').value = token;
-		        });
-		    });
-	</script>
-
-
-{% include '_partials/valeurs.html.twig' %}
-
-{# Ajoutez Font Awesome si vous voulez l'icône #}
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-{% endblock %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% endblock %}
 {% endblock %}
