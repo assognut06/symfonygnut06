@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Plongez dans un univers inclusif : découvrez le métavers Gnut 06!
+{% endblock %}
+
+{% block body %}
+    <!-- Section intro -->
+    <div class="bg-main w-100 d-flex justify-content-center pt-5 pb-5">
+        <div class="container row align-items-center g-5">
+            <!-- Texte -->
+            <div class="col-12 col-lg-6">
+                <h2>Digital Consulting</h2>
+                <p class="text">
+                    Gnut 06 aide les personnes en situation de handicap à intégrer le monde professionnel grâce à des technologies comme FrameVR.io. Notre approche unique combine expertise numérique et inclusion sociale pour créer des environnements de travail adaptés.
+                </p>
+                <p class="text">
+                    Nous proposons des services variés, allant de la gestion administrative à la création de métavers, tout en mettant l'accent sur l'accessibilité. Notre impact social est soutenu par des témoignages de réussite et reconnu par des médias spécialisés.
+                </p>
+                <p class="text">
+                    Solliciter nos services, c’est s’engager à soutenir une cause porteuse d’espoir qui ouvre de nouvelles perspectives professionnelles et déploie des solutions concrètes pour faire tomber les barrières à l’emploi des personnes en situation de handicap.
+                </p>
+                <a href="#" class="btn-neon">Je demande un devis</a>
+            </div>
+
+            <!-- Image -->
+            <div class="col-12 col-lg-6 text-center">
+                <img src="{{ asset('images/webp/consulting.webp') }}" class="img-fluid rounded" alt="Digital Consulting">
+            </div>
+        </div>
+    </div>
+
+    <!-- Section services -->
+    <div class="bg-main w-100 pt-5 pb-5">
+        <div class="container text-center">
+            <h2 class="mb-5">Nos Services de Consultation Numérique</h2>
+
+            <div class="row g-4 justify-content-center">
+                <!-- Card 1 -->
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 text-white bg-black">
+                        <img src="{{ asset('images/webp/audit.webp') }}" class="card-img-top" alt="Audit numérique">
+                        <div class="card-body">
+                            <h4 class="card-title text-start">Audit Numérique</h4>
+                            <p class="card-text text text-start">
+                                On commence par jeter un œil à votre infrastructure numérique actuelle, comme vos sites web, applications et systèmes de gestion. Cette analyse nous aide à voir ce qui fonctionne bien et ce qui pourrait être amélioré.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 text-white bg-black">
+                        <img src="{{ asset('images/webp/stratégie.webp') }}" class="card-img-top" alt="Stratégie numérique">
+                        <div class="card-body">
+                            <h4 class="card-title text-start">Stratégie Numérique</h4>
+                            <p class="card-text text text-start">
+                                On travaille sur un plan stratégique sur-mesure détaillé qui propose des idées sur les technologies à utiliser, les canaux de communication à privilégier et les actions à mettre en place pour atteindre vos objectifs.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 text-white bg-black">
+                        <img src="{{ asset('images/webp/conception.webp') }}" class="card-img-top" alt="Conception numérique">
+                        <div class="card-body">
+                            <h4 class="card-title text-start">Conception et Mise en Œuvre</h4>
+                            <p class="card-text text text-start">
+                                On crée votre solution numérique en utilisant les meilleures technologies pour vous. Que ce soit pour un site web, une appli mobile ou même un métavers, on s'assure que tout s'intègre facilement et efficacement.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
