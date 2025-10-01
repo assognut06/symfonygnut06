@@ -181,6 +181,12 @@ body {
 }
 
 
+h1{
+    font-family: orbitron !important;
+    font-weight: 600 !important;
+    font-size: 45px !important;
+    color: white !important;
+}
 
 h2{
   font-family: orbitron !important;
