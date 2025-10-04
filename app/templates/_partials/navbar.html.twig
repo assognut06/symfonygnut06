@@ -1,185 +1,185 @@
 <header class="sticky-top position-sticky">
-<nav class="navbar navbar-expand-xxl bg-dark" data-bs-theme="dark">
-	<div class="container-fluid">
-		<a class="navbar-brand" href="{{ path('app_home') }}">
-			<img src="{{ asset('images/logo_trans-min.webp') }}" alt="Logo de l'Association Gnut 06" class="logoNavbar">
-			Gnut 06
-		</a>
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse fs-5" id="navbarNavDropdown">
-			<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-				<li class="nav-item">
-					<a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" aria-current="page" href="{{ path('app_home') }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Accueil">
-						<i class="bi bi-house"></i>
-					</a>
-				</li>
-				<li class="nav-itemm dropdown">
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nos Activités</a>
-					<ul class="dropdown-menu">
-						<li>
-							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_billetteries' %}active{% endif %}" href="{{ path('app_billetteries') }}">Événements</a>
-						</li>
-						<li>
-							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'appgnut_06_participe_ala_journee_nationale_des_aidants' %}active{% endif %}" href="{{ path('appgnut_06_participe_ala_journee_nationale_des_aidants') }}">Journée Nationale des Aidants</a>
-						</li>
-										</ul>
-				</li>
-				{# <li class="nav-item">
-					<a class="nav-link {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}" href="{{ path('app_billetteries') }}">Événements</a>
-				</li> #}
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nos Hubs</a>
-					<ul class="dropdown-menu">
-						<li>
-							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_metavers' %}active{% endif %}" href="{{ path('app_metavers')}}">Notre Métavers</a>
-						</li>
-						<li></li>
-						<li>
-							<a class="dropdown-item" href="https://gnut06.sharepoint.com/sites/Gnut06" target="_blank">Le Hub Gnut 06 sur notre portail Microsoft</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://gnut.eu/galerie_art_by_gnut/" target="_blank">Galerie d'art by Gnut</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://gnut.eu/3d_meteo/" target="_blank">Météo 3D by Gnut</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://gnut.eu/still_life/" target="_blank">Still life by Gnut</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://gnut.eu/3d_immo/" target="_blank">3D Immo by Abby, Mich and Gnut</a>
-						</li>
-					</ul>
-				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Vivre un handicap</a>
-					<ul class="dropdown-menu">
-						<li>
-							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_asso_recommander' %}active{% endif %}" href="{{ path('app_asso_recommander') }}">Associations recommandeés</a>
-						</li>
-						<li>
-							<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_agent_handicap' %}active{% endif %}" href="{{ path('app_agent_handicap') }}">Agent AI handicap</a>
-						</li>
-						{# <li>
-													<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_associationsNice' %}active{% endif %}" href="{{ path('app_associations_nice') }}">Associations à Nice</a>
-												</li> #}
-						<li>
-							<a class="dropdown-item" href="https://mdph.departement06.fr/informations-pratiques/accueil-du-public-5391.html" target="_blank">MDPH des Alpes-Maritimes</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://www.handitoit.org/" target="_blank">HandiToit Alpes-Maritimes</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://www.ladapt.net/" target="_blank">ADAPT Alpes-Maritimes</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://www.service-public.fr/particuliers/vosdroits/N19775" target="_blank">Allocations pour adulte handicapé</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://www.agefiph.fr/" target="_blank">AGEFIPH (emploi et handicap)</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://www.handicap.gouv.fr/" target="_blank">Secrétariat d’État chargé des Personnes handicapées</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://www.fiphfp.fr/" target="_blank">FIPHFP</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://www.cnsa.fr/" target="_blank">CNSA</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://www.unapei.org/" target="_blank">Unapei</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://www.adapt.org/" target="_blank">L’ADAPT</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="https://www.apf-francehandicap.org/" target="_blank">APF France handicap</a>
-						</li>
-					</ul>
-				</li>
-				{# <li class="nav-item">
-					<a class="nav-link" href="https://youtube.com/playlist?list=PLNoj2I1xAgEwK9d8LJDqTQ6plCA0bacAn&si=gEhfn2h3jZINW5Hq" target="_blank">Voyage VR</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="https://gnut06-my.sharepoint.com/:p:/g/personal/gnut_gnut06_org/EWF1GZ9xibdFlb59cTLDpt4B1DtbBnk526A6JjOu-0dP0A?rtime=0eCPW1Mr3Eg" target="_blank">Présentation</a>
-				</li> #}
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nous Soutenir</a>
-					<ul class="dropdown-menu">
-						<li class="nav-item">
-							<a class="nav-link {{ app.request.attributes.get('_route') == 'donateur_formulaire' ? 'active' : '' }}" href="{{ path('donateur_formulaire') }}">Effectuer un don de casque</a>
-						</li>
-						<li>
-							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_adhesion' %}active{% endif %}" href="{{ path('app_adhesion') }}">Adhésion</a>
-						</li>
-						<li>
-							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_benevole_jna' %}active{% endif %}" href="{{ path('app_benevole_jna') }}">Bénévole JNA</a>
-						</li>
-						<li>
-							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_boutique' %}active{% endif %}" href="{{ path('app_boutique') }}">Boutique Gnut 06</a>
-						</li>
-						<li>
-							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_innova' %}active{% endif %}" href="{{ path('app_innova') }}">INN^OVA</a>
-						</li>
-						<li>
-							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_don' %}active{% endif %}" href="{{ path('app_don') }}">Faire un don</a>
-						</li>
-						<li>
-							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_crowdfundings' %}active{% endif %}" href="{{ path('app_crowdfundings') }}">Projet d'aquisition Meta Quest 3</a>
-						</li>
-					</ul>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link {% if app.request.attributes.get('_route') == 'app_contact' %}active{% endif %}" href="{{ path('app_contact') }}">Contact</a>
-				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Gnut 06</a>
-					<ul class="dropdown-menu">
-						<li class="nav-item">
-							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_a_propos' %}active{% endif %}" href="{{ path('app_a_propos') }}">A propos</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="https://consulting.gnut06.org" target="_blank">Digital consulting</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_presse' %}active{% endif %}" href="{{ path('app_presse') }}">Presse</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="https://gnut06-my.sharepoint.com/:p:/g/personal/gnut_gnut06_org/EX1VMCi44L5GijA4LsgDMWoBtq5qoNBlNn9sT4qDhJpHyQ?e=CggHtZ" target="_blank">Rapport Financier 2023</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="https://gnut06-my.sharepoint.com/:p:/g/personal/gnut_gnut06_org/EfyFOJO-1cxCkWKTgRVERswB35uK2tR_dApRhRAC6_40_Q?e=Sbzd2f" target="_blank">Rapport Financier 2024</a>
-						</li>
-						{# <li class="nav-item">
-							<a class="nav-link" href="https://gnut06-my.sharepoint.com/:p:/g/personal/gnut_gnut06_org/EbRDBWWlvnpHpXtsbJzwBmMBpmWKHSrmAYqPdRW92EJ8mQ?e=xgDynm" target="_blank">Budget 2025</a>
-						</li> #}
-					</ul>
-					{% if app.user %}
-						<li class="nav-item">
-							<a class="nav-link {% if app.request.attributes.get('_route') == 'app_profil' %}active{% endif %}" href="{{ path('app_profil') }}">Profil</a>
-						</li>
-						{% if app.user and is_granted('ROLE_ADMIN') %}
+	<nav class="navbar navbar-expand-xxl bg-dark" data-bs-theme="dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="{{ path('app_home') }}">
+				<img src="{{ asset('images/logo_trans-min.webp') }}" alt="Logo de l'Association Gnut 06" class="logoNavbar">
+				Gnut 06
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse fs-5" id="navbarNavDropdown">
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+					<li class="nav-item">
+						<a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" aria-current="page" href="{{ path('app_home') }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Accueil">
+							<i class="bi bi-house"></i>
+						</a>
+					</li>
+					{# <li class="nav-itemm dropdown">
+											<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nos Activités</a>
+											<ul class="dropdown-menu">
+												<li>
+													<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_billetteries' %}active{% endif %}" href="{{ path('app_billetteries') }}">Événements</a>
+												</li>
+												<li>
+													<a class="dropdown-item {% if app.request.attributes.get('_route') == 'appgnut_06_participe_ala_journee_nationale_des_aidants' %}active{% endif %}" href="{{ path('appgnut_06_participe_ala_journee_nationale_des_aidants') }}">Journée Nationale des Aidants</a>
+												</li>
+											</ul>
+										</li> #}
+					<li class="nav-item">
+						<a class="nav-link {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}" href="{{ path('app_billetteries') }}">Événements</a>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nos Hubs</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_metavers' %}active{% endif %}" href="{{ path('app_metavers')}}">Notre Métavers</a>
+							</li>
+							<li></li>
+							<li>
+								<a class="dropdown-item" href="https://gnut06.sharepoint.com/sites/Gnut06" target="_blank">Le Hub Gnut 06 sur notre portail Microsoft</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://gnut.eu/galerie_art_by_gnut/" target="_blank">Galerie d'art by Gnut</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://gnut.eu/3d_meteo/" target="_blank">Météo 3D by Gnut</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://gnut.eu/still_life/" target="_blank">Still life by Gnut</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://gnut.eu/3d_immo/" target="_blank">3D Immo by Abby, Mich and Gnut</a>
+							</li>
+						</ul>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Vivre un handicap</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_asso_recommander' %}active{% endif %}" href="{{ path('app_asso_recommander') }}">Associations recommandeés</a>
+							</li>
+							<li>
+								<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_agent_handicap' %}active{% endif %}" href="{{ path('app_agent_handicap') }}">Agent AI handicap</a>
+							</li>
+							{# <li>
+																											<a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_associationsNice' %}active{% endif %}" href="{{ path('app_associations_nice') }}">Associations à Nice</a>
+																										</li> #}
+							<li>
+								<a class="dropdown-item" href="https://mdph.departement06.fr/informations-pratiques/accueil-du-public-5391.html" target="_blank">MDPH des Alpes-Maritimes</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://www.handitoit.org/" target="_blank">HandiToit Alpes-Maritimes</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://www.ladapt.net/" target="_blank">ADAPT Alpes-Maritimes</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://www.service-public.fr/particuliers/vosdroits/N19775" target="_blank">Allocations pour adulte handicapé</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://www.agefiph.fr/" target="_blank">AGEFIPH (emploi et handicap)</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://www.handicap.gouv.fr/" target="_blank">Secrétariat d’État chargé des Personnes handicapées</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://www.fiphfp.fr/" target="_blank">FIPHFP</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://www.cnsa.fr/" target="_blank">CNSA</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://www.unapei.org/" target="_blank">Unapei</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://www.adapt.org/" target="_blank">L’ADAPT</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="https://www.apf-francehandicap.org/" target="_blank">APF France handicap</a>
+							</li>
+						</ul>
+					</li>
+					{# <li class="nav-item">
+															<a class="nav-link" href="https://youtube.com/playlist?list=PLNoj2I1xAgEwK9d8LJDqTQ6plCA0bacAn&si=gEhfn2h3jZINW5Hq" target="_blank">Voyage VR</a>
+														</li>
+														<li class="nav-item">
+															<a class="nav-link" href="https://gnut06-my.sharepoint.com/:p:/g/personal/gnut_gnut06_org/EWF1GZ9xibdFlb59cTLDpt4B1DtbBnk526A6JjOu-0dP0A?rtime=0eCPW1Mr3Eg" target="_blank">Présentation</a>
+														</li> #}
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nous Soutenir</a>
+						<ul class="dropdown-menu">
 							<li class="nav-item">
-								<a class="nav-link {% if app.request.attributes.get('_route') == 'admin_dashboard' %}active{% endif %}" href="{{ path('admin_dashboard') }}">Administration</a>
+								<a class="nav-link {{ app.request.attributes.get('_route') == 'donateur_formulaire' ? 'active' : '' }}" href="{{ path('donateur_formulaire') }}">Effectuer un don de casque</a>
+							</li>
+							<li>
+								<a class="nav-link {% if app.request.attributes.get('_route') == 'app_adhesion' %}active{% endif %}" href="{{ path('app_adhesion') }}">Adhésion</a>
+							</li>
+							{# <li>
+								<a class="nav-link {% if app.request.attributes.get('_route') == 'app_benevole_jna' %}active{% endif %}" href="{{ path('app_benevole_jna') }}">Bénévole JNA</a>
+							</li> #}
+							<li>
+								<a class="nav-link {% if app.request.attributes.get('_route') == 'app_boutique' %}active{% endif %}" href="{{ path('app_boutique') }}">Boutique Gnut 06</a>
+							</li>
+							{# <li>
+								<a class="nav-link {% if app.request.attributes.get('_route') == 'app_innova' %}active{% endif %}" href="{{ path('app_innova') }}">INN^OVA</a>
+							</li> #}
+							<li>
+								<a class="nav-link {% if app.request.attributes.get('_route') == 'app_don' %}active{% endif %}" href="{{ path('app_don') }}">Faire un don</a>
+							</li>
+							<li>
+								<a class="nav-link {% if app.request.attributes.get('_route') == 'app_crowdfundings' %}active{% endif %}" href="{{ path('app_crowdfundings') }}">Projet d'aquisition Meta Quest 3</a>
+							</li>
+						</ul>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {% if app.request.attributes.get('_route') == 'app_contact' %}active{% endif %}" href="{{ path('app_contact') }}">Contact</a>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Gnut 06</a>
+						<ul class="dropdown-menu">
+							<li class="nav-item">
+								<a class="nav-link {% if app.request.attributes.get('_route') == 'app_a_propos' %}active{% endif %}" href="{{ path('app_a_propos') }}">A propos</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="https://consulting.gnut06.org" target="_blank">Digital consulting</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link {% if app.request.attributes.get('_route') == 'app_presse' %}active{% endif %}" href="{{ path('app_presse') }}">Presse</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="https://gnut06-my.sharepoint.com/:p:/g/personal/gnut_gnut06_org/EX1VMCi44L5GijA4LsgDMWoBtq5qoNBlNn9sT4qDhJpHyQ?e=CggHtZ" target="_blank">Rapport Financier 2023</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="https://gnut06-my.sharepoint.com/:p:/g/personal/gnut_gnut06_org/EfyFOJO-1cxCkWKTgRVERswB35uK2tR_dApRhRAC6_40_Q?e=Sbzd2f" target="_blank">Rapport Financier 2024</a>
+							</li>
+							{# <li class="nav-item">
+																					<a class="nav-link" href="https://gnut06-my.sharepoint.com/:p:/g/personal/gnut_gnut06_org/EbRDBWWlvnpHpXtsbJzwBmMBpmWKHSrmAYqPdRW92EJ8mQ?e=xgDynm" target="_blank">Budget 2025</a>
+																				</li> #}
+						</ul>
+						{% if app.user %}
+							<li class="nav-item">
+								<a class="nav-link {% if app.request.attributes.get('_route') == 'app_profil' %}active{% endif %}" href="{{ path('app_profil') }}">Profil</a>
+							</li>
+							{% if app.user and is_granted('ROLE_ADMIN') %}
+								<li class="nav-item">
+									<a class="nav-link {% if app.request.attributes.get('_route') == 'admin_dashboard' %}active{% endif %}" href="{{ path('admin_dashboard') }}">Administration</a>
+								</li>
+							{% endif %}
+							<li class="nav-item">
+								<a class="nav-link" href="{{ path('app_logout')}}">Déconnexion</a>
+							</li>
+						{% else %}
+							<li class="nav-item">
+								<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_login') ? ' active' }}" href="{{ path('app_login')}}">Connexion</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_register') ? ' active' }}" href="{{ path('app_register')}}">Inscription</a>
 							</li>
 						{% endif %}
-						<li class="nav-item">
-							<a class="nav-link" href="{{ path('app_logout')}}">Déconnexion</a>
-						</li>
-					{% else %}
-						<li class="nav-item">
-							<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_login') ? ' active' }}" href="{{ path('app_login')}}">Connexion</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link{{ (app.request.attributes.get('_route') == 'app_register') ? ' active' }}" href="{{ path('app_register')}}">Inscription</a>
-						</li>
-					{% endif %}
-				</li>
-			</ul>
+					</li>
+				</ul>
+			</div>
 		</div>
-	</div>
-</nav>
+	</nav>
 </header>

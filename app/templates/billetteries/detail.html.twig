@@ -89,7 +89,7 @@
 									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
 								<div class="modal-body">
-									<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="{{ data_actu.widgetFullUrl }}" style="width: 100%; height: 750px; border: none;"></iframe>
+									<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="{{ data_actu.widgetFullUrl }}" style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )"></iframe>
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
