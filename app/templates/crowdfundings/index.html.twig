@@ -33,7 +33,7 @@
 		</div>
 		<div class="row mt-4">
 			<div class="col-md-12 text-center">
-				<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="https://www.helloasso.com/associations/gnut-06/collectes/a/widget" style="width: 100%; height: 1600px; border: none;"></iframe>
+				<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="https://www.helloasso.com/associations/gnut-06/collectes/a/widget" style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )"></iframe>
 			</div>
 		</div>
 	</div>
