@@ -1,125 +1,162 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion{% endblock %}
+{% block title %}Connexion - GNUT 06{% endblock %}
 
 {% block body %}
-    <div class="container mt-5" role="main">
-        <div class="row justify-content-center">
+    <main id="main-content" role="main" aria-labelledby="connexion-title">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
 
-            <div class="col-md-6">
-                <form method="post" class="needs-validation" novalidate aria-describedby="connexion-infos">
-                    {% if error %}
-                        <div class="alert alert-danger" role="alert" aria-live="assertive">
-                            {{ error.messageKey|trans(error.messageData, 'security') }}
-                        </div>
-                    {% endif %}
+                <div class="col-md-6">
 
-                    {% for message in app.flashes('error') %}
-                        <div class="alert alert-danger" role="alert" aria-live="assertive">{{ message }}</div>
-                    {% endfor %}
+                    <!-- Formulaire de connexion -->
+                    <form method="post"
+                          class="needs-validation"
+                          novalidate
+                          aria-describedby="connexion-infos"
+                          aria-label="Formulaire de connexion GNUT 06">
 
-                    {% if app.session.get('_flash_error') %}
-                        <div class="alert alert-danger" role="alert" aria-live="assertive">
-                            {{ app.session.get('_flash_error') }}
-                        </div>
-                        {% do app.session.remove('_flash_error') %}
-                    {% endif %}
+                        <!-- Messages d’erreur -->
+                        {% if error %}
+                            <div class="alert alert-danger text-center"
+                                 role="alert"
+                                 aria-live="assertive">
+                                {{ error.messageKey|trans(error.messageData, 'security') }}
+                            </div>
+                        {% endif %}
 
-                    {% if app.user %}
-                        <div class="mb-3" role="status">
-                            Vous êtes connecté en tant que
-                            <strong>{{ app.user.userIdentifier }}</strong>,
-                            <a href="{{ path('app_logout') }}">Déconnexion</a>
-                        </div>
-                    {% endif %}
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger text-center"
+                                 role="alert"
+                                 aria-live="assertive">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
 
-                    <h1 class="gradient-text text-center" id="connexion-title">GNUT 06</h1>
-                    <h2 class="h3 mb-3 fw-normal text-center" style="color: black !important;" id="connexion-subtitle">
-                        Connectez-vous à votre compte
-                    </h2>
-                    <p class="text-center" id="connexion-infos">
-                        Content de vous revoir ! <br>
-                        Veuillez saisir vos coordonnées.
-                    </p>
+                        {% if app.session.get('_flash_error') %}
+                            <div class="alert alert-danger text-center"
+                                 role="alert"
+                                 aria-live="assertive">
+                                {{ app.session.get('_flash_error') }}
+                            </div>
+                            {% do app.session.remove('_flash_error') %}
+                        {% endif %}
 
-                    <div class="card p-4 shadow">
-                        <div class="form-floating mb-3">
-                            <input
-                                    type="email"
-                                    value="{{ last_username }}"
-                                    name="_username"
-                                    id="username"
-                                    class="form-control"
-                                    placeholder="name@example.com"
-                                    autocomplete="email"
-                                    required
-                                    autofocus
-                                    aria-required="true"
-                                    aria-describedby="username-help">
-                            <label for="username">Email</label>
-                            <small id="username-help" class="form-text text-muted">
-                                Entrez votre adresse email complète (ex : nom@domaine.com)
-                            </small>
-                        </div>
+                        <!-- Utilisateur déjà connecté -->
+                        {% if app.user %}
+                            <div class="mb-3" role="status" aria-live="polite">
+                                Vous êtes connecté en tant que
+                                <strong>{{ app.user.userIdentifier }}</strong>.
+                                <a href="{{ path('app_logout') }}">Déconnexion</a>
+                            </div>
+                        {% endif %}
 
-                        <div class="form-floating mb-3">
-                            <input
-                                    type="password"
-                                    name="_password"
-                                    id="password"
-                                    class="form-control"
-                                    placeholder="Mot de passe"
-                                    autocomplete="current-password"
-                                    required
-                                    aria-required="true"
-                                    aria-describedby="password-help">
-                            <label for="password">Mot de passe</label>
-                            <small id="password-help" class="form-text text-muted">
-                                Le mot de passe doit rester confidentiel.
-                            </small>
-                        </div>
+                        <!-- Titres et infos -->
+                        <header class="text-center mb-4">
+                            <h1 id="connexion-title" class="gradient-text mb-2">GNUT 06</h1>
+                            <h2 id="connexion-subtitle" class="h3 mb-3 fw-normal" style="color: black !important;">
+                                Connectez-vous à votre compte
+                            </h2>
+                            <p id="connexion-infos">
+                                Content de vous revoir ! <br>
+                                Veuillez saisir vos identifiants de connexion.
+                            </p>
+                        </header>
 
-                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        <!-- Carte de connexion -->
+                        <section class="card p-4 shadow" aria-labelledby="connexion-subtitle">
+                            <!-- Champ email -->
+                            <div class="form-floating mb-3">
+                                <input type="email"
+                                       value="{{ last_username }}"
+                                       name="_username"
+                                       id="username"
+                                       class="form-control"
+                                       placeholder="nom@domaine.com"
+                                       autocomplete="email"
+                                       required
+                                       autofocus
+                                       aria-required="true"
+                                       aria-describedby="username-help">
+                                <label for="username">Adresse e-mail</label>
+                                <small id="username-help" class="form-text text-muted">
+                                    Exemple : nom@domaine.com
+                                </small>
+                            </div>
 
-                        <button
-                                class="w-100 btn btn-lg btn-primary"
-                                type="submit"
-                                aria-label="Se connecter à votre compte">
-                            Se connecter
-                        </button>
+                            <!-- Champ mot de passe -->
+                            <div class="form-floating mb-3">
+                                <input type="password"
+                                       name="_password"
+                                       id="password"
+                                       class="form-control"
+                                       placeholder="Mot de passe"
+                                       autocomplete="current-password"
+                                       required
+                                       aria-required="true"
+                                       aria-describedby="password-help">
+                                <label for="password">Mot de passe</label>
+                                <small id="password-help" class="form-text text-muted">
+                                    Votre mot de passe reste confidentiel.
+                                </small>
+                            </div>
+
+                            <!-- Jeton CSRF -->
+                            <input type="hidden"
+                                   name="_csrf_token"
+                                   value="{{ csrf_token('authenticate') }}"
+                                   aria-hidden="true">
+
+                            <!-- Bouton de connexion -->
+                            <button class="w-100 btn btn-lg btn-primary"
+                                    type="submit"
+                                    aria-label="Se connecter à votre compte GNUT 06">
+                                Se connecter
+                            </button>
+                        </section>
+                    </form>
+
+                    <!-- Lien mot de passe oublié -->
+                    <div class="my-4 text-center">
+                        <a href="{{ path('app_forgot_password_request') }}"
+                           aria-label="Mot de passe perdu, cliquez ici pour réinitialiser">
+                            Mot de passe perdu ?
+                        </a>
                     </div>
-                </form>
 
-                <div class="my-4 text-center">
-                    <a href="{{ path('app_forgot_password_request') }}" aria-label="Mot de passe perdu, cliquez ici pour réinitialiser">
-                        Mot de passe perdu ?
-                    </a>
-                </div>
+                    <!-- Connexion via services externes -->
+                    <div class="text-center pb-5" aria-labelledby="alt-login-title">
+                        <p id="alt-login-title">Ou connectez-vous avec :</p>
 
-                <div class="text-center pb-5" aria-labelledby="alt-login-title">
-                    <p id="alt-login-title">Ou connectez-vous avec :</p>
+                        <a href="{{ path('connect_google_start') }}"
+                           class="btn btn-danger w-100 mb-2"
+                           role="button"
+                           aria-label="Se connecter avec Google">
+                            <i class="fab fa-google" aria-hidden="true"></i>
+                            Se connecter avec Google
+                        </a>
 
-                    <a href="{{ path('connect_google_start') }}"
-                       class="btn btn-danger w-100 mb-2"
-                       role="button"
-                       aria-label="Se connecter avec Google">
-                        <i class="fab fa-google" aria-hidden="true"></i> Se connecter avec Google
-                    </a>
+                        <a href="{{ path('connect_outlook_start') }}"
+                           class="btn w-100"
+                           style="background-color: #0078D4; color: white;"
+                           role="button"
+                           aria-label="Se connecter avec Microsoft">
+                            <i class="fab fa-microsoft" aria-hidden="true"></i>
+                            Se connecter avec Microsoft
+                        </a>
+                    </div>
 
-                    <a href="{{ path('connect_outlook_start') }}"
-                       class="btn btn-primary w-100"
-                       style="background-color: #0078D4;"
-                       role="button"
-                       aria-label="Se connecter avec Microsoft">
-                        <i class="fab fa-microsoft" aria-hidden="true"></i> Se connecter avec Microsoft
-                    </a>
                 </div>
             </div>
         </div>
-    </div>
 
-    {% block stylesheets %}
-        {{ parent() }}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    {% endblock %}
+        {% block stylesheets %}
+            {{ parent() }}
+            <link rel="stylesheet"
+                  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+                  integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2DhKN5C1Fj3vJdO5t6bLhS0NwOZp2rF7JbZsYk3yxj4gSgkVzNqVQkBKu5G+xh9wQ=="
+                  crossorigin="anonymous"
+                  referrerpolicy="no-referrer">
+        {% endblock %}
+    </main>
 {% endblock %}

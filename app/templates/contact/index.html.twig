@@ -3,140 +3,212 @@
 {% block title %}Contactez-nous - GNUT 06{% endblock %}
 
 {% block body %}
-    <!-- Section Contact -->
-    <div class="bg-main w-100 d-flex justify-content-center pt-5 pb-5">
-        <div class="container row align-items-start justify-content-center g-5">
+    <main id="main-content" role="main" aria-labelledby="contact-title">
 
-            <!-- Partie gauche -->
-            <div class="col-12 col-lg-6 mb-4 mb-lg-0">
-                <h2>Nous Contacter</h2>
-                <p class="text">
-                    Pour toute question, n'hésitez pas à nous contacter via les informations ci-dessous.
+        <!-- Section Contact -->
+        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="contact-title">
+            <div class="container row align-items-start justify-content-center g-5">
+
+                <!-- Partie gauche -->
+                <header class="col-12 col-lg-6 mb-4 mb-lg-0">
+                    <h2 id="contact-title">Nous Contacter</h2>
+                    <p class="text">
+                        Pour toute question, n'hésitez pas à nous contacter via les informations ci-dessous.
+                    </p>
+                </header>
+
+                <!-- Partie droite (coordonnées) -->
+                <address class="col-12 col-lg-6 d-flex flex-column gap-4 text-white" aria-label="Coordonnées de contact GNUT 06">
+
+                    <!-- Email -->
+                    <div class="d-flex align-items-start gap-3">
+                        <img src="{{ asset('images/webp/envelope.svg') }}" width="24" alt="Icône e-mail">
+                        <div>
+                            <h3>Email</h3>
+                            <p class="text">
+                                <a href="mailto:contact@gnut06.fr" class="text-white">contact@gnut06.fr</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Téléphone -->
+                    <div class="d-flex align-items-start gap-3">
+                        <img src="{{ asset('images/webp/phone.svg') }}" width="24" alt="Icône téléphone">
+                        <div>
+                            <h3>Téléphone</h3>
+                            <p class="text">
+                                <a href="tel:+33666215687" class="text-white">+33 6 66 21 56 87</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Visio -->
+                    <div class="d-flex align-items-start gap-3">
+                        <img src="{{ asset('images/webp/camera-reels.svg') }}" width="24" alt="Icône visio">
+                        <div>
+                            <h3>Visio</h3>
+                            <p class="text">Réservez votre créneau dès maintenant.</p>
+                        </div>
+                    </div>
+
+                    <!-- Adresse -->
+                    <div class="d-flex align-items-start gap-3">
+                        <img src="{{ asset('images/webp/map.svg') }}" width="24" alt="Icône carte">
+                        <div>
+                            <h3>Bureau</h3>
+                            <p class="text">
+                                9 Rue du Pont-Vieux<br>
+                                06300 NICE<br>
+                                FRANCE
+                            </p>
+                        </div>
+                    </div>
+                </address>
+            </div>
+        </section>
+
+        <!-- Section Formulaire -->
+        <section class="bg-main pt-2" aria-labelledby="form-title">
+            <div class="container py-5">
+                <h2 id="form-title" class="text-center mb-4">Besoin d'un projet ? Demandez un devis.</h2>
+                <p class="text text-center">
+                    Vous pouvez utiliser le formulaire ci-dessous. Nous répondons généralement dans les 24 heures.
                 </p>
+
+                {% if message_envoye %}
+                    <div class="alert alert-success text-center" role="alert">
+                        Votre message a bien été envoyé.
+                    </div>
+                {% endif %}
+
+                {% if errors is not empty %}
+                    <div class="alert alert-danger" role="alert" aria-live="assertive">
+                        <ul>
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div class="m-auto col-12 col-lg-7">
+                    <form class="row g-4 mb-5"
+                          method="POST"
+                          action="{{ path('app_contact') }}"
+                          aria-describedby="form-required"
+                          aria-label="Formulaire de contact GNUT 06">
+
+                        <!-- Prénom -->
+                        <div class="col-lg-6">
+                            <label for="first_name" class="text">Prénom <span class="text-danger">*</span></label>
+                            <input type="text"
+                                   id="first_name"
+                                   name="first_name"
+                                   class="form-control"
+                                   placeholder="Prénom"
+                                   required
+                                   autocomplete="given-name">
+                        </div>
+
+                        <!-- Nom -->
+                        <div class="col-lg-6">
+                            <label for="last_name" class="text">Nom <span class="text-danger">*</span></label>
+                            <input type="text"
+                                   id="last_name"
+                                   name="last_name"
+                                   class="form-control"
+                                   placeholder="Nom"
+                                   required
+                                   autocomplete="family-name">
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-lg-6">
+                            <label for="email" class="text">Email <span class="text-danger">*</span></label>
+                            <input type="email"
+                                   id="email"
+                                   name="email"
+                                   class="form-control"
+                                   placeholder="Email"
+                                   required
+                                   autocomplete="email">
+                        </div>
+
+                        <!-- Téléphone -->
+                        <div class="col-lg-6">
+                            <label for="tel" class="text">Téléphone <span class="text-danger">*</span></label>
+                            <input type="tel"
+                                   id="tel"
+                                   name="tel"
+                                   class="form-control"
+                                   placeholder="+33"
+                                   autocomplete="tel">
+                        </div>
+
+                        <!-- Type de projet -->
+                        <fieldset class="col-lg-6" aria-required="true">
+                            <legend class="text">Type de projet <span class="text-danger">*</span></legend>
+
+                            <div class="form-check">
+                                <input type="radio" id="projet-site" name="project_type" value="site_web" class="form-check-input" checked>
+                                <label for="projet-site" class="form-check-label text">Site web simple</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="radio" id="projet-app" name="project_type" value="application" class="form-check-input">
+                                <label for="projet-app" class="form-check-label text">Application mobile</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="radio" id="projet-3d" name="project_type" value="salle_3d" class="form-check-input">
+                                <label for="projet-3d" class="form-check-label text">Salle 3D Immersive</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="radio" id="projet-grand" name="project_type" value="grand_projet" class="form-check-input">
+                                <label for="projet-grand" class="form-check-label text">Grands projets</label>
+                            </div>
+                        </fieldset>
+
+                        <!-- Message -->
+                        <div class="col-12">
+                            <label for="message" class="text">Message</label>
+                            <textarea id="message"
+                                      name="message"
+                                      rows="5"
+                                      class="form-control"
+                                      placeholder="Tapez votre message..."
+                                      required
+                                      aria-required="true"></textarea>
+                        </div>
+
+                        <!-- Captcha -->
+                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+
+                        <!-- Infos sur les champs obligatoires -->
+                        <p id="form-required" class="text mt-2" style="color: #FF1DBB;">
+                            Champs obligatoires <span>*</span>
+                        </p>
+
+                        <!-- Bouton -->
+                        <div class="col-12 text-center">
+                            <button type="submit" name="envoyer" value="Envoyer" class="btn-neon" aria-label="Soumettre le formulaire de contact">
+                                Soumettre
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
+        </section>
 
-            <!-- Partie droite -->
-            <div class="col-12 col-lg-6 d-flex flex-column gap-4">
-
-                <!-- Email -->
-                <div class="d-flex align-items-start gap-3">
-                    <img src="{{ asset('images/webp/envelope.svg') }}" width="24" alt="">
-                    <div>
-                        <h3>Email</h3>
-                        <p class="text">contact@gnut06.fr</p>
-                    </div>
-                </div>
-
-                <!-- Téléphone -->
-                <div class="d-flex align-items-start gap-3">
-                    <img src="{{ asset('images/webp/phone.svg') }}" width="24" alt="">
-                    <div>
-                        <h3>Téléphone</h3>
-                        <p class="text">+33 6 66 21 56 87</p>
-                    </div>
-                </div>
-
-                <!-- Visio -->
-                <div class="d-flex align-items-start gap-3">
-                    <img src="{{ asset('images/webp/camera-reels.svg') }}" width="24" alt="">
-                    <div>
-                        <h3>Visio</h3>
-                        <p class="text">Réservez votre créneau dès maintenant.</p>
-                    </div>
-                </div>
-
-                <!-- Adresse -->
-                <div class="d-flex align-items-start gap-3">
-                    <img src="{{ asset('images/webp/map.svg') }}" width="24" alt="">
-                    <div>
-                        <h3>Bureau</h3>
-                        <p class="text">9 Rue du Pont-Vieux 06300 NICE FRANCE</p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Section Formulaire -->
-    <div class="bg-main pt-2">
-        <div class="container py-5">
-            <h2 class="text-center mb-4">Besoin d'un projet ? Demandez un devis.</h2>
-            <p class="text text-center">Vous pouvez utiliser le formulaire disponible sur notre site.
-                Nous répondons généralement dans les 24 heures.
-            </p>
-
-            {% if message_envoye %}
-                <p class="alert alert-success text-center">Votre message a bien été envoyé.</p>
-            {% endif %}
-
-            {% if errors is not empty %}
-                <div class="alert alert-danger">
-                    <ul>
-                        {% for error in errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-
-            <div class="m-auto col-12 col-lg-7">
-
-
-                <form class="row g-4 mb-5" method="POST" action="{{ path('app_contact') }}">
-                    <div class="col-lg-6">
-                        <label for="first_name" class="text">Prénom <span style="color: #FF1DBB;">*</span> </label>
-                        <input type="text" class="form-control" name="first_name" placeholder="Prénom" aria-label="First name" required>
-                    </div>
-                    <div class="col-lg-6">
-                        <label for="last_name" class="text">Nom <span style="color: #FF1DBB;">*</span> </label>
-                        <input type="text" class="form-control" name="last_name" placeholder="Nom" aria-label="Last name" required>
-                    </div>
-                    <div class="col-lg-6">
-                        <label for="email" class="text">Email <span style="color: #FF1DBB;">*</span> </label>
-                        <input type="email" class="form-control" name="email" placeholder="Email" aria-label="email" required>
-                    </div>
-                    <div class="col-lg-6">
-                        <label for="tel" class="text">Téléphone <span style="color: #FF1DBB;">*</span> </label>
-                        <input type="tel" class="form-control" name="tel" placeholder="+" aria-label="telephone">
-                    </div>
-                    <div class="col-lg-6">
-                        <p class="text">Type de projet <span style="color: #FF1DBB;">*</span></p>
-                        <input type="radio" id="website" name="drone" value="huey" checked />
-                        <label for="website" class="text">Site web simple</label> <br>
-                        <input type="radio" id="huey" name="drone" value="huey" checked />
-                        <label for="huey" class="text">Application mobile</label> <br>
-                        <input type="radio" id="huey" name="drone" value="huey" checked />
-                        <label for="huey" class="text">Salle 3D Immersive</label> <br>
-                        <input type="radio" id="huey" name="drone" value="huey" checked />
-                        <label for="huey" class="text">Grands projets</label>
-                    </div>
-                    <div class="col-12">
-                        <label for="message" class="text">Message</label>
-                        <textarea name="message" rows="5" class="form-control" placeholder="Tapez votre message..." aria-label="message" required></textarea>
-                    </div>
-
-                    <!-- Captcha -->
-                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-                    <p class="text" style="color: #FF1DBB;"> Champs obligatoires <span class="">*</span></p>
-                    <!-- Bouton -->
-                    <div class="col-12 text-center">
-                        <button type="submit" name="envoyer" value="Envoyer" class="btn-neon">
-                            Soumettre
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recaptcha -->
-    <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
-    <script>
-        grecaptcha.ready(function() {
-            grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
-                document.getElementById('g-recaptcha-response').value = token;
+        <!-- Recaptcha -->
+        <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+        <script>
+            grecaptcha.ready(function() {
+                grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
+                    document.getElementById('g-recaptcha-response').value = token;
+                });
             });
-        });
-    </script>
+        </script>
+    </main>
 {% endblock %}

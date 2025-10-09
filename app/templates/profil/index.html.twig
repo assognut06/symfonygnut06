@@ -18,7 +18,7 @@
             <a href="{{ path('edit_profile_picture') }}" class="btn btn-primary me-2">
 				<i class="bi bi-pencil"></i>
             </a>
-            <a href="{{ path('delete_profile_picture') }}" class="btn btn-danger">
+            <a href="{{ path('delete_profile_picture') }}" onclick="return confirm('êtes vous sûr de vouloir supprimer l\'image?')" class="btn btn-danger">
 				<i class="bi bi-trash" style="color:white"></i>
             </a>
         </div>

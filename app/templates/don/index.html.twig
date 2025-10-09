@@ -3,62 +3,92 @@
 {% block title %}Faire un don à Gnut 06{% endblock %}
 
 {% block body %}
-    <!-- Section 1 : appel aux dons -->
-    <div class="bg-main w-100 d-flex justify-content-center pt-5 pb-5">
-        <div class="container row align-items-center g-5">
-            <!-- Texte -->
-            <div class="col-12 col-lg-6">
-                <h2>Ensemble, Construisons un Monde Inclusif !</h2>
-                <p class="text">
-                    Chers amis de l’association GNUT 06,<br>
-                    Nous avons besoin de votre soutien pour continuer à aider les personnes en situation de handicap.
-                    Afin d’encourager l’inclusion et le maintien dans l’emploi malgré les obstacles, chaque geste compte.
-                </p>
-            </div>
-            <!-- Image -->
-            <div class="col-12 col-lg-6 text-center">
-                <img src="{{ asset('images/webp/help.webp') }}" class="img-fluid rounded" alt="Soutien aux personnes en situation de handicap">
-            </div>
-        </div>
-    </div>
+    <main id="main-content" role="main" aria-labelledby="don-title">
 
-    <!-- Section 2 : pourquoi donner -->
-    <div class="bg-main w-100 d-flex justify-content-center pt-5 pb-5">
-        <div class="container row align-items-center g-5">
-            <!-- Image + titre + texte -->
-            <div class="col-12 col-lg-6 text-center text-lg-start">
-                <img src="{{ asset('images/webp/send_money.svg') }}" class="img-fluid mb-4" alt="Pourquoi donner ?">
-                <h2>Pourquoi donner à GNUT 06 ?</h2>
-                <p class="text">
-                    Votre don nous permet de poursuivre notre mission : aider les personnes en situation de handicap à surmonter les obstacles
-                    et favoriser leur inclusion dans le monde du travail. Chaque contribution fait la différence.
-                </p>
-            </div>
-            <!-- Liste des avantages -->
-            <div class="col-12 col-lg-6">
-                <ul class="ps-3">
-                    <li class="text mb-3">
-                        <strong>Impact immédiat :</strong> Chaque don, peu importe son montant, change la vie de nos bénéficiaires en finançant des formations et des opportunités d’emploi.
-                    </li>
-                    <li class="text mb-3">
-                        <strong>Technologies innovantes :</strong> Grâce à la réalité virtuelle, nous offrons des expériences uniques. Votre don crée ces moments magiques.
-                    </li>
-                    <li class="text mb-0">
-                        <strong>Solidarité :</strong> En soutenant GNUT 06, vous rejoignez une communauté pour un monde inclusif. Chaque euro compte !
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+        <!-- Section 1 : appel aux dons -->
+        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="appel-don-title">
+            <div class="container row align-items-center g-5">
 
-    <!-- Section 3 : formulaire HelloAsso -->
-    <div class="pt-5">
-        <div class="my-5 mx-3 mx-lg-5">
-            <iframe id="haWidget"
-                    allowtransparency="true"
-                    src="https://www.helloasso.com/associations/gnut-06/formulaires/1/widget"
-                    style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )">
-            </iframe>
-        </div>
-    </div>
+                <!-- Texte -->
+                <div class="col-12 col-lg-6">
+                    <header>
+                        <h1 id="don-title" class="visually-hidden">Faire un don à GNUT 06 - Soutenir l’inclusion des personnes en situation de handicap</h1>
+                        <h2 id="appel-don-title">Ensemble, Construisons un Monde Inclusif !</h2>
+                    </header>
+
+                    <p class="text">
+                        Chers amis de l’association <strong>GNUT 06</strong>,<br>
+                        Nous avons besoin de votre soutien pour continuer à aider les personnes en situation de handicap.
+                        Afin d’encourager l’inclusion et le maintien dans l’emploi malgré les obstacles, chaque geste compte.
+                    </p>
+                </div>
+
+                <!-- Image -->
+                <div class="col-12 col-lg-6 text-center">
+                    <img src="{{ asset('images/webp/help.webp') }}"
+                         class="img-fluid rounded"
+                         alt="Deux mains qui se tendent symbolisant la solidarité et l’aide aux personnes en situation de handicap.">
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2 : pourquoi donner -->
+        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="pourquoi-donner-title">
+            <div class="container row align-items-center g-5">
+
+                <!-- Image + texte -->
+                <div class="col-12 col-lg-6 text-center text-lg-start">
+                    <img src="{{ asset('images/webp/send_money.svg') }}"
+                         class="img-fluid mb-4"
+                         alt="Icône illustrant un don financier pour soutenir une association.">
+
+                    <h2 id="pourquoi-donner-title">Pourquoi donner à GNUT 06 ?</h2>
+                    <p class="text">
+                        Votre don nous permet de poursuivre notre mission : aider les personnes en situation de handicap à surmonter les obstacles
+                        et à favoriser leur inclusion dans le monde du travail. Chaque contribution fait la différence.
+                    </p>
+                </div>
+
+                <!-- Liste des avantages -->
+                <div class="col-12 col-lg-6">
+                    <ul class="ps-3" aria-label="Avantages de votre don à GNUT 06">
+                        <li class="text mb-3">
+                            <strong>Impact immédiat :</strong> Chaque don, peu importe son montant, change la vie de nos bénéficiaires
+                            en finançant des formations et des opportunités d’emploi.
+                        </li>
+                        <li class="text mb-3">
+                            <strong>Technologies innovantes :</strong> Grâce à la réalité virtuelle, nous offrons des expériences uniques et immersives.
+                            Votre don rend ces projets possibles.
+                        </li>
+                        <li class="text mb-0">
+                            <strong>Solidarité :</strong> En soutenant GNUT 06, vous rejoignez une communauté engagée pour un monde inclusif.
+                            Chaque euro compte !
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3 : formulaire HelloAsso -->
+        <section class="pt-5" aria-labelledby="form-don-title">
+            <div class=" my-5">
+
+                <div class="my-5 mx-3 mx-lg-5">
+                    <iframe id="haWidget"
+                            title="Formulaire de don HelloAsso pour soutenir l’association GNUT 06"
+                            allowtransparency="true"
+                            src="https://www.helloasso.com/associations/gnut-06/formulaires/1/widget"
+                            style="width: 100%; border: none;"
+                            loading="lazy"
+                            onload="window.addEventListener('message', e => {
+                            const dataHeight = e.data.height;
+                            const haWidgetElement = document.getElementById('haWidget');
+                            haWidgetElement.height = dataHeight + 'px';
+                        })">
+                    </iframe>
+                </div>
+            </div>
+        </section>
+
+    </main>
 {% endblock %}
