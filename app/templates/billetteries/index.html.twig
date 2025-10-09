@@ -3,79 +3,127 @@
 {% block title %}Réservation{% endblock %}
 
 {% block body %}
+
     <!-- Section Intro -->
-    <div class="bg-main w-100 d-flex justify-content-center pt-5 pb-5">
+    <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5"
+             aria-labelledby="section-intro-title">
         <div class="container row align-items-center justify-content-center g-5">
             <div class="col-lg-6 col-12">
-                <h2>Mondes Virtuels, Liens Réels : L'Inclusion à Portée de main</h2>
+                <h2 id="section-intro-title">Mondes Virtuels, Liens Réels : L'Inclusion à Portée de main</h2>
                 <p class="text">Venez découvrir nos actions sur place !</p>
-                <a href="#" class="btn-neon text-white">Découvrez GNUT 06</a>
+                <a href="{{ path('app_a_propos') }}"
+                   class="btn-neon text-white"
+                   aria-label="En savoir plus sur GNUT 06">
+                    Découvrez GNUT 06
+                </a>
             </div>
+
             <div class="col-lg-6 col-12">
-                <img src="{{ asset('images/webp/immersion-3.webp') }}" class="img-fluid" alt="">
+                <figure>
+                    <img src="{{ asset('images/webp/immersion-3.webp') }}"
+                         class="img-fluid"
+                         alt="Illustration d'une immersion dans un monde virtuel accessible">
+                </figure>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Carousel -->
-    <div id="carouselExample" class="carousel slide bg-main" data-bs-ride="carousel">
-        <div class="carousel-inner">
+    <!-- Section Carousel -->
+    <section id="evenements"
+             class="carousel slide bg-main"
+             data-bs-ride="carousel"
+             aria-label="Événements GNUT 06"
+             aria-roledescription="carousel">
+
+        <div class="carousel-inner" role="listbox">
             {% for group in data_forms|batch(3) %}
-                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <div class="carousel-item {% if loop.first %}active{% endif %}"
+                     role="group"
+                     aria-roledescription="slide"
+                     aria-label="Diapositive {{ loop.index }} sur {{ data_forms|length // 3 + (data_forms|length % 3 > 0 ? 1 : 0) }}">
+
                     <div class="container py-4">
                         <div class="row g-4 justify-content-center">
-                            {% for item in group %}
-                                <div class="col-12 col-md-6 col-lg-4 d-flex">
-                                    <div class="card h-100 flex-fill">
-                                        <img src="{{ asset(randomImage('/images/news/')) }}" class="card-img-top" alt="Evénements Gnut 06">
-                                        <div class="card-body d-flex flex-column bg-main">
-                                            <h5 class="card-title text-center text text-white">{{ item.title }}</h5>
 
-                                            <!-- Description -->
+                            {% for item in group %}
+                                <article class="col-12 col-md-6 col-lg-4 d-flex"
+                                         role="article"
+                                         aria-labelledby="card-title-{{ loop.parent.loop.index }}-{{ loop.index }}">
+
+                                    <div class="card h-100 flex-fill">
+                                        <figure class="m-0">
+                                            <img src="{{ asset(randomImage('/images/news/')) }}"
+                                                 class="card-img-top"
+                                                 alt="Illustration de l'événement {{ item.title }}">
+                                        </figure>
+
+                                        <div class="card-body d-flex flex-column bg-main">
+                                            <h5 id="card-title-{{ loop.parent.loop.index }}-{{ loop.index }}"
+                                                class="card-title text-center text text-white">
+                                                {{ item.title }}
+                                            </h5>
+
                                             <p class="text-justify flex-grow-1 text">
-                                                {{ item.description|slice(0, 200) }}...<br>
-                                                <a class="icon-link icon-link-hover" href="{{ path('app_billetteries_detail', {'formType': item.formType, 'slug': item.formSlug}) }}">
+                                                {{ item.description|slice(0, 200) }}...
+                                                <br>
+                                                <a class="icon-link icon-link-hover"
+                                                   href="{{ path('app_billetteries_detail', {'formType': item.formType, 'slug': item.formSlug}) }}"
+                                                   aria-label="En savoir plus sur l'événement {{ item.title }}">
                                                     En savoir +<i class="bi bi-arrow-right"></i>
                                                 </a>
                                             </p>
 
-                                            <!-- Bouton Modal -->
                                             <div class="text-center mt-auto text">
                                                 <button class="btn-outline-gradient btn-sm text-white"
                                                         data-bs-toggle="modal"
-                                                        data-bs-target="#modal_{{ loop.parent.loop.index }}_{{ loop.index }}">
+                                                        data-bs-target="#modal_{{ loop.parent.loop.index }}_{{ loop.index }}"
+                                                        aria-haspopup="dialog"
+                                                        aria-controls="modal_{{ loop.parent.loop.index }}_{{ loop.index }}">
                                                     Réserver
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </article>
 
                                 <!-- Modal -->
                                 <div class="modal fade modal-lg"
                                      id="modal_{{ loop.parent.loop.index }}_{{ loop.index }}"
                                      tabindex="-1"
+                                     role="dialog"
                                      aria-labelledby="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}"
+                                     aria-modal="true"
                                      aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                         <div class="modal-content">
-                                            <div class="modal-header">
+                                            <header class="modal-header">
                                                 <h1 class="modal-title fs-5"
                                                     id="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}">
                                                     {{ item.title }}
                                                 </h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
+                                                <button type="button"
+                                                        class="btn-close"
+                                                        data-bs-dismiss="modal"
+                                                        aria-label="Fermer la fenêtre de réservation"></button>
+                                            </header>
+
                                             <div class="modal-body">
                                                 <iframe id="haWidget"
                                                         allowtransparency="true"
                                                         scrolling="auto"
+                                                        title="Formulaire de réservation pour {{ item.title }}"
                                                         src="{{ item.widgetFullUrl }}"
-                                                        style="width: 100%; min-height: 750px; border: none;"></iframe>
+                                                        style="width: 100%; min-height: 750px; border: none;">
+                                                </iframe>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                            </div>
+
+                                            <footer class="modal-footer">
+                                                <button type="button"
+                                                        class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">
+                                                    Fermer
+                                                </button>
+                                            </footer>
                                         </div>
                                     </div>
                                 </div>
@@ -88,14 +136,24 @@
             {% endfor %}
         </div>
 
-        <!-- Controls -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
+        <!-- Contrôles du carousel -->
+        <button class="carousel-control-prev"
+                type="button"
+                data-bs-target="#evenements"
+                data-bs-slide="prev"
+                aria-label="Afficher la diapositive précédente">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Précédent</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
+
+        <button class="carousel-control-next"
+                type="button"
+                data-bs-target="#evenements"
+                data-bs-slide="next"
+                aria-label="Afficher la diapositive suivante">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Suivant</span>
         </button>
-    </div>
+    </section>
+
 {% endblock %}
