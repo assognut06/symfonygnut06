@@ -58,25 +58,52 @@
                     </li>
 
                     {% if app.user %}
-                        <li class="nav-item">
-                            <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_profil' ? 'active' : '' }}"
-                               href="{{ path('app_profil') }}"
-                                    {% if app.request.attributes.get('_route') == 'app_profil' %} aria-current="page"{% endif %}>
+
+                        <!-- 🖥️ Desktop : menu déroulant Profil -->
+                        <li class="nav-item dropdown d-none d-xl-block">
+                            <a class="nav-link dropdown-toggle text-light {{ app.request.attributes.get('_route') starts with 'app_profil' ? 'active' : '' }}"
+                               href="#"
+                               id="navbarProfilDropdown"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                <img src="{{ asset('../images/webp/person-circle.svg') }}" alt="icone profil">
                                 Profil
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end bg-navbar border-0" aria-labelledby="navbarProfilDropdown">
+                                <li>
+                                    <a class="dropdown-item text-light" href="{{ path('app_profil') }}">Tableau de bord</a>
+                                </li>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <li>
+                                        <a class="dropdown-item text-light" href="{{ path('admin_dashboard') }}">Administration</a>
+                                    </li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider text-light"></li>
+                                <li>
+                                    <a class="dropdown-item text-light" href="{{ path('app_logout') }}">Déconnexion</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- 📱 Mobile : liens simples à la suite -->
+                        <li class="nav-item d-block d-xl-none">
+                            <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_profil' ? 'active' : '' }}"
+                               href="{{ path('app_profil') }}">
+                                Tableau de bord
                             </a>
                         </li>
 
                         {% if is_granted('ROLE_ADMIN') %}
-                            <li class="nav-item">
+                            <li class="nav-item d-block d-xl-none">
                                 <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
-                                   href="{{ path('admin_dashboard') }}"
-                                        {% if app.request.attributes.get('_route') == 'admin_dashboard' %} aria-current="page"{% endif %}>
+                                   href="{{ path('admin_dashboard') }}">
                                     Administration
                                 </a>
                             </li>
                         {% endif %}
 
-                        <li class="nav-item">
+                        <li class="nav-item d-block d-xl-none">
                             <a class="nav-link text-light" href="{{ path('app_logout') }}">Déconnexion</a>
                         </li>
 
@@ -99,3 +126,16 @@
         </div>
     </nav>
 </header>
+
+<style>
+    /* Optionnel : harmonisation visuelle du menu dropdown */
+    .dropdown-menu.bg-navbar {
+        background-color: #121212;
+    }
+    .dropdown-menu .dropdown-item:hover {
+        background-color: rgba(255,255,255,0.1);
+    }
+    .dropdown-divider {
+        border-color: rgba(255,255,255,0.1);
+    }
+</style>
