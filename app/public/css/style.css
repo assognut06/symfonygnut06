@@ -71,6 +71,35 @@ body {
     text-decoration: none;
 }
 
+@media (max-width: 1199px) {
+    .navbar .nav-item .btn-outline-gradient,
+    .navbar .nav-item .btn-neon {
+        display: block;
+        width: 100%;
+        text-align: left;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        padding: 0.5rem 1rem;
+        font-family: Poppins, sans-serif;
+        font-size: 16px;
+        color: white !important;
+        transition: color 0.3s ease;
+    }
+
+    .navbar .nav-item .btn-outline-gradient:hover,
+    .navbar .nav-item .btn-neon:hover {
+        color: var(--Primary) !important;
+        background: none;
+    }
+
+    /* Supprimer les effets dégradés et bordures dans le menu mobile */
+    .navbar .nav-item .btn-outline-gradient::before,
+    .navbar .nav-item .btn-neon::before {
+        content: none !important;
+    }
+}
+
 /* Carousel indicators */
 .carousel-indicators > button {
     border-radius: 50%;
@@ -466,3 +495,47 @@ h3{
 .suggestion-item:hover {
   background-color: #f0f0f0;
 }
+
+.map-responsive {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 56.25%; /* ratio 16:9 */
+    height: 0;
+}
+
+.map-responsive iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* Footer responsive : alignement en colonne sur mobile */
+@media (max-width: 767.98px) {
+    footer .row {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    footer .section_footer {
+        width: 100% !important;
+    }
+
+    footer .section_footer ul {
+        padding-left: 0;
+    }
+
+    footer .d-flex[role="navigation"] {
+        justify-content: center !important;
+    }
+
+    footer .col-6 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+
