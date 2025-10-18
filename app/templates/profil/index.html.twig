@@ -1,136 +1,255 @@
 {# templates/profil/index.html.twig #}
-
 {% extends 'base.html.twig' %}
 
-{% block title %}Profil de l'utilisateur
-{% endblock %}
+{% block title %}Profil de l'utilisateur{% endblock %}
 
 {% block body %}
-	<h2 class="text-center">Profil de utilisateur</h2>
+    <div class="w-100 bg-main pt-5">
+        <div class="container my-4 pt-3 bg-light rounded-5 shadow">
 
-	<div class="text-center my-4">
-    {% if user.profilePicture %}
-        <!-- Photo de profil existante -->
-        <img src="{{ asset('uploads/profilePictures/' ~ user.profilePicture) }}" 
-             class="rounded-circle shadow mb-3" 
-             style="width: 150px; height: 150px; object-fit: cover;">
-        <div>
-            <a href="{{ path('edit_profile_picture') }}" class="btn btn-primary me-2">
-				<i class="bi bi-pencil"></i>
-            </a>
-            <a href="{{ path('delete_profile_picture') }}" onclick="return confirm('êtes vous sûr de vouloir supprimer l\'image?')" class="btn btn-danger">
-				<i class="bi bi-trash" style="color:white"></i>
-            </a>
-        </div>
-    {% else %}
-        <!-- Photo anonyme par défaut -->
-        <img src="{{ asset('images/user_profil.jpg') }}" 
-             class="rounded-circle shadow mb-3" 
-             style="width: 150px; height: 150px; object-fit: cover;">
-        <div>
-            <a href="{{ path('edit_profile_picture') }}" class="btn btn-primary">
-                <i class="fas fa-pencil-alt"></i> Ajouter une photo
-            </a>
-        </div>
-    {% endif %}
-</div>
+            <div class="row flex-column flex-md-row">
+                <!-- ✅ Colonne gauche : navigation -->
+                <div class="col-md-3 col-sm-4 my-2 sidebar-nav">
+                    <ul class="nav nav-tabs flex-column text-center">
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'profile' or app.request.attributes.get('_route') == 'app_profil') ? ' active' : '' }}"
+                               href="{{ path('app_profil') }}">
+                                <img src="{{ asset('images/webp/element-4.svg') }}" alt="Profil" role="img" aria-label="Photo de profil" style="width:16px; height:16px;">
+                                <span class="mt-1" style="font-size: 16px">Profil</span>
+                            </a>
+                        </li>
 
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'orders') ? ' active' : '' }}"
+                               href="{{ path('app_profil_page', {'page': '1', 'donnees': 'orders'}) }}">
+                                <img src="{{ asset('images/webp/cart-frame.svg') }}" alt="Commandes" style="width:16px; height:16px;">
+                                <span class="mt-1" style="font-size: 16px">Commandes</span>
+                            </a>
+                        </li>
 
-	<div class="text-center">
-		<p>Identifiant :
-			{{ user.id }}</p>
-		<p class="fs-4">
-			{{ user.email }} <i class="bi bi-patch-check {{ user.isVerified == 1 ? 'text-success' : 'text-danger' }}"></i> {% if user.isVerified == 0 %}<a href="{{ path('app_verify_email_renew', {'id': user.id}) }}">Demander un nouveau envoi d'email de confirmation</a>{% endif %}</p>
-			{% if data_items['data'] is not empty %}
-				{# {{  dump (data_items['data'][0].payer.firstName) }} #}
-				<p>Nom:
-					{{ data_items['data'][0].payer.lastName }}</br>
-					Prénom : 
-					{{ data_items['data'][0].payer.firstName }}</p>
-					{% if data_items['data'][0].payer.address is defined %}
-					<div class="container">
-						<div class="row">
-						<div class="col-12 col-lg-6  d-flex align-items-center justify-content-center shadow">
-							<p>Adresse:
-							{{ data_items['data'][0].payer.address }}</br>
-							Code postal : 
-							{{ data_items['data'][0].payer.zipCode }}</br>
-							Ville : 
-							{{ data_items['data'][0].payer.city }}</p>
-						</div>
-						<div class="col-12 col-lg-6">
-							<iframe class="shadow" width="100%" height="450" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}&q={{ data_items['data'][0].payer.lastName|replace({' ': '+'})|e }}+{{ data_items['data'][0].payer.firstName|replace({' ': '+'})|e }},{{ data_items['data'][0].payer.address|replace({' ': '+'})|e ~ "+" ~ data_items['data'][0].payer.zipCode|e ~ "+" ~ data_items['data'][0].payer.city|replace({' ': '+'})|e }},{{ data_items['data'][0].payer.country|e }}">
-							</iframe>
-						</div>
-						</div>
-						{% endif %}
-			{% endif %}
-	</div>
-	<!-- Ajoutez plus d'informations de l'utilisateur ici -->
-	<div class="container my-5">
-		
-	<div class="row justify-content-around shadow-lg">
-		<div class="my-2">
-			<ul class="nav nav-tabs">
-				<li class="nav-item">
-					<a class="nav-link{{ (app.request.attributes.get('donnees') == 'orders' or app.request.attributes.get('_route') == 'app_profil') ? ' active' : '' }}" href="{{ path('app_profil_page', {'page': '1', 'donnees': 'orders'}) }}">Mes commandes</a>
-				</li>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link{{ (app.request.attributes.get('donnees') == 'payments') ? ' active' : '' }}" href="{{ path('app_profil_page', {'page': '1', 'donnees': 'payments'}) }}">Mes paiements</a>
-			</li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'payments') ? ' active' : '' }}"
+                               href="{{ path('app_profil_page', {'page': '1', 'donnees': 'payments'}) }}">
+                                <img src="{{ asset('images/webp/cash.svg') }}" alt="Paiements" style="width:16px; height:16px;">
+                                <span class="mt-1" style="font-size: 16px">Paiements</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
-			<!-- <li class="nav-item">
-						                    <a class="nav-link" href="#">Link</a>
-						                </li> -->
-			<li class="nav-item">
-				<a class="nav-link disabled">A venir</a>
-			</li>
-		</ul>
-	</div>
-		{% if data_items is defined and data_items['data'] is not empty %}
-			{% for item in data_items['data']  %}
-				{% if(app.request.attributes.get('donnees') == 'orders' or app.request.attributes.get('_route') == 'app_profil') %}
-					{% include 'profil/orders.html.twig' %}
-				{% elseif app.request.attributes.get('donnees') == 'payments' %}
-					{% include 'profil/payments.html.twig' %}
-				{% endif %}
-			{% endfor %}
-			<div class="col-12 d-flex justify-content-center my-3">
-				<nav aria-label="Commandes sur Gnut 06">
-					<ul class="pagination">
-						{% if data_items['pagination'].pageIndex > 1 %}
-							<li class="page-item">
-								<a class="page-link" href="{{ path('app_profil_page', {'page': data_items['pagination'].pageIndex - 1, 'donnees': app.request.attributes.get('donnees') is defined and app.request.attributes.get('donnees') ? app.request.attributes.get('donnees') : 'orders'}) }}">
-									<span aria-hidden="true">&laquo;</span>
-								</a>
-							</li>
-						{% endif %}
+                <!-- ✅ Colonne droite : contenu dynamique -->
+                <div class="col-md-9 text-start p-3">
 
-						{% for page in 1..data_items['pagination'].totalPages %}
-							<li class="page-item{% if page == data_items['pagination'].pageIndex %} active{% endif %}">
-								<a class="page-link" href="{{ path('app_profil_page', {'page': page, 'donnees': app.request.attributes.get('donnees') is defined and app.request.attributes.get('donnees') ? app.request.attributes.get('donnees') : 'orders'}) }}">{{ page }}</a>
-							</li>
-						{% endfor %}
+                    <p class="fs-5 mb-1">Bienvenue, {{ user.email }}</p>
+                    <p id="date" class="text-muted"></p>
 
-						{% if data_items['pagination'].pageIndex < data_items['pagination'].totalPages %}
-							<li class="page-item">
-								<a class="page-link" href="{{ path('app_profil_page', {'page': data_items['pagination'].pageIndex + 1, 'donnees': app.request.attributes.get('donnees') is defined and app.request.attributes.get('donnees') ? app.request.attributes.get('donnees') : 'orders'}) }}">
-									<span aria-hidden="true">&raquo;</span>
-								</a>
-							</li>
-						{% endif %}
-					</ul>
-				</nav>
-			</div>
-		{% else %}
-			<div class="text-center">
-				<p>Aucune donnees à afficher.</p>
-			</div>
-		{% endif %}
+                    <div class="container rounded mb-4">
+                        <img src="{{ asset('images/webp/degrade.png') }}" class="rounded-top-3 mb-5" style="height: 100px; width: 100%;" alt="">
 
-	</div>
-</div>
-<div class="text-center my-4">
-	<a href="{{ path('app_logout') }}" class="btn btn-danger text-white">Se déconnecter</a>
-</div>{% endblock %}
+                        <div class="d-flex align-items-center">
+                            {% if user.profilePicture %}
+                                <!-- ✅ Photo de profil existante -->
+                                <img src="{{ asset('uploads/profilePictures/' ~ user.profilePicture) }}"
+                                     class="rounded-circle shadow me-3"
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                                <div>
+                                    <a href="{{ path('edit_profile_picture') }}" class="btn btn-primary me-2">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{{ path('delete_profile_picture') }}"
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer l\'image ?')"
+                                       class="btn btn-danger">
+                                        <i class="bi bi-trash" style="color:white"></i>
+                                    </a>
+                                </div>
+                            {% else %}
+                                <!-- ✅ Photo par défaut -->
+                                <div class="d-flex flex-column align-items-start">
+                                    <img src="{{ asset('images/user_profil.jpg') }}"
+                                         class="rounded-circle shadow mb-2"
+                                         style="width: 95px; height: 95px; object-fit: cover;">
+                                    <a href="{{ path('edit_profile_picture') }}"
+                                       class="shadow rounded-circle bg-light d-flex justify-content-center align-items-center linkedin-circle"
+                                       style="width:36px;height:36px;">
+                                        <img src="{{ asset('images/webp/edit-03.svg') }}" style="width:18px;">
+                                    </a>
+                                </div>
+                            {% endif %}
+
+                            <div class="ms-4">
+                                <p class="fs-4">
+                                    {{ user.email }}
+                                    <i class="bi bi-patch-check {{ user.isVerified == 1 ? 'text-success' : 'text-danger' }}"></i>
+                                    {% if user.isVerified == 0 %}
+                                        <a href="{{ path('app_verify_email_renew', {'id': user.id}) }}">Demander un nouvel envoi d'email de confirmation</a>
+                                    {% endif %}
+                                </p>
+                                <p>Identifiant : {{ user.id }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# 🔄 Contenu dynamique selon le menu cliqué #}
+                    {% set section = app.request.attributes.get('donnees') ?? (app.request.attributes.get('_route') == 'app_profil' ? 'profile' : '') %}
+
+                    {% if section == 'profile' %}
+                        <!-- 🧍‍♂️ Formulaire du profil -->
+                        <div class="container my-5 p-4 bg-light rounded shadow">
+                            <form action="#" method="post" class="text-start">
+                                <div class="row">
+                                    <!-- Colonne gauche -->
+                                    <div class="col-12 col-md-6">
+                                        <div class="mb-3">
+                                            <label for="firstName" class="form-label">
+                                                Prénom <span style="color:#FF1DBB">*</span>
+                                            </label>
+                                            <input type="text" class="form-control" id="firstName" name="firstName"
+                                                   placeholder="Entrez votre prénom"
+                                                   value="{{ data_items['data'][0].payer.firstName ?? '' }}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="address" class="form-label">
+                                                Adresse <span style="color:#FF1DBB">*</span>
+                                            </label>
+                                            <input type="text" class="form-control" id="address" name="address"
+                                                   placeholder="Entrez votre adresse"
+                                                   value="{{ data_items['data'][0].payer.address ?? '' }}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="zipCode" class="form-label">
+                                                Code postal <span style="color:#FF1DBB">*</span>
+                                            </label>
+                                            <input type="text" class="form-control" id="zipCode" name="zipCode"
+                                                   placeholder="Entrez votre code postal"
+                                                   value="{{ data_items['data'][0].payer.zipCode ?? '' }}">
+                                        </div>
+                                    </div>
+
+                                    <!-- Colonne droite -->
+                                    <div class="col-12 col-md-6">
+                                        <div class="mb-3">
+                                            <label for="lastName" class="form-label">
+                                                Nom <span style="color:#FF1DBB">*</span>
+                                            </label>
+                                            <input type="text" class="form-control" id="lastName" name="lastName"
+                                                   placeholder="Entrez votre nom"
+                                                   value="{{ data_items['data'][0].payer.lastName ?? '' }}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="city" class="form-label">
+                                                Ville <span style="color:#FF1DBB">*</span>
+                                            </label>
+                                            <input type="text" class="form-control" id="city" name="city"
+                                                   placeholder="Entrez votre ville"
+                                                   value="{{ data_items['data'][0].payer.city ?? '' }}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="phone" class="form-label">
+                                                Numéro de téléphone <span style="color:#FF1DBB">*</span>
+                                            </label>
+                                            <input type="text" class="form-control" id="phone" name="phone"
+                                                   placeholder="Entrez votre numéro de téléphone"
+                                                   value="{{ data_items['data'][0].payer.phone ?? '' }}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ✅ Mention des champs obligatoires -->
+                                <p class="mt-3 text-center" style="color:#FF1DBB;">
+                                    Champs obligatoires <span>*</span>
+                                </p>
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-success px-4">
+                                        <i class="bi bi-save"></i> Enregistrer les modifications
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    {% elseif section == 'orders' %}
+                        <!-- 🛒 Section Commandes -->
+                        <div class="container my-5">
+                            <h4>Mes dernières commandes</h4>
+                            {% if data_items is defined and data_items['data'] is not empty %}
+                                {% for item in data_items['data'] %}
+                                    {% include 'profil/orders.html.twig' %}
+                                {% endfor %}
+                            {% else %}
+                                <p>Aucune commande à afficher.</p>
+                            {% endif %}
+                        </div>
+
+                    {% elseif section == 'payments' %}
+                        <!-- 💶 Section Paiements -->
+                        <div class="container my-5">
+                            <h4>Mes paiements</h4>
+                            {% if data_items is defined and data_items['data'] is not empty %}
+                                {% for item in data_items['data'] %}
+                                    {% include 'profil/payments.html.twig' %}
+                                {% endfor %}
+                            {% else %}
+                                <p>Aucun paiement à afficher.</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div> <!-- Fin colonne droite -->
+            </div> <!-- Fin row -->
+        </div> <!-- Fin container -->
+    </div>
+    <style>
+        /* ✅ Taille de la colonne */
+        .sidebar-nav {
+            flex: 0 0 200px;
+            max-width: 220px;
+        }
+
+        @media (max-width: 991px) {
+            .sidebar-nav {
+                flex: 0 0 180px;
+                max-width: 180px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .sidebar-nav {
+                flex: 0 0 100%;
+                max-width: 100%;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* ✅ Apparence des onglets */
+        .nav-tabs {
+            border-bottom: none !important;
+        }
+
+        .nav-tabs .nav-link {
+            border: none !important;
+            border-radius: 10px;
+            transition: background-color 0.2s ease;
+            font-size: 16px;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #f0f0f0;
+            font-weight: 600;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+
+    <script>
+        // Récupère la date du jour
+        const today = new Date();
+        const options = {year: 'numeric', month: 'long', day: 'numeric'};
+        const formattedDate = today.toLocaleDateString('fr-FR', options);
+        document.getElementById('date').textContent = formattedDate;
+    </script>
+{% endblock %}
