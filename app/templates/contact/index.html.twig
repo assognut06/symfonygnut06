@@ -67,6 +67,24 @@
             </div>
         </section>
 
+        <!-- Section Google Map -->
+        <section class="bg-main py-4" aria-label="Localisation GNUT 06">
+            <div class="container">
+                <div class="map-responsive">
+                    <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2879.535153559595!2d7.27434047682833!3d43.69735505091502!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cddab64640f7c7%3A0x7287fa7d41d32db9!2s9%20Rue%20du%20Pont%20Vieux%2C%2006300%20Nice!5e0!3m2!1sfr!2sfr!4v1731240000000!5m2!1sfr!2sfr"
+                            width="100%"
+                            height="450"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Carte Google Maps de GNUT 06, 9 Rue du Pont-Vieux, Nice">
+                    </iframe>
+                </div>
+            </div>
+        </section>
+
         <!-- Section Formulaire -->
         <section class="bg-main pt-2" aria-labelledby="form-title">
             <div class="container py-5">
@@ -92,9 +110,10 @@
                 {% endif %}
 
                 <div class="m-auto col-12 col-lg-7">
-                    <form class="row g-4 mb-5"
+                    <form class="row g-4 mb-5 needs-validation"
                           method="POST"
                           action="{{ path('app_contact') }}"
+                          novalidate
                           aria-describedby="form-required"
                           aria-label="Formulaire de contact GNUT 06">
 
@@ -108,6 +127,7 @@
                                    placeholder="Prénom"
                                    required
                                    autocomplete="given-name">
+                            <div class="invalid-feedback">Veuillez entrer votre prénom.</div>
                         </div>
 
                         <!-- Nom -->
@@ -120,6 +140,7 @@
                                    placeholder="Nom"
                                    required
                                    autocomplete="family-name">
+                            <div class="invalid-feedback">Veuillez entrer votre nom.</div>
                         </div>
 
                         <!-- Email -->
@@ -132,6 +153,7 @@
                                    placeholder="Email"
                                    required
                                    autocomplete="email">
+                            <div class="invalid-feedback">Veuillez entrer une adresse email valide.</div>
                         </div>
 
                         <!-- Téléphone -->
@@ -142,7 +164,10 @@
                                    name="tel"
                                    class="form-control"
                                    placeholder="+33"
-                                   autocomplete="tel">
+                                   required
+                                   autocomplete="tel"
+                                   pattern="^(\+?\d{1,3}[- ]?)?\d{9,12}$">
+                            <div class="invalid-feedback">Veuillez entrer un numéro de téléphone valide.</div>
                         </div>
 
                         <!-- Type de projet -->
@@ -150,7 +175,7 @@
                             <legend class="text">Type de projet <span class="text-danger">*</span></legend>
 
                             <div class="form-check">
-                                <input type="radio" id="projet-site" name="project_type" value="site_web" class="form-check-input" checked>
+                                <input type="radio" id="projet-site" name="project_type" value="site_web" class="form-check-input" required>
                                 <label for="projet-site" class="form-check-label text">Site web simple</label>
                             </div>
 
@@ -168,11 +193,13 @@
                                 <input type="radio" id="projet-grand" name="project_type" value="grand_projet" class="form-check-input">
                                 <label for="projet-grand" class="form-check-label text">Grands projets</label>
                             </div>
+
+                            <div class="invalid-feedback d-block">Veuillez sélectionner un type de projet.</div>
                         </fieldset>
 
                         <!-- Message -->
                         <div class="col-12">
-                            <label for="message" class="text">Message</label>
+                            <label for="message" class="text">Message <span class="text-danger">*</span></label>
                             <textarea id="message"
                                       name="message"
                                       rows="5"
@@ -180,6 +207,7 @@
                                       placeholder="Tapez votre message..."
                                       required
                                       aria-required="true"></textarea>
+                            <div class="invalid-feedback">Veuillez entrer un message.</div>
                         </div>
 
                         <!-- Captcha -->
@@ -198,6 +226,7 @@
                         </div>
                     </form>
                 </div>
+
             </div>
         </section>
 
@@ -209,6 +238,21 @@
                     document.getElementById('g-recaptcha-response').value = token;
                 });
             });
+
+            (() => {
+                'use strict';
+
+                const forms = document.querySelectorAll('.needs-validation');
+                Array.from(forms).forEach(form => {
+                    form.addEventListener('submit', event => {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            })();
         </script>
     </main>
 {% endblock %}
