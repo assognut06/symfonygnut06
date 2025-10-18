@@ -40,11 +40,11 @@
         <!-- Section étapes -->
         <section class="bg-main py-5" aria-labelledby="section-etapes-title">
             <div class="container text-center">
-                <h2 id="section-etapes-title">
+                <h2 id="section-etapes-title" class="text-start">
                     Découvrez comment naviguer dans les Salles 3D Immersives
                 </h2>
-                <p class="text">
-                    Suivez ces étapes simples pour explorer et interagir dans cet univers numérique accessible à tous.
+                <p class="text text-start">
+                    Les salles 3D immersives offrent une expérience immersive unique. Suivez ces étapes simples pour explorer et interagir dans cet univers numérique accessible à tous. Préparez-vous à découvrir un nouveau monde de possibilités.
                 </p>
 
                 <div class="row g-4 mt-4" role="list">
@@ -54,8 +54,8 @@
                             <img src="{{ asset('images/webp/avatars.webp') }}" class="card-img-top"
                                  alt="Exemple d’avatars personnalisables dans le métavers.">
                             <div class="card-body">
-                                <h3 class="card-title" id="etape1-title">Étape 1 : Créez votre avatar</h3>
-                                <p class="card-text">Personnalisez votre avatar pour refléter votre style.</p>
+                                <h3 class="card-title text-start" id="etape1-title">Étape 1 : Créez votre avatar</h3>
+                                <p class="card-text text-start">Personnalisez votre avatar pour refléter votre style.</p>
                             </div>
                         </div>
                     </article>
@@ -66,8 +66,8 @@
                             <img src="{{ asset('images/webp/hub.webp') }}" class="card-img-top"
                                  alt="Interface d’un environnement virtuel 3D à explorer.">
                             <div class="card-body">
-                                <h3 class="card-title" id="etape2-title">Étape 2 : Explorez l'environnement</h3>
-                                <p class="card-text">Déplacez-vous à travers les différentes zones du métavers.</p>
+                                <h3 class="card-title text-start" id="etape2-title">Étape 2 : Explorez l'environnement</h3>
+                                <p class="card-text text-start">Déplacez-vous à travers les différentes zones du métavers.</p>
                             </div>
                         </div>
                     </article>
@@ -78,8 +78,8 @@
                             <img src="{{ asset('images/webp/openspace.webp') }}" class="card-img-top"
                                  alt="Personnes interagissant dans une salle virtuelle 3D.">
                             <div class="card-body">
-                                <h3 class="card-title" id="etape3-title">Étape 3 : Interagissez</h3>
-                                <p class="card-text">Participez à des activités et discutez avec d'autres utilisateurs.</p>
+                                <h3 class="card-title text-start" id="etape3-title">Étape 3 : Interagissez</h3>
+                                <p class="card-text text-start">Participez à des activités et discutez avec d'autres utilisateurs.</p>
                             </div>
                         </div>
                     </article>
@@ -98,8 +98,8 @@
         <!-- Section témoignages -->
         <section class="bg-main py-5" aria-labelledby="section-temoignages-title">
             <div class="container text-center">
-                <h2 id="section-temoignages-title">Témoignages utilisateurs</h2>
-                <p class="text">
+                <h2 id="section-temoignages-title" class="text-md-center text-start">Témoignages utilisateurs</h2>
+                <p class="text text-md-center text-start">
                     Découvrez ce que nos utilisateurs pensent des Salles 3D Immersives !
                 </p>
 
@@ -122,12 +122,12 @@
                                 </div>
                                 <div class="card-body">
                                     <blockquote>
-                                        <h3 class="card-title" id="temoignage-{{ loop.index }}-title">
+                                        <h3 class="card-title text-md-center text-start" id="temoignage-{{ loop.index }}-title">
                                             “{{ temoignage.texte }}”
                                         </h3>
                                         <footer>
-                                            <p class="card-text mb-0">{{ temoignage.auteur }}</p>
-                                            <p class="card-text"><em>{{ temoignage.role }}</em></p>
+                                            <p class="card-text mb-0 text-md-center text-start">{{ temoignage.auteur }}</p>
+                                            <p class="card-text text-md-center text-start"><em>{{ temoignage.role }}</em></p>
                                         </footer>
                                     </blockquote>
                                 </div>
@@ -143,28 +143,30 @@
             <div class="container text-center">
                 <h2 id="section-faq-title">FAQ</h2>
                 <p class="mb-4 text">
-                    Découvrez les réponses aux questions les plus fréquentes sur le métavers.
+                    Découvrez les réponses aux questions les plus fréquentes sur le 3D Immersif
                 </p>
 
-                <div class="text-start mx-auto" style="max-width: 800px;">
+                <div class="text-start mx-auto mb-5" style="max-width: 800px;">
                     <dl>
-                        <dt class="text">Qu'est-ce que le métavers ?</dt>
-                        <dd class="text">Un espace virtuel immersif où les utilisateurs peuvent interagir, créer et explorer.</dd>
+                        <dt class="text mb-3 mt-5"><strong>Qu'est-ce que le 3D Immersif ?</strong></dt>
+                        <dd class="text">Le 3D Immersif est un espace virtuel où les utilisateurs peuvent interagir, créer et explorer. Il combine la réalité augmentée, la réalité virtuelle et des environnements numériques. C'est un nouveau monde d'opportunités sociales et économiques.</dd>
 
-                        <dt class="text">Comment y accéder ?</dt>
-                        <dd class="text">Avec un casque VR ou un ordinateur et une connexion Internet stable.</dd>
+                        <dt class="text mb-3 mt-5"><strong>Comment y accéder ?</strong></dt>
+                        <dd class="text">Pour accéder au métavers, vous aurez besoin d'un appareil compatible, comme un casque VR ou un ordinateur. Une connexion Internet stable est également essentielle. Inscrivez-vous sur notre plateforme pour commencer votre aventure.</dd>
 
-                        <dt class="text">Quels sont les bénéfices ?</dt>
-                        <dd class="text">Expériences interactives, apprentissage enrichi, nouvelles communautés et opportunités économiques.</dd>
+                        <dt class="text mb-3 mt-5"><strong>Quels sont les bénéfices ?</strong></dt>
+                        <dd class="text">Le métavers offre des expériences interactives et immersives qui enrichissent l'apprentissage et le divertissement. Il permet également de créer des communautés et de développer des compétences numériques. De plus, il ouvre des possibilités économiques inédites.</dd>
 
-                        <dt class="text">Est-ce sécurisé ?</dt>
-                        <dd class="text">Oui, avec des protocoles robustes et des conseils de navigation sécurisée.</dd>
+                        <dt class="text mb-3 mt-5"><strong>Est-ce sécurisé ?</strong></dt>
+                        <dd class="text">La sécurité est une priorité dans le métavers. Nous mettons en place des protocoles de sécurité robustes pour protéger vos données et votre expérience. Restez vigilant et suivez nos conseils pour naviguer en toute sécurité.</dd>
 
-                        <dt class="text">Puis-je créer du contenu ?</dt>
-                        <dd class="text">Absolument ! Vous pouvez créer et partager vos objets, environnements et expériences.</dd>
+                        <dt class="text mb-3 mt-5"><strong>Puis-je créer du contenu ?</strong></dt>
+                        <dd class="text">Oui, le métavers encourage la créativité et la création de contenu. Vous pouvez concevoir des objets, des environnements et même des expériences interactives. Partagez vos créations avec d'autres utilisateurs et collaborez sur des projets passionnants.</dd>
                     </dl>
                 </div>
 
+                <h3>Des questions supplémentaires?</h3>
+                <p class="text">N'hésitez pas à nous contacter pour plus d'informations.</p>
                 <a href="{{ path('app_contact') }}"
                    class="btn-outline-gradient btn-sm text-white mt-3 {{ app.request.attributes.get('_route') == 'app_contact' ? ' active' }}"
                    aria-label="Contacter GNUT 06 pour plus d’informations sur le métavers">
