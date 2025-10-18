@@ -7,29 +7,35 @@
     <!-- Section Hero -->
     <section class="bg-main w-100 py-5" role="region" aria-labelledby="hero-title">
         <div class="container row align-items-center gx-5 m-auto">
-            <header class="col-md-6 text-center text-md-start">
-                <h1 id="hero-title" class="gradient-text text-main">GNUT 06</h1>
-                <h2>L’inclusion par la <br> Technologie</h2>
-                <p class="text">
+            <figure class="col-md-6 text-center order-1 order-md-2">
+                <img src="{{ asset('images/webp/immersion-hero-accueil.webp') }}"
+                     class="img-fluid rounded-4"
+                     alt="Personne utilisant une technologie immersive GNUT 06">
+            </figure>
+
+            <header class="col-md-6 text-center text-md-start order-2 order-md-1">
+                <h1 id="hero-title" class="gradient-text text-main text-start">GNUT 06</h1>
+                <h2 class="text-start">L’inclusion par la <br> Technologie</h2>
+                <p class="text text-start">
                     Gnut 06 est une association engagée pour l’inclusion des personnes en situation de handicap à travers l’innovation numérique. Découvrez nos actions, nos projets en réalité virtuelle et rejoignez-nous pour construire un impact social durable.
                 </p>
-                <a href="{{ path('app_a_propos') }}" class="btn-neon text-white mt-3" role="button">Découvrez GNUT 06</a>
+                <a href="{{ path('app_a_propos') }}" class="btn-neon text-white mt-3" role="button">
+                    Découvrez GNUT 06
+                </a>
             </header>
-            <figure class="col-md-6 text-center">
-                <img src="{{ asset('images/webp/immersion-hero-accueil.webp') }}" class="img-fluid rounded-4" alt="Personne utilisant une technologie immersive GNUT 06">
-            </figure>
         </div>
     </section>
+
 
     <!-- Expérience immersive -->
     <section class="bg-main w-100 py-5" role="region" aria-labelledby="immersive-title">
         <div class="container row align-items-center gx-5 m-auto">
-            <figure class="col-md-6 text-center mb-4 mb-md-0">
+            <figure class="col-md-6 text-center mb-4 mb-md-0 order-2 order-md-1">
                 <img src="{{ asset('images/webp/immersion-group.webp') }}" class="img-fluid" alt="Groupe de personnes vivant une immersion en réalité virtuelle">
             </figure>
-            <article class="col-md-6 text-center text-md-start">
-                <h2 id="immersive-title" class="text-main">Vivez une <span class="gradient-text">expérience immersive</span> inoubliable !</h2>
-                <p class="text">Réservez votre séance de réalité virtuelle de 30 minutes à partir de 19€</p>
+            <article class="col-md-6 text-center text-md-start order-1 order-md-2">
+                <h2 id="immersive-title" class="text-main text-start">Vivez une <span class="gradient-text">expérience immersive</span> inoubliable !</h2>
+                <p class="text text-start">Réservez votre séance de réalité virtuelle de 30 minutes à partir de 19€</p>
                 <nav class="d-flex flex-column flex-sm-row gap-3 mt-3 justify-content-center justify-content-md-start" aria-label="Liens vers réservation et découverte">
                     <a href="{{ path('app_billetteries') }}" class="btn-outline-gradient text-white" role="button">Réserver une séance</a>
                     <a href="https://framevr.io/handi-metavers" class="btn-outline-gradient text-white" role="button">Découvrez Handi-3D</a>
@@ -84,8 +90,8 @@
     <!-- Salles 3D -->
     <section class="bg-main w-100 py-5" role="region" aria-labelledby="rooms-title">
         <div class="container text-center text-md-start">
-            <h2 id="rooms-title">Découvrez nos Salles 3D Immersives</h2>
-            <p class="text">Plongez dans une expérience immersive unique qui transforme votre vision du monde numérique. Explorez les possibilités infinies et connectez-vous avec d'autres utilisateurs dans notre espace virtuel.</p>
+            <h2 id="rooms-title" class="text-start">Découvrez nos Salles 3D Immersives</h2>
+            <p class="text text-start">Plongez dans une expérience immersive unique qui transforme votre vision du monde numérique. Explorez les possibilités infinies et connectez-vous avec d'autres utilisateurs dans notre espace virtuel.</p>
             <a href="{{ path('app_metavers') }}" class="btn-neon text-white mt-3" role="button">Explorer nos Salles 3D</a>
         </div>
     </section>
@@ -158,12 +164,16 @@
     <!-- Notre équipe -->
     <section class="bg-main w-100 py-5" role="region" aria-labelledby="team-title">
         <div class="container text-white">
+            <div class="text-center mb-5">
+
             <h2 id="team-title" class="text-center">Notre Équipe Tech</h2>
             <p class="text text-center">
                 Voici quelques-uns de nos bénévoles talentueux qui ont joué un rôle clé dans la conception,
                 le développement et la communication de nos projets web.
                 Comme eux, venez contribuer à une cause engageante et épanouissante.
             </p>
+            <a href="{{ path('app_adhesion') }}" class="btn-outline-gradient mb-5 m-auto" role="button">J'adhère</a>
+            </div>
 
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" role="list">
                 <article class="col d-flex" role="listitem">
