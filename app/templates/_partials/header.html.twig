@@ -13,6 +13,19 @@
 <noscript>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </noscript>
-<link rel="preload" href="{{ asset('videos/banner.mp4') }}" as="video" type="video/mp4">
+
+{# Script de fallback pour assurer le chargement #}
+<script>
+// Fallback si preload échoue
+setTimeout(function() {
+    var link = document.querySelector('link[href*="style.css"]');
+    if (!link || link.rel !== 'stylesheet') {
+        var fallbackLink = document.createElement('link');
+        fallbackLink.rel = 'stylesheet';
+        fallbackLink.href = '{{ asset("css/style.css") }}';
+        document.head.appendChild(fallbackLink);
+    }
+}, 100);
+</script>
 
 
