@@ -1,0 +1,356 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}GNUT 06 participe à la Journée Nationale des Aidants
+{% endblock %}
+
+{% block body %}
+	    <style>
+        body {
+            background: var(--Color-Background, linear-gradient(180deg, #010208 16%, #010206 21%, #040008 25%, #010101 30%, #010101 34%, #010101 36%, #010101 100%));
+        }
+        h1 {
+            font-family: Orbitron;
+            font-size: clamp(24px, 5vw, 40px); /* Responsive font size */
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(20px, 4vw, 32px); /* Responsive font size */
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+        h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(18px, 3vw, 24px); /* Responsive font size */
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+        p {
+            color: #FFF;
+            font-family: Poppins;
+            font-size: clamp(16px, 2.5vw, 20px); /* Responsive font size */
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1.6; /* Relative line height */
+        }
+        .slogan {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(20px, 4vw, 32px); /* Responsive font size */
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            background: var(--2, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .icon-feature {
+            font-size: 2.5rem;
+            color: #fff;
+            background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 15px;
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(18px, 3vw, 24px); /* Responsive font size */
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+
+        .btn-primary {
+            border-radius: 5px;
+            background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+        }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+        .btn-success {
+            border-radius: 5px;
+            background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+        }
+        .badge {
+            background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+        }
+
+        /* Responsive video container */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        /* Responsive buttons */
+        @media (max-width: 768px) {
+            .btn-lg {
+                font-size: 1rem;
+                padding: 0.75rem 1.5rem;
+            }
+            
+            .d-flex.gap-2 {
+                flex-direction: column;
+                gap: 0.5rem !important;
+            }
+            
+            .d-flex.gap-2 .btn {
+                width: 100%;
+            }
+        }
+
+        /* Responsive spacing */
+        @media (max-width: 576px) {
+            .container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+            .col-md-8.offset-md-2 {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+    </style>
+	<div class="text-center mb-4">
+		<picture class="d-block mx-auto" style="max-width:100%;">
+			<source type="image/webp" srcset="{{ asset('images/webp/GNUT_06-participe_a_la_Journee_Nationale_des_Aidants.webp') }}" sizes="(max-width: 768px) 100vw, 50vw">
+			<img src="{{ asset('images/webp/GNUT_06-participe_a_la_Journee_Nationale_des_Aidants.webp') }}"
+					 alt="GNUT 06 participe à la Journée Nationale des Aidants"
+					 class="img-fluid rounded"
+					 loading="lazy"
+					 style="width:100%;height:auto;object-fit:cover;">
+		</picture>
+	</div>
+	<div class="container mt-5">
+		<div class="row">
+			<div class="col-md-8 offset-md-2">
+				<h1 class="text-center mb-4 text-primary">Journée Nationale des Aidants</h1>
+				<div class="mb-4 text-center">
+					<video id="event-video" class="img-fluid rounded shadow-sm" autoplay controls muted loop playsinline preload="metadata" poster="{{ asset('images/webp/GNUT_06-participe_a_la_Journee_Nationale_des_Aidants.webp') }}">
+						<source src="{{ asset('videos/Mondes_virtuels,_liens_reels.mp4') }}" type="video/mp4">
+						Votre navigateur ne supporte pas la vidéo.
+					</video>
+					<div class="mt-2 d-flex justify-content-center gap-2">
+						<a href="{{ asset('videos/Mondes_virtuels,_liens_reels.mp4') }}" download class="btn btn-sm btn-outline-light" aria-label="Télécharger la vidéo">Télécharger la vidéo</a>
+						<button id="toggle-video-sound" type="button" class="btn btn-sm btn-success" aria-pressed="false">Activer le son</button>
+					</div>
+				</div>
+				<h1 class="mb-4 text-center text-primary">L'Association Gnut 06 et l'Inclusion par la Technologie Immersive 🤝</h1>
+				<p class="fs-5">
+					<strong>Gnut 06</strong>
+					🧑‍💻, présidée par Gérald COL, est une association niçoise engagée pour l’inclusion sociale des personnes en situation de handicap grâce aux technologies innovantes : intelligence artificielle 🤖, réalité virtuelle 🥽, réalité augmentée 🪄 et réalité mixte 🌐.
+				</p>
+				<p class="fs-5">
+					Notre mission : exploiter ces technologies à chaque étape de notre développement pour optimiser nos projets et renforcer l’impact de nos actions. Nous proposons des
+					<strong>séances de réalité virtuelle</strong>
+					accessibles à tous 🆓, des
+					<strong>visites en milieu médical</strong>
+					🏥 pour offrir des moments d’évasion, et des
+					<strong>stages d’initiation aux nouvelles technologies</strong>
+					🚀 pour développer les compétences et l’autonomie.
+				</p>
+				<p class="fs-5">
+					<strong>Projet Handi-3D</strong>
+					: En partenariat avec Loisir Séjours Côte d’Azur, nous organisons des séances de RV dédiées aux personnes en situation de handicap, favorisant l’évasion 🌈, le développement cognitif 🧠 et la création de liens sociaux 🤗.
+				</p>
+				<p class="fs-5">
+					Nous utilisons principalement des casques
+					<strong>Meta Quest 3s</strong>
+					🥽, offrant autonomie, qualité visuelle immersive et réalité mixte avancée.
+				</p>
+				<h2 class="mt-5 text-center text-secondary">Reconnaissance et Soutien aux Aidants 💙</h2>
+				<p class="fs-5">
+					La
+					<strong>Journée Nationale des Aidants</strong>
+					(JNA) 🌟 met en lumière le rôle essentiel des aidants familiaux, souvent invisibles mais indispensables. Gnut 06 participe activement à cet événement, en partenariat avec le CCAS de Nice et Loisir Séjours Côte d’Azur, pour sensibiliser et soutenir les aidants.
+				</p>
+				<p class="fs-5">
+					Les initiatives comme l’<strong>A2MCL</strong>
+					et l’<strong>Adresse des Aidants de Nice</strong>
+					offrent écoute 👂, accompagnement 🤲, soutien psychologique 🧑‍⚕️ et informations pratiques 📚 pour rompre l’isolement et prévenir l’épuisement des aidants.
+				</p>
+				<ul class="fs-5 text-light">
+					<li>🌟 Valoriser le rôle des aidants et sensibiliser la société à leurs réalités.</li>
+					<li>📢 Informer sur les droits, aides et dispositifs de répit.</li>
+					<li>🤝 Favoriser l’échange, la mise en réseau et l’accès à des temps de détente et de bien-être.</li>
+				</ul>
+				<div class="mt-4 text-start">
+					<label for="audio-gnut06" class="form-label">Écouter la présentation :</label>
+					<audio id="audio-gnut06" controls preload="metadata" class="w-100" aria-label="Audio: Réalité Virtuelle et Aidants">
+						<source src="{{ asset('audios/Realite_Virtuelle_et_Aidants__L_Inclusion_Sociale_entre_Tech_et_Soutien_Essentiel.m4a') }}" type="audio/mp4">
+						Votre navigateur ne supporte pas la lecture audio.
+					</audio>
+					<div class="mt-2 small d-flex gap-2">
+						<a href="{{ asset('audios/Realite_Virtuelle_et_Aidants__L_Inclusion_Sociale_entre_Tech_et_Soutien_Essentiel.m4a') }}" download class="btn btn-sm btn-outline-light">Télécharger l'audio</a>
+						<button id="toggle-audio" type="button" class="btn btn-sm btn-success">Play / Pause</button>
+					</div>
+				</div>
+			</div>
+			<p class="fs-5">
+				<strong>Ensemble, construisons une société plus solidaire et inclusive 🤗, où la technologie immersive et le soutien aux aidants ouvrent de nouvelles perspectives pour le bien-être de tous.</strong>
+			</p>
+
+			<div class="text-center mt-4">
+				<a href="https://calendly.com/gnut-gnut06/journee-nationale-des-aidants?back=1&month=2025-10" target="_blank" class="btn btn-primary btn-lg">Réservez votre place</a>
+			</div>
+		</div>
+		<div class="mt-4 text-center">
+			<div class="card card-body bg-transparent border-0">
+				<h3 class="card-title text-light">Vous voulez aider ?</h3>
+				<p class="card-text text-light">Participez en tant que bénévole lors de la Journée Nationale des Aidants.</p>
+				<a href="{{ path('app_benevole_jna') }}" class="btn btn-primary btn-lg" role="button" aria-label="Devenir bénévole à la JNA">Je veux être bénévole</a>
+			</div>
+		</div>
+	</div>
+</div>{% endblock %}{% block javascripts %}
+ <script>
+								// Smooth scroll for anchor links
+								document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+									anchor.addEventListener('click', function (e) {
+										e.preventDefault();
+										document.querySelector(this.getAttribute('href')).scrollIntoView({
+											behavior: 'smooth'
+										});
+									});
+								});
+		
+								// Attempt to autoplay the muted video on page load (modern browsers allow muted autoplay)
+								window.addEventListener('load', function () {
+									var v = document.getElementById('event-video');
+									if (v) {
+										var p = v.play();
+										if (p !== undefined) {
+											p.catch(function () {
+												// If autoplay is blocked, ensure muted and try again
+												v.muted = true;
+												v.play().catch(function () {});
+											});
+										}
+									}
+								});
+                                
+							</script>
+{{ parent() }}
+ <script>
+document.addEventListener('DOMContentLoaded', function () {
+    var video = document.getElementById('event-video');
+    var audio = document.getElementById('audio-gnut06'); // <-- Correction ici
+    var btnVideo = document.getElementById('toggle-video-sound');
+    var btnAudio = document.getElementById('toggle-audio');
+    var ignoreNextAudioPlay = false;
+
+    function updateVideoBtn() {
+        if (btnVideo) {
+            btnVideo.textContent = video.muted ? 'Activer le son' : 'Couper le son';
+            btnVideo.setAttribute('aria-pressed', (!video.muted).toString());
+        }
+    }
+    function updateAudioBtn() {
+        if (btnAudio) {
+            btnAudio.textContent = audio.paused ? 'Play / Pause' : 'Pause';
+        }
+    }
+
+    if (video && audio) {
+        audio.addEventListener('play', function () {
+            if (ignoreNextAudioPlay) {
+                ignoreNextAudioPlay = false;
+                return;
+            }
+            if (!video.paused && !video.muted) {
+                video.muted = true;
+                updateVideoBtn();
+            }
+        });
+
+        video.addEventListener('play', function () {
+            if (!audio.paused) {
+                ignoreNextAudioPlay = true;
+                audio.pause();
+                updateAudioBtn();
+            }
+        });
+
+        if (btnVideo) {
+            btnVideo.addEventListener('click', function(){
+                if (video.muted) {
+                    video.muted = false;
+                    if (!audio.paused) {
+                        ignoreNextAudioPlay = true;
+                        audio.pause();
+                        updateAudioBtn();
+                    }
+                } else {
+                    video.muted = true;
+                }
+                updateVideoBtn();
+            });
+        }
+
+        if (btnAudio) {
+            btnAudio.addEventListener('click', function () {
+                if (audio.paused) {
+                    audio.play().catch(function(){});
+                } else {
+                    audio.pause();
+                }
+                updateAudioBtn();
+            });
+        }
+
+        updateVideoBtn();
+        updateAudioBtn();
+
+        audio.addEventListener('play', updateAudioBtn);
+        audio.addEventListener('pause', updateAudioBtn);
+    }
+
+    // Initialisation Bootstrap tooltips (si besoin)
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    window.addEventListener('load', function () {
+        var v = document.getElementById('event-video');
+        if (v) {
+            var p = v.play();
+            if (p !== undefined) {
+                p.catch(function () {
+                    v.muted = true;
+                    v.play().catch(function () {});
+                });
+            }
+        }
+    });
+});
+</script>{% endblock %}
