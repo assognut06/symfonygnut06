@@ -1,85 +1,179 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Plongez dans un univers inclusif : découvrez le métavers Gnut 06!
-{% endblock %}
+{% block title %}Plongez dans un univers inclusif : découvrez le métavers Gnut 06!{% endblock %}
 
 {% block body %}
-	<div class="container">
-		<header>
-			<h1 class="display-4 text-center text-primary">Plongez dans un univers inclusif : découvrez le métavers Gnut 06</h1>
-			<p class="lead text-center fs-5">Un monde virtuel créé par et pour tous</p>
-		</header>
+    <main id="main-content" role="main" aria-labelledby="metavers-title">
 
-		<section>
-			<div class="row">
-				<div class="col-md-6 d-flex align-items-center">
-					<img src="{{ asset('images/matavers001.png') }}" class="img-fluid rounded" alt="Image de votre métavers">
-				</div>
-				<div class="col-md-6">
-					<p class="fs-4">Imaginez un espace où les frontières s'effacent et où chacun peut s'exprimer librement.
-						<br>
-						Bienvenue dans le métavers Gnut 06, un univers virtuel conçu pour favoriser l'inclusion et la diversité.
-						<br>
-						Créé par l'association Gnut 06, ce projet novateur offre une expérience immersive unique, accessible à tous, et tout particulièrement aux personnes en situation de handicap.
-						<br>
-						En utilisant la technologie de pointe de Framevr.io, nous avons construit un environnement virtuel où l'innovation rencontre l'humain.</p>
-				</div>
-			</div>
-		</section>
+        <!-- Section immersion -->
+        <section class="bg-main py-5" aria-labelledby="section-immersion-title">
+            <div class="container row align-items-center g-5 m-auto">
+                <div class="col-lg-6">
+                    <header>
+                        <h1 id="metavers-title" class="visually-hidden">
+                            Plongez dans un univers inclusif : découvrez le métavers GNUT 06
+                        </h1>
+                        <h2 id="section-immersion-title">
+                            Les avantages incroyables du 3D Immersif pour votre expérience en ligne.
+                        </h2>
+                    </header>
 
-		<section>
-			<h2 class="text-secondary">Un métavers conçu par tous pour tous</h2>
-			<p class="fs-4">Ce qui rend notre métavers si spécial, c'est qu'il est conçu et animé par des personnes en situation de handicap. 
-				        "Nous ne voulons pas seulement parler d'inclusion, nous voulons la vivre et la construire ensemble", affirme Gérald Col. 
-				        Grâce à leur expertise et leur vision, nous avons créé un espace où chacun se sent valorisé et respecté.</p>
-			<p class="fs-4">Découvrez dès maintenant :</p>
-			<ul>
-				<li class="fs-4">Un espace d'exposition où sont présentées les actions de l'association Gnut 06.</li>
-				<li class="fs-4">Une salle de réunion virtuelle ouverte à tous pour échanger et collaborer.</li>
-				<li class="fs-4">Une salle de concert pour vivre des expériences culturelles uniques.</li>
-				<li class="fs-4">Une académie en ligne proposant de nombreuses salles de cours et de réunion pour favoriser l'apprentissage et le développement personnel.</li>
-			</ul>
-		</section>
+                    <p class="text">
+                        Profitez dès aujourd’hui d’une immersion totale dans des espaces entièrement reconstitués en 3D et
+                        échangez en temps réel avec d’autres utilisateurs. Bien plus qu’une vidéoconférence classique, une
+                        salle 3D donne une véritable sensation de présence simultanée et offre une nouvelle manière
+                        d’appréhender le monde virtuel.
+                    </p>
+                    <p class="text">
+                        Explorez ces environnements virtuels riches et engageants et collaborez sans limite !
+                    </p>
+                </div>
 
-		<section>
-			<h2 class="text-secondary">Pourquoi choisir
-				<a href="https://framevr.io/" target="_blank">Framevr.io</a>
-				?</h2>
-			<div class="row">
-				<div class="col-md-6">
-					<p class="fs-4">Pour créer notre métavers, nous avons choisi la plateforme Framevr.io pour ses nombreux avantages :</p>
-					<ul>
-						<li class="fs-4">
-							<strong>Une grande facilité d'utilisation :</strong>
-							Permettant à chacun de participer à la création de l'espace virtuel.</li>
-						<li class="fs-4">
-							<strong>Une accessibilité maximale :</strong>
-							Grâce à des fonctionnalités adaptées aux personnes en situation de handicap (sous-titres, commandes vocales, etc.).</li>
-						<li class="fs-4">
-							<strong>Une grande flexibilité :</strong>
-							Pour organiser des événements variés et adaptés à tous les publics.</li>
-						<li class="fs-4">
-							<strong>Une immersion totale :</strong>
-							Offrant une expérience utilisateur réaliste et immersive.</li>
-					</ul>
-				</div>
-				<div class="col-md-6 text-center">
-					<img src="data:image/png;base64,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" alt="Logo de Framevr.io" class="img-fluid">
-				</div>
-			</div>
+                <div class="col-lg-6 text-center">
+                    <img src="{{ asset('images/webp/immersion-2.webp') }}"
+                         class="img-fluid rounded"
+                         alt="Un utilisateur explorant un environnement immersif en 3D, illustrant l’expérience GNUT 06.">
+                </div>
+            </div>
+        </section>
 
-			<section>
-				<h2 class="text-secondary">Rejoignez notre communauté !</h2>
-				<p class="fs-4">Nous vous invitons à découvrir notre métavers et à participer à cette aventure humaine. Ensemble, construisons un monde plus inclusif et solidaire.</p>
-				<div class="text-center">
-					<a href="https://framevr.io/vfl-ivc-bky" class="btn btn-warning position-relative fs-2 text-light" target="_blank">
-						Explorer le métavers
-						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-							New
-							<span class="visually-hidden">unread messages</span>
-						</span>
-					</a>
-				</div>
-			</section>
-		</div>
-	{% endblock %}
+        <!-- Section étapes -->
+        <section class="bg-main py-5" aria-labelledby="section-etapes-title">
+            <div class="container text-center">
+                <h2 id="section-etapes-title" class="text-start">
+                    Découvrez comment naviguer dans les Salles 3D Immersives
+                </h2>
+                <p class="text text-start">
+                    Les salles 3D immersives offrent une expérience immersive unique. Suivez ces étapes simples pour explorer et interagir dans cet univers numérique accessible à tous. Préparez-vous à découvrir un nouveau monde de possibilités.
+                </p>
+
+                <div class="row g-4 mt-4" role="list">
+                    <!-- Étape 1 -->
+                    <article class="col-md-4" role="listitem" aria-labelledby="etape1-title">
+                        <div class="card text-white bg-black h-100">
+                            <img src="{{ asset('images/webp/avatars.webp') }}" class="card-img-top"
+                                 alt="Exemple d’avatars personnalisables dans le métavers.">
+                            <div class="card-body">
+                                <h3 class="card-title text-start" id="etape1-title">Étape 1 : Créez votre avatar</h3>
+                                <p class="card-text text-start">Personnalisez votre avatar pour refléter votre style.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Étape 2 -->
+                    <article class="col-md-4" role="listitem" aria-labelledby="etape2-title">
+                        <div class="card text-white bg-black h-100">
+                            <img src="{{ asset('images/webp/hub.webp') }}" class="card-img-top"
+                                 alt="Interface d’un environnement virtuel 3D à explorer.">
+                            <div class="card-body">
+                                <h3 class="card-title text-start" id="etape2-title">Étape 2 : Explorez l'environnement</h3>
+                                <p class="card-text text-start">Déplacez-vous à travers les différentes zones du métavers.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Étape 3 -->
+                    <article class="col-md-4" role="listitem" aria-labelledby="etape3-title">
+                        <div class="card text-white bg-black h-100">
+                            <img src="{{ asset('images/webp/openspace.webp') }}" class="card-img-top"
+                                 alt="Personnes interagissant dans une salle virtuelle 3D.">
+                            <div class="card-body">
+                                <h3 class="card-title text-start" id="etape3-title">Étape 3 : Interagissez</h3>
+                                <p class="card-text text-start">Participez à des activités et discutez avec d'autres utilisateurs.</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <a href="https://framevr.io/vfl-ivc-bky"
+                   class="btn-neon btn-sm text-white mt-4"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Démarrer une immersion 3D dans FrameVR.io (ouvre un nouvel onglet)">
+                    Démarrer une immersion
+                </a>
+            </div>
+        </section>
+
+        <!-- Section témoignages -->
+        <section class="bg-main py-5" aria-labelledby="section-temoignages-title">
+            <div class="container text-center">
+                <h2 id="section-temoignages-title" class="text-md-center text-start">Témoignages utilisateurs</h2>
+                <p class="text text-md-center text-start">
+                    Découvrez ce que nos utilisateurs pensent des Salles 3D Immersives !
+                </p>
+
+                <div class="row g-4 mt-4" role="list">
+                    {% for temoignage in [
+                        {texte: 'Une belle aventure qui aide les personnes en situation de handicap à accéder à un nouveau monde.', auteur: 'Luna', role: 'Éducatrice'},
+                        {texte: 'Super! ça permet de jouer et de ne pas s’ennuyer', auteur: 'Rudolphe', role: 'Personne handicapée'},
+                        {texte: 'J’ai adoré une activité comme ça !', auteur: 'Aurélie', role: 'Personne handicapée'}
+                    ] %}
+                        <article class="col-md-4" role="listitem" aria-labelledby="temoignage-{{ loop.index }}-title">
+                            <div class="card text-white bg-black h-100">
+                                <div class="stars py-2" aria-label="Évaluation de 5 étoiles">
+                                    {% for i in 1..5 %}
+                                        <img src="{{ asset('images/webp/star.svg') }}"
+                                             alt=""
+                                             width="20"
+                                             height="20"
+                                             aria-hidden="true">
+                                    {% endfor %}
+                                </div>
+                                <div class="card-body">
+                                    <blockquote>
+                                        <h3 class="card-title text-md-center text-start" id="temoignage-{{ loop.index }}-title">
+                                            “{{ temoignage.texte }}”
+                                        </h3>
+                                        <footer>
+                                            <p class="card-text mb-0 text-md-center text-start">{{ temoignage.auteur }}</p>
+                                            <p class="card-text text-md-center text-start"><em>{{ temoignage.role }}</em></p>
+                                        </footer>
+                                    </blockquote>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Section FAQ -->
+        <section class="bg-main py-5" aria-labelledby="section-faq-title">
+            <div class="container text-center">
+                <h2 id="section-faq-title">FAQ</h2>
+                <p class="mb-4 text">
+                    Découvrez les réponses aux questions les plus fréquentes sur le 3D Immersif
+                </p>
+
+                <div class="text-start mx-auto mb-5" style="max-width: 800px;">
+                    <dl>
+                        <dt class="text mb-3 mt-5"><strong>Qu'est-ce que le 3D Immersif ?</strong></dt>
+                        <dd class="text">Le 3D Immersif est un espace virtuel où les utilisateurs peuvent interagir, créer et explorer. Il combine la réalité augmentée, la réalité virtuelle et des environnements numériques. C'est un nouveau monde d'opportunités sociales et économiques.</dd>
+
+                        <dt class="text mb-3 mt-5"><strong>Comment y accéder ?</strong></dt>
+                        <dd class="text">Pour accéder au métavers, vous aurez besoin d'un appareil compatible, comme un casque VR ou un ordinateur. Une connexion Internet stable est également essentielle. Inscrivez-vous sur notre plateforme pour commencer votre aventure.</dd>
+
+                        <dt class="text mb-3 mt-5"><strong>Quels sont les bénéfices ?</strong></dt>
+                        <dd class="text">Le métavers offre des expériences interactives et immersives qui enrichissent l'apprentissage et le divertissement. Il permet également de créer des communautés et de développer des compétences numériques. De plus, il ouvre des possibilités économiques inédites.</dd>
+
+                        <dt class="text mb-3 mt-5"><strong>Est-ce sécurisé ?</strong></dt>
+                        <dd class="text">La sécurité est une priorité dans le métavers. Nous mettons en place des protocoles de sécurité robustes pour protéger vos données et votre expérience. Restez vigilant et suivez nos conseils pour naviguer en toute sécurité.</dd>
+
+                        <dt class="text mb-3 mt-5"><strong>Puis-je créer du contenu ?</strong></dt>
+                        <dd class="text">Oui, le métavers encourage la créativité et la création de contenu. Vous pouvez concevoir des objets, des environnements et même des expériences interactives. Partagez vos créations avec d'autres utilisateurs et collaborez sur des projets passionnants.</dd>
+                    </dl>
+                </div>
+
+                <h3>Des questions supplémentaires?</h3>
+                <p class="text">N'hésitez pas à nous contacter pour plus d'informations.</p>
+                <a href="{{ path('app_contact') }}"
+                   class="btn-outline-gradient btn-sm text-white mt-3 {{ app.request.attributes.get('_route') == 'app_contact' ? ' active' }}"
+                   aria-label="Contacter GNUT 06 pour plus d’informations sur le métavers">
+                    Nous contacter
+                </a>
+            </div>
+        </section>
+
+    </main>
+{% endblock %}

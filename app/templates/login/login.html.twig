@@ -1,50 +1,162 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion
-{% endblock %}
+{% block title %}Connexion - GNUT 06{% endblock %}
 
 {% block body %}
-	<div class="container mt-5">
-		<div class="row justify-content-center">
+    <main id="main-content" role="main" aria-labelledby="connexion-title">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
 
-			<div class="col-md-6">
-				<form method="post" class="needs-validation" novalidate>
-					{% if error %}
-						<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-					{% endif %}
+                <div class="col-md-6">
 
-					{% if app.user %}
-						<div class="mb-3">
-							Vous êtes connecté en tant que
-							{{ app.user.userIdentifier }},
-							<a href="{{ path('app_logout') }}">Déconnexion</a>
-						</div>
-					{% endif %}
+                    <!-- Formulaire de connexion -->
+                    <form method="post"
+                          class="needs-validation"
+                          novalidate
+                          aria-describedby="connexion-infos"
+                          aria-label="Formulaire de connexion GNUT 06">
 
-					<h1 class="h3 mb-3 fw-normal">Veuillez vous connecter</h1>
-					<div class="card p-4 shadow">
-						<div class="form-floating mb-3">
-							<input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" placeholder="name@example.com" autocomplete="email" required autofocus>
-							<label for="username">Email</label>
-						</div>
-						<div class="form-floating mb-3">
-							<input type="password" name="_password" id="password" class="form-control" placeholder="Password" autocomplete="current-password" required>
-							<label for="password">Mot de passe</label>
-						</div>
+                        <!-- Messages d’erreur -->
+                        {% if error %}
+                            <div class="alert alert-danger text-center"
+                                 role="alert"
+                                 aria-live="assertive">
+                                {{ error.messageKey|trans(error.messageData, 'security') }}
+                            </div>
+                        {% endif %}
 
-						<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"><!-- Uncomment below for remember me functionality -->
-						<!-- <div class="checkbox mb-3">
-												            <label>
-												                <input type="checkbox" name="_remember_me"> Se souvenir de moi
-												            </label>
-												        </div> -->
-							<button class="w-100 btn btn-lg btn-primary" type="submit"> Se connecter</button>
-					</form>
-					<div class="my-4 text-center">
-						<a href="{{ path('app_forgot_password_request') }}">Mot de passe perdu</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger text-center"
+                                 role="alert"
+                                 aria-live="assertive">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+
+                        {% if app.session.get('_flash_error') %}
+                            <div class="alert alert-danger text-center"
+                                 role="alert"
+                                 aria-live="assertive">
+                                {{ app.session.get('_flash_error') }}
+                            </div>
+                            {% do app.session.remove('_flash_error') %}
+                        {% endif %}
+
+                        <!-- Utilisateur déjà connecté -->
+                        {% if app.user %}
+                            <div class="mb-3" role="status" aria-live="polite">
+                                Vous êtes connecté en tant que
+                                <strong>{{ app.user.userIdentifier }}</strong>.
+                                <a href="{{ path('app_logout') }}">Déconnexion</a>
+                            </div>
+                        {% endif %}
+
+                        <!-- Titres et infos -->
+                        <header class="text-center mb-4">
+                            <h1 id="connexion-title" class="gradient-text mb-2">GNUT 06</h1>
+                            <h2 id="connexion-subtitle" class="h3 mb-3 fw-normal" style="color: black !important;">
+                                Connectez-vous à votre compte
+                            </h2>
+                            <p id="connexion-infos">
+                                Content de vous revoir ! <br>
+                                Veuillez saisir vos identifiants de connexion.
+                            </p>
+                        </header>
+
+                        <!-- Carte de connexion -->
+                        <section class="card p-4 shadow" aria-labelledby="connexion-subtitle">
+                            <!-- Champ email -->
+                            <div class="form-floating mb-3">
+                                <input type="email"
+                                       value="{{ last_username }}"
+                                       name="_username"
+                                       id="username"
+                                       class="form-control"
+                                       placeholder="nom@domaine.com"
+                                       autocomplete="email"
+                                       required
+                                       autofocus
+                                       aria-required="true"
+                                       aria-describedby="username-help">
+                                <label for="username">Adresse e-mail</label>
+                                <small id="username-help" class="form-text text-muted">
+                                    Exemple : nom@domaine.com
+                                </small>
+                            </div>
+
+                            <!-- Champ mot de passe -->
+                            <div class="form-floating mb-3">
+                                <input type="password"
+                                       name="_password"
+                                       id="password"
+                                       class="form-control"
+                                       placeholder="Mot de passe"
+                                       autocomplete="current-password"
+                                       required
+                                       aria-required="true"
+                                       aria-describedby="password-help">
+                                <label for="password">Mot de passe</label>
+                                <small id="password-help" class="form-text text-muted">
+                                    Votre mot de passe reste confidentiel.
+                                </small>
+                            </div>
+
+                            <!-- Jeton CSRF -->
+                            <input type="hidden"
+                                   name="_csrf_token"
+                                   value="{{ csrf_token('authenticate') }}"
+                                   aria-hidden="true">
+
+                            <!-- Bouton de connexion -->
+                            <button class="w-100 btn btn-lg btn-primary"
+                                    type="submit"
+                                    aria-label="Se connecter à votre compte GNUT 06">
+                                Se connecter
+                            </button>
+                        </section>
+                    </form>
+
+                    <!-- Lien mot de passe oublié -->
+                    <div class="my-4 text-center">
+                        <a href="{{ path('app_forgot_password_request') }}"
+                           aria-label="Mot de passe perdu, cliquez ici pour réinitialiser">
+                            Mot de passe perdu ?
+                        </a>
+                    </div>
+
+                    <!-- Connexion via services externes -->
+                    <div class="text-center pb-5" aria-labelledby="alt-login-title">
+                        <p id="alt-login-title">Ou connectez-vous avec :</p>
+
+                        <a href="{{ path('connect_google_start') }}"
+                           class="btn btn-danger w-100 mb-2"
+                           role="button"
+                           aria-label="Se connecter avec Google">
+                            <i class="fab fa-google" aria-hidden="true"></i>
+                            Se connecter avec Google
+                        </a>
+
+                        <a href="{{ path('connect_outlook_start') }}"
+                           class="btn w-100"
+                           style="background-color: #0078D4; color: white;"
+                           role="button"
+                           aria-label="Se connecter avec Microsoft">
+                            <i class="fab fa-microsoft" aria-hidden="true"></i>
+                            Se connecter avec Microsoft
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        {% block stylesheets %}
+            {{ parent() }}
+            <link rel="stylesheet"
+                  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+                  integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2DhKN5C1Fj3vJdO5t6bLhS0NwOZp2rF7JbZsYk3yxj4gSgkVzNqVQkBKu5G+xh9wQ=="
+                  crossorigin="anonymous"
+                  referrerpolicy="no-referrer">
+        {% endblock %}
+    </main>
 {% endblock %}

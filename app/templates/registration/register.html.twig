@@ -1,66 +1,163 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}S'enregistrer
-{% endblock %}
+{% block title %}S'enregistrer - GNUT 06{% endblock %}
 
 {% block body %}
-	{% for flash_error in app.flashes('verify_email_error') %}
-		<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-	{% endfor %}
-	<div class="container mt-5">
-		<div class="row justify-content-center">
-			<div class="col-md-6">
-				<h1 class="text-center mb-4">S'enregistrer</h1>
-				<div class="card p-4 shadow">
-					{{ form_errors(registrationForm) }}
-					{{ form_start(registrationForm, {'attr': {'class': 'g-3'}}) }}
-					<div class="mb-3">
-						{{ form_row(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
-					</div>
-					<div class="mb-3">
-						{{ form_row(registrationForm.plainPassword.first, {
-                            'label': 'Mot de passe',
-                            'attr': {'class': 'form-control'}
+    <main id="main-content" role="main" aria-labelledby="register-title">
+
+        {% for flash_error in app.flashes('verify_email_error') %}
+            <div class="alert alert-danger text-center mt-3"
+                 role="alert"
+                 aria-live="assertive">
+                {{ flash_error }}
+            </div>
+        {% endfor %}
+
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+
+                    <!-- En-tête du formulaire -->
+                    <header class="text-center mb-4">
+                        <h1 id="register-title" class="gradient-text mb-2">GNUT 06</h1>
+                        <h2 id="register-subtitle" style="color: black !important;">Créer un compte</h2>
+                        <p id="register-infos">Commencez votre voyage !</p>
+                    </header>
+
+                    <!-- Carte contenant le formulaire -->
+                    <section class="card p-4 shadow" aria-labelledby="register-subtitle">
+
+                        <!-- Gestion des erreurs -->
+                        {% if form_errors(registrationForm) %}
+                            <div class="alert alert-danger" role="alert" aria-live="assertive">
+                                {{ form_errors(registrationForm) }}
+                            </div>
+                        {% endif %}
+
+                        {{ form_start(registrationForm, {
+                            'attr': {
+                                'class': 'g-3',
+                                'aria-describedby': 'register-infos',
+                                'aria-label': 'Formulaire d’enregistrement GNUT 06'
+                            }
                         }) }}
-					</div>
-					<div class="mb-3">
-						{{ form_row(registrationForm.plainPassword.second, {
-                            'label': 'Confirmez le mot de passe',
-                            'attr': {'class': 'form-control'}
-                        }) }}
-					</div>
 
-					<div class="mb-3 form-check">
-                    	{{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
-                    	<label class="form-check-label" for="{{ registrationForm.agreeTerms.vars.id }}">
-							Je suis en accord avec <a href="#" data-bs-toggle="modal" data-bs-target="#valuesModal">les valeurs de Gnut 06</a>
-                    	</label>
-                    	{{ form_errors(registrationForm.agreeTerms) }}
-                    </div>
-                    
-					{# recaptcha input #}
-					<div class="col-12 text-center">
-						<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-					</div>
-					{# ------- #}
-					<div class="text-center">
-						<button type="submit" class="btn btn-primary">S'enregistrer</button>
-					</div>
-					{{ form_end(registrationForm) }}
-				</div>
-			</div>
-		</div>
-	</div>
-	 <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
-	 <script>
-		    grecaptcha.ready(function() {
-		        grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
-		            document.getElementById('g-recaptcha-response').value = token;
-		        });
-		    });
-	</script>
+                        <!-- Champ email -->
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.email, 'Adresse e-mail', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(registrationForm.email, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'aria-required': 'true',
+                                    'autocomplete': 'email',
+                                    'placeholder': 'exemple@domaine.fr'
+                                }
+                            }) }}
+                            {{ form_errors(registrationForm.email) }}
+                        </div>
 
+                        <!-- Champ mot de passe -->
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(registrationForm.plainPassword.first, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'aria-required': 'true',
+                                    'autocomplete': 'new-password',
+                                    'aria-describedby': 'password-help'
+                                }
+                            }) }}
+                            <small id="password-help" class="form-text text-muted">
+                                Utilisez au moins 8 caractères, incluant des chiffres et des lettres.
+                            </small>
+                            {{ form_errors(registrationForm.plainPassword.first) }}
+                        </div>
 
-{% include '_partials/valeurs.html.twig' %}
+                        <!-- Confirmation mot de passe -->
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.plainPassword.second, 'Confirmez le mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(registrationForm.plainPassword.second, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'aria-required': 'true',
+                                    'autocomplete': 'new-password'
+                                }
+                            }) }}
+                            {{ form_errors(registrationForm.plainPassword.second) }}
+                        </div>
 
+                        <!-- Checkbox conditions -->
+                        <div class="mb-3 form-check">
+                            {{ form_widget(registrationForm.agreeTerms, {
+                                'attr': {
+                                    'class': 'form-check-input',
+                                    'aria-required': 'true'
+                                }
+                            }) }}
+                            <label class="form-check-label" for="{{ registrationForm.agreeTerms.vars.id }}">
+                                Je suis en accord avec
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#valuesModal">les valeurs de GNUT 06</a>
+                            </label>
+                            {{ form_errors(registrationForm.agreeTerms) }}
+                        </div>
+
+                        <!-- reCAPTCHA caché -->
+                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" aria-hidden="true">
+
+                        <!-- Bouton d'envoi -->
+                        <div class="text-center mb-3">
+                            <button type="submit"
+                                    class="btn btn-primary"
+                                    aria-label="Créer un compte GNUT 06">
+                                S'enregistrer
+                            </button>
+                        </div>
+
+                        <!-- Connexions alternatives -->
+                        <div class="text-center" aria-labelledby="alt-register-title">
+                            <p id="alt-register-title">Ou connectez-vous avec :</p>
+
+                            <a href="{{ path('connect_google_start') }}"
+                               class="btn btn-danger w-100 mb-2"
+                               role="button"
+                               aria-label="Se connecter avec Google">
+                                <i class="fab fa-google" aria-hidden="true"></i> Se connecter avec Google
+                            </a>
+
+                            <a href="{{ path('connect_outlook_start') }}"
+                               class="btn w-100"
+                               style="background-color: #0078D4; color: white;"
+                               role="button"
+                               aria-label="Se connecter avec Microsoft">
+                                <i class="fab fa-microsoft" aria-hidden="true"></i> Se connecter avec Microsoft
+                            </a>
+                        </div>
+
+                        {{ form_end(registrationForm) }}
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- reCAPTCHA script -->
+        <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+        <script>
+            grecaptcha.ready(function() {
+                grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
+                    document.getElementById('g-recaptcha-response').value = token;
+                });
+            });
+        </script>
+
+        {% include '_partials/valeurs.html.twig' %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+            <link rel="stylesheet"
+                  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+                  integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2DhKN5C1Fj3vJdO5t6bLhS0NwOZp2rF7JbZsYk3yxj4gSgkVzNqVQkBKu5G+xh9wQ=="
+                  crossorigin="anonymous"
+                  referrerpolicy="no-referrer">
+        {% endblock %}
+    </main>
 {% endblock %}
