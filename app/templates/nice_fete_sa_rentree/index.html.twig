@@ -1,0 +1,420 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}GNUT 06 participe à Nice Fête sa Rentrée
+{% endblock %}
+
+{% block body %}
+	<style>
+		body {
+			background: var(--Color-Background, linear-gradient(180deg, #010208 16%, #010206 21%, #040008 25%, #010101 30%, #010101 34%, #010101 36%, #010101 100%));
+		}
+		h1 {
+			font-family: Orbitron;
+			font-size: 72px;
+			font-style: normal;
+			font-weight: 700;
+			line-height: normal;
+		}
+
+		h2 {
+			font-family: 'Orbitron', sans-serif;
+			font-size: 32px;
+			font-style: normal;
+			font-weight: 700;
+			line-height: normal;
+		}
+		h3 {
+			font-family: 'Orbitron', sans-serif;
+			font-size: 24px;
+			font-style: normal;
+			font-weight: 700;
+			line-height: normal;
+		}
+		p {
+			color: #FFF;
+
+			/* Lead/Text Regular */
+			font-family: Poppins;
+			font-size: 20px;
+			font-style: normal;
+			font-weight: 400;
+			line-height: 36px; /* 180% */
+		}
+		.slogan {
+			font-family: 'Orbitron', sans-serif;
+			font-size: 32px;
+			font-style: normal;
+			font-weight: 700;
+			line-height: normal;
+			background: var(--2, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%));
+			-webkit-background-clip: text;
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+
+		.icon-feature {
+			font-size: 2.5rem;
+			color: #fff;
+			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+		}
+
+		.card {
+			background-color: rgba(255, 255, 255, 0.05);
+			border: none;
+			border-radius: 15px;
+		}
+
+		.card-title {
+			font-family: 'Orbitron', sans-serif;
+			font-size: 24px;
+			font-style: normal;
+			font-weight: 700;
+			line-height: normal;
+		}
+
+		.btn-primary {
+			border-radius: 5px;
+			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+		}
+
+		.btn-primary:hover {
+			background-color: #0b5ed7;
+		}
+		.btn-success {
+			border-radius: 5px;
+			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+		}
+		.badge {
+
+			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+		}
+	</style>
+	<div class="text-center mb-4">
+		<img src="{{ asset('images/webp/NiceFeteSaRentree.webp') }}" alt="GNUT 06 participe à Nice Fête sa Rentrée" class="img-fluid rounded">
+	</div>
+	<!-- Hero Section -->
+	<header class="hero-section text-center">
+		<div class="container">
+			<h1 class="display-3 fw-bold" style="background: var(--2, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+				Participez à « Nice Fête sa Rentrée » avec Gnut 06 !
+			</h1>
+			<div class="video-container mb-4" style="position:relative; max-width:900px; margin:0 auto;">
+				<video id="event-video" class="img-fluid rounded shadow-sm" autoplay controls muted loop playsinline preload="metadata" poster="{{ asset('images/webp/NiceFeteSaRentree.webp') }}">
+					<source src="{{ asset('videos/De_la_Mairie_a_la_VR.mp4') }}" type="video/mp4">
+					Votre navigateur ne supporte pas la vidéo.
+				</video>
+
+				<div class="mt-2 d-flex justify-content-center gap-2">
+					<a href="{{ asset('videos/De_la_Mairie_a_la_VR.mp4') }}" download class="btn btn-sm btn-outline-light" aria-label="Télécharger la vidéo">Télécharger la vidéo</a>
+					<button id="toggle-video-sound" type="button" class="btn btn-sm btn-success" aria-pressed="false">Activer le son</button>
+				</div>
+			</div>
+
+			<style>
+				.video-container video {
+					max-width: 900px;
+					width: 100%;
+					height: auto;
+					display: block;
+					margin: 0 auto;
+					border-radius: 12px;
+				}
+			</style>
+			<p class="lead mt-3 mb-4">
+				<span class="fw-bold">Des Mondes Virtuels, des Liens Réels : L'Inclusion à Portée de Main</span>
+			</p>
+			<p class="fs-4">
+				Rendez-vous le
+				<span class="fw-bold text-warning">samedi 13 septembre 2025</span>
+				de
+				<span class="fw-bold text-warning">10h00 à 15h00</span>
+				au
+				<span class="fw-bold text-warning">Jardin Saint-Jean d’Angély</span>
+				!
+			</p>
+			<a href="#details" class="btn btn-primary btn-lg mt-3">Découvrez notre programme</a>
+		</div>
+	</header>
+
+	<!-- Main Content -->
+	<main class="container my-5">
+		<section id="details" class="text-center mb-5">
+			<h2 class="mb-4 display-5 fw-bold text-primary" style="font-family: 'Orbitron', sans-serif; font-size: 32px; font-style: normal; font-weight: 700; line-height: normal;">
+				Plongez dans l'Expérience Gnut 06 !
+			</h2>
+			<p class="fs-5">
+				L'Association Gnut 06 est fière de vous inviter à une journée exceptionnelle lors de « Nice Fête sa Rentrée au cœur des Quartiers ». Cet événement est une opportunité unique de découvrir nos actions et de partager un moment festif et convivial.
+			</p>
+			<div class="row mt-5">
+				<div class="col-md-6 mb-4">
+					<div class="card h-100 shadow-sm">
+						<div class="card-body">
+							<i class="bi bi-vr-headset icon-feature mb-3 d-block"></i>
+							<!-- Icône de casque VR (nécessite Bootstrap Icons) -->
+							<h3 class="card-title fw-bold text-success">Expérience Immersive en Réalité Virtuelle</h3>
+							<p class="card-text">
+								Venez vivre une
+								<span class="fw-bold">expérience immersive unique en réalité virtuelle</span>
+								sur notre stand ! Nous vous ferons découvrir les
+								<span class="fw-bold">tout nouveaux casques Meta Quest 3 S</span>
+								et vous plongerez dans des
+								<span class="fw-bold">mondes fantastiques</span>, explorerez la
+								<span class="fw-bold">réalité mixte</span>
+								et bien plus encore.
+							</p>
+							<p class="card-text small">
+								Cette initiative s'inscrit dans notre démarche de
+								<span class="fw-bold">préparer des séances VR destinées à des publics fragiles</span>, démontrant comment les technologies peuvent
+								<span class="fw-bold">créer des liens réels et favoriser l'inclusion</span>.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 mb-4">
+					<div class="card h-100 shadow-sm">
+						<div class="card-body">
+							<i class="bi bi-people-fill icon-feature mb-3 d-block"></i>
+							<!-- Icône de groupe (nécessite Bootstrap Icons) -->
+							<h3 class="card-title fw-bold text-info">Rencontres et Partage pour Tous</h3>
+							<p class="card-text">
+								« Nice Fête sa Rentrée » est un grand
+								<span class="fw-bold">rendez-vous familial et convivial</span>
+								où les associations niçoises, dont Gnut 06, présentent une
+								<span class="fw-bold">large palette d'activités</span>
+								: sport, culture, loisirs, santé, environnement ou encore solidarité. C'est l'occasion idéale de
+								<span class="fw-bold">rencontrer les acteurs de la vie locale</span>,
+																																														                                de vous informer, et de trouver une activité adaptée à vos envies ou à celles de vos enfants.
+							</p>
+							<p class="card-text small">
+								Notre objectif est de
+								<span class="fw-bold">renforcer les liens entre les habitants et les associations</span>,
+																																														                                en mettant en lumière les valeurs de
+								<span class="fw-bold">partage, de découverte, d'inclusion et de lien social</span>.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<hr class="my-5">
+
+		<section id="infos-pratiques" class="mb-5">
+			<h2 class="text-center mb-4 display-5 fw-bold text-primary">Informations Pratiques</h2>
+			<div class="row justify-content-center">
+				<div class="col-lg-8">
+					<ul class="list-group list-group-flush fs-5">
+						<li class="list-group-item d-flex align-items-center">
+							<i class="bi bi-calendar-event me-3 icon-feature"></i>
+							<div>
+								<span class="fw-bold">Date :</span>
+								Samedi 13 septembre 2025
+							</div>
+						</li>
+						<li class="list-group-item d-flex align-items-center">
+							<i class="bi bi-clock me-3 icon-feature"></i>
+							<div>
+								<span class="fw-bold">Heure :</span>
+								De 10h00 à 15h00
+							</div>
+						</li>
+						<li class="list-group-item d-flex align-items-center">
+							<i class="bi bi-geo-alt-fill me-3 icon-feature"></i>
+							<div>
+								<span class="fw-bold">Lieu :</span>
+								Jardin Saint-Jean d’Angély, 1 Rue Albert Voisin, 06300 Nice
+							</div>
+						</li>
+						<li class="list-group-item d-flex align-items-center">
+							<i class="bi bi-tag-fill me-3 icon-feature"></i>
+							<div>
+								<span class="fw-bold">Accès :</span>
+								<span class="badge bg-success fs-5 gratuit">Gratuit pour tous !</span>
+							</div>
+						</li>
+						<li class="list-group-item d-flex align-items-center">
+							<i class="bi bi-people me-3 icon-feature"></i>
+							<div>
+								<span class="fw-bold">Public :</span>
+								Familles, enfants, adultes, personnes en situation de handicap - Bienvenue à tous !
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="row justify-content-center my-4">
+				<div class="col-md-8">
+					<div class="card p-3 card-audio shadow-sm">
+						<h3 class="card-title mb-2 text-light" style="background: var(--2, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Écoutez notre message</h3>
+						<p class="mb-2">Audio de présentation — Nice Fête sa Rentrée : "Quand la VR inclut l'handicap" (Gnut 06)</p>
+
+						<audio id="event-audio" class="w-100" controls preload="metadata" aria-label="Audio de présentation Gnut 06">
+							<source src="{{ asset('audios/Nice_Fete_Sa_Rentree___Quand_la_VR_Inclus_l_Handicap_avec_Gnut_06.m4a') }}" type="audio/mp4">
+							Votre navigateur ne supporte pas la balise audio.
+						</audio>
+
+						<div class="mt-2 small d-flex gap-2">
+							<a href="{{ asset('audios/Nice_Fete_Sa_Rentree___Quand_la_VR_Inclus_l_Handicap_avec_Gnut_06.m4a') }}" download class="btn btn-sm btn-outline-light">Télécharger l'audio</a>
+							<button id="toggle-audio" type="button" class="btn btn-sm btn-success">Play / Pause</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="text-center mt-5">
+				<p class="lead">Nous avons hâte de vous retrouver pour ce moment de découverte et de convivialité !</p>
+				{# Utiliser la route Symfony (remplacez 'contact' par le nom de votre route) #}
+				<a href="{{ path('app_contact') }}" class="btn btn-success btn-lg">Nous contacter pour plus d'informations</a>
+			</div>
+		</section>
+
+		<div class="text-center mt-4">
+			<a href="{{ path('app_billetteries_detail', {'formType':'Event','slug': 'nice-fete-sa-rentree-stand-de-gnut-06'}) }}" class="btn btn-primary btn-lg">Réservez votre place</a>
+		</div>
+	</main>
+{% endblock %}
+
+{% block javascripts %}
+	 <script>
+								// Smooth scroll for anchor links
+								document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+									anchor.addEventListener('click', function (e) {
+										e.preventDefault();
+										document.querySelector(this.getAttribute('href')).scrollIntoView({
+											behavior: 'smooth'
+										});
+									});
+								});
+		
+								// Attempt to autoplay the muted video on page load (modern browsers allow muted autoplay)
+								window.addEventListener('load', function () {
+									var v = document.getElementById('event-video');
+									if (v) {
+										var p = v.play();
+										if (p !== undefined) {
+											p.catch(function () {
+												// If autoplay is blocked, ensure muted and try again
+												v.muted = true;
+												v.play().catch(function () {});
+											});
+										}
+									}
+								});
+                                
+							</script>
+                            {{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var video = document.getElementById('event-video');
+    var audio = document.getElementById('event-audio');
+    var btnVideo = document.getElementById('toggle-video-sound');
+    var btnAudio = document.getElementById('toggle-audio');
+    var ignoreNextAudioPlay = false;
+
+    function updateVideoBtn() {
+        if (btnVideo) {
+            btnVideo.textContent = video.muted ? 'Activer le son' : 'Couper le son';
+            btnVideo.setAttribute('aria-pressed', (!video.muted).toString());
+        }
+    }
+    function updateAudioBtn() {
+        if (btnAudio) {
+            btnAudio.textContent = audio.paused ? 'Play / Pause' : 'Pause';
+        }
+    }
+
+    if (video && audio) {
+        // Quand l'audio démarre, on coupe le son de la vidéo SAUF si on vient de cliquer sur "Activer le son"
+        audio.addEventListener('play', function () {
+            if (ignoreNextAudioPlay) {
+                ignoreNextAudioPlay = false;
+                return;
+            }
+            if (!video.paused && !video.muted) {
+                video.muted = true;
+                updateVideoBtn();
+            }
+        });
+
+        // Quand la vidéo démarre (lecture), on met l'audio en pause et MAJ bouton audio
+        video.addEventListener('play', function () {
+            if (!audio.paused) {
+                ignoreNextAudioPlay = true;
+                audio.pause();
+                updateAudioBtn();
+            }
+        });
+
+        // Quand on clique sur le bouton vidéo
+        if (btnVideo) {
+            btnVideo.addEventListener('click', function(){
+                if (video.muted) {
+                    video.muted = false;
+                    // Si l'audio joue, on le met en pause et MAJ bouton audio
+                    if (!audio.paused) {
+                        ignoreNextAudioPlay = true;
+                        audio.pause();
+                        updateAudioBtn();
+                    }
+                } else {
+                    video.muted = true;
+                }
+                updateVideoBtn();
+            });
+        }
+
+        // Quand on clique sur le bouton audio
+        if (btnAudio) {
+            btnAudio.addEventListener('click', function () {
+                if (audio.paused) {
+                    audio.play().catch(function(){});
+                } else {
+                    audio.pause();
+                }
+                updateAudioBtn();
+            });
+        }
+
+        // MAJ boutons au chargement
+        updateVideoBtn();
+        updateAudioBtn();
+
+        // MAJ bouton audio sur play/pause natif
+        audio.addEventListener('play', updateAudioBtn);
+        audio.addEventListener('pause', updateAudioBtn);
+    }
+
+    // Initialisation Bootstrap tooltips (si besoin)
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Attempt to autoplay the muted video on page load (modern browsers allow muted autoplay)
+    window.addEventListener('load', function () {
+        var v = document.getElementById('event-video');
+        if (v) {
+            var p = v.play();
+            if (p !== undefined) {
+                p.catch(function () {
+                    // If autoplay is blocked, ensure muted and try again
+                    v.muted = true;
+                    v.play().catch(function () {});
+                });
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
