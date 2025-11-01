@@ -46,16 +46,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $profile_picture;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $googleId = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $azureId = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
-
-    public function getEmail(): ?string
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getEmail(): string
     {
         return $this->email;
     }
-
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
     public function setEmail(string $email): static
     {
         $this->email = $email;
@@ -141,6 +155,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfilePicture(?string $profile_picture): self
     {
         $this->profile_picture = $profile_picture;
+        return $this;
+    }
+
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function setGoogleId(?string $googleId): static
+    {
+        $this->googleId = $googleId;
+        return $this;
+    }
+
+    public function getAzureId(): ?string
+    {
+        return $this->azureId;
+    }
+
+    public function setAzureId(?string $azureId): static
+    {
+        $this->azureId = $azureId;
         return $this;
     }
 }

@@ -1,0 +1,26 @@
+# config/packages/knpu_oauth2_client.yaml
+knpu_oauth2_client:
+    clients:
+        google:
+            type: google
+            client_id: '%env(GOOGLE_CLIENT_ID)%'
+            client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
+            redirect_route: connect_google_check
+            redirect_params: {}
+            use_state: true
+
+        azure:
+            type: azure
+            client_id: '%env(AZURE_CLIENT_ID)%'
+            client_secret: '%env(AZURE_CLIENT_SECRET)%'
+            redirect_route: 'connect_outlook_check'
+            redirect_params: {}
+            tenant: 'common'
+            scope:
+                - 'https://graph.microsoft.com/User.Read'
+                - 'https://graph.microsoft.com/profile'
+                - 'https://graph.microsoft.com/email'
+                - 'openid'
+                - 'profile'
+                - 'email'
+            use_state: true

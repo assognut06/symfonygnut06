@@ -1,25 +1,295 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+:root {
+    --Bubble-Gum: linear-gradient(90deg, #F86CF8 0%, #64CEF5 100%);
+    --Primary: #F86CF8;
+}
+.bg-primary-light{
+    background-color: #E5D8FF;
+}
+
 body {
   background-color: white;
   color: #070716 !important; /* Couleur du texte par défaut */
 }
-.logoNavbar {
-  width: 40px;
- }
-h1{
-  text-align: center;
-  color :darkolivegreen;
+
+
+.nav-link:hover{
+    color: var(--Primary) !important;
+
 }
+
+.btn-outline-gradient {
+    position: relative;
+    display: inline-block;
+    color: white;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    z-index: 1;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+/* Bordure dégradée */
+.btn-outline-gradient::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: linear-gradient(97deg, #D10ED1 12.04%, #5328C3 81.84%);
+    z-index: -1;
+    border-radius: inherit;
+    mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+    -webkit-mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: destination-out;
+    padding: 1px;
+    transition: opacity 0.3s ease;
+}
+
+/* Hover : suppression de la bordure dégradée + style neon */
+.btn-outline-gradient:hover::before {
+    opacity: 0;
+}
+
+.btn-outline-gradient:hover {
+    background: #7F29FF;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+@media (max-width: 1199px) {
+    .navbar .nav-item .btn-outline-gradient,
+    .navbar .nav-item .btn-neon {
+        display: block;
+        width: 100%;
+        text-align: left;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        padding: 0.5rem 1rem;
+        font-family: Poppins, sans-serif;
+        font-size: 16px;
+        color: white !important;
+        transition: color 0.3s ease;
+    }
+
+    .navbar .nav-item .btn-outline-gradient:hover,
+    .navbar .nav-item .btn-neon:hover {
+        color: var(--Primary) !important;
+        background: none;
+    }
+
+    /* Supprimer les effets dégradés et bordures dans le menu mobile */
+    .navbar .nav-item .btn-outline-gradient::before,
+    .navbar .nav-item .btn-neon::before {
+        content: none !important;
+    }
+}
+
+/* Carousel indicators */
+.carousel-indicators > button {
+    border-radius: 50%;
+    height: 12px !important;
+    width: 12px !important;
+    background-color: var(--Primary) !important;
+}
+
+
+/* Style btn-neon (si utilisé ailleurs) */
+.btn-neon {
+
+    display: inline-flex;
+    padding: 6px 12px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    border-radius: 6px;
+    color: white;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    background: #7F29FF;
+}
+
+
+.btn-neon:hover {
+    background-color: transparent;
+}
+
+.btn-neon:hover::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: linear-gradient(97deg, #D10ED1 12.04%, #5328C3 81.84%);
+    z-index: -1;
+    border-radius: inherit;
+    mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+    -webkit-mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: destination-out;
+    padding: 1px;
+    transition: opacity 0.3s ease;
+}
+
+
+.card {
+    border: none !important;
+    background: transparent; /* optionnel, si tu veux supprimer le fond blanc aussi */
+}
+
+.logoNavbar{
+    font-family: Orbitron;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    background: var(--Bubble-Gum, linear-gradient(90deg, #F86CF8 0%, #64CEF5 100%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    width: 128px;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.bg-navbar{
+  background: linear-gradient(to right, #010208, #010206, #040008, #010101);
+}
+
+.text-navbar{
+  font-family: Poppins;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.stars{
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.bg-main {
+  background: linear-gradient(#010208, #010206, #040008, #010101);
+}
+
+.text-main{
+    font-family: orbitron;
+    font-size: 55px;
+    font-weight: 700;
+}
+
+.gradient-text {
+  background: linear-gradient(to right, #F86CF8, #64CEF5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+
+}
+
+
+h1{
+    font-family: orbitron !important;
+    font-weight: 600 !important;
+    font-size: 45px !important;
+    color: white !important;
+}
+
+h2{
+  font-family: orbitron !important;
+  font-weight: 600 !important;
+  font-size: 45px !important;
+  color: white !important;
+}
+
+h3{
+    color: white !important;
+
+    /* Body/Text Medium */
+    font-family: Poppins;
+    font-size: 20px !important;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 36px; /* 180% */
+    text-transform: uppercase;
+}
+
+.text{
+  color: white;
+  font-family: Poppins;
+  font-weight: 400;
+  font-size: 20px;
+  leading-trim: NONE;
+  line-height: 36px;
+
+}
+
 .logo_footer {
   /* width: 70%; */
-  height: auto;
+    height: auto;
+    font-family: Orbitron;
+    font-size: 50px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+
+    background: var(--Bubble-Gum, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
+
+.title_footer{
+    color: #F5F5F5;
+    font-family: Orbitron;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.section_footer a{
+    text-decoration: none;
+    color: white;
+
+    /* Body/Text Semi Bold */
+    font-family: Poppins;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 150%; /* 24px */
+}
+
+
 
 .carousel.pointer-event {
   padding-top: 18px !important;
 }
 
 .logoBack{
-  background-color: black;
+  background-color: #090823;
 }
 
 .logoAsso{
@@ -116,42 +386,29 @@ h1{
 }
 /* Fin Google map*/
 
-/* New CSS */
-body {
-  font-family: "Lato", serif !important;
-}
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Abril Fatface", serif !important;
-}
+/*gmpx-store-locator {*/
+/*  width: 100%;*/
+/*  height: 100%;*/
 
-gmpx-store-locator {
-  width: 100%;
-  height: 100%;
-
-  /* These parameters customize the appearance of Locator Plus. See the documentation at
-     https://github.com/googlemaps/extended-component-library/blob/main/src/store_locator/README.md
-     for more information. */
-  --gmpx-color-surface: #fff;
-  --gmpx-color-on-surface: #212121;
-  --gmpx-color-on-surface-variant: #757575;
-  --gmpx-color-primary: #1967d2;
-  --gmpx-color-outline: #e0e0e0;
-  --gmpx-fixed-panel-width-row-layout: 28.5em;
-  --gmpx-fixed-panel-height-column-layout: 65%;
-  --gmpx-font-family-base: "Roboto", sans-serif;
-  --gmpx-font-family-headings: "Roboto", sans-serif;
-  --gmpx-font-size-base: 0.875rem;
-  --gmpx-hours-color-open: #188038;
-  --gmpx-hours-color-closed: #d50000;
-  --gmpx-rating-color: #ffb300;
-  --gmpx-rating-color-empty: #e0e0e0;
-}
+/*  !* These parameters customize the appearance of Locator Plus. See the documentation at*/
+/*     https://github.com/googlemaps/extended-component-library/blob/main/src/store_locator/README.md*/
+/*     for more information. *!*/
+/*  --gmpx-color-surface: #fff;*/
+/*  --gmpx-color-on-surface: #212121;*/
+/*  --gmpx-color-on-surface-variant: #757575;*/
+/*  --gmpx-color-primary: #1967d2;*/
+/*  --gmpx-color-outline: #e0e0e0;*/
+/*  --gmpx-fixed-panel-width-row-layout: 28.5em;*/
+/*  --gmpx-fixed-panel-height-column-layout: 65%;*/
+/*  --gmpx-font-family-base: "Roboto", sans-serif;*/
+/*  --gmpx-font-family-headings: "Roboto", sans-serif;*/
+/*  --gmpx-font-size-base: 0.875rem;*/
+/*  --gmpx-hours-color-open: #188038;*/
+/*  --gmpx-hours-color-closed: #d50000;*/
+/*  --gmpx-rating-color: #ffb300;*/
+/*  --gmpx-rating-color-empty: #e0e0e0;*/
+/*}*/
 
 /* Remove for complete responsive carousel */
 .carousel-item img {
@@ -238,3 +495,47 @@ gmpx-store-locator {
 .suggestion-item:hover {
   background-color: #f0f0f0;
 }
+
+.map-responsive {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 56.25%; /* ratio 16:9 */
+    height: 0;
+}
+
+.map-responsive iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* Footer responsive : alignement en colonne sur mobile */
+@media (max-width: 767.98px) {
+    footer .row {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    footer .section_footer {
+        width: 100% !important;
+    }
+
+    footer .section_footer ul {
+        padding-left: 0;
+    }
+
+    footer .d-flex[role="navigation"] {
+        justify-content: center !important;
+    }
+
+    footer .col-6 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+

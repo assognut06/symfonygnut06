@@ -8,3 +8,16 @@ controllers:
 send_email:
     path: /email
     controller: App\Controller\EmailController::sendEmail
+
+# Route pour démarrer le processus de connexion avec Google
+connect_google_start:
+    path: /connect/google
+    controller: App\Controller\GoogleController::connectAction
+
+# Route de callback sur laquelle Google redirigera l'utilisateur
+# Le chemin doit correspondre à l'URI de redirection que vous avez configuré dans la Google Cloud Console
+connect_google_check:
+    path: /connect/google/check
+    #controller: App\Controller\GoogleController::connectCheckAction
+
+# Routes Outlook définies dans le contrôleur avec des attributs

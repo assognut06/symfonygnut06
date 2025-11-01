@@ -12,6 +12,11 @@ class LoginController extends AbstractController
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        // Si l'utilisateur est déjà connecté, le rediriger vers son profil
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_profil');
+        }
+
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 

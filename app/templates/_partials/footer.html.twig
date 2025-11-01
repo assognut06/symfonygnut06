@@ -1,55 +1,71 @@
-<footer class="container-fluid mt-5 logoBack text-light">
-  <div class="row">
-    <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
-      <img class="logo_footer rounded-circle" src="{{ asset('images/logo_trans-min.webp') }}" alt="logo de l'Association Gnut 06">
-            {# <img class="logo_footer rounded-circle" src="{{ asset('images/logo_trans_Gnut_06.svg') }}" alt="logo de l'Association Gnut 06"> #}
-         </div>
-    <div class="col-12 col-md-4 d-flex justify-content-center align-items-center mt-5">
-      <a href="{{ path('app_adhesion') }}" class="badge text-bg-warning p-3 text-uppercase text-dark fs-4 text-decoration-none">Adhérer</a>
-    </div>
-    <div class="col-12 col-md-4 text-center d-flex flex-column align-self-center mt-5">
-      <h5 class="fs-3">Association Gnut 06</h5>
-      <p>9 Rue du Pont-Vieux <br>
-        06300 NICE <br>
-        FRANCE</p>
-      <br>
-      <p class="fs-4">Numéro RNA : W062018953</p>
-      <br>
-      <p class="fs-4">Numéro de Siret : 924697709</p>
-    </div>
+<footer class="container-fluid logoBack text-light pt-5" role="contentinfo">
+    <div class="container">
+        <div class="row text-center text-md-start">
 
-    {{ render(controller('App\\Controller\\LogoEntrepriseController::logos')) }}
-  
-  </div>
+            <!-- Bloc logo & adresse -->
+            <div class="col-12 col-md-3 mb-4 text-start" aria-labelledby="footer-logo">
+                <h1 id="footer-logo" class="logo_footer">GNUT 06</h1>
+                <address class="mb-0">
+                    <p class="text mb-0">
+                        9 Rue du Pont-Vieux <br>
+                        06300 NICE <br>
+                        FRANCE
+                    </p>
+                </address>
+            </div>
 
-  <div class="col-12 text-center bg-dark py-5">
-    <h2 class="text-warning">Retrouvons-nous sur les réseaux sociaux</h2>
-    <p>Suivez-nous sur les réseaux sociaux pour rester au fait de nos événements et de bien d'autres choses.</p>
-    <br>
-    <div class="col-12 d-flex flex-row justify-content-around">
-      <a href="https://www.facebook.com/profile.php?id=61552595323696" style="display: block;" target="_blank"><img width="40" height="auto" style="border: 0; width: 40px; height: auto; max-width: 100%; display: block; background-color: blue;" alt="Facebook icon" src="https://dim.mcusercontent.com/https/cdn-images.mailchimp.com%2Ficons%2Fsocial-block-v3%2Fblock-icons-v3%2Ffacebook-filled-light-40.png?w=40&dpr=2" class="icon-footer"></a>
-      <a href="https://instagram.com/gnut06" style="display: block;" target="_blank"><img width="40" height="auto" style="border: 0; width: 40px; height: auto; max-width: 100%; display: block; background-color: deeppink;" alt="Instagram icon" src="https://dim.mcusercontent.com/https/cdn-images.mailchimp.com%2Ficons%2Fsocial-block-v3%2Fblock-icons-v3%2Finstagram-filled-light-40.png?w=40&dpr=2" class="icon-footer"></a>
-      <a href="https://twitter.com/gerald_col" style="display: block;" target="_blank"><img width="40" height="auto" style="border: 0; width: 40px; height: auto; max-width: 100%; display: block; background-color: black;" alt="Twitter icon" src="https://dim.mcusercontent.com/https/cdn-images.mailchimp.com%2Ficons%2Fsocial-block-v3%2Fblock-icons-v3%2Ftwitter-filled-light-40.png?w=40&dpr=2" class="icon-footer"></a>
-      <a href="mailto:gnut@gnut06.org" style="display: block;" target="_blank"><img width="40" height="auto" style="border: 0; width: 40px; height: auto; max-width: 100%; display: block; background-color: forestgreen;" alt="Email icon" src="https://dim.mcusercontent.com/https/cdn-images.mailchimp.com%2Ficons%2Fsocial-block-v3%2Fblock-icons-v3%2Femail-filled-light-40.png?w=40&dpr=2" class="icon-footer"></a>
-      <a href="https://linkedin.com/in/gerald-col/" style="display: block;" target="_blank"><img width="40" height="auto" style="border: 0; width: 40px; height: auto; max-width: 100%; display: block; background-color: dodgerblue;" alt="LinkedIn icon" src="https://dim.mcusercontent.com/https/cdn-images.mailchimp.com%2Ficons%2Fsocial-block-v3%2Fblock-icons-v3%2Flinkedin-filled-light-40.png?w=40&dpr=2" class="icon-footer"></a>
+            <!-- Bloc A propos -->
+            <nav class="col-6 col-md-3 mb-4 section_footer text-start" aria-labelledby="footer-about">
+                <h3 id="footer-about" class="title_footer">À propos</h3>
+                <ul class="list-unstyled">
+                    <li><a href="{{ path('app_a_propos') }}">Qui sommes-nous</a></li>
+                    <li><a href="{{ path('app_contact') }}">Nous contacter</a></li>
+                    <li><a href="{{ path('app_don') }}">Nous soutenir</a></li>
+                    <li><a href="{{ path('app_a_propos') }}">FAQ</a></li>
+                </ul>
+            </nav>
+
+            <!-- Bloc Services -->
+            <nav class="col-6 col-md-3 mb-4 section_footer text-start" aria-labelledby="footer-services">
+                <h3 id="footer-services" class="title_footer">Services</h3>
+                <ul class="list-unstyled">
+                    <li><a href="{{ path('app_billetteries') }}">Réserver une activité</a></li>
+                    <li><a href="{{ path('app_metavers') }}">Salles 3D immersives</a></li>
+                    <li><a href="{{ path('app_digital_consulting') }}">Digital consulting</a></li>
+                </ul>
+            </nav>
+
+            <!-- Bloc Réseaux sociaux -->
+            <div class="col-12 col-md-3 mb-4 " aria-labelledby="footer-social">
+                <h3 id="footer-social" class="title_footer">Suivez-nous</h3>
+                <div class="d-flex justify-content-center justify-content-md-start gap-3 mb-3" role="navigation" aria-label="Réseaux sociaux">
+                    <a href="https://www.linkedin.com/in/gerald-col/" class="social_footer_link" aria-label="LinkedIn GNUT06">
+                        <img src="{{ asset('images/webp/linkedin-white.svg') }}" alt="">
+                    </a>
+                    <a href="https://x.com/gerald_col" class="social_footer_link" aria-label="Twitter/X GNUT06">
+                        <img src="{{ asset('images/webp/twitter-x.svg') }}" alt="">
+                    </a>
+                    <a href="https://www.instagram.com/gnut06/" class="social_footer_link" aria-label="Instagram GNUT06">
+                        <img src="{{ asset('images/webp/instagram.svg') }}" alt="">
+                    </a>
+                    <a href="https://www.facebook.com/profile.php?id=61552595323696&locale=fr_FR" class="social_footer_link" aria-label="Facebook GNUT06">
+                        <img src="{{ asset('images/webp/facebook.svg') }}" alt="">
+                    </a>
+                    <a href="https://www.youtube.com/@Gnut06/videos" class="social_footer_link" aria-label="YouTube GNUT06">
+                        <img src="{{ asset('images/webp/youtube.svg') }}" alt="">
+                    </a>
+                </div>
+                <p class="small mb-0">2025 © GNUT06 Tout droit réservé.</p>
+            </div>
+        </div>
+
+        <!-- Ligne de crédits -->
+        <div class="text-start text-xl-center mt-4">
+            <p class="text mb-0">
+                Conçu et développé avec 💙 par la
+                <span style="color:#F86CF8;">GNUT Team</span>.
+                <a href="#">Mentions légales</a>
+            </p>
+        </div>
     </div>
-  </div>
-
-  <div class="py-3 text-center col-12">
-    <ul class="list-inline text-center">
-      <li class="list-inline-item text-light">
-        {% set jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'] %}
-        {% set mois = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'] %}
-        Nous sommes le {{ 'now'|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }} - 
-      </li>
-      <li class="list-inline-item">
-        <a href="https://gnut06.org" target="_blank" class="link-light">&copy; Association Gnut 06 2025 - Version  4.8.0</a>
-      </li>
-      <li class="list-inline-item">&middot;</li>
-      <li class="list-inline-item">
-        <a href="{{ path('app_mention_legales') }}" class="link-light">Mentions légales</a>
-      </li>
-    </ul>
-  </div>
 </footer>
-
