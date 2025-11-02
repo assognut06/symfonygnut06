@@ -26,7 +26,7 @@
                         <div>
                             <h3>Email</h3>
                             <p class="text">
-                                <a href="mailto:contact@gnut06.fr" class="text-white">contact@gnut06.fr</a>
+                                <a href="mailto:contact@gnut06.org" class="text-white" aria-label="Envoyer un e-mail à contact@gnut06.org">contact@gnut06.org</a>
                             </p>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                         <div>
                             <h3>Téléphone</h3>
                             <p class="text">
-                                <a href="tel:+33666215687" class="text-white">+33 6 66 21 56 87</a>
+                                <a href="tel:+33666215687" class="text-white" aria-label="Appeler +33 6 66 21 56 87">+33 6 66 21 56 87</a>
                             </p>
                         </div>
                     </div>
@@ -47,7 +47,16 @@
                         <img src="{{ asset('images/webp/camera-reels.svg') }}" width="24" alt="Icône visio">
                         <div>
                             <h3>Visio</h3>
-                            <p class="text">Réservez votre créneau dès maintenant.</p>
+                            <p class="text">
+                                <a href="https://outlook.office.com/bookwithme/user/c2263f462357476d857beeb43b542bc5@gnut06.org/meetingtype/_x-b5BhbV0ymFVtF1yRmMA2?anonymous&amp;ismsaljsauthenabled&amp;ep=mlink"
+                                   class="text-white text-decoration-none"
+                                   style="text-decoration: none;"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   aria-label="Réserver un créneau Visio dès maintenant">
+                                    Réserver un créneau Visio dès maintenant.
+                                </a>
+                            </p>
                         </div>
                     </div>
 
@@ -86,7 +95,7 @@
         </section>
 
         <!-- Section Formulaire -->
-        <section class="bg-main pt-2" aria-labelledby="form-title">
+        <section id="services" class="bg-main pt-2" aria-labelledby="form-title">
             <div class="container py-5">
                 <h2 id="form-title" class="text-center mb-4">Besoin d'un projet ? Demandez un devis.</h2>
                 <p class="text text-center">
@@ -126,7 +135,8 @@
                                    class="form-control"
                                    placeholder="Prénom"
                                    required
-                                   autocomplete="given-name">
+                                   autocomplete="given-name"
+                                   aria-label="Prénom">
                             <div class="invalid-feedback">Veuillez entrer votre prénom.</div>
                         </div>
 
@@ -139,7 +149,8 @@
                                    class="form-control"
                                    placeholder="Nom"
                                    required
-                                   autocomplete="family-name">
+                                   autocomplete="family-name"
+                                   aria-label="Nom">
                             <div class="invalid-feedback">Veuillez entrer votre nom.</div>
                         </div>
 
@@ -152,7 +163,8 @@
                                    class="form-control"
                                    placeholder="Email"
                                    required
-                                   autocomplete="email">
+                                   autocomplete="email"
+                                   aria-label="Adresse e-mail">
                             <div class="invalid-feedback">Veuillez entrer une adresse email valide.</div>
                         </div>
 
@@ -166,31 +178,32 @@
                                    placeholder="+33"
                                    required
                                    autocomplete="tel"
-                                   pattern="^(\+?\d{1,3}[- ]?)?\d{9,12}$">
+                                   pattern="^(\+?\d{1,3}[- ]?)?\d{9,12}$"
+                                   aria-label="Numéro de téléphone">
                             <div class="invalid-feedback">Veuillez entrer un numéro de téléphone valide.</div>
                         </div>
 
                         <!-- Type de projet -->
-                        <fieldset class="col-lg-6" aria-required="true">
+                        <fieldset class="col-lg-6" aria-required="true" aria-label="Type de projet">
                             <legend class="text">Type de projet <span class="text-danger">*</span></legend>
 
                             <div class="form-check">
-                                <input type="radio" id="projet-site" name="project_type" value="site_web" class="form-check-input" required>
+                                <input type="radio" id="projet-site" name="project_type" value="site_web" class="form-check-input" required aria-label="Site web simple">
                                 <label for="projet-site" class="form-check-label text">Site web simple</label>
                             </div>
 
                             <div class="form-check">
-                                <input type="radio" id="projet-app" name="project_type" value="application" class="form-check-input">
+                                <input type="radio" id="projet-app" name="project_type" value="application" class="form-check-input" aria-label="Application mobile">
                                 <label for="projet-app" class="form-check-label text">Application mobile</label>
                             </div>
 
                             <div class="form-check">
-                                <input type="radio" id="projet-3d" name="project_type" value="salle_3d" class="form-check-input">
+                                <input type="radio" id="projet-3d" name="project_type" value="salle_3d" class="form-check-input" aria-label="Salle 3D Immersive">
                                 <label for="projet-3d" class="form-check-label text">Salle 3D Immersive</label>
                             </div>
 
                             <div class="form-check">
-                                <input type="radio" id="projet-grand" name="project_type" value="grand_projet" class="form-check-input">
+                                <input type="radio" id="projet-grand" name="project_type" value="grand_projet" class="form-check-input" aria-label="Grands projets">
                                 <label for="projet-grand" class="form-check-label text">Grands projets</label>
                             </div>
 
@@ -206,7 +219,8 @@
                                       class="form-control"
                                       placeholder="Tapez votre message..."
                                       required
-                                      aria-required="true"></textarea>
+                                      aria-required="true"
+                                      aria-label="Message"></textarea>
                             <div class="invalid-feedback">Veuillez entrer un message.</div>
                         </div>
 

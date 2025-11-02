@@ -27,6 +27,7 @@ class ContactController extends AbstractController
             $lastName = $request->request->get('last_name');
             $email = $request->request->get('email');
             $tel = $request->request->get('tel');
+            $projectType = $request->request->get('project_type');
             $message = $request->request->get('message');
             $recaptchaResponse = $request->request->get('g-recaptcha-response');
 
@@ -66,7 +67,7 @@ class ContactController extends AbstractController
 
             if (empty($errors)) {
                  // Construire le message
-                 $body = "Prénom : $firstName\nNom : $lastName\nEmail : $email\nTéléphone : $tel\nMessage : $message";
+                 $body = "Prénom : $firstName\nNom : $lastName\nEmail : $email\nTéléphone : $tel\nType de projet : $projectType\nMessage : $message";
 
                  // Créer l'email
                  $emailMessage = (new Email())

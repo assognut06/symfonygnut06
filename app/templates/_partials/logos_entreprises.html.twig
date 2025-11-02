@@ -3,19 +3,14 @@
     <div class="container-fluid text-center text-white">
         <h2 id="partenaires-gnut06" class="mb-4">Nos alliés dans nos actions</h2>
 
-        <div class="carrousel-container w-100 overflow-hidden">
-            <div class="carrousel-wrapper d-flex align-items-center" id="carrouselWrapper">
+        <div class="carrousel-container">
+            <div class="carrousel-wrapper" id="carrouselWrapper">
                 {% for i in 1..2 %}
                     {% for entreprise in entreprises %}
                         {% if entreprise.logo %}
-                            <div class="carrousel-slide d-flex justify-content-center align-items-center bg-dark rounded p-3 mx-3">
-                                <a href="{{ entreprise.url }}" target="_blank" rel="noopener noreferrer"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="{{ entreprise.nom }}">
-                                    <img src="{{ asset('uploads/logo_entreprises/' ~ entreprise.logo) }}"
-                                         alt="Logo {{ entreprise.nom }}"
-                                         class="carrousel-img img-fluid">
+                            <div class="carrousel-slide">
+                                <a href="{{ entreprise.url }}" target="_blank" rel="noopener noreferrer" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ entreprise.nom }}">
+                                    <img src="{{ asset('uploads/logo_entreprises/' ~ entreprise.logo) }}" alt="Logo {{ entreprise.nom }}" class="carrousel-img">
                                 </a>
                             </div>
                         {% endif %}
@@ -23,13 +18,21 @@
                 {% endfor %}
             </div>
         </div>
+        
+        <div class="marquee-container">
+            <div class="marquee" id="marqueeText">
+                Chez Gnut 06, nous croyons en la force du collectif. C'est pourquoi nous avons la chance d'être accompagnés par des structures variées — entreprises, associations, collectifs citoyens — qui partagent nos valeurs et soutiennent nos initiatives. Ces alliés, chacun à leur manière, contribuent à faire vivre nos projets, à enrichir nos actions sur le terrain et à renforcer notre impact local. Leur engagement à nos côtés est une source d'inspiration et de motivation au quotidien.
+            </div>
+        </div>
     </div>
 </section>
 
 <style>
+    /* Carousel des logos */
     .carrousel-container {
         width: 100%;
         overflow: hidden;
+        margin-bottom: 30px;
     }
 
     .carrousel-wrapper {
@@ -46,7 +49,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        margin: 0 15px;
         transition: background 0.3s ease;
+        flex-shrink: 0;
     }
 
     .carrousel-slide:hover {
@@ -64,6 +69,7 @@
         transform: scale(1.1);
     }
 
+    /* Animation du carousel */
     @keyframes scrollInfini {
         from {
             transform: translateX(0);
@@ -73,14 +79,69 @@
         }
     }
 
-    @media (max-width: 768px) {
-        .carrousel-slide {
-            min-width: 100px;
-            height: 80px;
+    /* Texte défilant */
+    .marquee-container {
+        width: 80%;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.7);
+        margin: 20px auto 0 auto;
+        padding: 12px 0;
+        border-radius: 8px;
+    }
+
+    .marquee {
+        display: inline-block;
+        white-space: nowrap;
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+        font-size: 19px;
+        font-weight: 400;
+        line-height: 1.4;
+        padding-left: 100%;
+        animation: none;
+    }
+
+    .marquee.active {
+        animation: marquee-scroll 75s linear infinite;
+    }
+
+    @keyframes marquee-scroll {
+        0% {
+            transform: translateX(0);
         }
-        .carrousel-img {
-            max-width: 70px;
-            max-height: 60px;
+        100% {
+            transform: translateX(-100%);
         }
     }
+    }
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const marquee = document.getElementById("marqueeText");
+    const triggerElement = document.querySelector(".marquee-container");
+
+    if (!marquee || !triggerElement) {
+        console.warn("Éléments marquee non trouvés");
+        return;
+    }
+
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    marquee.classList.add("active");
+                } else {
+                    marquee.classList.remove("active");
+                }
+            });
+        }, {
+            threshold: 0.3
+        });
+
+        observer.observe(triggerElement);
+    } else {
+        marquee.classList.add("active");
+    }
+});
+</script>
