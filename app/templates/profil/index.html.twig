@@ -4,8 +4,8 @@
 {% block title %}Profil de l'utilisateur{% endblock %}
 
 {% block body %}
-    <div class="w-100 bg-main pt-5">
-        <div class="container my-4 pt-3 bg-light rounded-5 shadow">
+     <div class="w-100 bg-main pt-5 pb-5"> <!-- Ajout de pb-5 -->
+        <div class="container my-4 pt-3 bg-light rounded-5 shadow mb-0"> <!-- Ajout de mb-0 -->
 
             <div class="row flex-column flex-md-row">
                 <!-- ✅ Colonne gauche : navigation -->
@@ -201,7 +201,12 @@
             </div> <!-- Fin row -->
         </div> <!-- Fin container -->
     </div>
-    <style>
+ <style>
+        /* Correction pour éviter la bande blanche */
+        .w-100.bg-main {
+            min-height: calc(100vh - 200px); /* Ajustez selon la hauteur de votre header/footer */
+        }
+
         /* ✅ Taille de la colonne */
         .sidebar-nav {
             flex: 0 0 200px;
@@ -242,6 +247,16 @@
 
         .nav-tabs .nav-link:hover {
             background-color: #f8f9fa;
+        }
+
+        /* Correction spécifique pour éviter les espaces blancs */
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .w-100.bg-main {
+            margin-bottom: 0 !important;
         }
     </style>
 

@@ -4,9 +4,45 @@
 {% endblock %}
 
 {% block body %}
+<style>
+/* 🎨 Effet de relief sur les cartes - Cartes blanches sur fond sombre */
+.card-relief {
+    position: relative;
+    border: none;
+    border-radius: 15px;
+    /* ✅ Fond blanc pour les cartes */
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    box-shadow: 
+        /* Ombres externes pour l'effet relief sur fond sombre */
+        20px 20px 40px rgba(0, 0, 0, 0.8),
+        -10px -10px 30px rgba(255, 255, 255, 0.1),
+        /* Ombres internes subtiles */
+        inset 3px 3px 8px rgba(0, 0, 0, 0.1),
+        inset -3px -3px 8px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform: translateZ(0);
+    /* ✅ Bordure subtile avec votre couleur thème */
+    border: 1px solid rgba(248, 108, 248, 0.2);
+}
+
+/* 🌟 Effet hover avec relief plus prononcé */
+.card-relief:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 
+        /* Ombres plus intenses au hover */
+        30px 30px 60px rgba(0, 0, 0, 0.9),
+        -15px -15px 40px rgba(255, 255, 255, 0.15),
+        inset 5px 5px 12px rgba(0, 0, 0, 0.12),
+        inset -5px -5px 12px rgba(255, 255, 255, 0.9);
+    /* ✅ Bordure colorée au hover */
+    border: 1px solid rgba(248, 108, 248, 0.5);
+    /* ✅ Effet de lueur */
+    filter: drop-shadow(0 0 20px rgba(248, 108, 248, 0.3));
+}
+</style>
 	<div class="container pt-0">
 		<div class="mx-3">
-			<h2 class="my-3 text-primary text-center">Associations à recommander
+			<h2 class="my-3 gradient-text text-center">Associations à recommander
 				{% if app.request.attributes.get('_route') == 'app_asso_recommander_ville' %}
 					à
 					{{ city }}
@@ -19,7 +55,7 @@
 							<input type="text" name="query" class="form-control" placeholder="Rechercher une association">
 						</div>
 						<div class="d-grid">
-							<button type="submit" class="btn btn-primary">Rechercher</button>
+							<button type="submit" class="btn-neon text-white mt-3" role="button">Rechercher</button>
 						</div>
 					</form>
 				</div>
@@ -41,7 +77,7 @@
 			<div class="row align-items-start mx-auto">
 				{% for item in data_forms %}
 					<div class="col d-flex justify-content-around my-3">
-						<div class="card shadow-lg" style="width: 21rem;">
+						<div class="card shadow-lg card-relief" style="width: 21rem;">
 							<img src="{{ item.banner }}" class="card-img-top" alt="Bannière {{ item.name }}">
 							<div class="card-body">
 								<h5 class="card-title text-center text-primary">{{ item.name }}</h5>
@@ -88,13 +124,13 @@
 									{% endif %}
 									<p>{{ item.zipCode }}
 										{{ item.city }}</p>
-									<a class="btn btn-warning" href="{{ item.url }}" target='_blanck'>Sur HelloAsso</a>
+									<a class="btn-asso" role="button" href="{{ item.url }}" target='_blanck'>Sur HelloAsso</a>
 								</div>
 							</div>
 						</div>
 					</div>
 				{% else %}
-					Si vous ne trouvez pas d'association dans la base de données, il est possible que l'association n'ait pas été enregistrée correctement ou qu'elle n'ait pas mis à jour ses informations récemment.
+					<p class="text">Si vous ne trouvez pas d'association dans la base de données, il est possible que l'association n'ait pas été enregistrée correctement ou qu'elle n'ait pas mis à jour ses informations récemment.</p>
 				{% endfor %}
 				<div class="col-12 pagination-container mt-3">
 					<nav aria-label="Admin navigation">

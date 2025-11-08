@@ -1,159 +1,273 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Réservation{% endblock %}
+{% block title %}Réservation
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* Corrections pour les contrôles du carousel */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+    top: 30%;
+    height: 40%;
+    z-index: 5;
+}
+
+/* Assurer que les liens et boutons des cartes sont au-dessus */
+.card {
+    position: relative;
+    z-index: 10;
+}
+
+.card-body {
+    position: relative;
+    z-index: 15;
+}
+
+/* Assurer que les liens sont cliquables */
+.icon-link,
+.btn-outline-gradient {
+    position: relative;
+    z-index: 20;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Conteneur carousel avec la même couleur que bg-main */
+.carousel-container {
+    background: var(--Color-Background, linear-gradient(180deg, #010208 16%, #010206 21%, #040008 25%, #010101 30%, #010101 34%, #010101 36%, #010101 100%));
+    width: 100%;
+    position: relative;
+    padding: 0 60px;
+    padding-bottom: 60px; /* Espace pour les indicateurs */
+}
+
+/* Alternative : Positionner les contrôles en dehors de la zone des cartes */
+@media(min-width: 992px) {
+    .carousel-control-prev {
+        left: 10px;
+    }
+
+    .carousel-control-next {
+        right: 10px;
+    }
+}
+
+@media(max-width: 991px) {
+    .carousel-container {
+        padding: 0 20px 60px 20px; /* Garder l'espace pour les indicateurs */
+    }
+    
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 3%;
+        top: 35%;
+        height: 30%;
+    }
+    
+    .carousel-control-prev {
+        left: 5px;
+    }
+    
+    .carousel-control-next {
+        right: 5px;
+    }
+}
+
+@media(max-width: 768px) {
+    .carousel-container {
+        padding: 0 15px 60px 15px; /* Garder l'espace pour les indicateurs */
+    }
+    
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 8%;
+        top: 25%;
+        height: 30%;
+        z-index: 5;
+    }
+    
+    .carousel-control-prev {
+        left: 5px;
+    }
+    
+    .carousel-control-next {
+        right: 5px;
+    }
+
+    .card-body {
+        padding: 1rem 0.75rem;
+    }
+}
+
+@media(max-width: 576px) {
+    .carousel-container {
+        padding: 0 0 60px 0; /* Garder l'espace pour les indicateurs */
+    }
+    
+    .carousel-control-prev,
+    .carousel-control-next {
+        display: none !important;
+    }
+}
+
+/* Style pour les indicateurs - CORRECTION ICI */
+.carousel-indicators {
+    bottom: 10px; /* Au lieu de -50px */
+    margin-bottom: 0;
+    z-index: 25;
+}
+
+.carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.carousel-indicators button.active {
+    background-color: white;
+}
+
+/* Retirer la marge sur #evenements */
+#evenements {
+    margin: 0;
+    width: 100%;
+}
+
+/* Assurer que le carousel a assez d'espace */
+#evenements.pb-5 {
+    padding-bottom: 0 !important; /* Retirer le padding-bottom pour éviter les conflits */
+}
+</style>
+{% endblock %}
 
 {% block body %}
 
-    <!-- Section Intro -->
-    <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5"
-             aria-labelledby="section-intro-title">
-        <div class="container row align-items-center justify-content-center g-5">
-            <div class="col-lg-6 col-12">
-                <h2 id="section-intro-title">Mondes Virtuels, Liens Réels : L'Inclusion à Portée de main</h2>
-                <p class="text">Venez découvrir nos actions sur place !</p>
-                <a href="{{ path('app_a_propos') }}"
-                   class="btn-neon text-white"
-                   aria-label="En savoir plus sur GNUT 06">
-                    Découvrez GNUT 06
-                </a>
-            </div>
+	<!-- Section Intro -->
+	<section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="section-intro-title">
+		<div class="container row align-items-center justify-content-center g-5">
+			<div class="col-lg-6 col-12">
+				<h2 id="section-intro-title">Mondes Virtuels, Liens Réels : L'Inclusion à Portée de main</h2>
+				<p class="text">Venez découvrir nos actions sur place !</p>
+				<a href="{{ path('app_a_propos') }}" class="btn-neon text-white" aria-label="En savoir plus sur GNUT 06">
+					Découvrez GNUT 06
+				</a>
+			</div>
 
-            <div class="col-lg-6 col-12">
-                <figure>
-                    <img src="{{ asset('images/webp/immersion-3.webp') }}"
-                         class="img-fluid"
-                         alt="Illustration d'une immersion dans un monde virtuel accessible">
-                </figure>
-            </div>
-        </div>
-    </section>
+			<div class="col-lg-6 col-12">
+				<figure>
+					<img src="{{ asset('images/webp/immersion-3.webp') }}" class="img-fluid" alt="Illustration d'une immersion dans un monde virtuel accessible">
+				</figure>
+			</div>
+		</div>
+	</section>
 
-    <!-- Section Carousel -->
-    <section id="evenements"
-             class="carousel slide bg-main"
-             data-bs-ride="carousel"
-             aria-label="Événements GNUT 06"
-             aria-roledescription="carousel">
 
-        <div class="carousel-inner" role="listbox">
-            {% for group in data_forms|batch(3) %}
-                <div class="carousel-item {% if loop.first %}active{% endif %}"
-                     role="group"
-                     aria-roledescription="slide"
-                     aria-label="Diapositive {{ loop.index }} sur {{ data_forms|length // 3 + (data_forms|length % 3 > 0 ? 1 : 0) }}">
+	<!-- Section Carousel -->
+	<div class="carousel-container bg-main">
+		<section id="evenements" class="carousel slide bg-main pb-5" data-bs-ride="carousel" aria-label="Événements GNUT 06" aria-roledescription="carousel">
 
-                    <div class="container py-4">
-                        <div class="row g-4 justify-content-center">
+			<div class="carousel-inner" role="listbox">
+				{% for group in data_forms|batch(3) %}
+					<div class="carousel-item {% if loop.first %}active{% endif %}" role="group" aria-roledescription="slide" aria-label="Diapositive {{ loop.index }} sur {{ data_forms|length // 3 + (data_forms|length % 3 > 0 ? 1 : 0) }}">
 
-                            {% for item in group %}
-                                <article class="col-12 col-md-6 col-lg-4 d-flex"
-                                         role="article"
-                                         aria-labelledby="card-title-{{ loop.parent.loop.index }}-{{ loop.index }}">
+						<div class="container py-4">
+							<div class="row g-4 justify-content-center">
 
-                                    <div class="card h-100 flex-fill">
-                                        <figure class="m-0">
-                                            <img src="{{ asset(randomImage('/images/news/')) }}"
-                                                 class="card-img-top"
-                                                 alt="Illustration de l'événement {{ item.title }}">
-                                        </figure>
+								{% for item in group %}
+									<article class="col-12 col-sm-6 col-lg-4 d-flex px-3 px-sm-2" role="article" aria-labelledby="card-title-{{ loop.parent.loop.index }}-{{ loop.index }}">
 
-                                        <div class="card-body d-flex flex-column bg-main">
-                                            <h5 id="card-title-{{ loop.parent.loop.index }}-{{ loop.index }}"
-                                                class="card-title text-center text text-white">
-                                                {{ item.title }}
-                                            </h5>
+										<div class="card h-100 flex-fill">
+											<figure class="m-0">
+												<img src="{{ asset(randomImage('/images/news/')) }}" class="card-img-top" alt="Illustration de l'événement {{ item.title }}">
+											</figure>
 
-                                            <p class="text-justify flex-grow-1 text">
-                                                {{ item.description|slice(0, 200) }}...
-                                                <br>
-                                                <a class="icon-link icon-link-hover"
-                                                   href="{{ path('app_billetteries_detail', {'formType': item.formType, 'slug': item.formSlug}) }}"
-                                                   aria-label="En savoir plus sur l'événement {{ item.title }}">
-                                                    En savoir +<i class="bi bi-arrow-right"></i>
-                                                </a>
-                                            </p>
+											<div class="card-body d-flex flex-column bg-main p-3">
+												<h5 id="card-title-{{ loop.parent.loop.index }}-{{ loop.index }}" class="card-title text-center text text-white mb-3">
+													{{ item.title }}
+												</h5>
 
-                                            <div class="text-center mt-auto text">
-                                                <button class="btn-outline-gradient btn-sm text-white"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#modal_{{ loop.parent.loop.index }}_{{ loop.index }}"
-                                                        aria-haspopup="dialog"
-                                                        aria-controls="modal_{{ loop.parent.loop.index }}_{{ loop.index }}">
-                                                    Réserver
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
+												<p class="text-justify flex-grow-1 text mb-3">
+													{{ item.description|slice(0, 200) }}...
+												</p>
 
-                                <!-- Modal -->
-                                <div class="modal fade modal-lg"
-                                     id="modal_{{ loop.parent.loop.index }}_{{ loop.index }}"
-                                     tabindex="-1"
-                                     role="dialog"
-                                     aria-labelledby="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}"
-                                     aria-modal="true"
-                                     aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <header class="modal-header">
-                                                <h1 class="modal-title fs-5"
-                                                    id="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}">
-                                                    {{ item.title }}
-                                                </h1>
-                                                <button type="button"
-                                                        class="btn-close"
-                                                        data-bs-dismiss="modal"
-                                                        aria-label="Fermer la fenêtre de réservation"></button>
-                                            </header>
+												<!-- Zone de liens avec plus d'espace -->
+												<div class="mt-auto">
+													<div class="mb-3">
+														<a class="icon-link icon-link-hover d-inline-block w-100 text-center py-2" href="{{ path('app_billetteries_detail', {'formType': item.formType, 'slug': item.formSlug}) }}" aria-label="En savoir plus sur l'événement {{ item.title }}">
+															En savoir plus
+															<i class="bi bi-arrow-right"></i>
+														</a>
+													</div>
 
-                                            <div class="modal-body">
-                                                <iframe id="haWidget"
-                                                        allowtransparency="true"
-                                                        scrolling="auto"
-                                                        title="Formulaire de réservation pour {{ item.title }}"
-                                                        src="{{ item.widgetFullUrl }}"
-                                                        style="width: 100%; min-height: 750px; border: none;">
-                                                </iframe>
-                                            </div>
+													<div class="text-center mb-3">
+														<button class="btn-outline-gradient btn-sm text-white w-100 py-2" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.parent.loop.index }}_{{ loop.index }}" aria-haspopup="dialog" aria-controls="modal_{{ loop.parent.loop.index }}_{{ loop.index }}">
+															Réserver
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</article>
 
-                                            <footer class="modal-footer">
-                                                <button type="button"
-                                                        class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">
-                                                    Fermer
-                                                </button>
-                                            </footer>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <p class="text-center text-white py-4">Aucune donnée disponible.</p>
-            {% endfor %}
-        </div>
+									<!-- Modal -->
+									<div class="modal fade modal-lg" id="modal_{{ loop.parent.loop.index }}_{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}" aria-modal="true" aria-hidden="true">
+										<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+											<div class="modal-content">
+												<header class="modal-header">
+													<h1 class="modal-title fs-5" id="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}">
+														{{ item.title }}
+													</h1>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer la fenêtre de réservation"></button>
+												</header>
 
-        <!-- Contrôles du carousel -->
-        <button class="carousel-control-prev"
-                type="button"
-                data-bs-target="#evenements"
-                data-bs-slide="prev"
-                aria-label="Afficher la diapositive précédente">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Précédent</span>
-        </button>
+												<div class="modal-body">
+													<iframe id="haWidget" allowtransparency="true" scrolling="auto" title="Formulaire de réservation pour {{ item.title }}" src="{{ item.widgetFullUrl }}" style="width: 100%; min-height: 750px; border: none;"></iframe>
+												</div>
 
-        <button class="carousel-control-next"
-                type="button"
-                data-bs-target="#evenements"
-                data-bs-slide="next"
-                aria-label="Afficher la diapositive suivante">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Suivant</span>
-        </button>
-    </section>
+												<footer class="modal-footer">
+													<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+														Fermer
+													</button>
+												</footer>
+											</div>
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+				{% else %}
+					<p class="text-center text-white py-4">Aucune donnée disponible.</p>
+				{% endfor %}
+			</div>
+
+			<!-- Indicateurs de pagination pour navigation tactile -->
+			<div class="carousel-indicators d-md-none">
+				{% for group in data_forms|batch(3) %}
+					<button type="button" data-bs-target="#evenements" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %} class="active" aria-current="true" {% endif %} aria-label="Aller à la diapositive {{ loop.index }}"></button>
+				{% endfor %}
+			</div>
+
+			<!-- Contrôles du carousel (masqués sur mobile) -->
+			<!-- Contrôles repositionnés -->
+			<button class="carousel-control-prev d-none d-md-flex" type="button" data-bs-target="#evenements" data-bs-slide="prev" aria-label="Afficher la diapositive précédente">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Précédent</span>
+			</button>
+
+			<button class="carousel-control-next d-none d-md-flex" type="button" data-bs-target="#evenements" data-bs-slide="next" aria-label="Afficher la diapositive suivante">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Suivant</span>
+			</button>
+		</section>
+	</div>
 
 {% endblock %}

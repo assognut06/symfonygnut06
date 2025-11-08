@@ -1,71 +1,165 @@
+<!-- Ajoutez ce style avant la fermeture du footer -->
+<style>
+	/* Style pour le dropdown du footer */
+	.section_footer .dropdown-menu {
+		background: var(--Color-Background, linear-gradient(180deg, #010208 16%, #010206 21%, #040008 25%, #010101 30%, #010101 34%, #010101 36%, #010101 100%)) !important;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		border-radius: 8px;
+	}
+
+	.section_footer .dropdown-item {
+		color: #ffffff !important;
+		transition: all 0.3s ease;
+	}
+
+	.section_footer .dropdown-item:hover,
+	.section_footer .dropdown-item:focus {
+		background-color: rgba(248, 108, 248, 0.2) !important; /* Couleur hover avec votre thème */
+		color: #F86CF8 !important;
+	}
+
+	/* Style pour le texte du dropdown toggle */
+	.section_footer .dropdown-toggle {
+		color: inherit !important;
+	}
+
+	.section_footer .dropdown-toggle:hover {
+		color: #F86CF8 !important;
+	}
+</style>
 <footer class="container-fluid logoBack text-light pt-5" role="contentinfo">
-    <div class="container">
-        <div class="row text-center text-md-start">
+	<div class="container">
+		<div
+			class="row text-center text-md-start">
 
-            <!-- Bloc logo & adresse -->
-            <div class="col-12 col-md-3 mb-4 text-start" aria-labelledby="footer-logo">
-                <h1 id="footer-logo" class="logo_footer">GNUT 06</h1>
-                <address class="mb-0">
-                    <p class="text mb-0">
-                        9 Rue du Pont-Vieux <br>
-                        06300 NICE <br>
-                        FRANCE
-                    </p>
-                </address>
-            </div>
+			<!-- Bloc logo & adresse -->
+			<div class="col-12 col-md-3 mb-4 text-start" aria-labelledby="footer-logo">
+				<h1 id="footer-logo" class="logo_footer">GNUT 06</h1>
+				<address class="mb-0">
+					<p class="text mb-0">
+						9 Rue du Pont-Vieux
+						<br>
+						06300 NICE
+						<br>
+						FRANCE
+					</p>
+				</address>
+			</div>
 
-            <!-- Bloc A propos -->
-            <nav class="col-6 col-md-3 mb-4 section_footer text-start" aria-labelledby="footer-about">
-                <h3 id="footer-about" class="title_footer">À propos</h3>
-                <ul class="list-unstyled">
-                    <li><a href="{{ path('app_a_propos') }}">Qui sommes-nous</a></li>
-                    <li><a href="{{ path('app_contact') }}">Nous contacter</a></li>
-                    <li><a href="{{ path('app_don') }}">Nous soutenir</a></li>
-                    <li><a href="{{ path('app_a_propos') }}">FAQ</a></li>
-                </ul>
-            </nav>
+			<!-- Bloc A propos -->
+			<nav class="col-6 col-md-3 mb-4 section_footer text-start" aria-labelledby="footer-about">
+				<h3 id="footer-about" class="title_footer">À propos</h3>
+				<ul class="list-unstyled">
+					<li>
+						<a href="{{ path('app_a_propos') }}">Qui sommes-nous</a>
+					</li>
+					<li>
+						<a href="{{ path('app_contact') }}">Nous contacter</a>
+					</li>
+					<li>
+						<a href="{{ path('app_don') }}">Nous soutenir</a>
+					</li>
+					<li>
+						 <a href="{{ path('app_metavers') }}#section-faq">FAQ</a>
+					</li>
+				</ul>
+			</nav>
 
-            <!-- Bloc Services -->
-            <nav class="col-6 col-md-3 mb-4 section_footer text-start" aria-labelledby="footer-services">
-                <h3 id="footer-services" class="title_footer">Services</h3>
-                <ul class="list-unstyled">
-                    <li><a href="{{ path('app_billetteries') }}">Réserver une activité</a></li>
-                    <li><a href="{{ path('app_metavers') }}">Salles 3D immersives</a></li>
-                    <li><a href="{{ path('app_digital_consulting') }}">Digital consulting</a></li>
-                </ul>
-            </nav>
+			<!-- Bloc Services -->
+			<nav class="col-6 col-md-3 mb-4 section_footer text-start" aria-labelledby="footer-services">
+				<h3 id="footer-services" class="title_footer">Services</h3>
+				<ul class="list-unstyled">
+					<li>
+						<div class="btn-group dropup">
+							<a href="#" class="dropdown-toggle text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false" role="button" style="color: inherit; background: none; border: none; padding: 0;">
+								Vivre avec un handicap
+							</a>
+							<ul class="dropdown-menu">
+								<li>
+									<a class="dropdown-item " href="{{ path('app_asso_recommander') }}">Associations recommandeés</a>
+								</li>
+								{# <li>
+																								<a class="dropdown-item " href="/agent/handicap">Agent AI handicap</a>
+																							</li> #}
+								<li>
+									<a class="dropdown-item" href="https://mda.departement06.fr/annuaire-general/maison-de-lautonomie-de-nice" target="_blank">Maison de l’autonomie de Nice</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="https://www.apf-francehandicap.org/" target="_blank">APF France handicap</a>
+								</li>
+								{# <li>
+																	<a class="dropdown-item" href="https://www.handitoit.org/" target="_blank">HandiToit Alpes-Maritimes</a>
+																</li> #}
+								<li>
+									<a class="dropdown-item" href="https://www.ladapt.net/" target="_blank">ADAPT Alpes-Maritimes</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="https://www.service-public.gouv.fr/particuliers/vosdroits/F12242" target="_blank">AAH</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="https://www.agefiph.fr/" target="_blank">AGEFIPH</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="https://www.handicap.gouv.fr/" target="_blank">handicap.gouv.fr</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="https://www.fiphfp.fr/" target="_blank">FIPHFP</a>
+								</li>
+								{# <li>
+																	<a class="dropdown-item" href="https://www.cnsa.fr/" target="_blank">CNSA</a>
+																</li> #}
+								<li>
+									<a class="dropdown-item" href="https://www.unapei.org/" target="_blank">Unapei</a>
+								</li>
+								{# <li>
+																	<a class="dropdown-item" href="https://www.adapt.org/" target="_blank">L’ADAPT</a>
+																</li> #}
+							</ul>
+						</div>
+					</li>
+					<li>
+						<a href="{{ path('app_billetteries') }}">Réserver une activité</a>
+					</li>
+					<li>
+						<a href="{{ path('app_metavers') }}">Salles 3D immersives</a>
+					</li>
+					<li>
+						<a href="{{ path('app_digital_consulting') }}">Digital consulting</a>
+					</li>
+				</ul>
+			</nav>
 
-            <!-- Bloc Réseaux sociaux -->
-            <div class="col-12 col-md-3 mb-4 " aria-labelledby="footer-social">
-                <h3 id="footer-social" class="title_footer">Suivez-nous</h3>
-                <div class="d-flex justify-content-center justify-content-md-start gap-3 mb-3" role="navigation" aria-label="Réseaux sociaux">
-                    <a href="https://www.linkedin.com/in/gerald-col/" class="social_footer_link" aria-label="LinkedIn GNUT06">
-                        <img src="{{ asset('images/webp/linkedin-white.svg') }}" alt="">
-                    </a>
-                    <a href="https://x.com/gerald_col" class="social_footer_link" aria-label="Twitter/X GNUT06">
-                        <img src="{{ asset('images/webp/twitter-x.svg') }}" alt="">
-                    </a>
-                    <a href="https://www.instagram.com/gnut06/" class="social_footer_link" aria-label="Instagram GNUT06">
-                        <img src="{{ asset('images/webp/instagram.svg') }}" alt="">
-                    </a>
-                    <a href="https://www.facebook.com/profile.php?id=61552595323696&locale=fr_FR" class="social_footer_link" aria-label="Facebook GNUT06">
-                        <img src="{{ asset('images/webp/facebook.svg') }}" alt="">
-                    </a>
-                    <a href="https://www.youtube.com/@Gnut06/videos" class="social_footer_link" aria-label="YouTube GNUT06">
-                        <img src="{{ asset('images/webp/youtube.svg') }}" alt="">
-                    </a>
-                </div>
-                <p class="small mb-0">2025 © GNUT06 Tout droit réservé.</p>
-            </div>
-        </div>
+			<!-- Bloc Réseaux sociaux -->
+			<div class="col-12 col-md-3 mb-4 " aria-labelledby="footer-social">
+				<h3 id="footer-social" class="title_footer">Suivez-nous</h3>
+				<div class="d-flex justify-content-center justify-content-md-start gap-3 mb-3" role="navigation" aria-label="Réseaux sociaux">
+					<a href="https://www.linkedin.com/in/gerald-col/" class="social_footer_link" aria-label="LinkedIn GNUT06">
+						<img src="{{ asset('images/webp/linkedin-white.svg') }}" alt="">
+					</a>
+					<a href="https://x.com/gerald_col" class="social_footer_link" aria-label="Twitter/X GNUT06">
+						<img src="{{ asset('images/webp/twitter-x.svg') }}" alt="">
+					</a>
+					<a href="https://www.instagram.com/gnut06/" class="social_footer_link" aria-label="Instagram GNUT06">
+						<img src="{{ asset('images/webp/instagram.svg') }}" alt="">
+					</a>
+					<a href="https://www.facebook.com/profile.php?id=61552595323696&locale=fr_FR" class="social_footer_link" aria-label="Facebook GNUT06">
+						<img src="{{ asset('images/webp/facebook.svg') }}" alt="">
+					</a>
+					<a href="https://www.youtube.com/@Gnut06/videos" class="social_footer_link" aria-label="YouTube GNUT06">
+						<img src="{{ asset('images/webp/youtube.svg') }}" alt="">
+					</a>
+				</div>
+				<p class="small mb-0">2025 © GNUT 06 Tout droit réservé.</p>
+			</div>
+		</div>
 
-        <!-- Ligne de crédits -->
-        <div class="text-start text-xl-center mt-4">
-            <p class="text mb-0">
-                Conçu et développé avec 💙 par la
-                <span style="color:#F86CF8;">GNUT Team</span>.
-                <a href="#">Mentions légales</a>
-            </p>
-        </div>
-    </div>
+		<!-- Ligne de crédits -->
+		<div class="text-start text-xl-center mt-4">
+			<p class="text mb-0">
+				Conçu et développé avec 💙 par la
+				<span style="color:#F86CF8;">GNUT Team</span>.
+				<a href="{{ path('app_mention_legales') }}">Mentions légales</a>
+			</p>
+		</div>
+	</div>
 </footer>
