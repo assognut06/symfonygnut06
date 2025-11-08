@@ -170,7 +170,7 @@
 						</div>
 					{% endif %}
 				</div>
-				<div class="col-12 mt-4 text-center">
+				<div class="col-12 my-4 text-center">
 					{% if app.request.headers.get('Referer') %}
 						<a class="btn btn-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}">
 							<i class="bi bi-skip-backward-circle text-white"></i>

@@ -10,7 +10,7 @@
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
     <h1 class="text-primary">Réinitialiser votre mot de passe</h1>
-<div class="card p-4 shadow">
+<div class="card p-4 shadow my-5">
     {{ form_start(requestForm, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
         <div class="mb-3">
             {{ form_label(requestForm.email) }}

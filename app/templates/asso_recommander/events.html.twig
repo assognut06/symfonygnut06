@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container pt-0">
+	<div class="container pt-0 text">
 		<div class="mx-3">
 			<h2 class="my-5 text-primary text-center">
 				{{ app.request.query.get('organizationName')|url_decode }}</h2>
@@ -92,7 +92,7 @@
 			{% else %}
 				No data available.
 			{% endfor %}
-			<div class="col-12 mt-4 text-center">
+			<div class="col-12 my-4 text-center">
 				{% if app.request.headers.get('Referer') %}
 					<a class="btn btn-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}"><i class="bi bi-skip-backward-circle text-white"></i> Retour</a>
 				{% else %}
