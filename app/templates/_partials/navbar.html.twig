@@ -1,3 +1,27 @@
+<style>
+    /* Style pour la page active */
+    .nav-link.active,
+    .btn-neon.active,
+    .btn-outline-gradient.active {
+        font-weight: bold !important;
+    }
+    
+    /* Optionnel : harmonisation visuelle du menu dropdown */
+    .dropdown-menu.bg-navbar {
+        background-color: #121212;
+    }
+    .dropdown-menu .dropdown-item:hover {
+        background-color: rgba(255,255,255,0.1);
+    }
+    .dropdown-divider {
+        border-color: rgba(255,255,255,0.1);
+    }
+    
+    /* Style pour les liens du dropdown actifs */
+    .dropdown-item.active {
+        font-weight: bold !important;
+    }
+</style>
 <header class="sticky-top">
     <nav class="navbar navbar-expand-xl navbar-dark bg-navbar" role="navigation" aria-label="Navigation principale">
         <div class="container-fluid">
