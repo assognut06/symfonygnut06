@@ -79,20 +79,43 @@ class AppExtension extends AbstractExtension
 
     public function getEventsAssoRecommender($organizationSlug, string $formTypes): int
     {
-        $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms?formTypes={$formTypes}&states=Public";
-       
-        $data_forms = $this->helloAssoApiService->makeApiCall($url);
-        if ($formTypes === 'Event') {
-            $filteredData = $this->dataFilterAndPaginator->filterAndSortData($data_forms['data']);
-        } elseif ($formTypes === 'Membership' || $formTypes === 'CrowdFunding') {
-            $filteredData = $this->dataFilterAndPaginator->filterMemberShipSortData($data_forms['data']);
-        } else {
-            $filteredData = $data_forms['data'];
-        }
-        
-        $count = count($filteredData);
+        try {
+            $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms?formTypes={$formTypes}&states=Public";
 
-        return $count;
+            $data_forms = $this->helloAssoApiService->makeApiCall($url);
+
+            // ✅ Vérification que l'API retourne des données valides
+            if (!isset($data_forms['data']) || !is_array($data_forms['data'])) {
+                return 0;
+            }
+
+            // ✅ Filtrage sécurisé selon le type de formulaire
+            if ($formTypes === 'Event') {
+                $filteredData = $this->dataFilterAndPaginator->filterAndSortData($data_forms['data']);
+            } elseif ($formTypes === 'Membership' || $formTypes === 'CrowdFunding') {
+                $filteredData = $this->dataFilterAndPaginator->filterMemberShipSortData($data_forms['data']);
+            } else {
+                // ✅ Pour les autres types, on fait un filtrage sécurisé
+                $filteredData = array_filter($data_forms['data'], function ($item) {
+                    // Vérifier que l'élément est un array et a les propriétés nécessaires
+                    return is_array($item) && isset($item['organizationSlug']);
+                });
+            }
+
+            // ✅ Vérification que $filteredData est un array
+            if (!is_array($filteredData)) {
+                return 0;
+            }
+
+            $count = count($filteredData);
+
+            return $count;
+        } catch (\Exception $e) {
+            // ✅ En cas d'erreur (API indisponible, données malformées, etc.), retourner 0
+            // Vous pouvez logger l'erreur si nécessaire
+            // $this->logger->error('Erreur dans getEventsAssoRecommender: ' . $e->getMessage());
+            return 0;
+        }
     }
 
     public function urlDecode($value)

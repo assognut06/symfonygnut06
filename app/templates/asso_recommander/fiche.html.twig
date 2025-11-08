@@ -4,18 +4,18 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container pt-0">
-		<div class="text-center">
+	<div class="container pt-5">
+		<div class="text-center text">
 			<img src="{{ data.banner }}" class="img-fluid mx-auto d-block" alt="Bannière {{ data.name }}">
 		</div>
 		<div class="mx-3">
-			<h2 class="my-5 text-primary text-center">{{ data.name|e }}</h2>
+			<h2 class="my-5 gradient-text text-center">{{ data.name|e }}</h2>
 			<div class="border border-secondary mb-5 mx-5 "></div>
 			<div class="row justify-content-center">
 				<div class="col-12 text-center">
 					<img src="{{ data.logo }}" alt="Logo {{ data.name|e }}" class="mx-auto logoAssoFiche">
 				</div>
-				<div class="col-12 my-4 text-center">
+				<div class="col-12 my-4 text-center text">
 					<p
 						class="fs-4">
 						{# Convertir la description avec des sauts de ligne après chaque point #}
@@ -57,20 +57,20 @@
 						</p>
 					{% endif %}
 				</div>
-				<div class="col-12 col-xxl-4 fs-4 text-center">{{ data.type == "Association1901Rig" ? "Association loi 1901 : " : "" }}
+				<div class="col-12 col-xxl-4 fs-4 text-center text">{{ data.type == "Association1901Rig" ? "Association loi 1901 : " : "" }}
 					{{ data.category|e }}</div>
-				<div class="col-12 col-xxl-4 fs-4 text-center">{{ data.zipCode|e }}
+				<div class="col-12 col-xxl-4 fs-4 text-center text">{{ data.zipCode|e }}
 					{{ data.city|e }}</div>
 				{# <div class="col-12 col-xxl-4 mb-4 fs-4 text-center">RNA : {{ data.rnaNumber|e }}</div> #}
 				<div class="col-12 fs-4 my-4 text-center">
-					<a class="btn btn-warning" href="{{ data.url|e }}" target="_blank" rel="noopener noreferrer">{{ data.name }}
+					<a class="btn-neon" role="button" href="{{ data.url|e }}" target="_blank" rel="noopener noreferrer">{{ data.name }}
 						chez Helloasso</a>
 				</div>
-				<div class="col-12 mt-4 text-center">
+				<div class="col-12 my-4 text-center">
 					{% if app.request.headers.get('Referer') %}
-						<a class="btn btn-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}"><i class="bi bi-skip-backward-circle text-white"></i> Retour</a>
+						<a class="btn-outline-gradient text-white" role="button" href="{{ app.request.headers.get('Referer')|e('html_attr') }}"><i class="bi bi-skip-backward-circle text-white"></i> Retour</a>
 					{% else %}
-						<p>Impossible de retourner à la page précédente.</p>
+						<p class="text">Impossible de retourner à la page précédente.</p>
 					{% endif %}
 				</div>
 			</div>

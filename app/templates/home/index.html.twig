@@ -41,7 +41,12 @@
 				<p class="text text-start">Réservez votre séance de réalité virtuelle de 30 minutes à partir de 19€</p>
 				<nav class="d-flex flex-column flex-sm-row gap-3 mt-3 justify-content-center justify-content-md-start" aria-label="Liens vers réservation et découverte">
 					<a href="{{ path('app_billetteries') }}" class="btn-outline-gradient text-white" role="button">Réserver une séance</a>
-					<a href="https://framevr.io/handi-metavers" class="btn-outline-gradient text-white" role="button">Découvrez Handi-3D</a>
+					<a href="https://framevr.io/handi-metavers" class="btn-outline-gradient text-white" role="button" aria-label="Découvrez Handi‑3D — lien vers FrameVR">
+						Découvrez Handi-3D
+						<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger" style="transform: translate(-50%, -50%) rotate(23deg); transform-origin: center;">
+							New
+						</span>
+					</a>
 				</nav>
 			</article>
 		</div>
@@ -108,9 +113,9 @@
 			<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000" role="region" aria-label="Carrousel des évènements">
 
 				<div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Photo : stand GNUT 06 — Nice fête sa rentrée"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Photo : stand GNUT 06 — Journée des aidants (1)"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Photo : stand GNUT 06 — Journée des aidants (2)"></button>
+					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Photo : stand GNUT 06 — Nice fête sa rentrée"></button>
+					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Photo : stand GNUT 06 — Journée des aidants (1)"></button>
+					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Photo : stand GNUT 06 — Journée des aidants (2)"></button>
 				</div>
 
 				<div class="carousel-inner">
@@ -121,7 +126,7 @@
 						<img src="{{ asset('images/webp/20251001_085759.webp') }}" class="d-block w-100 img-fluid rounded-4" alt="Photo du stand de Gnut 06 lors de la journée des aidants">
 					</div>
 					<div class="carousel-item">
-						<img src="{{ asset('images/webp/20251001_121028.webp') }}" class="d-block w-100 img-fluid rounded-4" alt="Photo du stand de Gnut 06 lors de la journée des aidants"">
+						<img src="{{ asset('images/webp/20251001_121028.webp') }}" class="d-block w-100 img-fluid rounded-4" alt="Photo du stand de Gnut 06 lors de la journée des aidants" ">
 					</div>
 				</div>
 
@@ -176,8 +181,8 @@
 				<h2 id="team-title" class="text-center">Notre Équipe Tech</h2>
 				<p class="text text-center">
 					Voici quelques-uns de nos bénévoles talentueux qui ont joué un rôle clé dans la conception,
-					                le développement et la communication de nos projets web.
-					                Comme eux, venez contribuer à une cause engageante et épanouissante.
+										                le développement et la communication de nos projets web.
+										                Comme eux, venez contribuer à une cause engageante et épanouissante.
 				</p>
 				<a href="{{ path('app_adhesion') }}" class="btn-outline-gradient mb-5 m-auto" role="button">J'adhère</a>
 			</div>
