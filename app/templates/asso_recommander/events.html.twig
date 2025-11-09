@@ -7,7 +7,7 @@
 {% block body %}
 	<div class="container pt-0 text">
 		<div class="mx-3">
-			<h2 class="my-5 text-primary text-center">
+			<h2 class="my-5 gradient-text text-center">
 				{{ app.request.query.get('organizationName')|url_decode }}</h2>
 			<div class="border border-secondary mb-5 mx-5"></div>
 			<div class="row align-items-start mx-auto">
@@ -18,7 +18,7 @@
 								<img src="{{ item.banner.publicUrl }}" class="card-img-top" alt="Bannière de {{ app.request.query.get('organizationName')|url_decode }}">
 							{% endif %}
 							<div class="card-body">
-								<h5 class="card-title text-center">{{ item.title }}</h5>
+								<h5 class="card-title gradient-text text-center">{{ item.title }}</h5>
 								{% if item.logo is defined and item.logo.publicUrl %}
 									<p class="card-text text-center">
 										<img src="{{ item.logo.publicUrl }}" class="card-img-top logoAsso my-2" alt="Logo {{ app.request.query.get('organizationName')|url_decode }}">
@@ -49,21 +49,21 @@
 							{% endif %}
 
 							<div class="text-center">
-								<button class="btn btn-warning text-primary" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.index }}">
+								<button class="btn-asso" role="button" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.index }}">
 									{% if app.request.attributes.get('formTypes') == 'Event' %}
-										<i class="bi bi-calendar-event-fill text-primary"></i>
+										<i class="bi bi-calendar-event-fill"></i>
 										Réserver
 									{% elseif app.request.attributes.get('formTypes') == 'Donation' %}
-										<i class="bi text-primary bi-check"></i>
+										<i class="bi bi-check"></i>
 										Faire un don
 									{% elseif app.request.attributes.get('formTypes') == 'Membership' %}
-										<i class="bi text-primary bi-person-badge-fill"></i>
+										<i class="bi bi-person-badge-fill"></i>
 										Adhérer
 									{% elseif app.request.attributes.get('formTypes') == 'CrowdFunding' %}
-										<i class="bi text-primary bi-people-fill"></i>
+										<i class="bi bi-people-fill"></i>
 										Soutenir
 									{% elseif app.request.attributes.get('formTypes') == 'Shop' %}
-										<i class="bi text-primary bi-shop"></i>
+										<i class="bi bi-shop"></i>
 										Acheter
 									{% endif %}
 								</button>
@@ -81,7 +81,7 @@
 											<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="{{ item.widgetFullUrl }}" style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )"></iframe>
 										</div>
 										<div class="modal-footer">
-											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+											<button type="button" class="btn-asso" data-bs-dismiss="modal">Fermer</button>
 										</div>
 									</div>
 								</div>
@@ -94,7 +94,7 @@
 			{% endfor %}
 			<div class="col-12 my-4 text-center">
 				{% if app.request.headers.get('Referer') %}
-					<a class="btn btn-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}"><i class="bi bi-skip-backward-circle text-white"></i> Retour</a>
+					<a class="btn btn-outline-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}"><i class="bi bi-skip-backward-circle text-white"></i> Retour</a>
 				{% else %}
 					<p>Impossible de retourner à la page précédente.</p>
 				{% endif %}

@@ -5,14 +5,14 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container pt-0">
+	<div class="container pt-5">
 		<div class="mx-3">
 			{% if data_actu.banner is defined and data_actu.banner.publicUrl %}
 				<img src="{{ data_actu.banner.publicUrl }}" class="card-img-top" alt="Bannière de {{ data_actu.title }}">
 			{% endif %}
-			<h2 class="my-5 text-primary text-center">{{ data_actu.title }}</h2>
+			<h2 class="my-5 gradient-text text-center">{{ data_actu.title }}</h2>
 			<div class="border border-secondary mb-5 mx-5 "></div>
-			<div class="row justify-content-center">
+			<div class="row justify-content-center text">
 				{% if data_actu.logo is defined and data_actu.logo.publicUrl %}
 					<div class="col-12 col-lg-4 text-center my-5">
 						<img src="{{ data_actu.logo.publicUrl }}" class="card-img-top logoAsso shadow-lg" alt="Logo de {{ data_actu.title }}">
@@ -43,7 +43,7 @@
 				{% endif %}
 
 				{% if data_actu.endDate is defined and data_actu.endDate %}
-					<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center">
+					<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center text">
 						{% if data_actu.place is defined and data_actu.place %}
 							<h5>{{ data_actu.place.name }}</h5>
 							<div>
@@ -83,47 +83,85 @@
 
 				{% endif %}
 				{% if data_actu.tiers is defined and data_actu.tiers %}
-					<div class="col-12">
-						<table class="table table-success table-striped mt-5">
-							<thead>
-								<tr>
-									<th scope="col">Formule</th>
-									<th scope="col">Description</th>
-									<th scope="col">Tarif</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for tier in data_actu.tiers %}
+					<div
+						class="col-12">
+						<!-- 🖥️ Version Desktop - Tableau -->
+						<div class="d-none d-md-block mt-5"  aria-labelledby="tarifs-title">
+							<table class="table table-success table-striped  table-hover mt-5">
+								<thead>
 									<tr>
-										<th scope="row">
+										<th scope="col">Formule</th>
+										<th scope="col">Description</th>
+										<th scope="col">Tarif</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for tier in data_actu.tiers %}
+										<tr>
+											<th scope="row">
+												{% if tier.label is defined and tier.label %}
+													{{ tier.label }}
+												{% else %}
+													Formule
+													{{ loop.index }}
+												{% endif %}
+											</th>
+											<td>
+												{% if tier.description is defined and tier.description %}
+													{{ tier.description }}
+												{% endif %}
+											</td>
+											<td>
+												{% if tier.price is defined and tier.price %}
+													{{ (tier.price / 100)|number_format(2, ',', ' ') }}
+													€
+												{% endif %}
+											</td>
+										</tr>
+									{% else %}
+										<tr>
+											<td colspan="3">Aucune formule disponible.</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+
+						<!-- 📱 Version Mobile - Cartes -->
+						<div class="d-md-none mt-5">
+							{% for tier in data_actu.tiers %}
+								<div class="card mb-3 bg-light border-success">
+									<div class="card-header bg-success text-white">
+										<h5 class="card-title mb-0">
 											{% if tier.label is defined and tier.label %}
 												{{ tier.label }}
 											{% else %}
 												Formule
 												{{ loop.index }}
 											{% endif %}
-										</th>
-										<td>
-											{% if tier.description is defined and tier.description %}
-												{{ tier.description }}
-											{% endif %}
-
-										</td>
-										<td>
-											{% if tier.price is defined and tier.price %}
-												{{ (tier.price / 100)|number_format(2, ',', ' ') }}
-												€
-											{% endif %}
-										</td>
-
-									</tr>
-								{% else %}
-									<tr>
-										<td colspan="3">Aucune formule disponible.</td>
-									</tr>
-								{% endfor %}
-							</tbody>
-						</table>
+										</h5>
+									</div>
+									<div class="card-body">
+										{% if tier.description is defined and tier.description %}
+											<p class="card-text">{{ tier.description }}</p>
+										{% endif %}
+										{% if tier.price is defined and tier.price %}
+											<div class="d-flex justify-content-between align-items-center">
+												<span class="badge bg-success fs-6 px-3 py-2">
+													{{ (tier.price / 100)|number_format(2, ',', ' ') }}
+													€
+												</span>
+											</div>
+										{% endif %}
+									</div>
+								</div>
+							{% else %}
+								<div class="alert alert-info text-center">
+									<i class="bi bi-info-circle"></i>
+									Aucune formule disponible.
+								</div>
+							{% endfor %}
+						</div>
 					</div>
 				{% endif %}
 				<div class="col-12 mt-3 text-center">
@@ -133,21 +171,21 @@
 								<i class="bi bi-door-closed-fill"></i>Les réservations sont closes.</strong>
 						</div>
 					{% else %}
-						<button class="btn btn-warning text-primary" data-bs-toggle="modal" data-bs-target="#modal_tier">
+						<button class="btn-neon text mt-3" role="button" data-bs-toggle="modal" data-bs-target="#modal_tier">
 							{% if app.request.attributes.get('formType') == 'Event' %}
-								<i class="bi bi-calendar-event-fill text-primary"></i>
+								<i class="bi bi-calendar-event-fill"></i>
 								Réserver
 							{% elseif app.request.attributes.get('formType') == 'Donation' %}
-								<i class="bi text-primary bi-check"></i>
+								<i class="bi bi-check"></i>
 								Faire un don
 							{% elseif app.request.attributes.get('formType') == 'Membership' %}
-								<i class="bi text-primary bi-person-badge-fill"></i>
+								<i class="bi bi-person-badge-fill"></i>
 								Adhérer
 							{% elseif app.request.attributes.get('formType') == 'CrowdFunding' %}
-								<i class="bi text-primary bi-people-fill"></i>
+								<i class="bi bi-people-fill"></i>
 								Soutenir
 							{% elseif app.request.attributes.get('formType') == 'Shop' %}
-								<i class="bi text-primary bi-shop"></i>
+								<i class="bi bi-shop"></i>
 								Acheter
 							{% endif %}
 						</button>
@@ -163,7 +201,7 @@
 										<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="{{ data_actu.widgetFullUrl }}" style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )"></iframe>
 									</div>
 									<div class="modal-footer">
-										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+										<button type="button" class="btn-asso" data-bs-dismiss="modal">Fermer</button>
 									</div>
 								</div>
 							</div>
@@ -172,7 +210,7 @@
 				</div>
 				<div class="col-12 my-4 text-center">
 					{% if app.request.headers.get('Referer') %}
-						<a class="btn btn-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}">
+						<a class="btn btn-outline-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}">
 							<i class="bi bi-skip-backward-circle text-white"></i>
 							Retour</a>
 					{% else %}
