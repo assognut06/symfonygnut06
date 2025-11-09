@@ -1,11 +1,49 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Réservation
+{% block title %}Réservation - GNUT 06
 {% endblock %}
 
 {% block stylesheets %}
 {{ parent() }}
 <style>
+/* ✅ Focus visible obligatoire WCAG 2.1 AA */
+.btn-outline-gradient:focus,
+.icon-link:focus,
+.carousel-control-prev:focus,
+.carousel-control-next:focus,
+.carousel-indicators button:focus,
+.card:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ Amélioration du contraste pour la lisibilité */
+.text {
+    color: #ffffff !important;
+}
+
+.card-text {
+    color: #e0e0e0 !important;
+    line-height: 1.6 !important;
+}
+
+/* ✅ Zone de clic minimale pour accessibilité tactile */
+.icon-link,
+.btn-outline-gradient {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important; /* ✅ Espace entre icône et texte */
+}
+
+/* ✅ Espacement spécifique pour les icônes dans les boutons */
+.btn-outline-gradient i {
+    margin-right: 0.5rem !important;
+}
+
 /* Corrections pour les contrôles du carousel */
 .carousel-control-prev,
 .carousel-control-next {
@@ -19,6 +57,13 @@
 .card {
     position: relative;
     z-index: 10;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover,
+.card:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(248, 108, 248, 0.2);
 }
 
 .card-body {
@@ -31,10 +76,6 @@
 .btn-outline-gradient {
     position: relative;
     z-index: 20;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 /* Conteneur carousel avec la même couleur que bg-main */
@@ -43,7 +84,7 @@
     width: 100%;
     position: relative;
     padding: 0 60px;
-    padding-bottom: 60px; /* Espace pour les indicateurs */
+    padding-bottom: 60px;
 }
 
 /* Alternative : Positionner les contrôles en dehors de la zone des cartes */
@@ -59,7 +100,7 @@
 
 @media(max-width: 991px) {
     .carousel-container {
-        padding: 0 20px 60px 20px; /* Garder l'espace pour les indicateurs */
+        padding: 0 20px 60px 20px;
     }
     
     .carousel-control-prev,
@@ -80,7 +121,7 @@
 
 @media(max-width: 768px) {
     .carousel-container {
-        padding: 0 15px 60px 15px; /* Garder l'espace pour les indicateurs */
+        padding: 0 15px 60px 15px;
     }
     
     .carousel-control-prev,
@@ -106,7 +147,7 @@
 
 @media(max-width: 576px) {
     .carousel-container {
-        padding: 0 0 60px 0; /* Garder l'espace pour les indicateurs */
+        padding: 0 0 60px 0;
     }
     
     .carousel-control-prev,
@@ -115,9 +156,9 @@
     }
 }
 
-/* Style pour les indicateurs - CORRECTION ICI */
+/* Style pour les indicateurs */
 .carousel-indicators {
-    bottom: 10px; /* Au lieu de -50px */
+    bottom: 10px;
     margin-bottom: 0;
     z-index: 25;
 }
@@ -143,132 +184,262 @@
 
 /* Assurer que le carousel a assez d'espace */
 #evenements.pb-5 {
-    padding-bottom: 0 !important; /* Retirer le padding-bottom pour éviter les conflits */
+    padding-bottom: 0 !important;
 }
 
+/* ✅ Animation respectueuse des préférences utilisateur */
+@media (prefers-reduced-motion: reduce) {
+    .card,
+    .carousel-item {
+        transition: none !important;
+        animation: none !important;
+    }
+}
 </style>
 {% endblock %}
 
 {% block body %}
+<!-- ✅ Main principal pour structure -->
+<main role="main">
 
-	<!-- Section Intro -->
-	<section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="section-intro-title">
-		<div class="container row align-items-center justify-content-center g-5">
-			<div class="col-lg-6 col-12">
-				<h2 id="section-intro-title">Mondes Virtuels, Liens Réels : L'Inclusion à Portée de main</h2>
-				<p class="text">Venez découvrir nos actions sur place !</p>
-				<a href="{{ path('app_a_propos') }}" class="btn-neon text-white" aria-label="En savoir plus sur GNUT 06">
-					Découvrez GNUT 06
-				</a>
-			</div>
+    <!-- ✅ Section Intro avec H1 principal -->
+    <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" 
+             role="region" 
+             aria-labelledby="main-title">
+        <div class="container row align-items-center justify-content-center g-5">
+            <header class="col-lg-6 col-12">
+                <h1 id="main-title">Mondes Virtuels, Liens Réels : L'Inclusion à Portée de main</h1>
+                <p class="text">Venez découvrir nos actions sur place !</p>
+                <a href="{{ path('app_a_propos') }}" 
+                   class="btn-neon text-white" 
+                   aria-label="En savoir plus sur GNUT 06 et nos actions d'inclusion">
+                    Découvrez GNUT 06
+                </a>
+            </header>
 
-			<div class="col-lg-6 col-12">
-				<figure>
-					<img src="{{ asset('images/webp/immersion-3.webp') }}" class="img-fluid" alt="Illustration d'une immersion dans un monde virtuel accessible">
-				</figure>
-			</div>
-		</div>
-	</section>
+            <div class="col-lg-6 col-12">
+                <figure>
+                    <img src="{{ asset('images/webp/immersion-3.webp') }}" 
+                         class="img-fluid" 
+                         alt="Illustration d'une immersion dans un monde virtuel accessible pour l'inclusion numérique"
+                         role="img">
+                </figure>
+            </div>
+        </div>
+    </section>
 
+    <!-- ✅ Section Carousel avec structure WCAG complète -->
+    <div class="carousel-container bg-main">
+        <section id="evenements" 
+                 class="carousel slide bg-main pb-5" 
+                 data-bs-ride="false"
+                 data-bs-interval="false"
+                 role="region"
+                 aria-label="Nos événements disponibles" 
+                 aria-roledescription="carousel">
 
-	<!-- Section Carousel -->
-	<div class="carousel-container bg-main">
-		<section id="evenements" class="carousel slide bg-main pb-5" data-bs-ride="carousel" aria-label="Événements GNUT 06" aria-roledescription="carousel">
+            <!-- ✅ Instructions complètes pour lecteurs d'écran -->
+            <h2 class="visually-hidden">Nos événements disponibles</h2>
+            <div class="visually-hidden" aria-live="polite" id="carousel-live-region">
+                Carousel contenant {{ data_forms|length }} événements répartis en {{ (data_forms|length / 3)|round(0, 'ceil') }} groupes. 
+                Utilisez les boutons suivant et précédent pour naviguer entre les groupes d'événements, 
+                ou utilisez Tab pour accéder directement aux événements.
+            </div>
 
-			<div class="carousel-inner" role="listbox">
-				{% for group in data_forms|batch(3) %}
-					<div class="carousel-item {% if loop.first %}active{% endif %}" role="group" aria-roledescription="slide" aria-label="Diapositive {{ loop.index }} sur {{ data_forms|length // 3 + (data_forms|length % 3 > 0 ? 1 : 0) }}">
+            <div class="carousel-inner" role="listbox" aria-describedby="carousel-live-region">
+                {% for group in data_forms|batch(3) %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}" 
+                         role="group" 
+                         aria-roledescription="slide" 
+                         aria-label="Groupe d'événements {{ loop.index }} sur {{ (data_forms|length / 3)|round(0, 'ceil') }}"
+                         id="carousel-slide-{{ loop.index0 }}">
 
-						<div class="container py-4">
-							<div class="row g-4 justify-content-center">
+                        <div class="container py-4">
+                            <div class="row g-4 justify-content-center" role="list">
 
-								{% for item in group %}
-									<article class="col-12 col-sm-6 col-lg-4 d-flex px-3 px-sm-2" role="article" aria-labelledby="card-title-{{ loop.parent.loop.index }}-{{ loop.index }}">
+                                {% for item in group %}
+                                    <article class="col-12 col-sm-6 col-lg-4 d-flex px-3 px-sm-2" 
+                                             role="listitem" 
+                                             aria-labelledby="event-title-{{ loop.parent.loop.index }}-{{ loop.index }}">
 
-										<div class="card h-100 flex-fill">
-											<figure class="m-0">
-												<img src="{{ asset(randomImage('/images/news/')) }}" class="card-img-top" alt="Illustration de l'événement {{ item.title }}">
-											</figure>
+                                        <div class="card h-100 flex-fill" 
+                                             tabindex="0"
+                                             aria-describedby="event-desc-{{ loop.parent.loop.index }}-{{ loop.index }}">
+                                            <figure class="m-0">
+                                                <img src="{{ asset(randomImage('/images/news/')) }}" 
+                                                     class="card-img-top" 
+                                                     alt="Illustration de l'événement {{ item.title }}"
+                                                     role="img">
+                                            </figure>
 
-											<div class="card-body d-flex flex-column bg-main p-3">
-												<h5 id="card-title-{{ loop.parent.loop.index }}-{{ loop.index }}" class="card-title text-center text text-white mb-3">
-													{{ item.title }}
-												</h5>
+                                            <div class="card-body d-flex flex-column bg-main p-3">
+                                                <h3 id="event-title-{{ loop.parent.loop.index }}-{{ loop.index }}" 
+                                                    class="card-title text-center text text-white mb-3">
+                                                    {{ item.title }}
+                                                </h3>
 
-												<p class="text-justify flex-grow-1 text mb-3">
-													{{ item.description|slice(0, 200) }}...
-												</p>
+                                                <p id="event-desc-{{ loop.parent.loop.index }}-{{ loop.index }}"
+                                                   class="text-justify flex-grow-1 text mb-3" 
+                                                   role="text">
+                                                    {{ item.description|slice(0, 200) }}...
+                                                </p>
 
-												<!-- Zone de liens avec plus d'espace -->
-												<div class="mt-auto">
-													<div class="mb-3">
-														<a class="icon-link icon-link-hover d-inline-block w-100 text-center py-2 text shadow-sm" href="{{ path('app_billetteries_detail', {'formType': item.formType, 'slug': item.formSlug}) }}" aria-label="En savoir plus sur l'événement {{ item.title }}">
-															En savoir plus
-															<i class="bi bi-arrow-right"></i>
-														</a>
-													</div>
+                                                <div class="mt-auto">
+                                                    <div class="mb-3">
+                                                        <a class="icon-link icon-link-hover d-inline-block w-100 text-center py-2 text shadow-sm" 
+                                                           href="{{ path('app_billetteries_detail', {'formType': item.formType, 'slug': item.formSlug}) }}" 
+                                                           aria-label="En savoir plus sur l'événement {{ item.title }}"
+                                                           aria-describedby="more-info-help-{{ loop.parent.loop.index }}-{{ loop.index }}">
+                                                            En savoir plus
+                                                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                                        </a>
+                                                        <div id="more-info-help-{{ loop.parent.loop.index }}-{{ loop.index }}" class="visually-hidden">
+                                                            Consulter les détails complets de cet événement
+                                                        </div>
+                                                    </div>
 
-													<div class="text-center mb-3">
-														<button class="btn-outline-gradient btn-sm text w-100 py-2" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.parent.loop.index }}_{{ loop.index }}" aria-haspopup="dialog" aria-controls="modal_{{ loop.parent.loop.index }}_{{ loop.index }}">
-															Réserver
-														</button>
-													</div>
-												</div>
-											</div>
-										</div>
-									</article>
+                                                    <div class="text-center mb-3">
+                                                        <button class="btn-outline-gradient btn-sm text w-100 py-2" 
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#modal_{{ loop.parent.loop.index }}_{{ loop.index }}" 
+                                                                aria-haspopup="dialog" 
+                                                                aria-controls="modal_{{ loop.parent.loop.index }}_{{ loop.index }}"
+                                                                aria-label="Ouvrir le formulaire de réservation pour {{ item.title }}"
+                                                                aria-describedby="booking-help-{{ loop.parent.loop.index }}-{{ loop.index }}">
+                                                            <i class="bi bi-calendar-event-fill" aria-hidden="true"></i>
+                                                            <span>Réserver</span>
+                                                        </button>
+                                                        <div id="booking-help-{{ loop.parent.loop.index }}-{{ loop.index }}" class="visually-hidden">
+                                                            Ouvre une fenêtre modale avec le formulaire de réservation
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
 
-									<!-- Modal -->
-									<div class="modal fade modal-lg" id="modal_{{ loop.parent.loop.index }}_{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}" aria-modal="true" aria-hidden="true">
-										<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-											<div class="modal-content">
-												<header class="modal-header">
-													<h1 class="modal-title fs-5" id="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}">
-														{{ item.title }}
-													</h1>
-													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer la fenêtre de réservation"></button>
-												</header>
+                                    <!-- ✅ Modal avec accessibilité complète -->
+                                    <div class="modal fade modal-lg" 
+                                         id="modal_{{ loop.parent.loop.index }}_{{ loop.index }}" 
+                                         tabindex="-1" 
+                                         role="dialog" 
+                                         aria-labelledby="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}" 
+                                         aria-modal="true" 
+                                         aria-hidden="true"
+                                         aria-describedby="modal-desc-{{ loop.parent.loop.index }}-{{ loop.index }}">
+                                        
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <header class="modal-header">
+                                                    <h2 class="modal-title fs-5" id="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}">
+                                                        Réservation : {{ item.title }}
+                                                    </h2>
+                                                    <button type="button" 
+                                                            class="btn-close" 
+                                                            data-bs-dismiss="modal" 
+                                                            aria-label="Fermer la fenêtre de réservation pour {{ item.title }}"></button>
+                                                </header>
 
-												<div class="modal-body">
-													<iframe id="haWidget" allowtransparency="true" scrolling="auto" title="Formulaire de réservation pour {{ item.title }}" src="{{ item.widgetFullUrl }}" style="width: 100%; min-height: 750px; border: none;"></iframe>
-												</div>
+                                                <div class="modal-body" id="modal-desc-{{ loop.parent.loop.index }}-{{ loop.index }}">
+                                                    <div class="visually-hidden">
+                                                        Formulaire de réservation pour {{ item.title }}. 
+                                                        Utilisez Tab pour naviguer dans le formulaire.
+                                                        Appuyez sur Échap pour fermer cette fenêtre.
+                                                    </div>
+                                                    <iframe id="haWidget_{{ loop.parent.loop.index }}_{{ loop.index }}" 
+                                                            allowtransparency="true" 
+                                                            scrolling="auto" 
+                                                            title="Formulaire de réservation pour {{ item.title }}" 
+                                                            src="{{ item.widgetFullUrl }}" 
+                                                            style="width: 100%; min-height: 750px; border: none;"
+                                                            aria-label="Formulaire interactif de réservation HelloAsso"
+                                                            onload="this.focus()"></iframe>
+                                                </div>
 
-												<footer class="modal-footer">
-													<button type="button" class="btn-asso" data-bs-dismiss="modal">
-														Fermer
-													</button>
-												</footer>
-											</div>
-										</div>
-									</div>
-								{% endfor %}
-							</div>
-						</div>
-					</div>
-				{% else %}
-					<p class="text-center text-white py-4">Aucune donnée disponible.</p>
-				{% endfor %}
-			</div>
+                                                <footer class="modal-footer">
+                                                    <button type="button" 
+                                                            class="btn-asso" 
+                                                            data-bs-dismiss="modal"
+                                                            aria-label="Fermer la fenêtre de réservation">
+                                                        <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                                        Fermer
+                                                    </button>
+                                                </footer>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div role="status" aria-live="polite">
+                        <div class="alert alert-info text-center" role="alert">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            <p class="mb-0">Aucun événement disponible pour le moment.</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
 
-			<!-- Indicateurs de pagination pour navigation tactile -->
-			<div class="carousel-indicators d-md-none">
-				{% for group in data_forms|batch(3) %}
-					<button type="button" data-bs-target="#evenements" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %} class="active" aria-current="true" {% endif %} aria-label="Aller à la diapositive {{ loop.index }}"></button>
-				{% endfor %}
-			</div>
+            <!-- ✅ Indicateurs accessibles avec instructions -->
+            {% if (data_forms|length / 3)|round(0, 'ceil') > 1 %}
+                <div class="carousel-indicators d-md-none" 
+                     role="tablist" 
+                     aria-label="Navigation par groupes d'événements">
+                    {% for group in data_forms|batch(3) %}
+                        <button type="button" 
+                                data-bs-target="#evenements" 
+                                data-bs-slide-to="{{ loop.index0 }}" 
+                                {% if loop.first %} class="active" aria-current="true" {% endif %}
+                                role="tab"
+                                aria-controls="carousel-slide-{{ loop.index0 }}"
+                                aria-label="Afficher le groupe d'événements {{ loop.index }} sur {{ (data_forms|length / 3)|round(0, 'ceil') }}"></button>
+                    {% endfor %}
+                </div>
 
-			<!-- Contrôles du carousel (masqués sur mobile) -->
-			<!-- Contrôles repositionnés -->
-			<button class="carousel-control-prev d-none d-md-flex" type="button" data-bs-target="#evenements" data-bs-slide="prev" aria-label="Afficher la diapositive précédente">
-				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				<span class="visually-hidden">Précédent</span>
-			</button>
+                <!-- ✅ Contrôles accessibles avec contexte -->
+                <button class="carousel-control-prev d-none d-md-flex" 
+                        type="button" 
+                        data-bs-target="#evenements" 
+                        data-bs-slide="prev" 
+                        aria-label="Afficher le groupe d'événements précédent">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Précédent</span>
+                </button>
 
-			<button class="carousel-control-next d-none d-md-flex" type="button" data-bs-target="#evenements" data-bs-slide="next" aria-label="Afficher la diapositive suivante">
-				<span class="carousel-control-next-icon" aria-hidden="true"></span>
-				<span class="visually-hidden">Suivant</span>
-			</button>
-		</section>
-	</div>
+                <button class="carousel-control-next d-none d-md-flex" 
+                        type="button" 
+                        data-bs-target="#evenements" 
+                        data-bs-slide="next" 
+                        aria-label="Afficher le groupe d'événements suivant">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Suivant</span>
+                </button>
+            {% endif %}
+        </section>
+    </div>
 
+    <!-- ✅ Navigation de retour -->
+    <nav class="bg-main w-100 py-3" role="navigation" aria-label="Navigation de retour">
+        <div class="container text-center">
+            {% if app.request.headers.get('Referer') %}
+                <a href="{{ app.request.headers.get('Referer')|e('html_attr') }}" 
+                   class="text text-decoration-underline"
+                   aria-label="Retourner à la page précédente">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                    Retour à la page précédente
+                </a>
+            {% else %}
+                <a href="{{ path('app_home') }}" 
+                   class="text text-decoration-underline"
+                   aria-label="Retourner à l'accueil">
+                    <i class="bi bi-house" aria-hidden="true"></i>
+                    Retour à l'accueil
+                </a>
+            {% endif %}
+        </div>
+    </nav>
+
+</main>
 {% endblock %}

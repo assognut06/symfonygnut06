@@ -1,79 +1,181 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Association à Nice
+{% block title %}{{ data.name }} - Fiche association
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* ✅ Liens blancs avec soulignement blanc UNIQUEMENT pour les liens (pas les boutons) */
+.container a:not(.btn):not(.btn-neon):not(.btn-outline-gradient) {
+    color: white !important;
+    text-decoration: underline !important;
+    text-decoration-color: white !important;
+    text-underline-offset: 2px;
+    transition: all 0.3s ease;
+}
+
+.container a:not(.btn):not(.btn-neon):not(.btn-outline-gradient):hover {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* ✅ Exclure spécifiquement les boutons du style de lien */
+.container .btn-neon,
+.container .btn-outline-gradient,
+.container .btn {
+    text-decoration: none !important;
+}
+</style>
 {% endblock %}
 
 {% block body %}
-	<div class="container pt-5">
-		<div class="text-center text">
-			<img src="{{ data.banner }}" class="img-fluid mx-auto d-block" alt="Bannière {{ data.name }}">
-		</div>
-		<div class="mx-3">
-			<h2 class="my-5 gradient-text text-center">{{ data.name|e }}</h2>
-			<div class="border border-secondary mb-5 mx-5 "></div>
-			<div class="row justify-content-center">
-				<div class="col-12 text-center">
-					<img src="{{ data.logo }}" alt="Logo {{ data.name|e }}" class="mx-auto logoAssoFiche">
-				</div>
-				<div class="col-12 my-4 text-center text">
-					<p
-						class="fs-4">
-						{# Convertir la description avec des sauts de ligne après chaque point #}
-						{{ data.description|replace({'.': '.<br>'})|raw }}
-					</p>
-					<p>
-						{% if getEventsAssoRecommender(data.organizationSlug, "Event") == 0 %}
-							Aucun événement à venir
-						{% else %}
-							<a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode}) }}">{{ getEventsAssoRecommender(data.organizationSlug, "Event") }}
-								évènement(s) à venir</a>
-						{% endif %}
-					</p>
-					{% if getEventsAssoRecommender(data.organizationSlug, "Donation") != 0 %}
-						<p>
-							<a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode, 'formTypes': 'Donation'}) }}">{{ getEventsAssoRecommender(data.organizationSlug, "Donation") }}
-								formulaire(s) de dons</a>
-						</p>
-					{% endif %}
-					{# Membership #}
-					{% if getEventsAssoRecommender(data.organizationSlug, "Membership") != 0 %}
-						<p>
-							<a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode,'formTypes': 'Membership'}) }}">{{ getEventsAssoRecommender(data.organizationSlug, "Membership") }}
-								formulaire(s) d'adhésion</a>
-						</p>
-					{% endif %}
-					{# CrowdFunding #}
-					{% if getEventsAssoRecommender(data.organizationSlug, "CrowdFunding") != 0 %}
-						<p>
-							<a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode,'formTypes': 'CrowdFunding'}) }}">{{ getEventsAssoRecommender(data.organizationSlug, "CrowdFunding") }}
-								formulaire(s) d'appel à projet</a>
-						</p>
-					{% endif %}
-					{# Shop #}
-					{% if getEventsAssoRecommender(data.organizationSlug, "Shop") != 0 %}
-						<p>
-							<a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode,'formTypes': 'Shop'}) }}">{{ getEventsAssoRecommender(data.organizationSlug, "Shop") }}
-								boutique(s)</a>
-						</p>
-					{% endif %}
-				</div>
-				<div class="col-12 col-xxl-4 fs-4 text-center text">{{ data.type == "Association1901Rig" ? "Association loi 1901 : " : "" }}
-					{{ data.category|e }}</div>
-				<div class="col-12 col-xxl-4 fs-4 text-center text">{{ data.zipCode|e }}
-					{{ data.city|e }}</div>
-				{# <div class="col-12 col-xxl-4 mb-4 fs-4 text-center">RNA : {{ data.rnaNumber|e }}</div> #}
-				<div class="col-12 fs-4 my-4 text-center">
-					<a class="btn-neon" role="button" href="{{ data.url|e }}" target="_blank" rel="noopener noreferrer">{{ data.name }}
-						chez Helloasso</a>
-				</div>
-				<div class="col-12 my-4 text-center">
-					{% if app.request.headers.get('Referer') %}
-						<a class="btn-outline-gradient text-white" role="button" href="{{ app.request.headers.get('Referer')|e('html_attr') }}"><i class="bi bi-skip-backward-circle text-white"></i> Retour</a>
-					{% else %}
-						<p class="text">Impossible de retourner à la page précédente.</p>
-					{% endif %}
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="container pt-5">
+    <!-- ✅ Section principale avec structure sémantique -->
+    <main role="main" aria-labelledby="association-title">
+        
+        <!-- ✅ En-tête de l'association -->
+        <header class="text-center text" role="banner">
+            <img src="{{ data.banner }}" 
+                 class="img-fluid mx-auto d-block" 
+                 alt="Bannière de l'association {{ data.name }}"
+                 role="img">
+        </header>
+
+        <div class="mx-3">
+            <h1 id="association-title" class="my-5 gradient-text text-center">{{ data.name|e }}</h1>
+            
+            <div class="border border-secondary mb-5 mx-5" role="separator" aria-hidden="true"></div>
+            
+            <div class="row justify-content-center">
+                <!-- ✅ Section logo -->
+                <section class="col-12 text-center" role="region" aria-labelledby="logo-section">
+                    <h2 id="logo-section" class="visually-hidden">Logo de l'association</h2>
+                    <img src="{{ data.logo }}" 
+                         alt="Logo de l'association {{ data.name|e }}" 
+                         class="mx-auto logoAssoFiche"
+                         role="img">
+                </section>
+
+                <!-- ✅ Section description principale -->
+                <section class="col-12 my-4 text-center text" role="region" aria-labelledby="description-section">
+                    <h2 id="description-section" class="visually-hidden">Description de l'association</h2>
+                    
+                    <div aria-label="Description détaillée de l'association {{ data.name }}">
+                        <p class="fs-4" role="text">
+                            {# Convertir la description avec des sauts de ligne après chaque point #}
+                            {{ data.description|replace({'.': '.<br>'})|raw }}
+                        </p>
+                    </div>
+
+                    <!-- ✅ Section événements et services -->
+                    <section role="region" aria-labelledby="services-section">
+                        <h3 id="services-section" class="visually-hidden">Services et événements disponibles</h3>
+                        
+                        <div role="status" aria-live="polite">
+                            {% if getEventsAssoRecommender(data.organizationSlug, "Event") == 0 %}
+                                <p><span aria-label="Aucun événement programmé">Aucun événement à venir</span></p>
+                            {% else %}
+                                <p>
+                                    <a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode}) }}"
+                                       aria-label="{{ getEventsAssoRecommender(data.organizationSlug, "Event") }} événements à venir pour {{ data.name }}">
+                                        {{ getEventsAssoRecommender(data.organizationSlug, "Event") }} évènement(s) à venir
+                                    </a>
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        {% if getEventsAssoRecommender(data.organizationSlug, "Donation") != 0 %}
+                            <p>
+                                <a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode, 'formTypes': 'Donation'}) }}"
+                                   aria-label="{{ getEventsAssoRecommender(data.organizationSlug, "Donation") }} formulaires de dons disponibles pour {{ data.name }}">
+                                    {{ getEventsAssoRecommender(data.organizationSlug, "Donation") }} formulaire(s) de dons
+                                </a>
+                            </p>
+                        {% endif %}
+
+                        {# Membership #}
+                        {% if getEventsAssoRecommender(data.organizationSlug, "Membership") != 0 %}
+                            <p>
+                                <a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode,'formTypes': 'Membership'}) }}"
+                                   aria-label="{{ getEventsAssoRecommender(data.organizationSlug, "Membership") }} formulaires d'adhésion disponibles pour {{ data.name }}">
+                                    {{ getEventsAssoRecommender(data.organizationSlug, "Membership") }} formulaire(s) d'adhésion
+                                </a>
+                            </p>
+                        {% endif %}
+
+                        {# CrowdFunding #}
+                        {% if getEventsAssoRecommender(data.organizationSlug, "CrowdFunding") != 0 %}
+                            <p>
+                                <a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode,'formTypes': 'CrowdFunding'}) }}"
+                                   aria-label="{{ getEventsAssoRecommender(data.organizationSlug, "CrowdFunding") }} formulaires d'appel à projet disponibles pour {{ data.name }}">
+                                    {{ getEventsAssoRecommender(data.organizationSlug, "CrowdFunding") }} formulaire(s) d'appel à projet
+                                </a>
+                            </p>
+                        {% endif %}
+
+                        {# Shop #}
+                        {% if getEventsAssoRecommender(data.organizationSlug, "Shop") != 0 %}
+                            <p>
+                                <a href="{{ path('app_asso_evenements', {'organizationSlug': data.organizationSlug,'organizationName': data.name|url_encode,'formTypes': 'Shop'}) }}"
+                                   aria-label="{{ getEventsAssoRecommender(data.organizationSlug, "Shop") }} boutiques disponibles pour {{ data.name }}">
+                                    {{ getEventsAssoRecommender(data.organizationSlug, "Shop") }} boutique(s)
+                                </a>
+                            </p>
+                        {% endif %}
+                    </section>
+                </section>
+
+                <!-- ✅ Section informations pratiques -->
+                <section role="region" aria-labelledby="info-section">
+                    <h2 id="info-section" class="visually-hidden">Informations pratiques</h2>
+                    
+                    <div class="col-12 col-xxl-4 fs-4 text-center text">
+                        <span class="visually-hidden">Type d'organisation : </span>
+                        {{ data.type == "Association1901Rig" ? "Association loi 1901 : " : "" }}
+                        {{ data.category|e }}
+                    </div>
+                    
+                    <address class="col-12 col-xxl-4 fs-4 text-center text" aria-label="Adresse de l'association">
+                        <span class="visually-hidden">Localisation : </span>
+                        {{ data.zipCode|e }} {{ data.city|e }}
+                    </address>
+                </section>
+
+                <!-- ✅ Section actions -->
+                <section class="col-12 fs-4 my-4 text-center" role="region" aria-labelledby="actions-section">
+                    <h2 id="actions-section" class="visually-hidden">Actions disponibles</h2>
+                    
+                    <a class="btn-neon" 
+                       role="button" 
+                       href="{{ data.url|e }}" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       aria-label="Visiter la page HelloAsso de {{ data.name }} (ouvre dans un nouvel onglet)">
+                        {{ data.name }} chez Helloasso
+                    </a>
+                </section>
+
+                <!-- ✅ Section navigation -->
+                <nav class="col-12 my-4 text-center" 
+                     role="navigation" 
+                     aria-label="Navigation de retour">
+                    {% if app.request.headers.get('Referer') %}
+                        <a class="btn-outline-gradient text-white" 
+                           role="button" 
+                           href="{{ app.request.headers.get('Referer')|e('html_attr') }}"
+                           aria-label="Retourner à la page précédente">
+                            <i class="bi bi-skip-backward-circle text-white" aria-hidden="true"></i>
+                            <span>Retour</span>
+                        </a>
+                    {% else %}
+                        <div role="status" aria-live="polite">
+                            <p class="text" role="alert">Impossible de retourner à la page précédente.</p>
+                        </div>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+    </main>
+</div>
 {% endblock %}
