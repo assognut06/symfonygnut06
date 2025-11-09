@@ -1,178 +1,160 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails de la billetterie – {{ data_actu.title }}{% endblock %}
+{% block title %}Détails de la billetterie –
+	{{ data_actu.title }}
+{% endblock %}
 
 {% block body %}
-    <main id="main-content" role="main">
+	<main
+		id="main-content" role="main">
 
-        <!-- Section Intro -->
-        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5"
-                 aria-labelledby="intro-title">
-            <div class="container row align-items-center justify-content-center g-5">
+		<!-- Section Intro -->
+		<section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="intro-title">
+			<div class="container row align-items-center justify-content-center g-5">
 
-                <header class="col-lg-6 col-12 text-center text-lg-start">
-                    <h2 id="intro-title" class="fw-bold">
-                        Mondes Virtuels, Liens Réels : L'Inclusion à Portée de main
-                    </h2>
-                    <p class="lead text">Venez découvrir nos actions sur place !</p>
-                    <a href="#" class="btn-neon text-white mt-2"
-                       aria-label="Découvrir GNUT 06">
-                        Découvrez GNUT 06
-                    </a>
-                </header>
+				<header class="col-lg-6 col-12 text-center text-lg-start">
+					<h2 id="intro-title" class="fw-bold">
+						Mondes Virtuels, Liens Réels : L'Inclusion à Portée de main
+					</h2>
+					<p class="lead text">Venez découvrir nos actions sur place !</p>
+					<a href="#" class="btn-neon text-white mt-2" aria-label="Découvrir GNUT 06">
+						Découvrez GNUT 06
+					</a>
+				</header>
 
-                <div class="col-lg-6 col-12">
-                    <figure>
-                        <img src="{{ asset('images/webp/immersion-3.webp') }}"
-                             class="img-fluid rounded shadow"
-                             alt="Illustration immersion GNUT">
-                    </figure>
-                </div>
+				<div class="col-lg-6 col-12">
+					<figure>
+						<img src="{{ asset('images/webp/immersion-3.webp') }}" class="img-fluid rounded shadow" alt="Illustration immersion GNUT">
+					</figure>
+				</div>
 
-            </div>
-        </section>
+			</div>
+		</section>
 
-        <!-- Section principale de l'événement -->
-        <section class="bg-main w-100 pt-0"
-                 aria-labelledby="event-title">
-            <div class="container px-3">
+		<!-- Section principale de l'événement -->
+		<section class="bg-main w-100 pt-0" aria-labelledby="event-title">
+			<div class="container px-3">
 
-                {% if data_actu.banner is defined and data_actu.banner %}
-                    <figure class="mb-5">
-                        <img src="{{ data_actu.banner.publicUrl }}"
-                             class="w-100 h-100 object-fit-cover rounded shadow"
-                             alt="Bannière de {{ data_actu.title }}">
-                    </figure>
-                {% endif %}
+				{% if data_actu.banner is defined and data_actu.banner %}
+					<figure class="mb-5">
+						<img src="{{ data_actu.banner.publicUrl }}" class="w-100 h-100 object-fit-cover rounded shadow" alt="Bannière de {{ data_actu.title }}">
+					</figure>
+				{% endif %}
 
-                <h2 id="event-title" class="my-5 text-center fw-bold gradient-text">
-                    {{ data_actu.title }}
-                </h2>
+				<h2 id="event-title" class="my-5 text-center fw-bold gradient-text">
+					{{ data_actu.title }}
+				</h2>
 
-                {% if app.request.attributes.get('formType') == 'Event' %}
-                    <article class="row gy-4 justify-content-center"
-                             aria-label="Détails de l'événement {{ data_actu.title }}">
+				{% if app.request.attributes.get('formType') == 'Event' %}
+					<article
+						class="row gy-4 justify-content-center" aria-label="Détails de l'événement {{ data_actu.title }}">
 
-                        <!-- Description -->
-                        <section class="col-12" aria-labelledby="description-title">
-                            <h3 id="description-title" class="visually-hidden">Description</h3>
-                            <p class="fs-5 text text-center">
-                                {{ data_actu.description|nl2br }}
-                            </p>
-                        </section>
+						<!-- Description -->
+						<section class="col-12" aria-labelledby="description-title">
+							<h3 id="description-title" class="visually-hidden">Description</h3>
+							<p class="fs-5 text text-center">
+								{{ data_actu.description|nl2br }}
+							</p>
+						</section>
 
-                        <!-- Tarifs -->
-                        <section class="col-12" aria-labelledby="tarifs-title">
-                            <h3 id="tarifs-title" class="text-center mt-5 mb-3 fw-bold text-white">
-                                Tarifs et formules
-                            </h3>
+						<!-- Tarifs -->
+						<section class="col-12" aria-labelledby="tarifs-title">
+							<h3 id="tarifs-title" class="text-center mt-5 mb-3 fw-bold text-white">
+								Tarifs et formules
+							</h3>
 
-                            <!-- Table des tarifs (version desktop) -->
-                            <div class="table-responsive d-none d-md-block" role="region" aria-labelledby="tarifs-title">
-                                <table class="table table-striped table-hover mt-3 align-middle">
-                                    <caption class="visually-hidden">Liste des formules disponibles et leurs tarifs</caption>
-                                    <thead class="table-success">
-                                    <tr>
-                                        <th scope="col">Formule</th>
-                                        <th scope="col">Description</th>
-                                        <th scope="col">Tarif</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for tier in data_actu.tiers %}
-                                        <tr>
-                                            <th scope="row">{{ tier.label }}</th>
-                                            <td>{{ tier.description }}</td>
-                                            <td class="fw-bold">
-                                                {{ (tier.price / 100)|number_format(2, ',', ' ') }} €
-                                            </td>
-                                        </tr>
-                                    {% else %}
-                                        <tr>
-                                            <td colspan="3" class="text-center">Aucune formule disponible.</td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
+							<!-- Table des tarifs (version desktop) -->
+							<div class="table-responsive d-none d-md-block" role="region" aria-labelledby="tarifs-title">
+								<table class="table table-striped table-hover mt-3 align-middle">
+									<caption class="visually-hidden">Liste des formules disponibles et leurs tarifs</caption>
+									<thead class="table-success">
+										<tr>
+											<th scope="col">Formule</th>
+											<th scope="col">Description</th>
+											<th scope="col">Tarif</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for tier in data_actu.tiers %}
+											<tr>
+												<th scope="row">{{ tier.label }}</th>
+												<td>{{ tier.description }}</td>
+												<td class="fw-bold">
+													{{ (tier.price / 100)|number_format(2, ',', ' ') }}€
+												</td>
+											</tr>
+										{% else %}
+											<tr>
+												<td colspan="3" class="text-center">Aucune formule disponible.</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
 
-                            <!-- Version mobile en cartes -->
-                            <div class="d-block d-md-none" aria-label="Liste des formules disponibles (version mobile)">
-                                {% for tier in data_actu.tiers %}
-                                    <article class="card mb-3 shadow-sm" aria-labelledby="tier-title-{{ loop.index }}">
-                                        <div class="card-body">
-                                            <h4 id="tier-title-{{ loop.index }}" class="card-title fw-bold">{{ tier.label }}</h4>
-                                            <p class="card-text">{{ tier.description }}</p>
-                                            <p class="fw-bold text-success mb-0">
-                                                {{ (tier.price / 100)|number_format(2, ',', ' ') }} €
-                                            </p>
-                                        </div>
-                                    </article>
-                                {% else %}
-                                    <p class="text-center text-muted">Aucune formule disponible.</p>
-                                {% endfor %}
-                            </div>
-                        </section>
+							<!-- Version mobile en cartes -->
+							<div class="d-block d-md-none" aria-label="Liste des formules disponibles (version mobile)">
+								{% for tier in data_actu.tiers %}
+									<article class="card mb-3 shadow-sm" aria-labelledby="tier-title-{{ loop.index }}">
+										<div class="card-body">
+											<h4 id="tier-title-{{ loop.index }}" class="card-title fw-bold">{{ tier.label }}</h4>
+											<p class="card-text">{{ tier.description }}</p>
+											<p class="fw-bold text-success mb-0">
+												{{ (tier.price / 100)|number_format(2, ',', ' ') }}
+												€
+											</p>
+										</div>
+									</article>
+								{% else %}
+									<p class="text-center text-muted">Aucune formule disponible.</p>
+								{% endfor %}
+							</div>
+						</section>
 
-                        <!-- Bouton de réservation -->
-                        <div class="col-12 text-center">
-                            <button class="btn btn-outline-gradient text-white fw-bold shadow-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modal_tier"
-                                    aria-haspopup="dialog"
-                                    aria-controls="modal_tier">
-                                Réserver
-                            </button>
-                        </div>
+						<!-- Bouton de réservation -->
+						<div class="col-12 text-center">
+							<button class="btn btn-outline-gradient text-white fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modal_tier" aria-haspopup="dialog" aria-controls="modal_tier">
+								Réserver
+							</button>
+						</div>
 
-                        <!-- Modal réservation -->
-                        <div class="modal fade modal-lg"
-                             id="modal_tier"
-                             tabindex="-1"
-                             role="dialog"
-                             aria-labelledby="ModalLabel_tier"
-                             aria-modal="true"
-                             aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                                <div class="modal-content">
-                                    <header class="modal-header">
-                                        <h1 class="modal-title fs-5" id="ModalLabel_tier">
-                                            {{ data_actu.title }}
-                                        </h1>
-                                        <button type="button"
-                                                class="btn-close"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Fermer la fenêtre de réservation"></button>
-                                    </header>
-                                    <div class="modal-body p-0">
-                                        <iframe id="haWidget"
-                                                title="Formulaire de réservation pour {{ data_actu.title }}"
-                                                src="{{ data_actu.widgetFullUrl }}"
-                                                class="w-100 border-0"
-                                                style="height: 80vh;">
-                                        </iframe>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+						<!-- Modal réservation -->
+						<div class="modal fade modal-lg" id="modal_tier" tabindex="-1" role="dialog" aria-labelledby="ModalLabel_tier" aria-modal="true" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+								<div class="modal-content">
+									<header class="modal-header">
+										<h1 class="modal-title fs-5" id="ModalLabel_tier">
+											{{ data_actu.title }}
+										</h1>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer la fenêtre de réservation"></button>
+									</header>
+									<div class="modal-body p-0">
+										<iframe id="haWidget" title="Formulaire de réservation pour {{ data_actu.title }}" src="{{ data_actu.widgetFullUrl }}" class="w-100 border-0" style="height: 80vh;"></iframe>
+									</div>
+									<footer class="modal-footer">
+										<button type="button" class="btn-asso" data-bs-dismiss="modal">
+											Fermer
+										</button>
+									</footer>
+								</div>
+							</div>
+						</div>
 
-                    </article>
-                {% endif %}
+					</article>
+				{% endif %}
 
-                <!-- Bouton retour -->
-                <nav class="col-12 mt-4 text-center pb-5" aria-label="Navigation secondaire">
-                    {% if app.request.headers.get('Referer') %}
-                        <a class="text-white shadow-sm"
-                           href="{{ app.request.headers.get('Referer')|e('html_attr') }}"
-                           aria-label="Retourner à la page précédente">
-                            Retourner à la page précédente.
-                        </a>
-                    {% else %}
-                        <p class="text-muted">Impossible de retourner à la page précédente.</p>
-                    {% endif %}
-                </nav>
+				<!-- Bouton retour -->
+				<nav class="col-12 mt-4 text-center pb-5" aria-label="Navigation secondaire">
+					{% if app.request.headers.get('Referer') %}
+						<a class="text shadow-sm" href="{{ app.request.headers.get('Referer')|e('html_attr') }}" aria-label="Retourner à la page précédente">
+							Retourner à la page précédente.
+						</a>
+					{% else %}
+						<p class="text-muted">Impossible de retourner à la page précédente.</p>
+					{% endif %}
+				</nav>
 
-            </div>
-        </section>
-    </main>
+			</div>
+		</section>
+	</main>
 {% endblock %}

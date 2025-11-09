@@ -4,7 +4,39 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container pt-5 mx-auto">
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* ✅ Liens blancs avec soulignement blanc UNIQUEMENT pour la page mentions légales */
+.mentions-legales-page a {
+    color: white !important;
+    text-decoration: underline;
+    text-decoration-color: white !important;
+    text-underline-offset: 2px;
+    transition: all 0.3s ease;
+}
+
+.mentions-legales-page a:hover {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* ✅ Spécifiquement pour les liens https://www.gnut06.org/ dans cette page */
+.mentions-legales-page a[href="https://www.gnut06.org/"] {
+    color: white !important;
+    text-decoration: underline;
+    text-decoration-color: white !important;
+}
+
+/* ✅ Pour le lien du générateur Orson.io dans cette page */
+.mentions-legales-page a[href*="orson.io"] {
+    color: white !important;
+    text-decoration: underline;
+    text-decoration-color: white !important;
+}
+</style>
+{% endblock %}
+	<div class="container pt-5 mx-auto mentions-legales-page">
 		<div class="my-5 text">
 			<h1 class="text-center mb-4 gradient-text">Mentions légales</h1>
 

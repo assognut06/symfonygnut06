@@ -145,6 +145,7 @@
 #evenements.pb-5 {
     padding-bottom: 0 !important; /* Retirer le padding-bottom pour éviter les conflits */
 }
+
 </style>
 {% endblock %}
 
@@ -201,14 +202,14 @@
 												<!-- Zone de liens avec plus d'espace -->
 												<div class="mt-auto">
 													<div class="mb-3">
-														<a class="icon-link icon-link-hover d-inline-block w-100 text-center py-2" href="{{ path('app_billetteries_detail', {'formType': item.formType, 'slug': item.formSlug}) }}" aria-label="En savoir plus sur l'événement {{ item.title }}">
+														<a class="icon-link icon-link-hover d-inline-block w-100 text-center py-2 text shadow-sm" href="{{ path('app_billetteries_detail', {'formType': item.formType, 'slug': item.formSlug}) }}" aria-label="En savoir plus sur l'événement {{ item.title }}">
 															En savoir plus
 															<i class="bi bi-arrow-right"></i>
 														</a>
 													</div>
 
 													<div class="text-center mb-3">
-														<button class="btn-outline-gradient btn-sm text-white w-100 py-2" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.parent.loop.index }}_{{ loop.index }}" aria-haspopup="dialog" aria-controls="modal_{{ loop.parent.loop.index }}_{{ loop.index }}">
+														<button class="btn-outline-gradient btn-sm text w-100 py-2" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.parent.loop.index }}_{{ loop.index }}" aria-haspopup="dialog" aria-controls="modal_{{ loop.parent.loop.index }}_{{ loop.index }}">
 															Réserver
 														</button>
 													</div>
@@ -233,7 +234,7 @@
 												</div>
 
 												<footer class="modal-footer">
-													<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+													<button type="button" class="btn-asso" data-bs-dismiss="modal">
 														Fermer
 													</button>
 												</footer>
