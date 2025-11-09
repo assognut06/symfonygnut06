@@ -1,223 +1,341 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	{{ data_actu.title }}
+    {{ data_actu.title }} - Détails de l'événement
 {% endblock %}
 
 {% block body %}
-	<div class="container pt-5">
-		<div class="mx-3">
-			{% if data_actu.banner is defined and data_actu.banner.publicUrl %}
-				<img src="{{ data_actu.banner.publicUrl }}" class="card-img-top" alt="Bannière de {{ data_actu.title }}">
-			{% endif %}
-			<h2 class="my-5 gradient-text text-center">{{ data_actu.title }}</h2>
-			<div class="border border-secondary mb-5 mx-5 "></div>
-			<div class="row justify-content-center text">
-				{% if data_actu.logo is defined and data_actu.logo.publicUrl %}
-					<div class="col-12 col-lg-4 text-center my-5">
-						<img src="{{ data_actu.logo.publicUrl }}" class="card-img-top logoAsso shadow-lg" alt="Logo de {{ data_actu.title }}">
-					</div>
-				{% endif %}
-				{% if data_actu.description is defined and data_actu.description %}
-					<div class="col-12 text-center">
-						<p class="fs-4">{{ data_actu.description|nl2br }}</p>
-					</div>
-				{% endif %}
-				{% if data_actu.saleEndDate is defined and data_actu.saleEndDate %}
-					<div class="col-12 text-center">
-						<div class="alert alert-danger text-center mx-5 shadow-lg rounded-pill" role="alert">
-							<p>Date limite de réservation :
-								{{ data_actu.saleEndDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}</p>
-							{% if data_actu.saleEndDate > "now"|date('Y-m-d') %}
-								{% set endDate = data_actu.saleEndDate|date('Y-m-d') %}
-								{% set now = "now"|date('Y-m-d') %}
-								{% if endDate > now %}
-									{% set interval = date(endDate).diff(date(now)) %}
-									<strong>Expire dans
-										{{ interval.days }}
-										jours.</strong>
-								{% endif %}
-							{% endif %}
-						</div>
-					</div>
-				{% endif %}
+    <div class="container pt-5">
+        <div class="mx-3">
+            <!-- ✅ Section principale avec structure sémantique -->
+            <main role="main" aria-labelledby="event-title">
+                
+                <!-- ✅ En-tête avec bannière -->
+                <header role="banner">
+                    {% if data_actu.banner is defined and data_actu.banner.publicUrl %}
+                        <img src="{{ data_actu.banner.publicUrl }}" 
+                             class="card-img-top" 
+                             alt="Bannière de l'événement {{ data_actu.title }}"
+                             role="img">
+                    {% endif %}
+                    <h1 id="event-title" class="my-5 gradient-text text-center">{{ data_actu.title }}</h1>
+                    <div class="border border-secondary mb-5 mx-5" role="separator" aria-hidden="true"></div>
+                </header>
 
-				{% if data_actu.endDate is defined and data_actu.endDate %}
-					<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center text">
-						{% if data_actu.place is defined and data_actu.place %}
-							<h5>{{ data_actu.place.name }}</h5>
-							<div>
-								<p>Adresse :
-									{{ data_actu.place.address }}<br>{{ data_actu.place.zipCode }}
-									{{ data_actu.place.city }}
-								</p>
-							</div>
-						{% endif %}
-					</div>
-					<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center">
-						<div class="alert alert-danger text-center mx-5 mb-5 mt-2 shadow-lg rounded-pill" role="alert">
-							{% set endDate = data_actu.endDate|date('Y-m-d') %}
-							{% set now = "now"|date('Y-m-d') %}
-							{% if endDate > now %}
-								{% set interval = date(endDate).diff(date(now)) %}
-								<strong>Expire dans
-									{{ interval.days }}
-									jours.</strong>
-							{% endif %}
-						</div>
-						<div class="alert alert-success text-center mx-5 mb-5 shadow-lg rounded-pill" role="alert">
-							{% if data_actu.startDate is defined and data_actu.startDate %}
-								Débute le
-								{{ data_actu.startDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}<br>
-							{% endif %}
-							Fini le
-							{{ data_actu.endDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}
-						</div>
-					</div>
+                <div class="row justify-content-center text">
+                    <!-- ✅ Section logo -->
+                    {% if data_actu.logo is defined and data_actu.logo.publicUrl %}
+                        <section class="col-12 col-lg-4 text-center my-5" role="region" aria-labelledby="logo-section">
+                            <h2 id="logo-section" class="visually-hidden">Logo de l'événement</h2>
+                            <img src="{{ data_actu.logo.publicUrl }}" 
+                                 class="card-img-top logoAsso shadow-lg" 
+                                 alt="Logo de l'événement {{ data_actu.title }}"
+                                 role="img">
+                        </section>
+                    {% endif %}
 
-					<div class="col-12 col-lg-4 text-center d-flex flex-column align-self-center mt-3">
-						{% if data_actu.place is defined and data_actu.place %}
-							<iframe width="100%" height="450" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}&q={{ data_actu.place.name|url_encode }},{{ data_actu.place.address|url_encode }}+{{ data_actu.place.zipCode }}+{{ data_actu.place.city|url_encode }},{{ data_actu.place.country }}"></iframe>
-						{% endif %}
-					</div>
+                    <!-- ✅ Section description -->
+                    {% if data_actu.description is defined and data_actu.description %}
+                        <section class="col-12 text-center" role="region" aria-labelledby="description-section">
+                            <h2 id="description-section" class="visually-hidden">Description de l'événement</h2>
+                            <div aria-label="Description détaillée de l'événement {{ data_actu.title }}">
+                                <p class="fs-4" role="text">{{ data_actu.description|nl2br }}</p>
+                            </div>
+                        </section>
+                    {% endif %}
 
-				{% endif %}
-				{% if data_actu.tiers is defined and data_actu.tiers %}
-					<div
-						class="col-12">
-						<!-- 🖥️ Version Desktop - Tableau -->
-						<div class="d-none d-md-block mt-5"  aria-labelledby="tarifs-title">
-							<table class="table table-success table-striped  table-hover mt-5">
-								<thead>
-									<tr>
-										<th scope="col">Formule</th>
-										<th scope="col">Description</th>
-										<th scope="col">Tarif</th>
-									</tr>
-								</thead>
-								<tbody>
-									{% for tier in data_actu.tiers %}
-										<tr>
-											<th scope="row">
-												{% if tier.label is defined and tier.label %}
-													{{ tier.label }}
-												{% else %}
-													Formule
-													{{ loop.index }}
-												{% endif %}
-											</th>
-											<td>
-												{% if tier.description is defined and tier.description %}
-													{{ tier.description }}
-												{% endif %}
-											</td>
-											<td>
-												{% if tier.price is defined and tier.price %}
-													{{ (tier.price / 100)|number_format(2, ',', ' ') }}
-													€
-												{% endif %}
-											</td>
-										</tr>
-									{% else %}
-										<tr>
-											<td colspan="3">Aucune formule disponible.</td>
-										</tr>
-									{% endfor %}
-								</tbody>
-							</table>
-						</div>
+                    <!-- ✅ Alerte date limite réservation -->
+                    {% if data_actu.saleEndDate is defined and data_actu.saleEndDate %}
+                        <section class="col-12 text-center" role="region" aria-labelledby="reservation-deadline">
+                            <h2 id="reservation-deadline" class="visually-hidden">Date limite de réservation</h2>
+                            <div class="alert alert-danger text-center mx-5 shadow-lg rounded-pill" 
+                                 role="alert" 
+                                 aria-live="assertive">
+                                <p><span class="visually-hidden">Important : </span>Date limite de réservation :
+                                    <time datetime="{{ data_actu.saleEndDate|date('Y-m-d\\TH:i:sP') }}">
+                                        {{ data_actu.saleEndDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}
+                                    </time>
+                                </p>
+                                {% if data_actu.saleEndDate > "now"|date('Y-m-d') %}
+                                    {% set endDate = data_actu.saleEndDate|date('Y-m-d') %}
+                                    {% set now = "now"|date('Y-m-d') %}
+                                    {% if endDate > now %}
+                                        {% set interval = date(endDate).diff(date(now)) %}
+                                        <strong aria-label="Attention : expire dans {{ interval.days }} jours">
+                                            Expire dans {{ interval.days }} jours.
+                                        </strong>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </section>
+                    {% endif %}
 
-						<!-- 📱 Version Mobile - Cartes -->
-						<div class="d-md-none mt-5">
-							{% for tier in data_actu.tiers %}
-								<div class="card mb-3 bg-light border-success">
-									<div class="card-header bg-success text-white">
-										<h5 class="card-title mb-0">
-											{% if tier.label is defined and tier.label %}
-												{{ tier.label }}
-											{% else %}
-												Formule
-												{{ loop.index }}
-											{% endif %}
-										</h5>
-									</div>
-									<div class="card-body">
-										{% if tier.description is defined and tier.description %}
-											<p class="card-text">{{ tier.description }}</p>
-										{% endif %}
-										{% if tier.price is defined and tier.price %}
-											<div class="d-flex justify-content-between align-items-center">
-												<span class="badge bg-success fs-6 px-3 py-2">
-													{{ (tier.price / 100)|number_format(2, ',', ' ') }}
-													€
-												</span>
-											</div>
-										{% endif %}
-									</div>
-								</div>
-							{% else %}
-								<div class="alert alert-info text-center">
-									<i class="bi bi-info-circle"></i>
-									Aucune formule disponible.
-								</div>
-							{% endfor %}
-						</div>
-					</div>
-				{% endif %}
-				<div class="col-12 mt-3 text-center">
-					{% if data_actu.saleEndDate is defined and data_actu.saleEndDate < "now"|date('Y-m-d') %}
-						<div class="alert alert-danger text-center mx-5 shadow-lg rounded-pill text-primary" role="alert">
-							<strong>
-								<i class="bi bi-door-closed-fill"></i>Les réservations sont closes.</strong>
-						</div>
-					{% else %}
-						<button class="btn-neon text mt-3" role="button" data-bs-toggle="modal" data-bs-target="#modal_tier">
-							{% if app.request.attributes.get('formType') == 'Event' %}
-								<i class="bi bi-calendar-event-fill"></i>
-								Réserver
-							{% elseif app.request.attributes.get('formType') == 'Donation' %}
-								<i class="bi bi-check"></i>
-								Faire un don
-							{% elseif app.request.attributes.get('formType') == 'Membership' %}
-								<i class="bi bi-person-badge-fill"></i>
-								Adhérer
-							{% elseif app.request.attributes.get('formType') == 'CrowdFunding' %}
-								<i class="bi bi-people-fill"></i>
-								Soutenir
-							{% elseif app.request.attributes.get('formType') == 'Shop' %}
-								<i class="bi bi-shop"></i>
-								Acheter
-							{% endif %}
-						</button>
-						<!-- Modal -->
-						<div class="modal fade modal-{% if app.request.attributes.get('formType') == 'Donation' %}xl{% else %}lg{% endif %}" id="modal_tier" tabindex="-1" aria-labelledby="ModalLabel_tier" aria-hidden="true">
-							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h1 class="modal-title fs-5" id="ModalLabel_tier">{{ data_actu.title }}</h1>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="{{ data_actu.widgetFullUrl }}" style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )"></iframe>
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn-asso" data-bs-dismiss="modal">Fermer</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					{% endif %}
-				</div>
-				<div class="col-12 my-4 text-center">
-					{% if app.request.headers.get('Referer') %}
-						<a class="btn btn-outline-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}">
-							<i class="bi bi-skip-backward-circle text-white"></i>
-							Retour</a>
-					{% else %}
-						<p>Impossible de retourner à la page précédente.</p>
-					{% endif %}
-				</div>
-			</div>
-		</div>
-	</div>
+                    {% if data_actu.endDate is defined and data_actu.endDate %}
+                        <!-- ✅ Section lieu -->
+                        {% if data_actu.place is defined and data_actu.place %}
+                            <section class="col-12 col-lg-4 text-center d-flex flex-column align-self-center text" 
+                                     role="region" 
+                                     aria-labelledby="venue-section">
+                                <h2 id="venue-section" class="visually-hidden">Lieu de l'événement</h2>
+                                <h3>{{ data_actu.place.name }}</h3>
+                                <address aria-label="Adresse du lieu">
+                                    <span class="visually-hidden">Adresse : </span>
+                                    <p>{{ data_actu.place.address }}<br>
+                                       {{ data_actu.place.zipCode }} {{ data_actu.place.city }}</p>
+                                </address>
+                            </section>
+                        {% endif %}
+
+                        <!-- ✅ Section dates -->
+                        <section class="col-12 col-lg-4 text-center d-flex flex-column align-self-center" 
+                                 role="region" 
+                                 aria-labelledby="dates-section">
+                            <h2 id="dates-section" class="visually-hidden">Dates de l'événement</h2>
+                            
+                            <div class="alert alert-danger text-center mx-5 mb-5 mt-2 shadow-lg rounded-pill" 
+                                 role="status" 
+                                 aria-live="polite">
+                                {% set endDate = data_actu.endDate|date('Y-m-d') %}
+                                {% set now = "now"|date('Y-m-d') %}
+                                {% if endDate > now %}
+                                    {% set interval = date(endDate).diff(date(now)) %}
+                                    <strong aria-label="L'événement expire dans {{ interval.days }} jours">
+                                        Expire dans {{ interval.days }} jours.
+                                    </strong>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="alert alert-success text-center mx-5 mb-5 shadow-lg rounded-pill" 
+                                 role="status" 
+                                 aria-live="polite">
+                                {% if data_actu.startDate is defined and data_actu.startDate %}
+                                    <p>Débute le 
+                                    <time datetime="{{ data_actu.startDate|date('Y-m-d\\TH:i:sP') }}">
+                                        {{ data_actu.startDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}
+                                    </time><br></p>
+                                {% endif %}
+                                <p>Fini le 
+                                <time datetime="{{ data_actu.endDate|date('Y-m-d\\TH:i:sP') }}">
+                                    {{ data_actu.endDate|format_datetime(pattern="EEEE d MMMM y 'à' HH'h'mm", locale='fr', timezone='Europe/Paris') }}
+                                </time></p>
+                            </div>
+                        </section>
+
+                        <!-- ✅ Section carte -->
+                        {% if data_actu.place is defined and data_actu.place %}
+                            <section class="col-12 col-lg-4 text-center d-flex flex-column align-self-center mt-3" 
+                                     role="region" 
+                                     aria-labelledby="map-section">
+                                <h2 id="map-section" class="visually-hidden">Localisation sur carte</h2>
+                                <iframe width="100%" 
+                                        height="450" 
+                                        style="border:0" 
+                                        loading="lazy" 
+                                        allowfullscreen 
+                                        referrerpolicy="no-referrer-when-downgrade" 
+                                        src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}&q={{ data_actu.place.name|url_encode }},{{ data_actu.place.address|url_encode }}+{{ data_actu.place.zipCode }}+{{ data_actu.place.city|url_encode }},{{ data_actu.place.country }}"
+                                        title="Carte interactive de {{ data_actu.place.name }}, {{ data_actu.place.address }}, {{ data_actu.place.zipCode }} {{ data_actu.place.city }}"
+                                        aria-label="Carte Google Maps montrant l'emplacement de l'événement à {{ data_actu.place.name }}"></iframe>
+                            </section>
+                        {% endif %}
+                    {% endif %}
+
+                    <!-- ✅ Section tarifs -->
+                    {% if data_actu.tiers is defined and data_actu.tiers %}
+                        <section class="col-12" role="region" aria-labelledby="pricing-section">
+                            <h2 id="pricing-section" class="visually-hidden">Tarifs et formules</h2>
+                            
+                            <!-- 🖥️ Version Desktop - Tableau -->
+                            <div class="d-none d-md-block mt-5" aria-labelledby="tarifs-title">
+                                <h3 id="tarifs-title" class="visually-hidden">Tableau des tarifs</h3>
+                                <table class="table table-success table-striped table-hover mt-5" 
+                                       role="table" 
+                                       aria-label="Tarifs des différentes formules disponibles">
+                                    <thead>
+                                        <tr role="row">
+                                            <th scope="col" role="columnheader">Formule</th>
+                                            <th scope="col" role="columnheader">Description</th>
+                                            <th scope="col" role="columnheader">Tarif</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for tier in data_actu.tiers %}
+                                            <tr role="row">
+                                                <th scope="row" role="rowheader">
+                                                    {% if tier.label is defined and tier.label %}
+                                                        {{ tier.label }}
+                                                    {% else %}
+                                                        Formule {{ loop.index }}
+                                                    {% endif %}
+                                                </th>
+                                                <td role="cell">
+                                                    {% if tier.description is defined and tier.description %}
+                                                        {{ tier.description }}
+                                                    {% endif %}
+                                                </td>
+                                                <td role="cell">
+                                                    {% if tier.price is defined and tier.price %}
+                                                        <span aria-label="{{ (tier.price / 100)|number_format(2, ',', ' ') }} euros">
+                                                            {{ (tier.price / 100)|number_format(2, ',', ' ') }} €
+                                                        </span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% else %}
+                                            <tr role="row">
+                                                <td colspan="3" role="cell" aria-label="Aucune formule disponible pour cet événement">
+                                                    Aucune formule disponible.
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- 📱 Version Mobile - Cartes -->
+                            <div class="d-md-none mt-5" role="list" aria-label="Liste des formules disponibles">
+                                {% for tier in data_actu.tiers %}
+                                    <article class="card mb-3 bg-light border-success" 
+                                             role="listitem" 
+                                             aria-labelledby="tier-title-{{ loop.index }}">
+                                        <header class="card-header bg-success text-white">
+                                            <h3 id="tier-title-{{ loop.index }}" class="card-title mb-0">
+                                                {% if tier.label is defined and tier.label %}
+                                                    {{ tier.label }}
+                                                {% else %}
+                                                    Formule {{ loop.index }}
+                                                {% endif %}
+                                            </h3>
+                                        </header>
+                                        <div class="card-body">
+                                            {% if tier.description is defined and tier.description %}
+                                                <p class="card-text" role="text">{{ tier.description }}</p>
+                                            {% endif %}
+                                            {% if tier.price is defined and tier.price %}
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="badge bg-success fs-6 px-3 py-2" 
+                                                          role="text" 
+                                                          aria-label="Prix : {{ (tier.price / 100)|number_format(2, ',', ' ') }} euros">
+                                                        {{ (tier.price / 100)|number_format(2, ',', ' ') }} €
+                                                    </span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </article>
+                                {% else %}
+                                    <div class="alert alert-info text-center" role="alert">
+                                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                        <span>Aucune formule disponible.</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                    {% endif %}
+
+                    <!-- ✅ Section actions -->
+                    <section class="col-12 mt-3 text-center" role="region" aria-labelledby="actions-section">
+                        <h2 id="actions-section" class="visually-hidden">Actions disponibles</h2>
+                        
+                        {% if data_actu.saleEndDate is defined and data_actu.saleEndDate < "now"|date('Y-m-d') %}
+                            <div class="alert alert-danger text-center mx-5 shadow-lg rounded-pill text-primary" 
+                                 role="alert" 
+                                 aria-live="assertive">
+                                <strong>
+                                    <i class="bi bi-door-closed-fill" aria-hidden="true"></i>
+                                    <span>Les réservations sont closes.</span>
+                                </strong>
+                            </div>
+                        {% else %}
+                            <button class="btn-neon text mt-3" 
+                                    role="button" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#modal_tier"
+                                    aria-label="{% if app.request.attributes.get('formType') == 'Event' %}Ouvrir le formulaire de réservation pour {{ data_actu.title }}{% elseif app.request.attributes.get('formType') == 'Donation' %}Ouvrir le formulaire de don pour {{ data_actu.title }}{% elseif app.request.attributes.get('formType') == 'Membership' %}Ouvrir le formulaire d'adhésion pour {{ data_actu.title }}{% elseif app.request.attributes.get('formType') == 'CrowdFunding' %}Ouvrir le formulaire de soutien pour {{ data_actu.title }}{% elseif app.request.attributes.get('formType') == 'Shop' %}Ouvrir la boutique pour {{ data_actu.title }}{% endif %}"
+                                    aria-describedby="modal-help">
+                                {% if app.request.attributes.get('formType') == 'Event' %}
+                                    <i class="bi bi-calendar-event-fill" aria-hidden="true"></i>
+                                    Réserver
+                                {% elseif app.request.attributes.get('formType') == 'Donation' %}
+                                    <i class="bi bi-check" aria-hidden="true"></i>
+                                    Faire un don
+                                {% elseif app.request.attributes.get('formType') == 'Membership' %}
+                                    <i class="bi bi-person-badge-fill" aria-hidden="true"></i>
+                                    Adhérer
+                                {% elseif app.request.attributes.get('formType') == 'CrowdFunding' %}
+                                    <i class="bi bi-people-fill" aria-hidden="true"></i>
+                                    Soutenir
+                                {% elseif app.request.attributes.get('formType') == 'Shop' %}
+                                    <i class="bi bi-shop" aria-hidden="true"></i>
+                                    Acheter
+                                {% endif %}
+                            </button>
+                            <div id="modal-help" class="visually-hidden">
+                                Cliquez pour ouvrir le formulaire dans une fenêtre modale
+                            </div>
+
+                            <!-- ✅ Modal accessible -->
+                            <div class="modal fade modal-{% if app.request.attributes.get('formType') == 'Donation' %}xl{% else %}lg{% endif %}" 
+                                 id="modal_tier" 
+                                 tabindex="-1" 
+                                 aria-labelledby="ModalLabel_tier" 
+                                 aria-hidden="true"
+                                 role="dialog"
+                                 aria-describedby="modal-description">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <header class="modal-header">
+                                            <h2 class="modal-title fs-5" id="ModalLabel_tier">{{ data_actu.title }}</h2>
+                                            <button type="button" 
+                                                    class="btn-close" 
+                                                    data-bs-dismiss="modal" 
+                                                    aria-label="Fermer la fenêtre modale {{ data_actu.title }}"></button>
+                                        </header>
+                                        <div class="modal-body" id="modal-description">
+                                            <div class="visually-hidden">
+                                                Formulaire interactif pour {{ data_actu.title }}. Utilisez Tab pour naviguer dans le formulaire.
+                                            </div>
+                                            <iframe id="haWidget" 
+                                                    allowtransparency="true" 
+                                                    scrolling="auto" 
+                                                    src="{{ data_actu.widgetFullUrl }}" 
+                                                    style="width: 100%; border: none;" 
+                                                    title="Formulaire de {{ data_actu.title }}"
+                                                    aria-label="Formulaire interactif pour {{ data_actu.title }}"
+                                                    onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )"></iframe>
+                                        </div>
+                                        <footer class="modal-footer">
+                                            <button type="button" 
+                                                    class="btn-asso" 
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Fermer la fenêtre modale {{ data_actu.title }}">
+                                                Fermer
+                                            </button>
+                                        </footer>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </section>
+
+                    <!-- ✅ Navigation de retour -->
+                    <nav class="col-12 my-4 text-center" 
+                         role="navigation" 
+                         aria-label="Navigation de retour">
+                        {% if app.request.headers.get('Referer') %}
+                            <a class="btn btn-outline-success text-white" 
+                               href="{{ app.request.headers.get('Referer')|e('html_attr') }}"
+                               aria-label="Retourner à la page précédente">
+                                <i class="bi bi-skip-backward-circle text-white" aria-hidden="true"></i>
+                                <span>Retour</span>
+                            </a>
+                        {% else %}
+                            <div role="status" aria-live="polite">
+                                <p role="alert">Impossible de retourner à la page précédente.</p>
+                            </div>
+                        {% endif %}
+                    </nav>
+                </div>
+            </main>
+        </div>
+    </div>
 {% endblock %}

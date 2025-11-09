@@ -4,23 +4,159 @@
     Plongez dans un univers inclusif : découvrez le métavers Gnut 06 !
 {% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* ✅ CORRECTION WCAG 2.1 AA - Focus visible obligatoire */
+.btn-neon:focus,
+.btn-outline-gradient:focus,
+a:focus,
+.card:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ CORRECTION - Zones de clic minimales 44px */
+.btn-neon,
+.btn-outline-gradient {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.75rem 1.5rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+}
+
+/* ✅ CORRECTION - Contraste des textes amélioré */
+.text {
+    color: #ffffff !important;
+    line-height: 1.6 !important;
+}
+
+.card-text {
+    color: #e8e8e8 !important;
+}
+
+/* ✅ CORRECTION - Cartes accessibles avec navigation clavier */
+.card {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover,
+.card:focus,
+.card:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(248, 108, 248, 0.2);
+    border-color: rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ CORRECTION - Skip links */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #000000;
+    color: #ffffff;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 0 0 4px 4px;
+    z-index: 1000;
+    font-weight: bold;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 3px solid #F86CF8;
+}
+
+/* ✅ CORRECTION - Lien externe sécurisé */
+.external-link::after {
+    content: " (nouvelle fenêtre)";
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ✅ Animation respectueuse des préférences */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .card {
+        transform: none !important;
+    }
+}
+
+/* ✅ Support haut contraste */
+@media (prefers-contrast: high) {
+    .text,
+    .card-text {
+        color: #ffffff !important;
+        background-color: #000000 !important;
+    }
+    
+    .card {
+        border: 3px solid #ffffff !important;
+        background-color: #000000 !important;
+    }
+    
+    .btn-neon,
+    .btn-outline-gradient {
+        border: 3px solid #ffffff !important;
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+}
+
+/* ✅ Responsive mobile */
+@media (max-width: 768px) {
+    .text,
+    .card-text {
+        font-size: 16px !important;
+    }
+    
+    h2, h3 {
+        font-size: 1.25rem !important;
+    }
+}
+</style>
+{% endblock %}
+
 {% block body %}
+    <!-- ✅ CORRECTION - Skip links ajoutés -->
+    <nav aria-label="Navigation rapide" class="visually-hidden-focusable">
+        <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+        <a href="#services" class="skip-link">Aller aux services</a>
+    </nav>
+
     <main id="main-content" role="main" aria-labelledby="page-title">
 
-        <!-- Section intro -->
-        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="intro-title">
+        <!-- ✅ CORRECTION - Section intro avec H1 visible -->
+        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="intro-title">
             <div class="container row align-items-center g-5">
 
                 <!-- Texte -->
                 <div class="col-12 col-lg-6">
                     <header>
-                        <h1 id="page-title" class="visually-hidden">GNUT 06 - Digital Consulting et inclusion numérique</h1>
-                        <h2 id="intro-title">Digital Consulting</h2>
+                        <!-- ✅ CORRECTION - H1 visible et descriptif -->
+                        <h1 id="page-title" class="fw-bold mb-4">
+                            Digital Consulting
+                        </h1>
                     </header>
 
                     <p class="text">
                         Gnut 06 aide les personnes en situation de handicap à intégrer le monde professionnel grâce à des technologies comme
-                        <a href="https://framevr.io" target="_blank" rel="noopener noreferrer">FrameVR.io</a>.
+                        <a href="https://framevr.io"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="external-link"
+                            style="color: #ffffff; text-decoration: underline; text-decoration-color: #ffffff;"
+                            aria-label="FrameVR.io - plateforme de réalité virtuelle - s'ouvre dans un nouvel onglet">FrameVR.io</a>.
                         Notre approche unique combine expertise numérique et inclusion sociale pour créer des environnements de travail adaptés.
                     </p>
 
@@ -30,79 +166,133 @@
                     </p>
 
                     <p class="text">
-                        Solliciter nos services, c’est s’engager à soutenir une cause porteuse d’espoir qui ouvre de nouvelles perspectives professionnelles
-                        et déploie des solutions concrètes pour faire tomber les barrières à l’emploi des personnes en situation de handicap.
+                        Solliciter nos services, c'est s'engager à soutenir une cause porteuse d'espoir qui ouvre de nouvelles perspectives professionnelles
+                        et déploie des solutions concrètes pour faire tomber les barrières à l'emploi des personnes en situation de handicap.
                     </p>
 
-                    <a href="{{ path('app_contact') ~ '#services' }}" class="btn-neon" role="button" aria-label="Demander un devis pour nos services numériques">
+                    <a href="{{ path('app_contact') ~ '#services' }}" 
+                       class="btn-neon" 
+                       aria-label="Demander un devis pour nos services numériques - accès à la page contact"
+                       aria-describedby="devis-help">
                         Je demande un devis
                     </a>
+                    <div id="devis-help" class="visually-hidden">
+                        Lien vers la page de contact pour obtenir un devis personnalisé
+                    </div>
                 </div>
 
                 <!-- Image -->
                 <div class="col-12 col-lg-6 text-center">
-                    <img src="{{ asset('images/webp/consulting.webp') }}"
-                         class="img-fluid rounded"
-                         alt="Deux personnes collaborant dans un espace numérique virtuel, illustrant le digital consulting inclusif de Gnut 06">
+                    <!-- ✅ CORRECTION - Figure ajoutée pour sémantique -->
+                    <figure>
+                        <img src="{{ asset('images/webp/consulting.webp') }}"
+                             class="img-fluid rounded"
+                             alt="Deux personnes collaborant dans un espace numérique virtuel, illustrant le digital consulting inclusif de Gnut 06"
+                             role="img">
+                    </figure>
                 </div>
             </div>
         </section>
 
-        <!-- Section services -->
-        <section id="services" class="bg-main w-100 pt-5 pb-5" aria-labelledby="services-title">
+        <!-- ✅ CORRECTION - Section services accessible -->
+        <section id="services" class="bg-main w-100 pt-5 pb-5" role="region" aria-labelledby="services-title">
             <div class="container text-center">
                 <h2 id="services-title" class="mb-5 text-start">Nos Services de Consultation Numérique</h2>
+                <p class="text text-start mb-4">
+                    Découvrez nos trois piliers d'accompagnement pour transformer votre organisation et la rendre plus inclusive.
+                </p>
 
-                <div class="row g-4 justify-content-center">
+                <!-- ✅ CORRECTION - Liste des services avec navigation -->
+                <div class="row g-4 justify-content-center" role="list" aria-label="Liste de nos services numériques">
 
                     <!-- Card 1 -->
-                    <article class="col-12 col-md-6 col-lg-4">
-                        <div class="card h-100 text-white bg-black" aria-labelledby="audit-title">
-                            <img src="{{ asset('images/webp/audit.webp') }}"
-                                 class="card-img-top"
-                                 alt="Illustration d’un audit numérique, avec des tableaux et graphiques sur écran">
+                    <article class="col-12 col-md-6 col-lg-4" role="listitem">
+                        <div class="card h-100 text-white bg-black" 
+                             tabindex="0"
+                             aria-labelledby="audit-title"
+                             aria-describedby="audit-desc">
+                            <figure class="m-0">
+                                <img src="{{ asset('images/webp/audit.webp') }}"
+                                     class="card-img-top"
+                                     alt="Illustration d'un audit numérique, avec des tableaux et graphiques sur écran"
+                                     role="img">
+                            </figure>
                             <div class="card-body">
                                 <h3 id="audit-title" class="card-title text-start">Audit Numérique</h3>
-                                <p class="card-text text text-start">
+                                <p id="audit-desc" class="card-text text text-start">
                                     On commence par analyser votre infrastructure numérique actuelle : sites web, applications, systèmes de gestion.
-                                    Cette évaluation permet d’identifier vos points forts et les axes d’amélioration possibles.
+                                    Cette évaluation permet d'identifier vos points forts et les axes d'amélioration possibles.
                                 </p>
                             </div>
                         </div>
                     </article>
 
                     <!-- Card 2 -->
-                    <article class="col-12 col-md-6 col-lg-4">
-                        <div class="card h-100 text-white bg-black" aria-labelledby="strategie-title">
-                            <img src="{{ asset('images/webp/strategie.webp') }}"
-                                 class="card-img-top"
-                                 alt="Plan de stratégie numérique illustré par des icônes de communication et de technologie">
+                    <article class="col-12 col-md-6 col-lg-4" role="listitem">
+                        <div class="card h-100 text-white bg-black" 
+                             tabindex="0"
+                             aria-labelledby="strategie-title"
+                             aria-describedby="strategie-desc">
+                            <figure class="m-0">
+                                <img src="{{ asset('images/webp/strategie.webp') }}"
+                                     class="card-img-top"
+                                     alt="Plan de stratégie numérique illustré par des icônes de communication et de technologie"
+                                     role="img">
+                            </figure>
                             <div class="card-body">
                                 <h3 id="strategie-title" class="card-title text-start">Stratégie Numérique</h3>
-                                <p class="card-text text text-start">
-                                    On conçoit avec toi un plan stratégique sur mesure, incluant les technologies adaptées,
-                                    les canaux de communication prioritaires et les actions concrètes pour atteindre tes objectifs.
+                                <p id="strategie-desc" class="card-text text text-start">
+                                    On conçoit avec vous un plan stratégique sur mesure, incluant les technologies adaptées,
+                                    les canaux de communication prioritaires et les actions concrètes pour atteindre vos objectifs.
                                 </p>
                             </div>
                         </div>
                     </article>
 
                     <!-- Card 3 -->
-                    <article class="col-12 col-md-6 col-lg-4">
-                        <div class="card h-100 text-white bg-black" aria-labelledby="conception-title">
-                            <img src="{{ asset('images/webp/conception.webp') }}"
-                                 class="card-img-top"
-                                 alt="Conception numérique, symbolisée par des développeurs et designers collaborant sur des interfaces">
+                    <article class="col-12 col-md-6 col-lg-4" role="listitem">
+                        <div class="card h-100 text-white bg-black" 
+                             tabindex="0"
+                             aria-labelledby="conception-title"
+                             aria-describedby="conception-desc">
+                            <figure class="m-0">
+                                <img src="{{ asset('images/webp/conception.webp') }}"
+                                     class="card-img-top"
+                                     alt="Conception numérique, symbolisée par des développeurs et designers collaborant sur des interfaces"
+                                     role="img">
+                            </figure>
                             <div class="card-body">
                                 <h3 id="conception-title" class="card-title text-start">Conception et Mise en Œuvre</h3>
-                                <p class="card-text text text-start">
-                                    On crée ta solution numérique avec les meilleures technologies disponibles.
-                                    Que ce soit un site web, une appli mobile ou un métavers, on veille à une intégration fluide et efficace.
+                                <p id="conception-desc" class="card-text text text-start">
+                                    On crée votre solution numérique avec les meilleures technologies disponibles.
+                                    Que ce soit un site web, une application mobile ou un métavers, on veille à une intégration fluide et efficace.
                                 </p>
                             </div>
                         </div>
                     </article>
 
+                </div>
+
+                <!-- ✅ CORRECTION - Section contact améliorée -->
+                <div class="mt-5 text-start">
+                    <h3 class="h4 mb-3">Prêt à démarrer votre projet ?</h3>
+                    <p class="text mb-4">
+                        Contactez-nous pour discuter de vos besoins et obtenir un accompagnement personnalisé.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{{ path('app_contact') }}" 
+                           class="btn-outline-gradient text-white"
+                           aria-label="Contacter GNUT 06 pour discuter de votre projet numérique">
+                            <i class="bi bi-envelope" aria-hidden="true"></i>
+                            Nous contacter
+                        </a>
+                        <a href="tel:+33666215687" 
+                           class="btn-neon text-white"
+                           aria-label="Appeler GNUT 06 au 06 66 21 56 87">
+                            <i class="bi bi-telephone" aria-hidden="true"></i>
+                            +33 6 66 21 56 87
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>

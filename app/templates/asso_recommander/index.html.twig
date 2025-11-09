@@ -4,162 +4,239 @@
 {% endblock %}
 
 {% block body %}
-<style>
-/* 🎨 Effet de relief sur les cartes - Cartes blanches sur fond sombre */
-.card-relief {
-    position: relative;
-    border: none;
-    border-radius: 15px;
-    /* ✅ Fond blanc pour les cartes */
-    background: linear-gradient(145deg, #ffffff, #f8f9fa);
-    box-shadow: 
-        /* Ombres externes pour l'effet relief sur fond sombre */
-        20px 20px 40px rgba(0, 0, 0, 0.8),
-        -10px -10px 30px rgba(255, 255, 255, 0.1),
-        /* Ombres internes subtiles */
-        inset 3px 3px 8px rgba(0, 0, 0, 0.1),
-        inset -3px -3px 8px rgba(255, 255, 255, 0.8);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    transform: translateZ(0);
-    /* ✅ Bordure subtile avec votre couleur thème */
-    border: 1px solid rgba(248, 108, 248, 0.2);
-}
+    <style>
+        /* 🎨 Effet de relief sur les cartes - Cartes blanches sur fond sombre */
+        .card-relief {
+            position: relative;
+            border: none;
+            border-radius: 15px;
+            /* ✅ Fond blanc pour les cartes */
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            box-shadow: /* Ombres externes pour l'effet relief sur fond sombre */
+            20px 20px 40px rgba(0, 0, 0, 0.8), -10px -10px 30px rgba(255, 255, 255, 0.1), /* Ombres internes subtiles */
+            inset 3px 3px 8px rgba(0, 0, 0, 0.1), inset -3px -3px 8px rgba(255, 255, 255, 0.8);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform: translateZ(0);
+            /* ✅ Bordure subtile avec votre couleur thème */
+            border: 1px solid rgba(248, 108, 248, 0.2);
+        }
 
-/* 🌟 Effet hover avec relief plus prononcé */
-.card-relief:hover {
-    transform: translateY(-10px) scale(1.03);
-    box-shadow: 
-        /* Ombres plus intenses au hover */
-        30px 30px 60px rgba(0, 0, 0, 0.9),
-        -15px -15px 40px rgba(255, 255, 255, 0.15),
-        inset 5px 5px 12px rgba(0, 0, 0, 0.12),
-        inset -5px -5px 12px rgba(255, 255, 255, 0.9);
-    /* ✅ Bordure colorée au hover */
-    border: 1px solid rgba(248, 108, 248, 0.5);
-    /* ✅ Effet de lueur */
-    filter: drop-shadow(0 0 20px rgba(248, 108, 248, 0.3));
-}
-</style>
-	<div class="container pt-0">
-		<div class="mx-3">
-			<h2 class="my-3 gradient-text text-center">Associations à recommander
-				{% if app.request.attributes.get('_route') == 'app_asso_recommander_ville' %}
-					à
-					{{ city }}
-				{% endif %}
-			</h2>
-			<div class="row justify-content-center">
-				<div class="col-md-6">
-					<form method="GET" action="{{ path('app_asso_recommander_search') }}" class="mt-2">
-						<div class="mb-3">
-							<input type="text" name="query" class="form-control" placeholder="Rechercher une association">
-						</div>
-						<div class="d-grid">
-							<button type="submit" class="btn-neon text mt-3" role="button">Rechercher</button>
-						</div>
-					</form>
-				</div>
-				{% if app.request.attributes.get('_route') == 'app_asso_recommander_search' %}
-					<div class="col-12 mt-3 text-center">
-						<a href="{{ path('app_asso_recommander') }}" class="btn btn-outline-success">Retour</a>
-					</div>
-				{% endif %}
-			</div>
+        /* 🌟 Effet hover avec relief plus prononcé */
+        .card-relief:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: /* Ombres plus intenses au hover */
+            30px 30px 60px rgba(0, 0, 0, 0.9), -15px -15px 40px rgba(255, 255, 255, 0.15), inset 5px 5px 12px rgba(0, 0, 0, 0.12), inset -5px -5px 12px rgba(255, 255, 255, 0.9);
+            /* ✅ Bordure colorée au hover */
+            border: 1px solid rgba(248, 108, 248, 0.5);
+            /* ✅ Effet de lueur */
+            filter: drop-shadow(0 0 20px rgba(248, 108, 248, 0.3));
+        }
+    </style>
 
-			{% if assos is defined %}
-				<ul>
-					{% for asso in assos %}
-						<li>{{ asso.name }}</li>
-					{% endfor %}
-				</ul>
-			{% endif %}
-			<div class="border border-secondary mb-5 mx-5 mt-4"></div>
-			<div class="row align-items-start mx-auto">
-				{% for item in data_forms %}
-					<div class="col d-flex justify-content-around my-3">
-						<div class="card shadow-lg card-relief" style="width: 21rem;">
-							<img src="{{ item.banner }}" class="card-img-top" alt="Bannière {{ item.name }}">
-							<div class="card-body">
-								<h5 class="card-title text-center text-primary">{{ item.name }}</h5>
-								<div class="card-text text-center">
-									<img class="card-img-top logoAsso my-2" src="{{ item.logo }}" alt="Logo de l'association {{ item.name }}"/>
-									<br>
-									<p>{{ item.category }}</p>
-									<p class="text-justify">{{ item.description|slice(0, 200) }}...<br>
-										<a class="icon-link icon-link-hover" href="{{ path('app_asso_recommander_fiche', {'organizationSlug': item.organizationSlug}) }}">
-											En savoir +<i class="bi bi-arrow-right" aria-hidden="true"><use xlink:href="#arrow-right"></use></i>
-										</a>
-									</p>
-									<p>
-										{% if getEventsAssoRecommender(item.organizationSlug, "Event") == 0 %}
-											Aucun événement à venir
-										{% else %}
-											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Event") }}
-												évènement(s) à venir</a>
-										{% endif %}
-									</p>
-									{% if getEventsAssoRecommender(item.organizationSlug, "Donation") != 0 %}
-										<p>
-											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode, 'formTypes': 'Donation'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Donation") }}
-												formulaire(s) de dons</a>
-										</p>
-									{% endif %}
-									{% if getEventsAssoRecommender(item.organizationSlug, "Membership") != 0 %}
-										<p>
-											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode,'formTypes': 'Membership'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Membership") }}
-												formulaire(s) d'adhésion</a>
-										</p>
-									{% endif %}
-									{% if getEventsAssoRecommender(item.organizationSlug, "CrowdFunding") != 0 %}
-										<p>
-											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode,'formTypes': 'CrowdFunding'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "CrowdFunding") }}
-												formulaire(s) d'appel à projet</a>
-										</p>
-									{% endif %}
-									{% if getEventsAssoRecommender(item.organizationSlug, "Shop") != 0 %}
-										<p>
-											<a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode,'formTypes': 'Shop'}) }}">{{ getEventsAssoRecommender(item.organizationSlug, "Shop") }}
-												boutique(s)</a>
-										</p>
-									{% endif %}
-									<p>{{ item.zipCode }}
-										{{ item.city }}</p>
-									<a class="btn-asso" role="button" href="{{ item.url }}" target='_blanck'>Sur HelloAsso</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				{% else %}
-					<p class="text">Si vous ne trouvez pas d'association dans la base de données, il est possible que l'association n'ait pas été enregistrée correctement ou qu'elle n'ait pas mis à jour ses informations récemment.</p>
-				{% endfor %}
-				<div class="col-12 pagination-container mt-3">
-					<nav aria-label="Admin navigation">
-						<ul class="pagination">
-							{% if page > 1 %}
-								<li class="page-item">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page - 1, 'city': city is defined ? city : null}) }}">
-										<span aria-hidden="true">&laquo;</span>
-									</a>
-								</li>
-							{% endif %}
+    <div class="container pt-0">
+        <div
+            class="mx-3">
+            <!-- ✅ Section principale avec rôle et labelledby -->
+            <section role="main" aria-labelledby="main-title">
+                <h1 id="main-title" class="my-3 gradient-text text-center">Associations à recommander
+                    {% if app.request.attributes.get('_route') == 'app_asso_recommander_ville' %}
+                        à
+                        {{ city }}
+                    {% endif %}
+                </h1>
 
-							{% for page in 1..pages %}
-								<li class="page-item{% if app.request.attributes.get('page') == page %} active{% endif %}">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page, 'city': city is defined ? city : null}) }}">{{ page }}</a>
-								</li>
-							{% endfor %}
+                <!-- ✅ Section de recherche avec rôle et label -->
+                <section role="search" aria-labelledby="search-title" class="row justify-content-center">
+                    <h2 id="search-title" class="visually-hidden">Rechercher une association</h2>
+                    <div class="col-md-6">
+                        <form method="GET" action="{{ path('app_asso_recommander_search') }}" class="mt-2" role="search">
+                            <div class="mb-3">
+                                <label for="search-input" class="visually-hidden">Nom de l'association</label>
+                                <input type="text" id="search-input" name="query" class="form-control" placeholder="Rechercher une association" aria-describedby="search-help">
+                                <div id="search-help" class="visually-hidden">Saisissez le nom d'une association pour la rechercher</div>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn-neon text mt-3" role="button" aria-describedby="search-button-help">Rechercher</button>
+                                <div id="search-button-help" class="visually-hidden">Lancer la recherche d'associations</div>
+                            </div>
+                        </form>
+                    </div>
+                    {% if app.request.attributes.get('_route') == 'app_asso_recommander_search' %}
+                        <div class="col-12 mt-3 text-center">
+                            <a href="{{ path('app_asso_recommander') }}" class="btn btn-outline-success" aria-label="Retourner à la liste complète des associations">Retour</a>
+                        </div>
+                    {% endif %}
+                </section>
 
-							{% if page < pages %}
-								<li class="page-item">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page + 1, 'city': city is defined ? city : null}) }}">
-										<span aria-hidden="true">&raquo;</span>
-									</a>
-								</li>
-							{% endif %}
-						</ul>
-					</nav>
-				</div>
-			</div>
-		</div>
-	</div>
+                {% if assos is defined %}
+                    <!-- ✅ Section des résultats avec rôle -->
+                    <section role="region" aria-labelledby="results-title">
+                        <h3 id="results-title" class="visually-hidden">Résultats de recherche</h3>
+                        <ul role="list" aria-label="Liste des associations trouvées">
+                            {% for asso in assos %}
+                                <li role="listitem">{{ asso.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+                {% endif %}
+
+                <div class="border border-secondary mb-5 mx-5 mt-4" role="separator" aria-hidden="true"></div>
+
+                <!-- ✅ Section principale des associations -->
+                <section role="region" aria-labelledby="associations-list-title">
+                    <h2 id="associations-list-title" class="visually-hidden">Liste des associations recommandées</h2>
+                    <div class="row align-items-start mx-auto" role="list" aria-label="Cartes des associations">
+                        {% for item in data_forms %}
+                            <div class="col d-flex justify-content-around my-3" role="listitem">
+                                <article class="card shadow-lg card-relief" style="width: 21rem;" aria-labelledby="card-title-{{ loop.index }}" tabindex="0">
+
+                                    <img src="{{ item.banner }}" class="card-img-top" alt="Bannière de l'association {{ item.name }}" role="img">
+
+                                    <div class="card-body">
+                                        <h3 id="card-title-{{ loop.index }}" class="card-title text-center text-primary">{{ item.name }}</h3>
+
+                                        <div class="card-text text-center">
+                                            <img class="card-img-top logoAsso my-2" src="{{ item.logo }}" alt="Logo de l'association {{ item.name }}" role="img"/>
+                                            <br>
+
+                                            <p>
+                                                <span class="visually-hidden">Catégorie :
+                                                </span>
+                                                {{ item.category }}</p>
+
+                                            <div class="text-justify">
+                                                <p aria-label="Description de l'association">{{ item.description|slice(0, 200) }}...
+                                                    <a class="icon-link icon-link-hover" href="{{ path('app_asso_recommander_fiche', {'organizationSlug': item.organizationSlug}) }}" aria-label="En savoir plus sur l'association {{ item.name }}">
+                                                        En savoir plus
+                                                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                                    </a>
+                                                </p>
+                                            </div>
+
+                                            <!-- ✅ Section des événements avec structure sémantique -->
+                                            <div role="region" aria-labelledby="events-{{ loop.index }}">
+                                                <h4 id="events-{{ loop.index }}" class="visually-hidden">Événements et services de
+                                                    {{ item.name }}</h4>
+
+                                                <p role="status" aria-live="polite">
+                                                    {% if getEventsAssoRecommender(item.organizationSlug, "Event") == 0 %}
+                                                        <span aria-label="Aucun événement programmé">Aucun événement à venir</span>
+                                                    {% else %}
+                                                        <a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode}) }}" aria-label="{{ getEventsAssoRecommender(item.organizationSlug, "Event") }} événements à venir pour {{ item.name }}">
+                                                            {{ getEventsAssoRecommender(item.organizationSlug, "Event") }}
+                                                            évènement(s) à venir
+                                                        </a>
+                                                    {% endif %}
+                                                </p>
+
+                                                {% if getEventsAssoRecommender(item.organizationSlug, "Donation") != 0 %}
+                                                    <p>
+                                                        <a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode, 'formTypes': 'Donation'}) }}" aria-label="{{ getEventsAssoRecommender(item.organizationSlug, "Donation") }} formulaires de dons disponibles pour {{ item.name }}">
+                                                            {{ getEventsAssoRecommender(item.organizationSlug, "Donation") }}
+                                                            formulaire(s) de dons
+                                                        </a>
+                                                    </p>
+                                                {% endif %}
+
+                                                {% if getEventsAssoRecommender(item.organizationSlug, "Membership") != 0 %}
+                                                    <p>
+                                                        <a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode,'formTypes': 'Membership'}) }}" aria-label="{{ getEventsAssoRecommender(item.organizationSlug, "Membership") }} formulaires d'adhésion disponibles pour {{ item.name }}">
+                                                            {{ getEventsAssoRecommender(item.organizationSlug, "Membership") }}
+                                                            formulaire(s) d'adhésion
+                                                        </a>
+                                                    </p>
+                                                {% endif %}
+
+                                                {% if getEventsAssoRecommender(item.organizationSlug, "CrowdFunding") != 0 %}
+                                                    <p>
+                                                        <a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode,'formTypes': 'CrowdFunding'}) }}" aria-label="{{ getEventsAssoRecommender(item.organizationSlug, "CrowdFunding") }} formulaires d'appel à projet disponibles pour {{ item.name }}">
+                                                            {{ getEventsAssoRecommender(item.organizationSlug, "CrowdFunding") }}
+                                                            formulaire(s) d'appel à projet
+                                                        </a>
+                                                    </p>
+                                                {% endif %}
+
+                                                {% if getEventsAssoRecommender(item.organizationSlug, "Shop") != 0 %}
+                                                    <p>
+                                                        <a href="{{ path('app_asso_evenements', {'organizationSlug': item.organizationSlug,'organizationName': item.name|url_encode,'formTypes': 'Shop'}) }}" aria-label="{{ getEventsAssoRecommender(item.organizationSlug, "Shop") }} boutiques disponibles pour {{ item.name }}">
+                                                            {{ getEventsAssoRecommender(item.organizationSlug, "Shop") }}
+                                                            boutique(s)
+                                                        </a>
+                                                    </p>
+                                                {% endif %}
+                                            </div>
+
+                                            <address aria-label="Adresse de l'association">
+                                                <span class="visually-hidden">Localisation :
+                                                </span>
+                                                {{ item.zipCode }}
+                                                {{ item.city }}
+                                            </address>
+
+                                            <a class="btn-asso" role="button" href="{{ item.url }}" target="_blank" rel="noopener noreferrer" aria-label="Visiter la page HelloAsso de {{ item.name }} (ouvre dans un nouvel onglet)">
+                                                Sur HelloAsso
+                                            </a>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        {% else %}
+                            <div class="col-12" role="status" aria-live="polite">
+                                <div class="alert alert-info text-center" role="alert">
+                                    <p class="text">Si vous ne trouvez pas d'association dans la base de données, il est possible que l'association n'ait pas été enregistrée correctement ou qu'elle n'ait pas mis à jour ses informations récemment.</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        <!-- ✅ Navigation de pagination accessible -->
+                        <div class="col-12 pagination-container mt-3">
+                            <nav role="navigation" aria-label="Navigation par pages des associations" aria-describedby="pagination-info">
+
+                                <div id="pagination-info" class="visually-hidden">
+                                    Page
+                                    {{ page }}
+                                    sur
+                                    {{ pages }}. Utilisez les liens suivants pour naviguer entre les pages.
+                                </div>
+
+                                <ul class="pagination justify-content-center">
+                                    {% if page > 1 %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page - 1, 'city': city is defined ? city : null}) }}" aria-label="Aller à la page précédente, page {{ page - 1 }}">
+                                                <span aria-hidden="true">&laquo;</span>
+                                                <span class="visually-hidden">Page précédente</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% for pageNumber in 1..pages %}
+                                        <li class="page-item{% if app.request.attributes.get('page') == pageNumber %} active{% endif %}">
+                                            {% if app.request.attributes.get('page') == pageNumber %}
+                                                <span class="page-link" aria-current="page" aria-label="Page courante, page {{ pageNumber }}">
+                                                    {{ pageNumber }}
+                                                </span>
+                                            {% else %}
+                                                <a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': pageNumber, 'city': city is defined ? city : null}) }}" aria-label="Aller à la page {{ pageNumber }}">
+                                                    {{ pageNumber }}
+                                                </a>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+
+                                    {% if page < pages %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page + 1, 'city': city is defined ? city : null}) }}" aria-label="Aller à la page suivante, page {{ page + 1 }}">
+                                                <span class="visually-hidden">Page suivante</span>
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </div>
+    </div>
 {% endblock %}

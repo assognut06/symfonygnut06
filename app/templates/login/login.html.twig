@@ -2,161 +2,482 @@
 
 {% block title %}Connexion - GNUT 06{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* ✅ CORRECTION WCAG 2.1 AA - Focus visible obligatoire */
+        .btn-neon:focus,
+        .btn-outline-gradient:focus,
+        .btn-asso:focus,
+        .form-control:focus,
+        a:focus {
+            outline: 3px solid #F86CF8 !important;
+            outline-offset: 2px !important;
+            box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+        }
+
+        /* ✅ CORRECTION - Contraste des textes amélioré */
+        .text {
+            color: #ffffff !important;
+            line-height: 1.6 !important;
+        }
+
+        #connexion-subtitle {
+            color: #ffffff !important;
+            font-weight: 500 !important;
+        }
+
+        /* ✅ CORRECTION - Skip links */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #000000;
+            color: #ffffff;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 0 0 4px 4px;
+            z-index: 1000;
+            font-weight: bold;
+        }
+
+        .skip-link:focus {
+            top: 0;
+            outline: 3px solid #F86CF8;
+        }
+
+        /* ✅ CORRECTION - Amélioration formulaire */
+        .form-control {
+            border: 2px solid #dee2e6 !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+        }
+
+        .form-control:focus {
+            border-color: #F86CF8 !important;
+            box-shadow: 0 0 0 0.25rem rgba(248, 108, 248, 0.25) !important;
+        }
+
+        .form-control:invalid {
+            border-color: #dc3545 !important;
+        }
+
+        .form-control:valid {
+            border-color: #198754 !important;
+        }
+
+        /* ✅ CORRECTION - Messages d'erreur visibles */
+        .alert {
+            font-weight: 500 !important;
+            border: 2px solid !important;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24 !important;
+        }
+
+        /* ✅ CORRECTION - Amélioration des boutons */
+        .btn-asso {
+            background-color: #F86CF8 !important;
+            border: 2px solid #F86CF8 !important;
+            color: #ffffff !important;
+            font-weight: 500 !important;
+            padding: 0.75rem 1rem !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .btn-asso:hover {
+            background-color: #e055d6 !important;
+            border-color: #e055d6 !important;
+            transform: translateY(-1px) !important;
+        }
+
+        .btn-asso:active {
+            transform: translateY(0) !important;
+        }
+
+        /* ✅ CORRECTION - Amélioration des labels */
+        .form-floating > label {
+            color: #6c757d !important;
+            font-weight: 500 !important;
+        }
+
+        .form-text {
+            font-size: 0.875rem !important;
+            color: #6c757d !important;
+        }
+
+        /* ✅ CORRECTION - Card accessible */
+        .card {
+            border: 2px solid rgba(0, 0, 0, 0.125) !important;
+            background-color: #ffffff !important;
+        }
+
+        /* ✅ CORRECTION - Responsive mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem !important;
+            }
+
+            h1 {
+                font-size: 1.75rem !important;
+            }
+
+            h2 {
+                font-size: 1.25rem !important;
+            }
+
+            .btn-asso,
+            .btn-neon,
+            .btn-outline-gradient {
+                padding: 0.875rem 1rem !important;
+                font-size: 1rem !important;
+            }
+        }
+
+        /* ✅ Animation respectueuse des préférences */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .btn-asso:hover {
+                transform: none !important;
+            }
+        }
+
+        /* ✅ Support haut contraste */
+        @media (prefers-contrast: high) {
+            .form-control {
+                border: 3px solid #000000 !important;
+                background-color: #ffffff !important;
+            }
+
+            .form-control:focus {
+                border-color: #F86CF8 !important;
+                outline: 3px solid #F86CF8 !important;
+            }
+
+            .card {
+                border: 3px solid #000000 !important;
+                background-color: #ffffff !important;
+            }
+
+            .btn-asso {
+                border: 3px solid #F86CF8 !important;
+                font-weight: 700 !important;
+            }
+        }
+                /* ✅ CORRECTION - Texte OAuth visible */
+        .oauth-info {
+            color: #e9ecef !important;
+            font-size: 0.875rem !important;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <main id="main-content" role="main" aria-labelledby="connexion-title">
+    <!-- ✅ CORRECTION - Skip links ajoutés -->
+    <nav aria-label="Navigation rapide" class="visually-hidden-focusable">
+        <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+        <a href="#connexion-form" class="skip-link">Aller au formulaire de connexion</a>
+        <a href="#alt-login" class="skip-link">Aller aux connexions alternatives</a>
+    </nav>
+
+    <main id="main-content" class="bg-main" role="main" aria-labelledby="connexion-title">
         <div class="container mt-5">
             <div class="row justify-content-center text">
 
-                <div class="col-md-6">
+                <div class="col-md-6 col-lg-5">
 
-                    <!-- Formulaire de connexion -->
-                    <form method="post"
+                    <!-- ✅ CORRECTION - Formulaire de connexion avec validation -->
+                    <form id="connexion-form" 
+                          method="post"
                           class="needs-validation"
                           novalidate
                           aria-describedby="connexion-infos"
-                          aria-label="Formulaire de connexion GNUT 06">
+                          aria-label="Formulaire de connexion sécurisé GNUT 06"
+                          role="form">
 
-                        <!-- Messages d’erreur -->
+                        <!-- ✅ CORRECTION - Messages d'erreur améliorés -->
                         {% if error %}
-                            <div class="alert alert-danger text-center"
+                            <div class="alert alert-danger text-center mb-4"
                                  role="alert"
-                                 aria-live="assertive">
+                                 aria-live="assertive"
+                                 aria-atomic="true"
+                                 tabindex="0">
+                                <strong>Erreur de connexion :</strong>
                                 {{ error.messageKey|trans(error.messageData, 'security') }}
                             </div>
                         {% endif %}
 
                         {% for message in app.flashes('error') %}
-                            <div class="alert alert-danger text-center"
+                            <div class="alert alert-danger text-center mb-4"
                                  role="alert"
-                                 aria-live="assertive">
-                                {{ message }}
+                                 aria-live="assertive"
+                                 aria-atomic="true"
+                                 tabindex="0">
+                                <strong>Erreur :</strong> {{ message }}
                             </div>
                         {% endfor %}
 
                         {% if app.session.get('_flash_error') %}
-                            <div class="alert alert-danger text-center"
+                            <div class="alert alert-danger text-center mb-4"
                                  role="alert"
-                                 aria-live="assertive">
-                                {{ app.session.get('_flash_error') }}
+                                 aria-live="assertive"
+                                 aria-atomic="true"
+                                 tabindex="0">
+                                <strong>Erreur :</strong> {{ app.session.get('_flash_error') }}
                             </div>
                             {% do app.session.remove('_flash_error') %}
                         {% endif %}
 
-                        <!-- Utilisateur déjà connecté -->
+                        <!-- ✅ CORRECTION - Utilisateur déjà connecté -->
                         {% if app.user %}
-                            <div class="mb-3" role="status" aria-live="polite">
+                            <div class="alert alert-info text-center mb-4" 
+                                 role="status" 
+                                 aria-live="polite"
+                                 aria-atomic="true">
+                                <strong>Déjà connecté :</strong>
                                 Vous êtes connecté en tant que
                                 <strong>{{ app.user.userIdentifier }}</strong>.
-                                <a href="{{ path('app_logout') }}">Déconnexion</a>
+                                <br>
+                                <a href="{{ path('app_logout') }}" 
+                                   class="alert-link"
+                                   aria-label="Se déconnecter du compte {{ app.user.userIdentifier }}">
+                                    Cliquez ici pour vous déconnecter
+                                </a>
                             </div>
                         {% endif %}
 
-                        <!-- Titres et infos -->
+                        <!-- ✅ CORRECTION - En-tête amélioré -->
                         <header class="text-center mb-4">
                             <h1 id="connexion-title" class="gradient-text mb-2">GNUT 06</h1>
-                            <h2 id="connexion-subtitle" class="h3 mb-3 fw-normal" style="color: black !important;">
-                                Connectez-vous à votre compte
+                            <h2 id="connexion-subtitle" class="h3 mb-3 fw-normal">
+                                Connectez-vous
                             </h2>
-                            <p id="connexion-infos">
+                            <p id="connexion-infos" class="text">
                                 Content de vous revoir ! <br>
-                                Veuillez saisir vos identifiants de connexion.
+                                Veuillez saisir vos identifiants de connexion pour accéder à votre espace personnel.
                             </p>
                         </header>
 
-                        <!-- Carte de connexion -->
-                        <section class="card p-4 shadow" aria-labelledby="connexion-subtitle">
-                            <!-- Champ email -->
-                            <div class="form-floating mb-3">
-                                <input type="email"
-                                       value="{{ last_username }}"
-                                       name="_username"
-                                       id="username"
-                                       class="form-control"
-                                       placeholder="nom@domaine.com"
-                                       autocomplete="email"
-                                       required
-                                       autofocus
-                                       aria-required="true"
-                                       aria-describedby="username-help">
-                                <label for="username">Adresse e-mail</label>
-                                <small id="username-help" class="form-text text-muted">
-                                    Exemple : nom@domaine.com
-                                </small>
-                            </div>
+                        <!-- ✅ CORRECTION - Carte de connexion accessible -->
+                        <section class="card p-4 shadow" 
+                                 aria-labelledby="connexion-subtitle"
+                                 role="group">
+                            
+                            <fieldset>
+                                <legend class="visually-hidden">Identifiants de connexion</legend>
+                                
+                                <!-- ✅ CORRECTION - Champ email amélioré -->
+                                <div class="form-floating mb-3">
+                                    <input type="email"
+                                           value="{{ last_username }}"
+                                           name="_username"
+                                           id="username"
+                                           class="form-control"
+                                           placeholder="nom@domaine.com"
+                                           autocomplete="email"
+                                           required
+                                           autofocus
+                                           aria-required="true"
+                                           aria-describedby="username-help username-error"
+                                           aria-invalid="false">
+                                    <label for="username">
+                                        Adresse e-mail <span class="text-danger" aria-hidden="true">*</span>
+                                    </label>
+                                    <div id="username-help" class="form-text">
+                                        Format attendu : nom@domaine.com
+                                    </div>
+                                    <div id="username-error" class="invalid-feedback" role="alert">
+                                        Veuillez saisir une adresse e-mail valide.
+                                    </div>
+                                </div>
 
-                            <!-- Champ mot de passe -->
-                            <div class="form-floating mb-3">
-                                <input type="password"
-                                       name="_password"
-                                       id="password"
-                                       class="form-control"
-                                       placeholder="Mot de passe"
-                                       autocomplete="current-password"
-                                       required
-                                       aria-required="true"
-                                       aria-describedby="password-help">
-                                <label for="password">Mot de passe</label>
-                                <small id="password-help" class="form-text text-muted">
-                                    Votre mot de passe reste confidentiel.
-                                </small>
-                            </div>
+                                <!-- ✅ CORRECTION - Champ mot de passe amélioré -->
+                                <div class="form-floating mb-4">
+                                    <input type="password"
+                                           name="_password"
+                                           id="password"
+                                           class="form-control"
+                                           placeholder="Mot de passe"
+                                           autocomplete="current-password"
+                                           required
+                                           minlength="8"
+                                           aria-required="true"
+                                           aria-describedby="password-help password-error"
+                                           aria-invalid="false">
+                                    <label for="password">
+                                        Mot de passe <span class="text-danger" aria-hidden="true">*</span>
+                                    </label>
+                                    <div id="password-help" class="form-text">
+                                        Votre mot de passe reste confidentiel et sécurisé.
+                                    </div>
+                                    <div id="password-error" class="invalid-feedback" role="alert">
+                                        Le mot de passe est requis (minimum 8 caractères).
+                                    </div>
+                                </div>
+                            </fieldset>
 
-                            <!-- Jeton CSRF -->
+                            <!-- ✅ CORRECTION - Jeton CSRF -->
                             <input type="hidden"
                                    name="_csrf_token"
                                    value="{{ csrf_token('authenticate') }}"
                                    aria-hidden="true">
 
-                            <!-- Bouton de connexion -->
-                            <button class="w-100 btn btn-lg btn-primary"
+                            <!-- ✅ CORRECTION - Bouton de connexion amélioré -->
+                            <button class="w-100 btn-lg btn-asso mb-3" 
                                     type="submit"
-                                    aria-label="Se connecter à votre compte GNUT 06">
+                                    aria-describedby="connexion-button-help">
+                                <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i>
                                 Se connecter
                             </button>
+                            
+                            <div id="connexion-button-help" class="form-text text-center">
+                                En vous connectant, vous acceptez nos conditions d'utilisation.
+                            </div>
                         </section>
                     </form>
 
-                    <!-- Lien mot de passe oublié -->
-                    <div class="my-4 text-center">
+                    <!-- ✅ CORRECTION - Lien mot de passe oublié amélioré -->
+                    <nav class="my-4 text-center" aria-label="Aide à la connexion">
                         <a href="{{ path('app_forgot_password_request') }}"
-                           aria-label="Mot de passe perdu, cliquez ici pour réinitialiser">
-                            Mot de passe perdu ?
+                           class="text-white"
+                           aria-label="Réinitialiser votre mot de passe si vous l'avez oublié">
+                            <i class="bi bi-question-circle me-1" aria-hidden="true"></i>
+                            Mot de passe oublié ?
                         </a>
-                    </div>
+                    </nav>
 
-                    <!-- Connexion via services externes -->
-                    <div class="text-center pb-5" aria-labelledby="alt-login-title">
-                        <p id="alt-login-title">Ou connectez-vous avec :</p>
+                    <!-- ✅ CORRECTION - Connexion via services externes améliorée -->
+                    <section id="alt-login" 
+                             class="text-center pb-5" 
+                             aria-labelledby="alt-login-title"
+                             role="group">
+                        
+                        <h3 id="alt-login-title" class="h5 mb-3 text-white">
+                            Ou connectez-vous avec :
+                        </h3>
 
-                        <a href="{{ path('connect_google_start') }}"
-                           class="btn btn-danger w-100 mb-2"
-                           role="button"
-                           aria-label="Se connecter avec Google">
-                            <i class="fab fa-google" aria-hidden="true"></i>
-                            Se connecter avec Google
-                        </a>
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('connect_google_start') }}"
+                               class="btn-neon text d-flex align-items-center justify-content-center"
+                               role="button"
+                               aria-label="Se connecter rapidement avec votre compte Google">
+                                <i class="bi bi-google me-2" aria-hidden="true"></i>
+                                Se connecter avec Google
+                            </a>
 
-                        <a href="{{ path('connect_outlook_start') }}"
-                           class="btn w-100"
-                           style="background-color: #0078D4; color: white;"
-                           role="button"
-                           aria-label="Se connecter avec Microsoft">
-                            <i class="fab fa-microsoft" aria-hidden="true"></i>
-                            Se connecter avec Microsoft
-                        </a>
-                    </div>
+                            <a href="{{ path('connect_outlook_start') }}"
+                               class="btn-outline-gradient text d-flex align-items-center justify-content-center"
+                               role="button"
+                               aria-label="Se connecter rapidement avec votre compte Microsoft">
+                                <i class="bi bi-microsoft me-2" aria-hidden="true"></i>
+                                Se connecter avec Microsoft
+                            </a>
+                        </div>
+                        
+                        <p class="oauth-info small mt-3">
+                            Connexion sécurisée via OAuth 2.0
+                        </p>
+                    </section>
 
                 </div>
             </div>
         </div>
 
-        {% block stylesheets %}
-            {{ parent() }}
-            <link rel="stylesheet"
-                  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-                  integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2DhKN5C1Fj3vJdO5t6bLhS0NwOZp2rF7JbZsYk3yxj4gSgkVzNqVQkBKu5G+xh9wQ=="
-                  crossorigin="anonymous"
-                  referrerpolicy="no-referrer">
-        {% endblock %}
+        <!-- ✅ CORRECTION - Script de validation accessible -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('connexion-form');
+                const emailInput = document.getElementById('username');
+                const passwordInput = document.getElementById('password');
+
+                // Validation en temps réel accessible
+                function validateEmail(input) {
+                    const isValid = input.validity.valid && input.value.includes('@');
+                    input.setAttribute('aria-invalid', !isValid);
+                    
+                    if (!isValid && input.value) {
+                        input.classList.add('is-invalid');
+                        input.classList.remove('is-valid');
+                    } else if (isValid) {
+                        input.classList.add('is-valid');
+                        input.classList.remove('is-invalid');
+                    }
+                    
+                    return isValid;
+                }
+
+                function validatePassword(input) {
+                    const isValid = input.value.length >= 8;
+                    input.setAttribute('aria-invalid', !isValid);
+                    
+                    if (!isValid && input.value) {
+                        input.classList.add('is-invalid');
+                        input.classList.remove('is-valid');
+                    } else if (isValid) {
+                        input.classList.add('is-valid');
+                        input.classList.remove('is-invalid');
+                    }
+                    
+                    return isValid;
+                }
+
+                // Événements de validation
+                emailInput.addEventListener('blur', function() {
+                    validateEmail(this);
+                });
+
+                passwordInput.addEventListener('blur', function() {
+                    validatePassword(this);
+                });
+
+                // Validation avant soumission
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    
+                    const isEmailValid = validateEmail(emailInput);
+                    const isPasswordValid = validatePassword(passwordInput);
+                    
+                    if (isEmailValid && isPasswordValid) {
+                        // Indication de chargement
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        const originalText = submitBtn.innerHTML;
+                        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2" aria-hidden="true"></i>Connexion...';
+                        submitBtn.disabled = true;
+                        
+                        // Soumettre le formulaire
+                        setTimeout(() => {
+                            form.submit();
+                        }, 500);
+                    } else {
+                        // Focus sur le premier champ invalide
+                        if (!isEmailValid) {
+                            emailInput.focus();
+                        } else if (!isPasswordValid) {
+                            passwordInput.focus();
+                        }
+                        
+                        // Annonce pour lecteurs d'écran
+                        const errorAnnouncement = document.createElement('div');
+                        errorAnnouncement.className = 'visually-hidden';
+                        errorAnnouncement.setAttribute('aria-live', 'assertive');
+                        errorAnnouncement.textContent = 'Veuillez corriger les erreurs dans le formulaire';
+                        document.body.appendChild(errorAnnouncement);
+                        
+                        setTimeout(() => {
+                            document.body.removeChild(errorAnnouncement);
+                        }, 3000);
+                    }
+                });
+
+                console.log('✅ Validation de formulaire accessible initialisée');
+            });
+        </script>
     </main>
 {% endblock %}

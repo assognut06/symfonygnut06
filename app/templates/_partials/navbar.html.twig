@@ -1,146 +1,292 @@
 <style>
-    /* Style pour la page active */
-    .nav-link.active,
-    .btn-neon.active,
-    .btn-outline-gradient.active {
-        font-weight: bold !important;
+/* ✅ Focus visible obligatoire WCAG 2.1 AA */
+.nav-link:focus,
+.btn-neon:focus,
+.btn-outline-gradient:focus,
+.navbar-toggler:focus,
+.dropdown-toggle:focus,
+.dropdown-item:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ Amélioration du contraste */
+.nav-link {
+    color: #ffffff !important;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    color: #F86CF8 !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Style pour la page active */
+.nav-link.active,
+.btn-neon.active,
+.btn-outline-gradient.active {
+    font-weight: bold !important;
+    background-color: rgba(248, 108, 248, 0.2) !important;
+    border-radius: 4px;
+}
+
+/* ✅ Dropdown accessible */
+.dropdown-menu.bg-navbar {
+    background-color: #121212;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dropdown-menu .dropdown-item {
+    color: #ffffff !important;
+    transition: all 0.3s ease;
+}
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+    background-color: rgba(248, 108, 248, 0.2) !important;
+    color: #ffffff !important;
+}
+
+.dropdown-divider {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ✅ Style pour les liens du dropdown actifs */
+.dropdown-item.active {
+    font-weight: bold !important;
+    background-color: rgba(248, 108, 248, 0.3) !important;
+}
+
+/* ✅ Amélioration mobile */
+@media (max-width: 1199.98px) {
+    .nav-item {
+        margin-bottom: 0.5rem;
     }
-    
-    /* Optionnel : harmonisation visuelle du menu dropdown */
-    .dropdown-menu.bg-navbar {
-        background-color: #121212;
-    }
-    .dropdown-menu .dropdown-item:hover {
-        background-color: rgba(255,255,255,0.1);
-    }
-    .dropdown-divider {
-        border-color: rgba(255,255,255,0.1);
-    }
-    
-    /* Style pour les liens du dropdown actifs */
-    .dropdown-item.active {
-        font-weight: bold !important;
-    }
+}
 </style>
+
 <header class="sticky-top">
-    <nav class="navbar navbar-expand-xl navbar-dark bg-navbar" role="navigation" aria-label="Navigation principale">
+    <nav class="navbar navbar-expand-xl navbar-dark bg-navbar" 
+         role="navigation" 
+         aria-label="Navigation principale du site GNUT 06">
         <div class="container-fluid">
-            <!-- Logo -->
-            <a class="navbar-brand logoNavbar" href="{{ path('app_home') }}" aria-label="Accueil GNUT 06">
-                GNUT 06
+            
+            <!-- ✅ Logo accessible -->
+            <a class="navbar-brand logoNavbar" 
+               href="{{ path('app_home') }}" 
+               aria-label="Retour à l'accueil de GNUT 06">
+                <span role="img" aria-label="Logo GNUT 06">GNUT 06</span>
             </a>
 
-            <!-- Burger menu -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
-                    aria-expanded="false" aria-label="Ouvrir le menu">
-                <span class="navbar-toggler-icon"></span>
+            <!-- ✅ Burger menu accessible -->
+            <button class="navbar-toggler" 
+                    type="button" 
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNavDropdown" 
+                    aria-controls="navbarNavDropdown"
+                    aria-expanded="false" 
+                    aria-label="Ouvrir le menu de navigation principal">
+                <span class="navbar-toggler-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Menu</span>
             </button>
 
-            <!-- Menu -->
+            <!-- ✅ Menu principal -->
             <div class="collapse navbar-collapse fs-5" id="navbarNavDropdown">
-                <ul class="navbar-nav ms-auto mb-2 mb-xl-0 text-navbar w-100 justify-content-xl-evenly">
+                <ul class="navbar-nav ms-auto mb-2 mb-xl-0 text-navbar w-100 justify-content-xl-evenly" 
+                    role="menubar">
 
-                    <li class="nav-item">
+                    <li class="nav-item" role="none">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_a_propos' ? 'active' : '' }}"
                            href="{{ path('app_a_propos') }}"
-                                {% if app.request.attributes.get('_route') == 'app_a_propos' %} aria-current="page"{% endif %}>
+                           role="menuitem"
+                           {% if app.request.attributes.get('_route') == 'app_a_propos' %} 
+                               aria-current="page"
+                               aria-label="Notre Mission - Page courante"
+                           {% else %}
+                               aria-label="Découvrir notre mission d'inclusion numérique"
+                           {% endif %}>
                             Notre Mission
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item" role="none">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}"
                            href="{{ path('app_billetteries') }}"
-                                {% if app.request.attributes.get('_route') == 'app_billetteries' %} aria-current="page"{% endif %}>
+                           role="menuitem"
+                           {% if app.request.attributes.get('_route') == 'app_billetteries' %} 
+                               aria-current="page"
+                               aria-label="Réserver une activité - Page courante"
+                           {% else %}
+                               aria-label="Réserver une activité ou un événement"
+                           {% endif %}>
                             Réserver une activité
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item" role="none">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_metavers' ? 'active' : '' }}"
                            href="{{ path('app_metavers') }}"
-                                {% if app.request.attributes.get('_route') == 'app_metavers' %} aria-current="page"{% endif %}>
+                           role="menuitem"
+                           {% if app.request.attributes.get('_route') == 'app_metavers' %} 
+                               aria-current="page"
+                               aria-label="Salles 3D immersives - Page courante"
+                           {% else %}
+                               aria-label="Découvrir nos salles 3D immersives"
+                           {% endif %}>
                             Salles 3D immersives
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item" role="none">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_digital_consulting' ? 'active' : '' }}"
                            href="{{ path('app_digital_consulting') }}"
-                                {% if app.request.attributes.get('_route') == 'app_digital_consulting' %} aria-current="page"{% endif %}>
+                           role="menuitem"
+                           {% if app.request.attributes.get('_route') == 'app_digital_consulting' %} 
+                               aria-current="page"
+                               aria-label="Digital Consulting - Page courante"
+                           {% else %}
+                               aria-label="Services de conseil en transformation numérique"
+                           {% endif %}>
                             Digital Consulting
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item" role="none">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_don' ? 'active' : '' }}"
                            href="{{ path('app_don') }}"
-                                {% if app.request.attributes.get('_route') == 'app_don' %} aria-current="page"{% endif %}>
+                           role="menuitem"
+                           {% if app.request.attributes.get('_route') == 'app_don' %} 
+                               aria-current="page"
+                               aria-label="Nous Soutenir - Page courante"
+                           {% else %}
+                               aria-label="Soutenir notre association par un don"
+                           {% endif %}>
                             Nous Soutenir
                         </a>
                     </li>
 
                     {% if app.user %}
 
-                        <!-- 🖥️ Desktop : menu déroulant Profil -->
-                        <li class="nav-item dropdown d-none d-xl-block">
+                        <!-- ✅ Desktop : menu déroulant Profil accessible -->
+                        <li class="nav-item dropdown d-none d-xl-block" role="none">
                             <a class="nav-link dropdown-toggle text-light {{ app.request.attributes.get('_route') starts with 'app_profil' ? 'active' : '' }}"
                                href="#"
                                id="navbarProfilDropdown"
-                               role="button"
+                               role="menuitem"
                                data-bs-toggle="dropdown"
-                               aria-expanded="false">
-                                <img src="{{ asset('../images/webp/person-circle.svg') }}" alt="icone profil">
-                                Profil
+                               aria-expanded="false"
+                               aria-haspopup="true"
+                               aria-label="Menu du profil utilisateur">
+                                <img src="{{ asset('../images/webp/person-circle.svg') }}" 
+                                     alt="Icône de profil utilisateur" 
+                                     width="20" 
+                                     height="20"
+                                     role="img">
+                                <span>Profil</span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end bg-navbar border-0" aria-labelledby="navbarProfilDropdown">
-                                <li>
-                                    <a class="dropdown-item text-light" href="{{ path('app_profil') }}">Tableau de bord</a>
+                            <ul class="dropdown-menu dropdown-menu-end bg-navbar border-0" 
+                                aria-labelledby="navbarProfilDropdown"
+                                role="menu">
+                                <li role="none">
+                                    <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'app_profil' ? 'active' : '' }}" 
+                                       href="{{ path('app_profil') }}"
+                                       role="menuitem"
+                                       {% if app.request.attributes.get('_route') == 'app_profil' %} 
+                                           aria-current="page"
+                                       {% endif %}>
+                                        Tableau de bord
+                                    </a>
                                 </li>
                                 {% if is_granted('ROLE_ADMIN') %}
-                                    <li>
-                                        <a class="dropdown-item text-light" href="{{ path('admin_dashboard') }}">Administration</a>
+                                    <li role="none">
+                                        <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}" 
+                                           href="{{ path('admin_dashboard') }}"
+                                           role="menuitem"
+                                           {% if app.request.attributes.get('_route') == 'admin_dashboard' %} 
+                                               aria-current="page"
+                                           {% endif %}>
+                                            Administration
+                                        </a>
                                     </li>
                                 {% endif %}
-                                <li><hr class="dropdown-divider text-light"></li>
-                                <li>
-                                    <a class="dropdown-item text-light" href="{{ path('app_logout') }}">Déconnexion</a>
+                                <li role="separator">
+                                    <hr class="dropdown-divider text-light" aria-hidden="true">
+                                </li>
+                                <li role="none">
+                                    <a class="dropdown-item text-light" 
+                                       href="{{ path('app_logout') }}"
+                                       role="menuitem"
+                                       aria-label="Se déconnecter du compte">
+                                        Déconnexion
+                                    </a>
                                 </li>
                             </ul>
                         </li>
 
-                        <!-- 📱 Mobile : liens simples à la suite -->
-                        <li class="nav-item d-block d-xl-none">
+                        <!-- ✅ Mobile : liens simples accessibles -->
+                        <li class="nav-item d-block d-xl-none" role="none">
                             <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_profil' ? 'active' : '' }}"
-                               href="{{ path('app_profil') }}">
+                               href="{{ path('app_profil') }}"
+                               role="menuitem"
+                               {% if app.request.attributes.get('_route') == 'app_profil' %} 
+                                   aria-current="page"
+                                   aria-label="Tableau de bord - Page courante"
+                               {% else %}
+                                   aria-label="Accéder au tableau de bord"
+                               {% endif %}>
                                 Tableau de bord
                             </a>
                         </li>
 
                         {% if is_granted('ROLE_ADMIN') %}
-                            <li class="nav-item d-block d-xl-none">
+                            <li class="nav-item d-block d-xl-none" role="none">
                                 <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
-                                   href="{{ path('admin_dashboard') }}">
+                                   href="{{ path('admin_dashboard') }}"
+                                   role="menuitem"
+                                   {% if app.request.attributes.get('_route') == 'admin_dashboard' %} 
+                                       aria-current="page"
+                                       aria-label="Administration - Page courante"
+                                   {% else %}
+                                       aria-label="Accéder à l'administration"
+                                   {% endif %}>
                                     Administration
                                 </a>
                             </li>
                         {% endif %}
 
-                        <li class="nav-item d-block d-xl-none">
-                            <a class="nav-link text-light" href="{{ path('app_logout') }}">Déconnexion</a>
+                        <li class="nav-item d-block d-xl-none" role="none">
+                            <a class="nav-link text-light" 
+                               href="{{ path('app_logout') }}"
+                               role="menuitem"
+                               aria-label="Se déconnecter du compte">
+                                Déconnexion
+                            </a>
                         </li>
 
                     {% else %}
-                        <li class="nav-item d-flex flex-column flex-xl-row gap-2 mt-2 mt-xl-0">
+                        <li class="nav-item d-flex flex-column flex-xl-row gap-2 mt-2 mt-xl-0" role="none">
                             <a href="{{ path('app_register') }}"
                                class="btn-outline-gradient btn-sm text-white {{ app.request.attributes.get('_route') == 'app_register' ? ' active' }}"
-                                    {% if app.request.attributes.get('_route') == 'app_register' %} aria-current="page"{% endif %}>
+                               role="menuitem"
+                               {% if app.request.attributes.get('_route') == 'app_register' %} 
+                                   aria-current="page"
+                                   aria-label="Inscription - Page courante"
+                               {% else %}
+                                   aria-label="S'inscrire sur le site"
+                               {% endif %}>
                                 Inscription
                             </a>
                             <a href="{{ path('app_login') }}"
                                class="btn-neon btn-sm text-white {{ app.request.attributes.get('_route') == 'app_login' ? ' active' }}"
-                                    {% if app.request.attributes.get('_route') == 'app_login' %} aria-current="page"{% endif %}>
+                               role="menuitem"
+                               {% if app.request.attributes.get('_route') == 'app_login' %} 
+                                   aria-current="page"
+                                   aria-label="Connexion - Page courante"
+                               {% else %}
+                                   aria-label="Se connecter au site"
+                               {% endif %}>
                                 Connexion
                             </a>
                         </li>
@@ -150,16 +296,3 @@
         </div>
     </nav>
 </header>
-
-<style>
-    /* Optionnel : harmonisation visuelle du menu dropdown */
-    .dropdown-menu.bg-navbar {
-        background-color: #121212;
-    }
-    .dropdown-menu .dropdown-item:hover {
-        background-color: rgba(255,255,255,0.1);
-    }
-    .dropdown-divider {
-        border-color: rgba(255,255,255,0.1);
-    }
-</style>
