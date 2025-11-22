@@ -398,7 +398,7 @@ a:focus {
                                             <p class="mb-1">
                                                 <strong>Début :</strong> 
                                                 <time datetime="{{ data_actu.startDate|date('Y-m-d\\TH:i:sP') }}">
-                                                    {{ data_actu.startDate|format_datetime('full', 'short', locale='fr') }}
+                                                    {{ data_actu.startDate|format_datetime('full', 'short', locale='fr', timezone='Europe/Paris') }}
                                                 </time>
                                             </p>
                                         {% endif %}
@@ -406,7 +406,7 @@ a:focus {
                                             <p class="mb-0">
                                                 <strong>Fin :</strong> 
                                                 <time datetime="{{ data_actu.endDate|date('Y-m-d\\TH:i:sP') }}">
-                                                    {{ data_actu.endDate|format_datetime('full', 'short', locale='fr') }}
+                                                    {{ data_actu.endDate|format_datetime('full', 'short', locale='fr', timezone='Europe/Paris') }}
                                                 </time>
                                             </p>
                                         {% endif %}
@@ -574,7 +574,7 @@ a:focus {
                                         <p class="mb-0 mt-2">
                                             Date limite de réservation dépassée : 
                                             <time datetime="{{ data_actu.saleEndDate|date('Y-m-d\\TH:i:sP') }}">
-                                                {{ data_actu.saleEndDate|format_datetime('full', 'short', locale='fr') }}
+                                                {{ data_actu.saleEndDate|format_datetime('full', 'short', locale='fr', timezone='Europe/Paris') }}
                                             </time>
                                         </p>
                                     {% endif %}
@@ -600,7 +600,7 @@ a:focus {
                                             <i class="bi bi-clock" aria-hidden="true"></i>
                                             Réservation possible jusqu'au 
                                             <time datetime="{{ data_actu.saleEndDate|date('Y-m-d\\TH:i:sP') }}">
-                                                {{ data_actu.saleEndDate|format_datetime('full', 'short', locale='fr') }}
+                                                {{ data_actu.saleEndDate|format_datetime('full', 'short', locale='fr', timezone='Europe/Paris') }}
                                             </time>
                                         </small>
                                     </div>
