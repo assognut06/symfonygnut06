@@ -1,94 +1,331 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Faire un don à Gnut 06{% endblock %}
+{% block title %}Faire un don à Gnut 06
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		/* ✅ CORRECTION WCAG 2.1 AA - Focus visible obligatoire */
+		.btn-neon:focus,
+		a:focus,
+		iframe:focus {
+			outline: 3px solid #F86CF8 !important;
+			outline-offset: 2px !important;
+			box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+		}
+
+		/* ✅ CORRECTION - Contraste des textes amélioré */
+		.text {
+			color: #ffffff !important;
+			line-height: 1.6 !important;
+		}
+
+		/* ✅ CORRECTION - Skip links */
+		.skip-link {
+			position: absolute;
+			top: -40px;
+			left: 6px;
+			background: #000000;
+			color: #ffffff;
+			padding: 8px 12px;
+			text-decoration: none;
+			border-radius: 0 0 4px 4px;
+			z-index: 1000;
+			font-weight: bold;
+		}
+
+		.skip-link:focus {
+			top: 0;
+			outline: 3px solid #F86CF8;
+		}
+
+		/* ✅ CORRECTION - Iframe pleine largeur */
+		iframe {
+			border: 2px solid rgba(255, 255, 255, 0.3) !important;
+			border-radius: 0.375rem !important;
+			min-height: 600px !important;
+			max-width: 100% !important;
+		}
+
+		/* ✅ CORRECTION - Container iframe pleine largeur */
+		.iframe-container {
+			margin: 0 !important;
+			padding: 1rem !important;
+		}
+
+		/* ✅ CORRECTION - Liste accessible */
+		ul {
+			margin-bottom: 1rem !important;
+		}
+
+		li {
+			margin-bottom: 0.75rem !important;
+		}
+
+		/* ✅ CORRECTION - Responsive mobile */
+		@media(max-width: 768px) {
+			.text {
+				font-size: 16px !important;
+			}
+
+			h1,
+			h2 {
+				font-size: 1.25rem !important;
+			}
+
+			.iframe-container {
+				padding: 0.5rem !important;
+			}
+
+			iframe {
+				min-height: 500px !important;
+				border-radius: 0 !important;
+			}
+		}
+
+		/* ✅ Animation respectueuse des préférences */
+		@media(prefers-reduced-motion: reduce) {
+			* {
+				animation-duration: 0.01ms !important;
+				animation-iteration-count: 1 !important;
+				transition-duration: 0.01ms !important;
+			}
+		}
+
+		/* ✅ Support haut contraste */
+		@media(prefers-contrast: high) {
+			.text {
+				color: #ffffff !important;
+				background-color: #000000 !important;
+			}
+
+			iframe {
+				border: 3px solid #ffffff !important;
+				background-color: #000000 !important;
+			}
+		}
+	</style>
+{% endblock %}
 
 {% block body %}
-    <main id="main-content" role="main" aria-labelledby="don-title">
+	<!-- ✅ CORRECTION - Skip links ajoutés -->
+	<nav aria-label="Navigation rapide" class="visually-hidden-focusable">
+		<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+		<a href="#appel-don" class="skip-link">Aller à l'appel aux dons</a>
+		<a href="#pourquoi-donner" class="skip-link">Aller aux raisons de donner</a>
+		<a href="#form-don" class="skip-link">Aller au formulaire de don</a>
+	</nav>
 
-        <!-- Section 1 : appel aux dons -->
-        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="appel-don-title">
-            <div class="container row align-items-center g-5">
+	<main
+		id="main-content" role="main" aria-labelledby="don-title">
 
-                <!-- Texte -->
-                <div class="col-12 col-lg-6">
-                    <header>
-                        <h1 id="don-title" class="visually-hidden">Faire un don à GNUT 06 - Soutenir l’inclusion des personnes en situation de handicap</h1>
-                        <h2 id="appel-don-title">Ensemble, Construisons un Monde Inclusif !</h2>
-                    </header>
+		<!-- ✅ CORRECTION - Section 1 : appel aux dons avec H1 visible -->
+		<section id="appel-don" class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="don-title">
+			<div
+				class="container row align-items-center g-5">
 
-                    <p class="text">
-                        Chers amis de l’association <strong>GNUT 06</strong>,<br>
-                        Nous avons besoin de votre soutien pour continuer à aider les personnes en situation de handicap.
-                        Afin d’encourager l’inclusion et le maintien dans l’emploi malgré les obstacles, chaque geste compte.
-                    </p>
-                </div>
+				<!-- Texte -->
+				<div class="col-12 col-lg-6">
+					<header>
+						<!-- ✅ CORRECTION - H1 avec ID manquant -->
+						<h1 id="don-title" class="mb-4">Ensemble, Construisons un Monde Inclusif !</h1>
+					</header>
 
-                <!-- Image -->
-                <div class="col-12 col-lg-6 text-center">
-                    <img src="{{ asset('images/webp/help.webp') }}"
-                         class="img-fluid rounded"
-                         alt="Deux mains qui se tendent symbolisant la solidarité et l’aide aux personnes en situation de handicap.">
-                </div>
-            </div>
-        </section>
+					<p class="text">
+						Chers amis de l'association
+						<strong>GNUT 06</strong>,<br>
+						Nous avons besoin de votre soutien pour continuer à aider les personnes en situation de handicap.
+						                        Afin d'encourager l'inclusion et le maintien dans l'emploi malgré les obstacles, chaque geste compte.
+					</p>
+				</div>
 
-        <!-- Section 2 : pourquoi donner -->
-        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="pourquoi-donner-title">
-            <div class="container row align-items-center g-5">
+				<!-- Image -->
+				<div
+					class="col-12 col-lg-6 text-center">
+					<!-- ✅ CORRECTION - Figure ajoutée pour sémantique -->
+					<figure>
+						<img src="{{ asset('images/webp/help.webp') }}" class="img-fluid rounded" alt="Deux mains qui se tendent symbolisant la solidarité et l'aide mutuelle pour soutenir les personnes en situation de handicap" role="img">
+					</figure>
+				</div>
+			</div>
+		</section>
 
-                <!-- Image + texte -->
-                <div class="col-12 col-lg-6 text-center text-lg-start">
-                    <img src="{{ asset('images/webp/send_money.svg') }}"
-                         class="img-fluid mb-4"
-                         alt="Icône illustrant un don financier pour soutenir une association.">
+		<!-- ✅ CORRECTION - Section 2 : pourquoi donner -->
+		<section id="pourquoi-donner" class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="pourquoi-donner-title">
+			<div
+				class="container row align-items-center g-5">
 
-                    <h2 id="pourquoi-donner-title">Pourquoi donner à GNUT 06 ?</h2>
-                    <p class="text">
-                        Votre don nous permet de poursuivre notre mission : aider les personnes en situation de handicap à surmonter les obstacles
-                        et à favoriser leur inclusion dans le monde du travail. Chaque contribution fait la différence.
-                    </p>
-                </div>
+				<!-- Image + texte -->
+				<div
+					class="col-12 col-lg-6 text-center text-lg-start">
+					<!-- ✅ CORRECTION - Figure avec icône décorative -->
+					<figure class="mb-4">
+						<img src="{{ asset('images/webp/send_money.svg') }}" class="img-fluid" alt="" aria-hidden="true" role="img">
+					</figure>
 
-                <!-- Liste des avantages -->
-                <div class="col-12 col-lg-6">
-                    <ul class="ps-3" aria-label="Avantages de votre don à GNUT 06">
-                        <li class="text mb-3">
-                            <strong>Impact immédiat :</strong> Chaque don, peu importe son montant, change la vie de nos bénéficiaires
-                            en finançant des formations et des opportunités d’emploi.
-                        </li>
-                        <li class="text mb-3">
-                            <strong>Technologies innovantes :</strong> Grâce à la réalité virtuelle, nous offrons des expériences uniques et immersives.
-                            Votre don rend ces projets possibles.
-                        </li>
-                        <li class="text mb-0">
-                            <strong>Solidarité :</strong> En soutenant GNUT 06, vous rejoignez une communauté engagée pour un monde inclusif.
-                            Chaque euro compte !
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+					<h2 id="pourquoi-donner-title" class="mb-3">
+						Pourquoi donner à GNUT 06 ?
+					</h2>
+					<p class="text">
+						Votre don nous permet de poursuivre notre mission : aider les personnes en situation de handicap à surmonter les obstacles
+						                        et à favoriser leur inclusion dans le monde du travail. Chaque contribution fait la différence.
+					</p>
+				</div>
 
-        <!-- Section 3 : formulaire HelloAsso -->
-        <section class="pt-5" aria-labelledby="form-don-title">
-            <div class=" my-5">
+				<!-- ✅ CORRECTION - Liste des avantages accessible -->
+				<div class="col-12 col-lg-6">
+					<h3 class="visually-hidden">Avantages de votre don</h3>
+					<ul class="ps-3" role="list" aria-label="Liste des impacts positifs de votre don à GNUT 06">
+						<li class="text mb-3" role="listitem">
+							<strong>Impact immédiat :</strong>
+							Chaque don, peu importe son montant, change la vie de nos bénéficiaires
+							                            en finançant des formations et des opportunités d'emploi.
+						</li>
+						<li class="text mb-3" role="listitem">
+							<strong>Technologies innovantes :</strong>
+							Grâce à la réalité virtuelle, nous offrons des expériences uniques et immersives.
+							                            Votre don rend ces projets possibles.
+						</li>
+						<li class="text mb-0" role="listitem">
+							<strong>Solidarité :</strong>
+							En soutenant GNUT 06, vous rejoignez une communauté engagée pour un monde inclusif.
+							                            Chaque euro compte !
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
 
-                <div class="my-5 mx-3 mx-lg-5">
-                    <iframe id="haWidget"
-                            title="Formulaire de don HelloAsso pour soutenir l’association GNUT 06"
-                            allowtransparency="true"
-                            src="https://www.helloasso.com/associations/gnut-06/formulaires/1/widget"
-                            style="width: 100%; border: none;"
-                            loading="lazy"
-                            onload="window.addEventListener('message', e => {
-                            const dataHeight = e.data.height;
-                            const haWidgetElement = document.getElementById('haWidget');
-                            haWidgetElement.height = dataHeight + 'px';
-                        })">
-                    </iframe>
-                </div>
-            </div>
-        </section>
+		<!-- ✅ CORRECTION - Section 3 : formulaire HelloAsso en pleine largeur -->
+		<section
+			id="form-don" class="pt-5 bg-main" role="region" aria-labelledby="form-don-title">
+			<!-- Header avec container pour le titre -->
+			<div class="container">
+				<header class="text-center mb-5">
+					<h2 id="form-don-title" class="mb-4">
+						Formulaire de don sécurisé
+					</h2>
+					<p class="text">
+						Utilisez notre formulaire sécurisé HelloAsso pour faire votre don en toute confiance.
+						                        Tous les montants sont les bienvenus.
+					</p>
+				</header>
+			</div>
 
-    </main>
+			<!-- ✅ NOUVEAU - Iframe en pleine largeur sans container -->
+			<div
+				class="w-100">
+				<!-- ✅ CORRECTION - Iframe accessible avec fallback -->
+				<div
+					class="iframe-container" style="position: relative; background: rgba(255, 255, 255, 0.1); padding: 1rem;">
+
+					<!-- Message de fallback si iframe ne charge pas -->
+					<noscript>
+						<div class="alert alert-info text-center p-4 mx-auto" style="max-width: 600px;">
+							<h3 class="h5 mb-3">JavaScript requis</h3>
+							<p class="mb-3">Pour faire un don, veuillez activer JavaScript ou</p>
+							<a href="https://www.helloasso.com/associations/gnut-06/formulaires/1" class="btn btn-primary" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir le formulaire de don HelloAsso dans un nouvel onglet">
+								Ouvrir le formulaire de don
+							</a>
+						</div>
+					</noscript>
+
+					<!-- ✅ CORRECTION - Iframe avec attributs d'accessibilité complets -->
+					<iframe id="haWidget" title="Formulaire de don HelloAsso pour soutenir l'association GNUT 06 dans ses actions d'inclusion des personnes handicapées" allowtransparency="true" src="https://www.helloasso.com/associations/gnut-06/formulaires/1/widget" style="width: 100%; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 0.375rem;" loading="lazy" aria-label="Formulaire de don sécurisé HelloAsso" aria-describedby="iframe-help" tabindex="0" onload="window.addEventListener('message', function(e) {
+						                                if (e.origin !== 'https://www.helloasso.com') return;
+						                                const dataHeight = e.data.height;
+						                                const haWidgetElement = document.getElementById('haWidget');
+						                                if (dataHeight && haWidgetElement) {
+						                                    haWidgetElement.style.height = dataHeight + 'px';
+						                                }
+						                            })"></iframe>
+
+					<!-- ✅ CORRECTION - Description pour lecteurs d'écran -->
+					<div id="iframe-help" class="visually-hidden">
+						Formulaire sécurisé HelloAsso pour effectuer votre don à GNUT 06. 
+						                        Ce formulaire vous permet de choisir le montant et la méthode de paiement.
+					</div>
+
+					<!-- ✅ CORRECTION - Lien alternatif en cas de problème -->
+					<div class="text-center mt-3">
+						<p class="text small">
+							Problème avec le formulaire ?
+							<a href="https://www.helloasso.com/associations/gnut-06/formulaires/1" target="_blank" rel="noopener noreferrer" class="text-white" aria-label="Ouvrir le formulaire de don HelloAsso dans un nouvel onglet - lien alternatif">
+								Ouvrir dans un nouvel onglet
+							</a>
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer avec container pour les infos complémentaires -->
+			<div
+				class="container">
+				<!-- ✅ CORRECTION - Section informations complémentaires -->
+				<div class="text-center my-5">
+					<h3 class="h4 mb-3">Questions sur les dons ?</h3>
+					<p class="text mb-4">
+						Pour toute question concernant votre don ou notre association, n'hésitez pas à nous contacter.
+					</p>
+					<a href="{{ path('app_contact') }}" class="btn-neon text-white" aria-label="Contacter GNUT 06 pour des questions sur les dons">
+						<i class="bi bi-envelope" aria-hidden="true"></i>
+						Nous contacter
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- ✅ CORRECTION - Script d'accessibilité pour iframe -->
+		 <script>
+		            // Amélioration de l'accessibilité iframe
+		            document.addEventListener('DOMContentLoaded', function() {
+		                const iframe = document.getElementById('haWidget');
+		                
+		                if (iframe) {
+		                    // Vérification du chargement de l'iframe
+		                    iframe.addEventListener('load', function() {
+		                        console.log('Formulaire de don chargé avec succès');
+		                        
+		                        // Ajouter un indicateur visuel de chargement réussi
+		                        const loadingIndicator = document.createElement('div');
+		                        loadingIndicator.className = 'visually-hidden';
+		                        loadingIndicator.setAttribute('aria-live', 'polite');
+		                        loadingIndicator.textContent = 'Formulaire de don chargé et prêt à utiliser';
+		                        document.body.appendChild(loadingIndicator);
+		                        
+		                        // Supprimer l'indicateur après 3 secondes
+		                        setTimeout(() => {
+		                            if (document.body.contains(loadingIndicator)) {
+		                                document.body.removeChild(loadingIndicator);
+		                            }
+		                        }, 3000);
+		                    });
+		
+		                    // Gestion d'erreur de chargement
+		                    iframe.addEventListener('error', function() {
+		                        console.error('Erreur de chargement du formulaire de don');
+		                        
+		                        // Afficher un message d'erreur accessible
+		                        const errorMessage = document.createElement('div');
+		                        errorMessage.className = 'alert alert-warning text-center mt-3';
+		                        errorMessage.setAttribute('role', 'alert');
+		                        errorMessage.innerHTML = `
+		                            <h4>Problème de chargement</h4>
+		                            <p>Le formulaire de don n'a pas pu se charger. 
+		                            <a href="https://www.helloasso.com/associations/gnut-06/formulaires/1" 
+		                               target="_blank" 
+		                               rel="noopener noreferrer"
+		                               class="alert-link">
+		                               Cliquez ici pour accéder directement au formulaire
+		                            </a></p>
+		                        `;
+		                        
+		                        iframe.parentNode.insertBefore(errorMessage, iframe.nextSibling);
+		                    });
+		                }
+		            });
+		        </script>
+
+	</main>
 {% endblock %}

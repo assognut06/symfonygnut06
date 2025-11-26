@@ -1,117 +1,324 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Notre mission{% endblock %}
+{% block title %}Notre Mission - GNUT 06 : Inclusion par la technologie
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* ✅ Focus visible obligatoire WCAG 2.1 AA */
+.card:focus,
+a:focus,
+.btn:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ Amélioration du contraste */
+.text {
+    color: #ffffff !important;
+}
+
+.card-text {
+    color: #e0e0e0 !important;
+    line-height: 1.6 !important;
+}
+
+/* ✅ Style pour le nom de l'association avec meilleur contraste */
+.association-name {
+    color: #FF66CC !important; /* Rose plus clair pour un meilleur contraste */
+    font-weight: bold !important;
+}
+
+/* ✅ Amélioration des cartes */
+.action-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-card:hover,
+.action-card:focus-within {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(248, 108, 248, 0.3);
+}
+
+/* ✅ Amélioration de la lisibilité */
+.president-message {
+    line-height: 1.8 !important;
+    font-size: 1.1rem !important;
+}
+
+.card-title {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+.section-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    margin-bottom: 2rem !important;
+}
+</style>
+{% endblock %}
 
 {% block body %}
-    <main id="main-content">
+<main id="main-content" role="main">
 
-        <!-- Section présentation -->
-        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="qui-sommes-nous">
-            <div class="container row align-items-center justify-content-center g-5">
-                <div class="col-lg-6 col-12 order-1 order-md-2">
-                    <img src="{{ asset('images/webp/immersion-decouverte.webp') }}" class="img-fluid rounded"
-                         alt="Expérience immersive en réalité virtuelle">
-                </div>
-                <div class="col-lg-6 col-12 oder-2 order-md-1">
-                    <h1 id="qui-sommes-nous">Qui sommes-nous ?</h1>
-                    <p class="text">
-                        Association à but non lucratif basée à Nice, dans les Alpes-Maritimes, Gnut06 est engagée en faveur de l’inclusion des personnes en situation de handicap grâce aux nouvelles technologies.
-                        <br>
-                        Nous développons des projets et initiatives autour de la réalité virtuelle et du métavers afin de créer des espaces immersifs qui permettent à chacun et chacune de s’évader, apprendre, vivre des expériences uniques et se reconnecter aux autres.
-                        <br>
-                        Portée par ses bénévoles, notre mission est de construire un monde plus inclusif, plus juste, et plus humain grâce aux technologies innovantes.
+    <!-- ✅ Section présentation accessible -->
+    <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" 
+             role="region" 
+             aria-labelledby="qui-sommes-nous">
+        <div class="container row align-items-center justify-content-center g-5">
+            <figure class="col-lg-6 col-12 order-1 order-md-2">
+                <img src="{{ asset('images/webp/immersion-decouverte.webp') }}" 
+                     class="img-fluid rounded shadow-lg"
+                     alt="Personne découvrant une expérience immersive en réalité virtuelle avec casque VR, illustration de notre approche inclusive"
+                     role="img">
+            </figure>
+            <article class="col-lg-6 col-12 order-2 order-md-1">
+                <h1 id="qui-sommes-nous" class="section-title">Qui sommes-nous ?</h1>
+                <div class="text" role="text">
+                    <p>
+                        Association à but non lucratif basée à Nice, dans les Alpes-Maritimes, 
+                        <strong>GNUT 06</strong> est engagée en faveur de l'inclusion des personnes 
+                        en situation de handicap grâce aux nouvelles technologies.
+                    </p>
+                    <p>
+                        Nous développons des projets et initiatives autour de la réalité virtuelle 
+                        et du métavers afin de créer des espaces immersifs qui permettent à chacun 
+                        et chacune de s'évader, apprendre, vivre des expériences uniques et se 
+                        reconnecter aux autres.
+                    </p>
+                    <p>
+                        Portée par ses bénévoles, notre mission est de construire un monde plus 
+                        inclusif, plus juste, et plus humain grâce aux technologies innovantes.
                     </p>
                 </div>
-            </div>
-        </section>
+            </article>
+        </div>
+    </section>
 
-        <!-- Section technologies -->
-        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="technologies-innovantes">
-            <div class="container row align-items-center justify-content-center g-5">
-                <div class="col-lg-6 col-12">
-                    <img src="{{ asset('images/webp/mask.svg') }}" class="img-fluid"
-                         alt="Illustration représentant les technologies immersives">
-                    <h2 id="technologies-innovantes">Technologies innovantes</h2>
-                </div>
-                <div class="col-lg-6 col-12">
-                    <p class="text">
-                        Grâce aux outils innovants tels que la réalité virtuelle, la réalité avancée ou la réalité mixte, nous concevons des solutions immersives pour favoriser l’inclusion des personnes en situation de handicap. Alliant technologie et impact social, nos projets sont pensés pour faire le lien entre les mondes virtuel et réel et ouvrir de nouvelles voies à l’apprentissage et au lien social.
+    <!-- ✅ Section technologies accessible -->
+    <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" 
+             role="region" 
+             aria-labelledby="technologies-innovantes">
+        <div class="container row align-items-center justify-content-center g-5">
+            <figure class="col-lg-6 col-12 text-center">
+                <img src="{{ asset('images/webp/mask.svg') }}" 
+                     class="img-fluid mb-4"
+                     alt="Illustration symbolisant les technologies immersives : casque de réalité virtuelle stylisé"
+                     style="max-width: 300px;"
+                     role="img">
+                <h2 id="technologies-innovantes" class="section-title text-center">
+                    Technologies innovantes
+                </h2>
+            </figure>
+            <article class="col-lg-6 col-12">
+                <div class="text president-message" role="text">
+                    <p>
+                        Grâce aux outils innovants tels que la <strong>réalité virtuelle</strong>, 
+                        la <strong>réalité augmentée</strong> ou la <strong>réalité mixte</strong>, 
+                        nous concevons des solutions immersives pour favoriser l'inclusion des 
+                        personnes en situation de handicap.
+                    </p>
+                    <p>
+                        Alliant technologie et impact social, nos projets sont pensés pour faire 
+                        le lien entre les mondes virtuel et réel et ouvrir de nouvelles voies à 
+                        l'apprentissage et au lien social.
                     </p>
                 </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- ✅ Section actions accessible -->
+    <section class="bg-main w-100 d-flex flex-column justify-content-center pt-5 pb-5" 
+             role="region" 
+             aria-labelledby="nos-actions">
+        <div class="container d-flex flex-column gap-5 mt-5 mb-5">
+            <h2 id="nos-actions" class="section-title text-center">Nos actions</h2>
+            
+            <div class="row g-4 justify-content-center" 
+                 role="list" 
+                 aria-label="Liste de nos actions pour l'inclusion numérique">
+
+                <article class="col-lg-4 col-md-6 col-12 d-flex" 
+                         role="listitem"
+                         aria-labelledby="action-aines">
+                    <div class="card text-center text-white bg-black flex-fill action-card" tabindex="0">
+                        <img src="{{ asset('images/webp/benevoles-3.webp') }}" 
+                             class="card-img-top"
+                             alt="Atelier immersif avec des personnes âgées découvrant la réalité virtuelle, accompagnées par nos bénévoles"
+                             role="img">
+                        <div class="card-body bg-black">
+                            <h3 id="action-aines" class="card-title text-start">
+                                Rencontres avec les personnes âgées
+                            </h3>
+                            <p class="card-text text-start" role="text">
+                                L'innovation ne laisse personne de côté, surtout pas nos aînés. 
+                                GNUT 06 s'engage à entretenir des liens intergénérationnels en 
+                                proposant des ateliers immersifs spécifiquement conçus pour les 
+                                personnes âgées.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="col-lg-4 col-md-6 col-12 d-flex" 
+                         role="listitem"
+                         aria-labelledby="action-hopitaux">
+                    <div class="card text-center text-white bg-black flex-fill action-card" tabindex="0">
+                        <img src="{{ asset('images/webp/benevoles-2.webp') }}" 
+                             class="card-img-top"
+                             alt="Bénévoles GNUT 06 en intervention à l'hôpital, proposant des expériences de réalité virtuelle aux patients"
+                             role="img">
+                        <div class="card-body bg-black">
+                            <h3 id="action-hopitaux" class="card-title text-start">
+                                Visite des hôpitaux
+                            </h3>
+                            <p class="card-text text-start" role="text">
+                                Notre équipe se rend régulièrement dans les établissements de santé 
+                                pour proposer des instants d'évasion grâce à la réalité virtuelle. 
+                                Co-construites avec les équipes soignantes, ces visites sont adaptées 
+                                aux besoins physiques et psychologiques des personnes accompagnées.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="col-lg-4 col-md-6 col-12 d-flex" 
+                         role="listitem"
+                         aria-labelledby="action-immersion">
+                    <div class="card text-center text-white bg-black flex-fill action-card" tabindex="0">
+                        <img src="{{ asset('images/webp/benevoles-1.webp') }}" 
+                             class="card-img-top"
+                             alt="Séance d'immersion personnalisée avec casque de réalité virtuelle, adaptée aux besoins de chaque participant"
+                             role="img">
+                        <div class="card-body bg-black">
+                            <h3 id="action-immersion" class="card-title text-start">
+                                Séances d'immersion
+                            </h3>
+                            <p class="card-text text-start" role="text">
+                                Nos séances d'immersion constituent le cœur de notre action. 
+                                Elles permettent à chacun et chacune de s'approprier les technologies 
+                                immersives grâce à des expériences adaptées à chaque public.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Section actions -->
-        <section class="bg-main w-100 d-flex flex-column justify-content-center pt-5 pb-5" aria-labelledby="nos-actions">
-            <div class="container d-flex flex-column gap-5 mt-5 mb-5">
-                <h2 id="nos-actions" class="text-start">Nos actions</h2>
-                <div class="row g-4 justify-content-center">
-
-                    <article class="col-lg-4 col-md-6 col-12 d-flex">
-                        <div class="card text-center text-white bg-black flex-fill">
-                            <img src="{{ asset('images/webp/benevoles-3.webp') }}" class="card-img-top"
-                                 alt="Atelier immersif avec des personnes âgées">
-                            <div class="card-body bg-black">
-                                <h3 class="card-title text-start">Rencontres avec les personnes âgées</h3>
-                                <p class="card-text text text-start">
-                                    L’innovation ne laisse personne de côté, surtout pas nos aînés. Gnut06 s’engage à entretenir des liens intergénérationnels en proposant des ateliers immersifs spécifiquement conçus pour les personnes âgées.
-                                </p>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="col-lg-4 col-md-6 col-12 d-flex">
-                        <div class="card text-center text-white bg-black flex-fill">
-                            <img src="{{ asset('images/webp/benevoles-2.webp') }}" class="card-img-top"
-                                 alt="Bénévoles Gnut06 en intervention à l’hôpital">
-                            <div class="card-body bg-black">
-                                <h3 class="card-title text-start">Visite des hôpitaux</h3>
-                                <p class="card-text text text-start">
-                                    Notre équipe se rend régulièrement dans les établissements de santé pour proposer des instants d’évasion grâce à la réalité virtuelle. Co-construites avec les équipes soignantes, ces visites sont adaptées aux besoins physiques et psychologiques des personnes accompagnées.
-                                </p>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="col-lg-4 col-md-6 col-12 d-flex">
-                        <div class="card text-center text-white bg-black flex-fill">
-                            <img src="{{ asset('images/webp/benevoles-1.webp') }}" class="card-img-top"
-                                 alt="Séance immersive avec casque VR">
-                            <div class="card-body bg-black">
-                                <h3 class="card-title text-start">Séances d’immersion</h3>
-                                <p class="card-text text text-start">
-                                    Nos séances d’immersion constituent le cœur de notre action. Elles permettent à chacun et chacune de s’approprier les technologies immersives grâce à des expériences adaptées à chaque public.
-                                </p>
-                            </div>
-                        </div>
-                    </article>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- Section mot du président -->
-        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="mot-president">
-            <div class="container row align-items-center justify-content-center g-5">
-                <div class="col-lg-6 col-12">
-                    <h2 id="mot-president">Mot du Président</h2>
-                    <p class="text">
-                        Chers membres et visiteurs,<br><br>
-                        En tant que Président de l'association Gnut 06, je suis ravi de vous accueillir sur notre site. Notre association est une communauté où chacun peut s'épanouir dans le domaine de la technologie et des logiciels libres.<br><br>
-                        À une époque où la technologie évolue rapidement, il est crucial de garder l'humain au cœur de cette révolution. Chez Gnut 06, nous croyons que la technologie doit servir l'humanité. Nous nous engageons à promouvoir des valeurs de partage et de solidarité.<br><br>
-                        Chaque membre apporte une richesse unique, et c'est cette diversité qui nous rend forts. Je vous invite à participer à nos projets et événements. Votre voix est importante, et ensemble, nous pouvons faire la différence.<br><br>
-                        Merci de votre soutien. Continuons à avancer vers un monde où la technologie est au service de l'humain.<br><br>
-                        <em>Avec gratitude,</em><br><br>
-                        Gérald Col<br>
-                        Président de <span style="color: #FF1DBB">Gnut 06</span>
+    <!-- ✅ Section mot du président accessible -->
+    <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" 
+             role="region" 
+             aria-labelledby="mot-president">
+        <div class="container row align-items-center justify-content-center g-5">
+            <article class="col-lg-6 col-12 order-2 order-lg-1">
+                <h2 id="mot-president" class="section-title">Mot du Président</h2>
+                <div class="text president-message" role="text">
+                    <p><strong>Chers membres et visiteurs,</strong></p>
+                    
+                    <p>
+                        En tant que Président de l'association GNUT 06, je suis ravi de vous 
+                        accueillir sur notre site. Notre association est une communauté où 
+                        chacun peut s'épanouir dans le domaine de la technologie et des 
+                        logiciels libres.
+                    </p>
+                    
+                    <p>
+                        À une époque où la technologie évolue rapidement, il est crucial de 
+                        garder l'humain au cœur de cette révolution. Chez GNUT 06, nous 
+                        croyons que la technologie doit servir l'humanité. Nous nous engageons 
+                        à promouvoir des valeurs de partage et de solidarité.
+                    </p>
+                    
+                    <p>
+                        Chaque membre apporte une richesse unique, et c'est cette diversité qui 
+                        nous rend forts. Je vous invite à participer à nos projets et événements. 
+                        Votre voix est importante, et ensemble, nous pouvons faire la différence.
+                    </p>
+                    
+                    <p>
+                        Merci de votre soutien. Continuons à avancer vers un monde où la 
+                        technologie est au service de l'humain.
+                    </p>
+                    
+                    <p>
+                        <em>Avec gratitude,</em><br>
+                        <strong>Gérald Col</strong><br>
+                        Président de <span class="association-name">GNUT 06</span>
                     </p>
                 </div>
-                <div class="col-lg-6 col-12">
-                    <img src="{{ asset('images/webp/gerald.webp') }}" class="img-fluid"
-                         alt="Portrait de Gérald Col, président de Gnut06">
-                </div>
-            </div>
-        </section>
+            </article>
+            
+            <figure class="col-lg-6 col-12 text-center order-1 order-lg-2">
+                <img src="{{ asset('images/webp/gerald.webp') }}" 
+                     class="img-fluid rounded-circle shadow-lg"
+                     style="max-width: 400px;"
+                     alt="Portrait de Gérald Col, président fondateur de l'association GNUT 06"
+                     role="img">
+                <figcaption class="visually-hidden">
+                    Gérald Col, président et fondateur de GNUT 06
+                </figcaption>
+            </figure>
+        </div>
+    </section>
 
-    </main>
+    <!-- ✅ Navigation et appel à l'action -->
+    <section class="bg-main w-100 py-5" role="region" aria-labelledby="rejoignez-nous">
+        <div class="container text-center">
+            <h2 id="rejoignez-nous" class="section-title mb-4">Rejoignez notre mission</h2>
+            <p class="text mb-4">
+                Ensemble, construisons un monde plus inclusif grâce à la technologie.
+            </p>
+            <nav class="d-flex flex-column flex-sm-row gap-3 justify-content-center" 
+                 aria-label="Actions pour soutenir notre association">
+                <a href="{{ path('app_adhesion') }}" 
+                   class="btn-neon text-white" 
+                   role="button"
+                   aria-label="Adhérer à l'association GNUT 06">
+                    Devenir adhérent·e
+                </a>
+                <a href="{{ path('app_don') }}" 
+                   class="btn-outline-gradient text-white" 
+                   role="button"
+                   aria-label="Faire un don pour soutenir nos actions">
+                    Faire un don
+                </a>
+                <a href="{{ path('app_contact') }}" 
+                   class="btn-outline-gradient text-white" 
+                   role="button"
+                   aria-label="Nous contacter pour plus d'informations">
+                    Nous contacter
+                </a>
+            </nav>
+        </div>
+    </section>
+
+    <!-- ✅ Navigation de retour -->
+    <nav class="bg-main w-100 py-3" role="navigation" aria-label="Navigation de retour">
+        <div class="container text-center">
+            {% if app.request.headers.get('Referer') %}
+                <a href="{{ app.request.headers.get('Referer')|e('html_attr') }}" 
+                   class="text text-decoration-underline"
+                   aria-label="Retourner à la page précédente">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                    Retour à la page précédente
+                </a>
+            {% else %}
+                <a href="{{ path('app_home') }}" 
+                   class="text text-decoration-underline"
+                   aria-label="Retourner à l'accueil">
+                    <i class="bi bi-house" aria-hidden="true"></i>
+                    Retour à l'accueil
+                </a>
+            {% endif %}
+        </div>
+    </nav>
+
+</main>
 {% endblock %}

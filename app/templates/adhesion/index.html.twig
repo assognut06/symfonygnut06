@@ -1,67 +1,396 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Adhésion à l'association GNUT 06{% endblock %}
+{% block title %}Adhésion à l'association GNUT 06 - Rejoignez notre communauté inclusive{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* ✅ CORRECTION WCAG 2.1 AA - Focus visible obligatoire */
+        .btn-neon:focus,
+        .btn-outline-gradient:focus,
+        a:focus,
+        iframe:focus {
+            outline: 3px solid #F86CF8 !important;
+            outline-offset: 2px !important;
+            box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+        }
+
+        /* ✅ CORRECTION - Contraste des textes amélioré */
+        .text {
+            color: #ffffff !important;
+            line-height: 1.6 !important;
+        }
+
+        /* ✅ CORRECTION - Skip links */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #000000;
+            color: #ffffff;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 0 0 4px 4px;
+            z-index: 1000;
+            font-weight: bold;
+        }
+
+        .skip-link:focus {
+            top: 0;
+            outline: 3px solid #F86CF8;
+        }
+
+        /* ✅ CORRECTION - Container iframe pleine largeur SANS ASCENSEUR */
+        .iframe-container {
+            margin: 0 !important;
+            padding: 1rem !important;
+            overflow: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+
+        /* ✅ Forcer la suppression des barres de défilement sur le container */
+        .iframe-container::-webkit-scrollbar {
+            display: none !important;
+        }
+
+        .iframe-container {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+        }
+
+        /* ✅ CORRECTION - Iframe sans ascenseur */
+        iframe {
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            border-radius: 0.375rem !important;
+            min-height: 600px !important;
+            max-width: 100% !important;
+            overflow: hidden !important;
+        }
+
+        /* ✅ Forcer la suppression des barres de défilement sur l'iframe */
+        iframe::-webkit-scrollbar {
+            display: none !important;
+        }
+
+        iframe {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+        }
+
+        /* ✅ CORRECTION - Liste accessible */
+        ul {
+            margin-bottom: 1rem !important;
+            padding-left: 1.5rem !important;
+        }
+
+        li {
+            margin-bottom: 0.75rem !important;
+        }
+
+        /* ✅ CORRECTION - Images décoratives */
+        img[alt=""] {
+            max-width: 200px !important;
+        }
+
+        /* ✅ CORRECTION - Responsive mobile */
+        @media (max-width: 768px) {
+            .text {
+                font-size: 16px !important;
+            }
+
+            h1, h2 {
+                font-size: 1.5rem !important;
+            }
+
+            .iframe-container {
+                padding: 0.5rem !important;
+                overflow: hidden !important;
+            }
+
+            iframe {
+                min-height: 500px !important;
+                border-radius: 0 !important;
+                overflow: hidden !important;
+            }
+
+            img {
+                max-width: 100% !important;
+            }
+        }
+
+        /* ✅ Animation respectueuse des préférences */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ✅ Support haut contraste */
+        @media (prefers-contrast: high) {
+            .text {
+                color: #ffffff !important;
+                background-color: #000000 !important;
+            }
+
+            iframe {
+                border: 3px solid #ffffff !important;
+                background-color: #000000 !important;
+            }
+
+            strong {
+                color: #ffffff !important;
+                background-color: #000000 !important;
+                font-weight: 700 !important;
+            }
+
+            .iframe-container {
+                border: 2px solid #ffffff !important;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <!-- Section intro -->
-    <section class="bg-main w-100 d-flex justify-content-center py-5" aria-labelledby="adhesion-gnut06">
-        <div class="container row align-items-center g-5">
-            <!-- Texte -->
-            <div class="col-12 col-lg-6">
-                <h1 id="adhesion-gnut06" class="mb-4">Rejoignez GNUT 06 !</h1>
-                <p class="text">
-                    En devenant membre de <strong>GNUT 06</strong>, vous contribuez à une société plus inclusive grâce aux technologies.
-                    En échange, vous bénéficiez de nombreux avantages :
-                </p>
-                <ul class="text">
-                    <li>Un espace de travail en ligne personnalisé avec une adresse email professionnelle.</li>
-                    <li>Une communauté engagée pour échanger et collaborer lors d'événements.</li>
-                    <li>Un impact positif en soutenant nos projets d'inclusion numérique.</li>
-                    <li>Des réductions sur nos formations, événements et services de nos partenaires.</li>
-                    <li>Des outils et ressources pour développer vos compétences.</li>
-                </ul>
-                <p class="text">Ne manquez pas cette chance de grandir personnellement et professionnellement tout en soutenant une cause qui vous tient à cœur !</p>
+    <!-- ✅ CORRECTION - Skip links ajoutés -->
+    <nav aria-label="Navigation rapide" class="visually-hidden-focusable">
+        <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+        <a href="#adhesion-intro" class="skip-link">Aller à l'introduction</a>
+        <a href="#pourquoi-gnut06" class="skip-link">Aller aux avantages</a>
+        <a href="#adhesion-formulaire" class="skip-link">Aller au formulaire d'adhésion</a>
+    </nav>
+
+    <main id="main-content" role="main" aria-labelledby="adhesion-title">
+
+        <!-- ✅ CORRECTION - Section intro avec structure accessible -->
+        <section id="adhesion-intro" class="bg-main w-100 d-flex justify-content-center py-5" role="region" aria-labelledby="adhesion-title">
+            <div class="container row align-items-center g-5">
+                <!-- Texte -->
+                <div class="col-12 col-lg-6">
+                    <header>
+                        <h1 id="adhesion-title" class="mb-4">Rejoignez GNUT 06 !</h1>
+                    </header>
+                    <p class="text">
+                        En devenant membre de <strong>GNUT 06</strong>, vous contribuez à une société plus inclusive grâce aux technologies.
+                        En échange, vous bénéficiez de nombreux avantages :
+                    </p>
+
+                    <!-- ✅ CORRECTION - Liste accessible avec rôles ARIA -->
+                    <h2 class="visually-hidden">Avantages de l'adhésion</h2>
+                    <ul class="text" role="list" aria-label="Liste des avantages pour les membres GNUT 06">
+                        <li role="listitem">Un espace de travail en ligne personnalisé avec une adresse email professionnelle.</li>
+                        <li role="listitem">Une communauté engagée pour échanger et collaborer lors d'événements.</li>
+                        <li role="listitem">Un impact positif en soutenant nos projets d'inclusion numérique.</li>
+                        <li role="listitem">Des réductions sur nos formations, événements et services de nos partenaires.</li>
+                        <li role="listitem">Des outils et ressources pour développer vos compétences.</li>
+                    </ul>
+                    
+                    <p class="text">
+                        Ne manquez pas cette chance de grandir personnellement et professionnellement tout en soutenant une cause qui vous tient à cœur !
+                    </p>
+                </div>
+
+                <!-- ✅ CORRECTION - Image avec figure sémantique -->
+                <div class="col-12 col-lg-6 text-center">
+                    <figure>
+                        <img src="{{ asset('images/webp/handicapworksquare.webp') }}"
+                             class="img-fluid rounded"
+                             alt="Personne travaillant avec des outils numériques inclusifs dans un environnement professionnel adapté"
+                             role="img">
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✅ CORRECTION - Section pourquoi choisir améliorée -->
+        <section class="bg-main w-100 d-flex justify-content-center py-5" role="region" aria-labelledby="pourquoi-gnut06">
+            <div class="container row align-items-center justify-content-center g-5">
+                <div class="col-lg-6 col-12 text-center">
+                    <!-- ✅ CORRECTION - Image décorative avec aria-hidden -->
+                    <figure class="mb-3">
+                        <img src="{{ asset('images/webp/volunteer_activism.svg') }}"
+                             class="img-fluid"
+                             alt=""
+                             aria-hidden="true"
+                             role="img">
+                    </figure>
+                    <h2 id="pourquoi-gnut06">Pourquoi choisir GNUT 06 ?</h2>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <!-- ✅ CORRECTION - Liste structurée avec titre invisible -->
+                    <h3 class="visually-hidden">Raisons de nous choisir</h3>
+                    <ul class="text" role="list" aria-label="Raisons de choisir l'association GNUT 06">
+                        <li role="listitem">
+                            <strong>Un accompagnement personnalisé :</strong> recevez des conseils pour optimiser nos outils.
+                        </li>
+                        <li role="listitem">
+                            <strong>Une communauté active :</strong> échangez avec d'autres membres et participez à nos événements.
+                        </li>
+                        <li role="listitem">
+                            <strong>Des projets innovants :</strong> soutenez des initiatives qui changent la donne.
+                        </li>
+                    </ul>
+                    <p class="text">Rejoignez-nous et construisons ensemble un avenir inclusif !</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✅ CORRECTION - Section formulaire HelloAsso en pleine largeur -->
+        <section class="pt-5 bg-main" role="region" aria-labelledby="adhesion-formulaire">
+            <!-- Header avec container pour le titre -->
+            <div class="container">
+                <header class="text-center mb-5">
+                    <h2 id="adhesion-formulaire" class="mb-4">
+                        Formulaire d'adhésion sécurisé
+                    </h2>
+                    <p class="text">
+                        Utilisez notre formulaire sécurisé HelloAsso pour devenir membre de GNUT 06 en toute confiance.
+                        Votre adhésion nous permet de poursuivre notre mission d'inclusion par la technologie.
+                    </p>
+                </header>
             </div>
 
-            <!-- Image -->
-            <div class="col-12 col-lg-6 text-center">
-                <img src="{{ asset('images/webp/handicapworksquare.webp') }}"
-                     class="img-fluid rounded"
-                     alt="Une personne travaillant avec des outils numériques inclusifs">
-            </div>
-        </div>
-    </section>
+            <!-- ✅ CORRECTION - Iframe en pleine largeur sans container et sans ascenseur -->
+            <div class="w-100">
+                <!-- ✅ CORRECTION - Iframe accessible avec fallback -->
+                <div class="iframe-container" style="position: relative; background: rgba(255, 255, 255, 0.1); padding: 1rem; overflow: hidden;">
 
-    <!-- Section pourquoi choisir -->
-    <section class="bg-main w-100 d-flex justify-content-center py-5" aria-labelledby="pourquoi-gnut06">
-        <div class="container row align-items-center justify-content-center g-5">
-            <div class="col-lg-6 col-12 text-center">
-                <img src="{{ asset('images/webp/volunteer_activism.svg') }}"
-                     class="img-fluid mb-3"
-                     alt="Illustration symbolisant l'engagement et la solidarité numérique">
-                <h2 id="pourquoi-gnut06">Pourquoi choisir GNUT 06 ?</h2>
-            </div>
-            <div class="col-lg-6 col-12">
-                <ul class="text">
-                    <li><strong>Un accompagnement personnalisé :</strong> recevez des conseils pour optimiser nos outils.</li>
-                    <li><strong>Une communauté active :</strong> échangez avec d'autres membres et participez à nos événements.</li>
-                    <li><strong>Des projets innovants :</strong> soutenez des initiatives qui changent la donne.</li>
-                </ul>
-                <p class="text">Rejoignez-nous et construisons ensemble un avenir inclusif !</p>
-            </div>
-        </div>
-    </section>
+                    <!-- Message de fallback si iframe ne charge pas -->
+                    <noscript>
+                        <div class="alert alert-info text-center p-4 mx-auto" style="max-width: 600px;" role="alert">
+                            <h3 class="h5 mb-3">JavaScript requis</h3>
+                            <p class="mb-3">Pour adhérer en ligne, veuillez activer JavaScript ou</p>
+                            <a href="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-gnut-06" 
+                               class="btn btn-primary" 
+                               target="_blank" 
+                               rel="noopener noreferrer" 
+                               aria-label="Ouvrir le formulaire d'adhésion HelloAsso dans un nouvel onglet">
+                                Ouvrir le formulaire d'adhésion
+                                <span class="visually-hidden">(nouvel onglet)</span>
+                            </a>
+                        </div>
+                    </noscript>
 
-    <!-- Section services -->
-    <section class="bg-main pt-5" aria-labelledby="adhesion-formulaire">
-        <div class="my-5 mx-3 mb-0">
-            <h2 id="adhesion-formulaire" class="visually-hidden">Formulaire d’adhésion en ligne</h2>
-            <iframe id="haWidget"
-                    title="Formulaire d’adhésion HelloAsso"
-                    src="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-gnut-06/widget"
-                    style="width: 100%; height: 100vh; border: none;"
-                    allowtransparency="true"
-                    scrolling="auto"></iframe>
-        </div>
-    </section>
+                    <!-- ✅ CORRECTION - Iframe sans ascenseur avec attributs d'accessibilité complets -->
+                    <iframe id="haWidget" 
+                            title="Formulaire d'adhésion HelloAsso pour rejoindre l'association GNUT 06 et soutenir l'inclusion des personnes handicapées par la technologie"
+                            allowtransparency="true" 
+                            src="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-gnut-06/widget" 
+                            style="width: 100%; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 0.375rem; overflow: hidden;" 
+                            loading="lazy" 
+                            aria-label="Formulaire d'adhésion sécurisé HelloAsso" 
+                            aria-describedby="iframe-help" 
+                            tabindex="0" 
+                            scrolling="no"
+                            onload="window.addEventListener('message', function(e) {
+                                if (e.origin !== 'https://www.helloasso.com') return;
+                                const dataHeight = e.data.height;
+                                const haWidgetElement = document.getElementById('haWidget');
+                                if (dataHeight && haWidgetElement) {
+                                    haWidgetElement.style.height = dataHeight + 'px';
+                                }
+                            })"></iframe>
+
+                    <!-- ✅ CORRECTION - Description pour lecteurs d'écran -->
+                    <div id="iframe-help" class="visually-hidden">
+                        Formulaire sécurisé HelloAsso pour effectuer votre adhésion à GNUT 06. 
+                        Ce formulaire vous permet de choisir votre type d'adhésion et la méthode de paiement.
+                    </div>
+
+                    <!-- ✅ CORRECTION - Lien alternatif en cas de problème -->
+                    <div class="text-center mt-3">
+                        <p class="text small">
+                            Problème avec le formulaire ?
+                            <a href="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-gnut-06" 
+                               target="_blank" 
+                               rel="noopener noreferrer" 
+                               class="text-white" 
+                               aria-label="Ouvrir le formulaire d'adhésion HelloAsso dans un nouvel onglet - lien alternatif">
+                                Ouvrir dans un nouvel onglet
+                                <span class="visually-hidden">(lien alternatif)</span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer avec container pour les infos complémentaires -->
+            <div class="container">
+                <!-- ✅ CORRECTION - Section informations complémentaires -->
+                <div class="text-center my-5">
+                    <h3 class="h4 mb-3">Questions sur l'adhésion ?</h3>
+                    <p class="text mb-4">
+                        Pour toute question concernant votre adhésion ou notre association, n'hésitez pas à nous contacter.
+                        Notre équipe vous accompagnera dans votre démarche d'adhésion.
+                    </p>
+                    <nav aria-label="Actions complémentaires">
+                        <a href="{{ path('app_contact') }}" 
+                           class="btn-neon text-white me-3" 
+                           aria-label="Contacter GNUT 06 pour des questions sur l'adhésion">
+                            <i class="bi bi-envelope" aria-hidden="true"></i>
+                            Nous contacter
+                        </a>
+                        <a href="{{ path('app_a_propos') }}" 
+                           class="btn-outline-gradient text-white" 
+                           aria-label="En savoir plus sur l'association GNUT 06">
+                            En savoir plus
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✅ CORRECTION - Script d'accessibilité pour iframe -->
+        <script>
+            // Amélioration de l'accessibilité iframe
+            document.addEventListener('DOMContentLoaded', function() {
+                const iframe = document.getElementById('haWidget');
+                
+                if (iframe) {
+                    // Vérification du chargement de l'iframe
+                    iframe.addEventListener('load', function() {
+                        console.log('Formulaire d\'adhésion chargé avec succès');
+                        
+                        // Ajouter un indicateur visuel de chargement réussi
+                        const loadingIndicator = document.createElement('div');
+                        loadingIndicator.className = 'visually-hidden';
+                        loadingIndicator.setAttribute('aria-live', 'polite');
+                        loadingIndicator.textContent = 'Formulaire d\'adhésion chargé et prêt à utiliser';
+                        document.body.appendChild(loadingIndicator);
+                        
+                        // Supprimer l'indicateur après 3 secondes
+                        setTimeout(() => {
+                            if (document.body.contains(loadingIndicator)) {
+                                document.body.removeChild(loadingIndicator);
+                            }
+                        }, 3000);
+                    });
+
+                    // Gestion d'erreur de chargement
+                    iframe.addEventListener('error', function() {
+                        console.error('Erreur de chargement du formulaire d\'adhésion');
+                        
+                        // Afficher un message d'erreur accessible
+                        const errorMessage = document.createElement('div');
+                        errorMessage.className = 'alert alert-warning text-center mt-3';
+                        errorMessage.setAttribute('role', 'alert');
+                        errorMessage.innerHTML = `
+                            <h4>Problème de chargement</h4>
+                            <p>Le formulaire d'adhésion n'a pas pu se charger. 
+                            <a href="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-gnut-06" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               class="alert-link">
+                               Cliquez ici pour accéder directement au formulaire
+                            </a></p>
+                        `;
+                        
+                        iframe.parentNode.insertBefore(errorMessage, iframe.nextSibling);
+                    });
+                }
+            });
+        </script>
+
+    </main>
 {% endblock %}
