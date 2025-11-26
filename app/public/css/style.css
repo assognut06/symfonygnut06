@@ -121,6 +121,17 @@ body {
     transition: opacity 0.3s ease;
 }
 
+/* Soulignement blanc pour le lien "En savoir plus" */
+.icon-link.text {
+    color: white;
+    text-decoration-color: white !important;
+}
+
+.icon-link.text:hover {
+    color: white;
+    text-decoration-color: white !important;
+}
+
 @media (max-width: 1199px) {
     .navbar .nav-item .btn-outline-gradient,
     .navbar .nav-item .btn-neon {

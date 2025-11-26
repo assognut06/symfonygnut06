@@ -18,8 +18,8 @@ $grid-breakpoints: (
   xl: 1200px,
   xxl: 1430px
 );
-$carousel-control-color: $warning;
-$carousel-indicator-active-bg: $warning;
+$carousel-control-color: $primary;
+$carousel-indicator-active-bg: $primary;
 $carousel-control-opacity: 0.7;
 $carousel-control-width: 40px;
 $carousel-control-height: 40px;
@@ -28,6 +28,6 @@ $carousel-control-width: 25%;
 $carousel-transition-duration: 0.5s;
 $nav-tabs-border-color: $primary;
 $offcanvas-horizontal-width: 250px;
-$nav-underline-link-active-color: $warning;
+$nav-underline-link-active-color: $primary;
 $tooltip-bg: $primary;
 $tooltip-color: $light;

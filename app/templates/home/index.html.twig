@@ -1,263 +1,446 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil Gnut 06
+{% block title %}Accueil - GNUT 06 : L'inclusion par la technologie
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* ✅ Focus visible obligatoire WCAG 2.1 AA */
+        .btn-neon:focus,
+        .btn-outline-gradient:focus,
+        .carousel-control-prev:focus,
+        .carousel-control-next:focus,
+        .carousel-indicators button:focus,
+        a:focus {
+            outline: 3px solid #F86CF8 !important;
+            outline-offset: 2px !important;
+            box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+        }
+
+        /* ✅ Amélioration du contraste */
+        .text {
+            color: #ffffff !important;
+        }
+
+        .card-text {
+            color: #e0e0e0 !important;
+        }
+
+        /* ✅ Amélioration de la lisibilité pour les rôles */
+        .team-role {
+            color: #ffffff !important;
+            font-size: 0.95rem !important;
+            font-weight: 500 !important;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7) !important;
+            line-height: 1.4 !important;
+        }
+
+        /* ✅ Style pour les liens actifs */
+        .btn-neon.active,
+        .btn-outline-gradient.active {
+            background-color: rgba(248, 108, 248, 0.3) !important;
+            border-color: #F86CF8 !important;
+            font-weight: bold;
+        }
+
+        /* ✅ Style des badges "New" */
+        .badge {
+            font-size: 0.7rem !important;
+        }
+
+        /* ✅ Amélioration des cartes équipe */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 8px 25px rgba(248, 108, 248, 0.3) !important;
+        }
+
+        /* ✅ Style des liens LinkedIn */
+        .linkedin-circle {
+            transition: all 0.3s ease !important;
+        }
+
+        .linkedin-circle:hover {
+            background-color: #0077B5 !important;
+            transform: scale(1.1) !important;
+        }
+
+        /* ✅ Amélioration des indicateurs carousel */
+        .carousel-indicators button {
+            background-color: rgba(255, 255, 255, 0.5) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .carousel-indicators button.active {
+            background-color: #F86CF8 !important;
+            border-color: #F86CF8 !important;
+        }
+
+        .carousel-indicators button:hover {
+            background-color: rgba(248, 108, 248, 0.7) !important;
+        }
+
+        /* ✅ Amélioration des contrôles carousel */
+        .carousel-control-prev,
+        .carousel-control-next {
+            transition: all 0.3s ease !important;
+        }
+
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            background-color: rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* ✅ Style des images carousel */
+        .carousel-item img {
+            border-radius: 1rem !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* ✅ Responsive pour mobile */
+        @media (max-width: 768px) {
+            .carousel-indicators {
+                bottom: -50px !important;
+            }
+            
+            .carousel-control-prev,
+            .carousel-control-next {
+                width: 40px !important;
+            }
+        }
+
+        /* ✅ Accessibilité - Mode contraste élevé */
+        @media (prefers-contrast: high) {
+            .carousel-indicators button {
+                border-width: 3px !important;
+            }
+        }
+
+        /* ✅ Accessibilité - Respect des préférences de mouvement */
+        @media (prefers-reduced-motion: reduce) {
+            .card,
+            .linkedin-circle,
+            .carousel-indicators button,
+            .carousel-control-prev,
+            .carousel-control-next {
+                transition: none !important;
+            }
+            
+            .card:hover {
+                transform: none !important;
+            }
+            
+            .linkedin-circle:hover {
+                transform: none !important;
+            }
+
+            /* ✅ Désactive le carousel automatique si mouvement réduit */
+            .carousel {
+                animation-play-state: paused !important;
+            }
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
 
-	<!-- Section Hero -->
-	<section class="bg-main w-100 py-5" role="region" aria-labelledby="hero-title">
-		<div class="container row align-items-center gx-5 m-auto">
-			<figure class="col-md-6 text-center order-1 order-md-2">
-				<img src="{{ asset('images/webp/immersion-hero-accueil.webp') }}" class="img-fluid rounded-4" alt="Personne utilisant une technologie immersive GNUT 06">
-			</figure>
+	<!-- ✅ Main principal obligatoire -->
+	<main
+		role="main">
 
-			<header class="col-md-6 text-center text-md-start order-2 order-md-1">
-				<h1 id="hero-title" class="gradient-text text-main text-start">GNUT 06</h1>
-				<h2 class="text-start">L’inclusion par la
-					<br>
-					Technologie</h2>
-				<p class="text text-start">
-					Gnut 06 est une association engagée pour l’inclusion des personnes en situation de handicap à travers l’innovation numérique. Découvrez nos actions, nos projets en réalité virtuelle et rejoignez-nous pour construire un impact social durable.
-				</p>
-				<a href="{{ path('app_a_propos') }}" class="btn-neon text-white mt-3" role="button">
-					Découvrez GNUT 06
-				</a>
-			</header>
-		</div>
-	</section>
+		<!-- ✅ Section Hero accessible -->
+		<section class="bg-main w-100 py-5" role="region" aria-labelledby="hero-title">
+			<div class="container row align-items-center gx-5 m-auto">
+				<figure class="col-md-6 text-center order-1 order-md-2">
+					<img src="{{ asset('images/webp/immersion-hero-accueil.webp') }}" class="img-fluid rounded-4" alt="Personne utilisant une technologie immersive GNUT 06 pour l'inclusion numérique" role="img">
+				</figure>
 
-
-	<!-- Expérience immersive -->
-	<section class="bg-main w-100 py-5" role="region" aria-labelledby="immersive-title">
-		<div class="container row align-items-center gx-5 m-auto">
-			<figure class="col-md-6 text-center mb-4 mb-md-0 order-2 order-md-1">
-				<img src="{{ asset('images/webp/immersion-group.webp') }}" class="img-fluid" alt="Groupe de personnes vivant une immersion en réalité virtuelle">
-			</figure>
-			<article class="col-md-6 text-center text-md-start order-1 order-md-2">
-				<h2 id="immersive-title" class="text-main text-start">Vivez une
-					<span class="gradient-text">expérience immersive</span>
-					inoubliable !</h2>
-				<p class="text text-start">Réservez votre séance de réalité virtuelle de 30 minutes à partir de 19€</p>
-				<nav class="d-flex flex-column flex-sm-row gap-3 mt-3 justify-content-center justify-content-md-start" aria-label="Liens vers réservation et découverte">
-					<a href="{{ path('app_billetteries') }}" class="btn-outline-gradient text-white" role="button">Réserver une séance</a>
-					<a href="https://framevr.io/handi-metavers" class="btn-outline-gradient text-white" role="button" aria-label="Découvrez Handi‑3D — lien vers FrameVR">
-						Découvrez Handi-3D
-						<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger" style="transform: translate(-50%, -50%) rotate(23deg); transform-origin: center;">
-							New
-						</span>
+				<header class="col-md-6 text-center text-md-start order-2 order-md-1">
+					<h1 id="hero-title" class="gradient-text text-main text-start">GNUT 06</h1>
+					<h2 class="text-start">L'inclusion par la<br>Technologie</h2>
+					<p class="text text-start">
+						GNUT 06 est une association engagée pour l'inclusion des personnes en situation de handicap à travers l'innovation numérique. Découvrez nos actions, nos projets en réalité virtuelle et rejoignez-nous pour construire un impact social durable.
+					</p>
+					<a href="{{ path('app_a_propos') }}" class="btn-neon text-white mt-3" role="button" aria-label="Découvrir la mission et les actions de GNUT 06">
+						Découvrez GNUT 06
 					</a>
-				</nav>
-			</article>
-		</div>
-	</section>
+				</header>
+			</div>
+		</section>
 
-	<!-- Explorez nos Hubs -->
-	<section class="bg-main w-100 py-5" role="region" aria-labelledby="hubs-title">
-		<div class="container text-center">
-			<h2 id="hubs-title">Explorez nos Hubs</h2>
-			<p class="text">
-				Nos activités sont conçues pour être accessibles à toutes et à tous.
-				<br>
-				Explorez notre large éventail d'options adaptées à chaque besoin.
-			</p>
-			<div class="row g-4 justify-content-center" role="list">
-				<article class="col-sm-6 col-md-4" role="listitem">
-					<div class="card text-center text-white bg-black h-100">
-						<img src="{{ asset('images/webp/galerie-3d-GNUT.webp') }}" class="card-img-top img-fluid" alt="Vue immersive de la galerie d’art GNUT">
-						<div class="card-body">
-							<h3 class="card-title">Galerie d'art GNUT</h3>
-							<p class="card-text">Profitez d’une immersion totale dans notre galerie d’art virtuelle !</p>
-							<a href="https://gnut.eu/galerie_art_by_gnut/" class="btn-outline-gradient" role="button">Visiter maintenant</a>
-						</div>
-					</div>
-				</article>
-				<article class="col-sm-6 col-md-4" role="listitem">
-					<div class="card text-center text-white bg-black h-100">
-						<img src="{{ asset('images/webp/meteo3D.webp') }}" class="card-img-top img-fluid" alt="Application météo 3D GNUT">
-						<div class="card-body">
-							<h3 class="card-title">Météo 3D GNUT</h3>
-							<p class="card-text">Découvrez la météo en temps réel partout dans le monde !</p>
-							<a href="https://gnut.eu/3d_meteo/" class="btn-outline-gradient" role="button">Visiter maintenant</a>
-						</div>
-					</div>
-				</article>
-				<article class="col-sm-6 col-md-4" role="listitem">
-					<div class="card text-center text-white bg-black h-100">
-						<img src="{{ asset('images/webp/galerie-3d-immo.webp') }}" class="card-img-top img-fluid" alt="Construction immobilière en 3D">
-						<div class="card-body">
-							<h3 class="card-title">3D Immo</h3>
-							<p class="card-text">Visitez notre construction 3D !</p>
-							<a href="https://gnut.eu/3d_immo/" class="btn-outline-gradient" role="button">Visiter maintenant</a>
-						</div>
-					</div>
+		<!-- ✅ Expérience immersive accessible -->
+		<section class="bg-main w-100 py-5" role="region" aria-labelledby="immersive-title">
+			<div class="container row align-items-center gx-5 m-auto">
+				<figure class="col-md-6 text-center mb-4 mb-md-0 order-2 order-md-1 mt-3 mt-md-0">
+					<img src="{{ asset('images/webp/immersion-group.webp') }}" class="img-fluid" alt="Groupe de personnes de différents âges vivant une expérience immersive en réalité virtuelle ensemble" role="img">
+				</figure>
+				<article class="col-md-6 text-center text-md-start order-1 order-md-2">
+					<h2 id="immersive-title" class="text-main text-start">
+						Vivez une
+						<span class="gradient-text">expérience immersive</span>
+						inoubliable !
+					</h2>
+					<p class="text text-start">
+						Réservez votre séance de réalité virtuelle de 30 minutes à partir de 19€
+					</p>
+					<nav class="d-flex flex-column flex-sm-row gap-3 mt-3 justify-content-center justify-content-md-start" aria-label="Actions pour réservation et découverte">
+						<a href="{{ path('app_billetteries') }}" class="btn-outline-gradient text-white" role="button" aria-label="Réserver une séance de réalité virtuelle">
+							Réserver une séance
+						</a>
+						<a href="https://framevr.io/handi-metavers" class="btn-outline-gradient text-white position-relative" role="button" target="_blank" rel="noopener noreferrer" aria-label="Découvrir Handi-3D, notre espace virtuel inclusif (ouvre dans un nouvel onglet)">
+							Découvrez Handi-3D
+							<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger" style="transform: translate(-50%, -50%) rotate(23deg); transform-origin: center;" aria-label="Nouveau">
+								New
+							</span>
+						</a>
+					</nav>
 				</article>
 			</div>
-		</div>
-	</section>
+		</section>
 
-	<!-- Salles 3D -->
-	<section class="bg-main w-100 py-5" role="region" aria-labelledby="rooms-title">
-		<div class="container text-center text-md-start">
-			<h2 id="rooms-title" class="text-start">Découvrez nos Salles 3D Immersives</h2>
-			<p class="text text-start">Plongez dans une expérience immersive unique qui transforme votre vision du monde numérique. Explorez les possibilités infinies et connectez-vous avec d'autres utilisateurs dans notre espace virtuel.</p>
-			<a href="{{ path('app_metavers') }}" class="btn-neon text-white mt-3" role="button">Explorer nos Salles 3D</a>
-		</div>
-	</section>
-
-	<!-- Évènements -->
-	<section class="bg-main w-100 py-5" role="region" aria-labelledby="event-title">
-		<div class="container text-white">
-			<h2 id="event-title" class="text-center">Évènements</h2>
-			<p class="text text-center">Restez connectés à nos prochaines sessions d'infos !</p>
-			<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000" role="region" aria-label="Carrousel des évènements">
-
-				<div class="carousel-indicators">
-					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Photo : stand GNUT 06 — Nice fête sa rentrée"></button>
-					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Photo : stand GNUT 06 — Journée des aidants (1)"></button>
-					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Photo : stand GNUT 06 — Journée des aidants (2)"></button>
-				</div>
-
-				<div class="carousel-inner">
-					<div class="carousel-item active">
-						<img src="{{ asset('images/webp/IMG_0216.webp') }}" class="d-block w-100 img-fluid rounded-4" alt="Photo du stand de Gnut 06 lors de l'évènement 'Nice fête sa rentrée'">
-					</div>
-					<div class="carousel-item">
-						<img src="{{ asset('images/webp/20251001_085759.webp') }}" class="d-block w-100 img-fluid rounded-4" alt="Photo du stand de Gnut 06 lors de la journée des aidants">
-					</div>
-					<div class="carousel-item">
-						<img src="{{ asset('images/webp/20251001_121028.webp') }}" class="d-block w-100 img-fluid rounded-4" alt="Photo du stand de Gnut 06 lors de la journée des aidants" ">
-					</div>
-				</div>
-
-				<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev" aria-label="Image précédente">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				</button>
-				<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next" aria-label="Image suivante">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-				</button>
-			</div>
-		</div>
-	</section>
-
-	<!-- Comment aider -->
-	<section class="bg-main w-100 py-5" role="region" aria-labelledby="help-title">
-		<div class="container row align-items-center text-white gx-5 m-auto">
-			<article class="col-md-6 mb-4 mb-md-0">
-				<h2 id="help-title" class="text-start">Comment vous pouvez nous aider</h2>
-				<p>Votre soutien est essentiel pour notre mission. Découvrez comment vous pouvez faire une différence.</p>
-				<div class="row g-4" role="list">
-					<article class="col-6 text-center text-md-start" role="listitem">
-						<img src="{{ asset ('images/webp/send_money.svg') }}" style="width:64px;" alt="Icône représentant un don"/>
-						<h3>Faites un don</h3>
-						<p>Aidez-nous à financer nos projets et initiatives.</p>
-						<a href="{{ path('app_don') }}" class="btn-neon" role="button">Je donne</a>
-					</article>
-					<article class="col-6 text-center text-md-start" role="listitem">
-						<img src="{{ asset ('images/webp/volunteer_activism.svg') }}" style="width:64px;" alt="Icône représentant une adhésion"/>
-						<h3>Devenez adhérent.e</h3>
-						<p>Participez activement à nos activités et évènements.</p>
-						<a href="{{ path('app_adhesion') }}" class="btn-outline-gradient" role="button">J'adhère</a>
-					</article>
-				</div>
-			</article>
-			<figure class="col-md-6 text-center">
-				<img src="{{ asset('images/webp/donner-adherer.webp') }}" class="img-fluid rounded-4" alt="Illustration soutenir GNUT 06">
-			</figure>
-		</div>
-	</section>
-
-	<!-- Logos partenaires -->
-	<section aria-labelledby="partners-title">
-		<h2 id="partners-title" class="visually-hidden">Nos partenaires</h2>
-		{{ render(controller('App\\Controller\\LogoEntrepriseController::logos')) }}
-	</section>
-
-	<!-- Notre équipe -->
-	<section class="bg-main w-100 py-5" role="region" aria-labelledby="team-title">
-		<div class="container text-white">
-			<div class="text-center mb-5">
-
-				<h2 id="team-title" class="text-center">Notre Équipe Tech</h2>
-				<p class="text text-center">
-					Voici quelques-uns de nos bénévoles talentueux qui ont joué un rôle clé dans la conception,
-										                le développement et la communication de nos projets web.
-										                Comme eux, venez contribuer à une cause engageante et épanouissante.
+		<!-- ✅ Explorez nos Hubs accessible -->
+		<section class="bg-main w-100 py-5" role="region" aria-labelledby="hubs-title">
+			<div class="container text-center">
+				<h2 id="hubs-title">Explorez nos Hubs</h2>
+				<p class="text">
+					Nos activités sont conçues pour être accessibles à toutes et à tous.<br>
+					Explorez notre large éventail d'options adaptées à chaque besoin.
 				</p>
-				<a href="{{ path('app_adhesion') }}" class="btn-outline-gradient mb-5 m-auto" role="button">J'adhère</a>
+				<div class="row g-4 justify-content-center" role="list" aria-label="Liste de nos hubs numériques">
+					<article class="col-sm-6 col-md-4" role="listitem">
+						<div class="card text-center text-white bg-black h-100" tabindex="0">
+							<img src="{{ asset('images/webp/galerie-3d-GNUT.webp') }}" class="card-img-top img-fluid" alt="Vue immersive de la galerie d'art virtuelle GNUT avec œuvres exposées" role="img">
+							<div class="card-body d-flex flex-column">
+								<h3 class="card-title">Galerie d'art GNUT</h3>
+								<p class="card-text flex-grow-1">
+									Profitez d'une immersion totale dans notre galerie d'art virtuelle !
+								</p>
+								<a href="https://gnut.eu/galerie_art_by_gnut/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer" aria-label="Visiter la galerie d'art GNUT (ouvre dans un nouvel onglet)">
+									Visiter maintenant
+								</a>
+							</div>
+						</div>
+					</article>
+					<article class="col-sm-6 col-md-4" role="listitem">
+						<div class="card text-center text-white bg-black h-100" tabindex="0">
+							<img src="{{ asset('images/webp/meteo3D.webp') }}" class="card-img-top img-fluid" alt="Interface de l'application météo 3D GNUT montrant des données météorologiques" role="img">
+							<div class="card-body d-flex flex-column">
+								<h3 class="card-title">Météo 3D GNUT</h3>
+								<p class="card-text flex-grow-1">
+									Découvrez la météo en temps réel partout dans le monde !
+								</p>
+								<a href="https://gnut.eu/3d_meteo/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer" aria-label="Accéder à l'application météo 3D (ouvre dans un nouvel onglet)">
+									Visiter maintenant
+								</a>
+							</div>
+						</div>
+					</article>
+					<article class="col-sm-6 col-md-4" role="listitem">
+						<div class="card text-center text-white bg-black h-100" tabindex="0">
+							<img src="{{ asset('images/webp/galerie-3d-immo.webp') }}" class="card-img-top img-fluid" alt="Modélisation 3D d'un projet immobilier avec architecture moderne" role="img">
+							<div class="card-body d-flex flex-column">
+								<h3 class="card-title">3D Immo</h3>
+								<p class="card-text flex-grow-1">
+									Visitez notre construction 3D !
+								</p>
+								<a href="https://gnut.eu/3d_immo/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer" aria-label="Explorer le projet 3D Immo (ouvre dans un nouvel onglet)">
+									Visiter maintenant
+								</a>
+							</div>
+						</div>
+					</article>
+				</div>
 			</div>
+		</section>
 
-			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" role="list">
-				<article class="col d-flex" role="listitem">
-					<div class="card text-center h-100">
-						<img src="{{ asset('images/webp/Marjorie.webp') }}" class="card-img-top img-fluid" alt="Portrait de Marjorie Ngoupende, UX-UI Designer / Accessibilité">
-						<div class="card-body d-flex flex-column">
-							<h4 class="card-title">Marjorie Ngoupende</h4>
-							<p class="card-text">UX-UI Designer / Accessibilité</p>
-							<div class="mt-auto d-flex justify-content-start">
-								<a href="https://www.linkedin.com/in/marjorie-ngoupende/" aria-label="Profil LinkedIn de Marjorie Ngoupende" class="rounded-circle bg-primary-light d-flex justify-content-center align-items-center linkedin-circle" style="width:36px;height:36px;">
-									<img src="{{ asset('images/webp/linkedin.svg') }}" style="width:18px;" alt="" aria-hidden="true">
-								</a>
-							</div>
-						</div>
-					</div>
-				</article>
-
-				<article class="col d-flex" role="listitem">
-					<div class="card text-center h-100">
-						<img src="{{ asset('images/webp/Yann.webp') }}" class="card-img-top" alt="Portrait de Yann Doublet, Développeur Full-Stack">
-						<div class="card-body d-flex flex-column">
-							<h4 class="card-title">Yann Doublet</h4>
-							<p class="card-text">Développeur Full-Stack</p>
-							<div class="mt-auto d-flex justify-content-start">
-								<a href="https://fr.linkedin.com/in/yann-doublet-developpeur-web" aria-label="Profil LinkedIn de Yann Doublet" class="rounded-circle bg-primary-light d-flex justify-content-center align-items-center linkedin-circle" style="width:36px;height:36px;">
-									<img src="{{ asset('images/webp/linkedin.svg') }}" style="width:18px;" alt="" aria-hidden="true">
-								</a>
-							</div>
-						</div>
-					</div>
-				</article>
-
-				<article class="col d-flex" role="listitem">
-					<div class="card text-center h-100">
-						<img src="{{ asset('images/webp/Walid.webp') }}" class="card-img-top" alt="Portrait de Walid Kherroubi, Développeur Back-end">
-						<div class="card-body d-flex flex-column">
-							<h4 class="card-title">Walid Kherroubi</h4>
-							<p class="card-text">Développeur Back-end</p>
-							<div class="mt-auto d-flex justify-content-start">
-								<a href="https://www.linkedin.com/in/walid-kherroubi/" aria-label="Profil LinkedIn de Walid Kherroubi" class="rounded-circle bg-primary-light d-flex justify-content-center align-items-center linkedin-circle" style="width:36px;height:36px;">
-									<img src="{{ asset('images/webp/linkedin.svg') }}" style="width:18px;" alt="" aria-hidden="true">
-								</a>
-							</div>
-						</div>
-					</div>
-				</article>
-
-				<article class="col d-flex" role="listitem">
-					<div class="card text-center h-100">
-						<img src="{{ asset('images/webp/Alexia.webp') }}" class="card-img-top" alt="Portrait d'Alexia Marcinno, Rédactrice web">
-						<div class="card-body d-flex flex-column">
-							<h4 class="card-title">Alexia Marcinno</h4>
-							<p class="card-text">Rédactrice web</p>
-							<div class="mt-auto d-flex justify-content-start">
-								<a href="https://www.linkedin.com/in/marjorie-ngoupende/" aria-label="Profil LinkedIn de Alexia Marcinno" class="rounded-circle bg-primary-light d-flex justify-content-center align-items-center linkedin-circle" style="width:36px;height:36px;">
-									<img src="{{ asset('images/webp/linkedin.svg') }}" style="width:18px;" alt="" aria-hidden="true">
-								</a>
-							</div>
-						</div>
-					</div>
-				</article>
+		<!-- ✅ Salles 3D accessible -->
+		<section class="bg-main w-100 py-5" role="region" aria-labelledby="rooms-title">
+			<div class="container text-center text-md-start">
+				<h2 id="rooms-title" class="text-start">Découvrez nos Salles 3D Immersives</h2>
+				<p class="text text-start">
+					Plongez dans une expérience immersive unique qui transforme votre vision du monde numérique. 
+															                Explorez les possibilités infinies et connectez-vous avec d'autres utilisateurs dans notre espace virtuel.
+				</p>
+				<a href="{{ path('app_metavers') }}" class="btn-neon text-white mt-3" role="button" aria-label="Explorer nos salles 3D immersives et leurs fonctionnalités">
+					Explorer nos Salles 3D
+				</a>
 			</div>
-		</div>
-	</section>
+		</section>
 
-	<!-- Contact -->
-	<section class="bg-main w-100 py-5" role="region" aria-labelledby="contact-title">
-		<div class="container text-white text-center">
-			<h2 id="contact-title">Vous avez des questions ?</h2>
-			<p>Nous sommes là pour vous aider.</p>
-			<a href="{{ path('app_contact') }}" class="btn-outline-gradient {{ app.request.attributes.get('_route') == 'app_contact' ? 'active' : '' }}" role="button">Nous contacter</a>
-		</div>
-	</section>
+		<!-- ✅ Évènements avec carousel automatique - VERSION SIMPLIFIÉE -->
+        <section class="bg-main w-100 py-5" role="region" aria-labelledby="event-title">
+            <div class="container text-white">
+                <h2 id="event-title" class="text-center">Évènements</h2>
+                <p class="text text-center">Restez connectés à nos prochaines sessions d'infos !</p>
+
+                <div
+                    id="carouselExampleIndicators" 
+                    class="carousel slide" 
+                    data-bs-ride="carousel" 
+                    data-bs-interval="4000" 
+                    role="region" 
+                    aria-label="Galerie photos de nos évènements" 
+                    aria-roledescription="carousel">
+
+                    <!-- ✅ Instructions pour lecteurs d'écran -->
+                    <div class="visually-hidden" aria-live="polite" id="carousel-instructions">
+                        Galerie de 3 photos de nos évènements en lecture automatique. Utilisez les boutons précédent et suivant pour naviguer manuellement, ou les indicateurs numérotés pour aller directement à une image.
+                    </div>
+
+                    <!-- ✅ Indicateurs accessibles -->
+                    <div class="carousel-indicators" role="tablist" aria-label="Sélectionner une photo d'évènement">
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" role="tab" aria-controls="carousel-item-0" aria-label="Photo 1 : Stand GNUT 06 à Nice fête sa rentrée"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" role="tab" aria-controls="carousel-item-1" aria-label="Photo 2 : Stand GNUT 06 à la journée des aidants"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" role="tab" aria-controls="carousel-item-2" aria-label="Photo 3 : Équipe GNUT 06 lors de la journée des aidants"></button>
+                    </div>
+
+                    <div class="carousel-inner" role="listbox" aria-describedby="carousel-instructions">
+                        <div class="carousel-item active" role="group" aria-roledescription="slide" aria-label="Photo 1 sur 3" id="carousel-item-0">
+                            <img src="{{ asset('images/webp/IMG_0216.webp') }}" class="d-block w-100 img-fluid rounded-4" alt="Photo du stand de GNUT 06 lors de l'évènement 'Nice fête sa rentrée' avec des visiteurs découvrant nos technologies" role="img">
+                        </div>
+                        <div class="carousel-item" role="group" aria-roledescription="slide" aria-label="Photo 2 sur 3" id="carousel-item-1">
+                            <img src="{{ asset('images/webp/20251001_085759.webp') }}" class="d-block w-100 img-fluid rounded-4" alt="Photo du stand de GNUT 06 lors de la journée des aidants avec présentation de nos solutions d'inclusion" role="img">
+                        </div>
+                        <div class="carousel-item" role="group" aria-roledescription="slide" aria-label="Photo 3 sur 3" id="carousel-item-2">
+                            <img src="{{ asset('images/webp/20251001_121028.webp') }}" class="d-block w-100 img-fluid rounded-4" alt="Photo de l'équipe GNUT 06 accueillant les visiteurs lors de la journée des aidants" role="img">
+                        </div>
+                    </div>
+
+                    <!-- ✅ Contrôles accessibles -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev" aria-label="Voir la photo précédente">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Précédent</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next" aria-label="Voir la photo suivante">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Suivant</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+		<!-- ✅ Comment aider - accessible -->
+		<section class="bg-main w-100 py-5" role="region" aria-labelledby="help-title">
+			<div class="container row align-items-center text-white gx-5 m-auto">
+				<article class="col-md-6 mb-4 mb-md-0">
+					<h2 id="help-title" class="text-start">Comment vous pouvez nous aider</h2>
+					<p class="text">
+						Votre soutien est essentiel pour notre mission. Découvrez comment vous pouvez faire une différence.
+					</p>
+					<div class="row g-4" role="list" aria-label="Façons de nous soutenir">
+						<article class="col-6 text-center text-md-start" role="listitem">
+							<img src="{{ asset ('images/webp/send_money.svg') }}" style="width:64px;" alt="Icône représentant un don financier" role="img"/>
+							<h3>Faites un don</h3>
+							<p class="text">
+								Aidez-nous à financer nos projets et initiatives.
+							</p>
+							<a href="{{ path('app_don') }}" class="btn-neon" role="button" aria-label="Faire un don pour soutenir GNUT 06">
+								Je donne
+							</a>
+						</article>
+						<article class="col-6 text-center text-md-start" role="listitem">
+							<img src="{{ asset ('images/webp/volunteer_activism.svg') }}" style="width:64px;" alt="Icône représentant l'engagement bénévole" role="img"/>
+							<h3>Devenez adhérent.e</h3>
+							<p class="text">
+								Participez activement à nos activités et évènements.
+							</p>
+							<a href="{{ path('app_adhesion') }}" class="btn-outline-gradient" role="button" aria-label="Devenir adhérent de l'association GNUT 06">
+								J'adhère
+							</a>
+						</article>
+					</div>
+				</article>
+				<figure class="col-md-6 text-center">
+					<img src="{{ asset('images/webp/donner-adherer.webp') }}" class="img-fluid rounded-4" alt="Illustration montrant des personnes soutenant ensemble l'association GNUT 06" role="img">
+				</figure>
+			</div>
+		</section>
+
+		<!-- ✅ Logos partenaires accessible -->
+		<section role="region" aria-labelledby="partners-title">
+			<h2 id="partners-title" class="visually-hidden">Nos partenaires</h2>
+			{{ render(controller('App\\Controller\\LogoEntrepriseController::logos')) }}
+		</section>
+
+		<!-- ✅ Notre équipe accessible avec lisibilité améliorée -->
+		<section class="bg-main w-100 py-5" role="region" aria-labelledby="team-title">
+			<div class="container text-white">
+				<div class="text-center mb-5">
+					<h2 id="team-title" class="text-center">Notre Équipe Tech</h2>
+					<p class="text text-center">
+						Voici quelques-uns de nos bénévoles talentueux qui ont joué un rôle clé dans la conception,
+																		                    le développement et la communication de nos projets web.
+																		                    Comme eux, venez contribuer à une cause engageante et épanouissante.
+					</p>
+					<a href="{{ path('app_adhesion') }}" class="btn-outline-gradient mb-5 m-auto" role="button" aria-label="Adhérer pour rejoindre notre équipe bénévole">
+						J'adhère
+					</a>
+				</div>
+
+				{% set team_members = {
+                'marjorie': {
+                    'name': 'Marjorie Ngoupende',
+                    'role': 'UX-UI Designer & Accessibilité',
+                    'image': 'Marjorie.webp',
+                    'linkedin': 'https://www.linkedin.com/in/marjorie-ngoupende/'
+                },
+                'yann': {
+                    'name': 'Yann Doublet',
+                    'role': 'Développeur Full-Stack',
+                    'image': 'Yann.webp',
+                    'linkedin': 'https://fr.linkedin.com/in/yann-doublet-developpeur-web'
+                },
+                'walid': {
+                    'name': 'Walid Kherroubi',
+                    'role': 'Développeur Back-end',
+                    'image': 'Walid.webp',
+                    'linkedin': 'https://www.linkedin.com/in/walid-kherroubi/'
+                },
+                'alexia': {
+                    'name': 'Alexia Marcinno',
+                    'role': 'Rédactrice web',
+                    'image': 'Alexia.webp',
+                    'linkedin': 'https://www.linkedin.com/in/alexia-marcinno-85b63a22b/'
+                }
+            } %}
+
+				<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" role="list" aria-label="Membres de notre équipe technique">
+					{% for key, member in team_members %}
+						<article class="col d-flex" role="listitem">
+							<div class="card text-center h-100 bg-dark border-secondary" tabindex="0">
+								<img src="{{ asset('images/webp/' ~ member.image) }}" class="card-img-top img-fluid" alt="Portrait de {{ member.name }}, {{ member.role }} chez GNUT 06" role="img">
+								<div class="card-body d-flex flex-column bg-dark">
+									<h4 class="card-title text-white mb-2">{{ member.name }}</h4>
+									<p class="team-role flex-grow-1 mb-3">{{ member.role }}</p>
+									<div class="mt-auto d-flex justify-content-start">
+										<a href="{{ member.linkedin }}" aria-label="Voir le profil LinkedIn de {{ member.name }} (ouvre dans un nouvel onglet)" class="rounded-circle bg-primary d-flex justify-content-center align-items-center linkedin-circle" style="width:36px;height:36px;" target="_blank" rel="noopener noreferrer">
+											<img src="{{ asset('images/webp/linkedin.svg') }}" style="width:18px;" alt="" aria-hidden="true">
+										</a>
+									</div>
+								</div>
+							</div>
+						</article>
+					{% endfor %}
+				</div>
+			</div>
+		</section>
+
+		<!-- ✅ Contact accessible -->
+		<section class="bg-main w-100 py-5" role="region" aria-labelledby="contact-title">
+			<div class="container text-white text-center">
+				<h2 id="contact-title">Vous avez des questions ?</h2>
+				<p class="text">Nous sommes là pour vous aider.</p>
+				<a href="{{ path('app_contact') }}" class="btn-outline-gradient {{ app.request.attributes.get('_route') == 'app_contact' ? 'active' : '' }}" role="button" aria-label="Nous contacter pour poser vos questions">
+					Nous contacter
+				</a>
+			</div>
+		</section>
+
+	</main>
 
 {% endblock %}

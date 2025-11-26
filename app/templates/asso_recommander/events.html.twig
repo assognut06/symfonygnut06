@@ -1,104 +1,202 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	{{ app.request.query.get('organizationName')|url_decode }}
+    {{ app.request.query.get('organizationName')|url_decode }} - Événements
 {% endblock %}
 
 {% block body %}
-	<div class="container pt-0 text">
-		<div class="mx-3">
-			<h2 class="my-5 text-primary text-center">
-				{{ app.request.query.get('organizationName')|url_decode }}</h2>
-			<div class="border border-secondary mb-5 mx-5"></div>
-			<div class="row align-items-start mx-auto">
-				{% for item in data_forms %}
-					<div class="col d-flex justify-content-around my-3">
-						<div class="card shadow-lg" style="width: 21rem;">
-							{% if item.banner is defined and item.banner.publicUrl %}
-								<img src="{{ item.banner.publicUrl }}" class="card-img-top" alt="Bannière de {{ app.request.query.get('organizationName')|url_decode }}">
-							{% endif %}
-							<div class="card-body">
-								<h5 class="card-title text-center">{{ item.title }}</h5>
-								{% if item.logo is defined and item.logo.publicUrl %}
-									<p class="card-text text-center">
-										<img src="{{ item.logo.publicUrl }}" class="card-img-top logoAsso my-2" alt="Logo {{ app.request.query.get('organizationName')|url_decode }}">
-									</p>
-								</br>
-							{% endif %}
-							{% if item.endDate is defined and item.endDate %}
-								<div class="alert alert-danger text-center mx-5 shadow-lg rounded-pill" role="alert">
-									{% set endDate = item.endDate|date("Y-m-d H:i:s") %}
-									{% set now = "now"|date("Y-m-d H:i:s") %}
-									{% set interval = date(endDate).diff(date(now)) %}
-									{% if interval.days == 0 %}
-										<strong>Expire dans quelques heures</strong>
-									{% else %}
-										<strong>Expire dans
-											{{ interval.days }}
-											jours.</strong>
-									{% endif %}
-								</div>
-							{% endif %}
-							{% if item.description is defined and item.description %}
-								<p class="text-justify">{{ item.description|slice(0, 200) }}...
-									<br>
-									<a class="icon-link icon-link-hover" href="{{ path('app_asso_recommander_detail', {'organizationSlug': item.organizationSlug, 'formType': item.formType,'formSlug': item.formSlug}) }}">
-										En savoir +<i class="bi bi-arrow-right" aria-hidden="true"><use xlink:href="#arrow-right"></use></i>
-									</a>
-								</p>
-							{% endif %}
+    <div class="container pt-0 text">
+        <div class="mx-3">
+            <!-- ✅ Section principale avec structure sémantique -->
+            <main role="main" aria-labelledby="organization-title">
+                <h1 id="organization-title" class="my-5 gradient-text text-center">
+                    {{ app.request.query.get('organizationName')|url_decode }}
+                </h1>
+                
+                <div class="border border-secondary mb-5 mx-5" role="separator" aria-hidden="true"></div>
+                
+                <!-- ✅ Section des événements -->
+                <section role="region" aria-labelledby="events-section">
+                    <h2 id="events-section" class="visually-hidden">
+                        {% if app.request.attributes.get('formTypes') == 'Event' %}
+                            Événements disponibles
+                        {% elseif app.request.attributes.get('formTypes') == 'Donation' %}
+                            Formulaires de dons
+                        {% elseif app.request.attributes.get('formTypes') == 'Membership' %}
+                            Formulaires d'adhésion
+                        {% elseif app.request.attributes.get('formTypes') == 'CrowdFunding' %}
+                            Appels à projets
+                        {% elseif app.request.attributes.get('formTypes') == 'Shop' %}
+                            Boutiques
+                        {% else %}
+                            Services disponibles
+                        {% endif %}
+                    </h2>
+                    
+                    <div class="row align-items-start mx-auto" role="list" aria-label="Liste des services et événements">
+                        {% for item in data_forms %}
+                            <div class="col d-flex justify-content-around my-3" role="listitem">
+                                <article class="card shadow-lg" 
+                                         style="width: 21rem;" 
+                                         aria-labelledby="card-title-{{ loop.index }}"
+                                         tabindex="0">
+                                    
+                                    {% if item.banner is defined and item.banner.publicUrl %}
+                                        <img src="{{ item.banner.publicUrl }}" 
+                                             class="card-img-top" 
+                                             alt="Bannière de l'événement {{ item.title }}"
+                                             role="img">
+                                    {% endif %}
+                                    
+                                    <div class="card-body">
+                                        <h3 id="card-title-{{ loop.index }}" class="card-title gradient-text text-center">{{ item.title }}</h3>
+                                        
+                                        {% if item.logo is defined and item.logo.publicUrl %}
+                                            <div class="card-text text-center">
+                                                <img src="{{ item.logo.publicUrl }}" 
+                                                     class="card-img-top logoAsso my-2" 
+                                                     alt="Logo de {{ app.request.query.get('organizationName')|url_decode }}"
+                                                     role="img">
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        
+                                        {% if item.endDate is defined and item.endDate %}
+                                            <div class="alert alert-danger text-center mx-5 shadow-lg rounded-pill" 
+                                                 role="alert" 
+                                                 aria-live="polite">
+                                                {% set endDate = item.endDate|date("Y-m-d H:i:s") %}
+                                                {% set now = "now"|date("Y-m-d H:i:s") %}
+                                                {% set interval = date(endDate).diff(date(now)) %}
+                                                {% if interval.days == 0 %}
+                                                    <strong>
+                                                        <span class="visually-hidden">Attention : </span>
+                                                        Expire dans quelques heures
+                                                    </strong>
+                                                {% else %}
+                                                    <strong>
+                                                        <span class="visually-hidden">Attention : </span>
+                                                        Expire dans {{ interval.days }} jours
+                                                    </strong>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                        
+                                        {% if item.description is defined and item.description %}
+                                            <div class="text-justify" aria-label="Description de l'événement">
+                                                <p>{{ item.description|slice(0, 200) }}...
+                                                    <br>
+                                                    <a class="icon-link icon-link-hover" 
+                                                       href="{{ path('app_asso_recommander_detail', {'organizationSlug': item.organizationSlug, 'formType': item.formType,'formSlug': item.formSlug}) }}"
+                                                       aria-label="En savoir plus sur {{ item.title }}">
+                                                        En savoir +
+                                                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        {% endif %}
 
-							<div class="text-center">
-								<button class="btn btn-warning text-primary" data-bs-toggle="modal" data-bs-target="#modal_{{ loop.index }}">
-									{% if app.request.attributes.get('formTypes') == 'Event' %}
-										<i class="bi bi-calendar-event-fill text-primary"></i>
-										Réserver
-									{% elseif app.request.attributes.get('formTypes') == 'Donation' %}
-										<i class="bi text-primary bi-check"></i>
-										Faire un don
-									{% elseif app.request.attributes.get('formTypes') == 'Membership' %}
-										<i class="bi text-primary bi-person-badge-fill"></i>
-										Adhérer
-									{% elseif app.request.attributes.get('formTypes') == 'CrowdFunding' %}
-										<i class="bi text-primary bi-people-fill"></i>
-										Soutenir
-									{% elseif app.request.attributes.get('formTypes') == 'Shop' %}
-										<i class="bi text-primary bi-shop"></i>
-										Acheter
-									{% endif %}
-								</button>
-							</div>
+                                        <div class="text-center">
+                                            <button class="btn-asso" 
+                                                    role="button" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#modal_{{ loop.index }}"
+                                                    aria-label="{% if app.request.attributes.get('formTypes') == 'Event' %}Ouvrir le formulaire de réservation pour {{ item.title }}{% elseif app.request.attributes.get('formTypes') == 'Donation' %}Ouvrir le formulaire de don pour {{ item.title }}{% elseif app.request.attributes.get('formTypes') == 'Membership' %}Ouvrir le formulaire d'adhésion pour {{ item.title }}{% elseif app.request.attributes.get('formTypes') == 'CrowdFunding' %}Ouvrir le formulaire de soutien pour {{ item.title }}{% elseif app.request.attributes.get('formTypes') == 'Shop' %}Ouvrir la boutique pour {{ item.title }}{% endif %}"
+                                                    aria-describedby="button-help-{{ loop.index }}">
+                                                {% if app.request.attributes.get('formTypes') == 'Event' %}
+                                                    <i class="bi bi-calendar-event-fill" aria-hidden="true"></i>
+                                                    Réserver
+                                                {% elseif app.request.attributes.get('formTypes') == 'Donation' %}
+                                                    <i class="bi bi-check" aria-hidden="true"></i>
+                                                    Faire un don
+                                                {% elseif app.request.attributes.get('formTypes') == 'Membership' %}
+                                                    <i class="bi bi-person-badge-fill" aria-hidden="true"></i>
+                                                    Adhérer
+                                                {% elseif app.request.attributes.get('formTypes') == 'CrowdFunding' %}
+                                                    <i class="bi bi-people-fill" aria-hidden="true"></i>
+                                                    Soutenir
+                                                {% elseif app.request.attributes.get('formTypes') == 'Shop' %}
+                                                    <i class="bi bi-shop" aria-hidden="true"></i>
+                                                    Acheter
+                                                {% endif %}
+                                            </button>
+                                            <div id="button-help-{{ loop.index }}" class="visually-hidden">
+                                                Cliquez pour ouvrir le formulaire dans une fenêtre modale
+                                            </div>
+                                        </div>
 
-							<!-- Modal -->
-							<div class="modal fade modal-{% if app.request.attributes.get('formTypes') == 'Donation' %}xl{% else %}lg{% endif %}" id="modal_{{ loop.index }}" tabindex="-1" aria-labelledby="ModalLabel_{{ loop.index }}" aria-hidden="true">
-								<div class="modal-dialog">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h1 class="modal-title fs-5" id="ModalLabel_{{ loop.index }}">{{ item.title }}</h1>
-											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-										</div>
-										<div class="modal-body">
-											<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="{{ item.widgetFullUrl }}" style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )"></iframe>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			{% else %}
-				No data available.
-			{% endfor %}
-			<div class="col-12 my-4 text-center">
-				{% if app.request.headers.get('Referer') %}
-					<a class="btn btn-success text-white" href="{{ app.request.headers.get('Referer')|e('html_attr') }}"><i class="bi bi-skip-backward-circle text-white"></i> Retour</a>
-				{% else %}
-					<p>Impossible de retourner à la page précédente.</p>
-				{% endif %}
-			</div>
-		</div>
-	</div>
-</div>{% endblock %}
+                                        <!-- ✅ Modal accessible -->
+                                        <div class="modal fade modal-{% if app.request.attributes.get('formTypes') == 'Donation' %}xl{% else %}lg{% endif %}" 
+                                             id="modal_{{ loop.index }}" 
+                                             tabindex="-1" 
+                                             aria-labelledby="ModalLabel_{{ loop.index }}" 
+                                             aria-hidden="true"
+                                             role="dialog"
+                                             aria-describedby="modal-description-{{ loop.index }}">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <header class="modal-header">
+                                                        <h2 class="modal-title fs-5" id="ModalLabel_{{ loop.index }}">{{ item.title }}</h2>
+                                                        <button type="button" 
+                                                                class="btn-close" 
+                                                                data-bs-dismiss="modal" 
+                                                                aria-label="Fermer la fenêtre modale {{ item.title }}"></button>
+                                                    </header>
+                                                    <div class="modal-body" id="modal-description-{{ loop.index }}">
+                                                        <div class="visually-hidden">
+                                                            Formulaire interactif pour {{ item.title }}. Utilisez Tab pour naviguer dans le formulaire.
+                                                        </div>
+                                                        <iframe id="haWidget-{{ loop.index }}" 
+                                                                allowtransparency="true" 
+                                                                scrolling="auto" 
+                                                                src="{{ item.widgetFullUrl }}" 
+                                                                style="width: 100%; border: none;" 
+                                                                title="Formulaire {{ item.title }}"
+                                                                aria-label="Formulaire interactif pour {{ item.title }}"
+                                                                onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget-{{ loop.index }}'); haWidgetElement.height = dataHeight + 'px'; } )"></iframe>
+                                                    </div>
+                                                    <footer class="modal-footer">
+                                                        <button type="button" 
+                                                                class="btn-asso" 
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Fermer la fenêtre modale {{ item.title }}">
+                                                            Fermer
+                                                        </button>
+                                                    </footer>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        {% else %}
+                            <div class="col-12" role="status" aria-live="polite">
+                                <div class="alert alert-info text-center" role="alert">
+                                    <p>Aucun service disponible pour le moment.</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                
+                <!-- ✅ Navigation de retour accessible -->
+                <nav class="col-12 my-4 text-center" 
+                     role="navigation" 
+                     aria-label="Navigation de retour">
+                    {% if app.request.headers.get('Referer') %}
+                        <a class="btn btn-outline-success text-white" 
+                           href="{{ app.request.headers.get('Referer')|e('html_attr') }}"
+                           aria-label="Retourner à la page précédente">
+                            <i class="bi bi-skip-backward-circle text-white" aria-hidden="true"></i>
+                            <span>Retour</span>
+                        </a>
+                    {% else %}
+                        <div role="status" aria-live="polite">
+                            <p role="alert">Impossible de retourner à la page précédente.</p>
+                        </div>
+                    {% endif %}
+                </nav>
+            </main>
+        </div>
+    </div>
+{% endblock %}
