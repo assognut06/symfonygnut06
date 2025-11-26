@@ -1,47 +1,290 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails de la billetterie – {{ data_actu.title }}{% endblock %}
+{% block title %}Détails de la billetterie – {{ data_actu.title }}
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* ✅ Focus visible obligatoire WCAG 2.1 AA */
+.btn-neon:focus,
+.btn:focus, 
+.btn-close:focus,
+a:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ Amélioration du contraste pour les liens */
+.text a {
+    color: #ffffff !important;
+    text-decoration: underline !important;
+}
+
+.text a:hover {
+    color: #F86CF8 !important;
+}
+
+/* ✅ Zones de clic minimales WCAG */
+.btn-neon,
+.btn-outline-gradient,
+.btn-asso {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.75rem 1.5rem !important;
+}
+
+/* ✅ Amélioration de la lisibilité */
+.text {
+    line-height: 1.6 !important;
+}
+
+.table th,
+.table td {
+    vertical-align: middle !important;
+}
+
+/* ✅ Style pour Google Maps accessible */
+.google-map-container {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.google-map-iframe {
+    width: 100%;
+    height: 300px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+}
+
+.google-map-iframe:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ Instructions pour la carte - AMÉLIORÉES */
+.map-instructions {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+    border: 2px solid rgba(248, 108, 248, 0.5);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.map-instructions .instructions-title {
+    color: #F86CF8 !important;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.map-instructions .instructions-list {
+    color: #ffffff !important;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.map-instructions .instructions-list li {
+    margin-bottom: 0.25rem;
+    padding-left: 0.5rem;
+}
+
+.map-instructions .external-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(248, 108, 248, 0.2);
+    border: 1px solid rgba(248, 108, 248, 0.4);
+    border-radius: 25px;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.map-instructions .external-link:hover,
+.map-instructions .external-link:focus {
+    background: rgba(248, 108, 248, 0.3);
+    border-color: #F86CF8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(248, 108, 248, 0.3);
+}
+
+/* ✅ Fallback si pas d'API key */
+.map-fallback {
+    background: linear-gradient(135deg, rgba(248, 108, 248, 0.1), rgba(108, 99, 255, 0.1));
+    border: 2px solid rgba(248, 108, 248, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.map-fallback .location-icon {
+    font-size: 3rem;
+    color: #F86CF8;
+    margin-bottom: 1rem;
+}
+
+.map-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+    min-height: 44px;
+}
+
+.map-link:hover,
+.map-link:focus {
+    background-color: rgba(248, 108, 248, 0.2) !important;
+    border-color: #F86CF8 !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+/* ✅ Animation respectueuse des préférences utilisateur */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .map-link,
+    .external-link {
+        transform: none !important;
+    }
+}
+
+/* ✅ Amélioration pour les écrans à fort contraste */
+@media (prefers-contrast: high) {
+    .text {
+        color: #ffffff !important;
+    }
+    
+    .btn-outline-gradient {
+        border-width: 2px !important;
+    }
+    
+    
+    .google-map-iframe {
+        border-width: 3px !important;
+        border-color: #ffffff !important;
+    }
+    
+    .map-instructions {
+        background: #000000 !important;
+        border: 3px solid #ffffff !important;
+    }
+    
+    .map-instructions .instructions-title,
+    .map-instructions .instructions-list {
+        color: #ffffff !important;
+    }
+}
+
+/* Responsive pour la carte */
+@media (max-width: 768px) {
+    .google-map-iframe {
+        height: 250px;
+    }
+    
+    .map-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .map-link {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+    }
+    
+    .map-instructions {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .map-instructions .external-link {
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+}
+</style>
+{% endblock %}
 
 {% block body %}
     <main id="main-content" role="main">
 
-        <!-- Section Intro -->
-        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5"
-                 aria-labelledby="intro-title">
+        <!-- ✅ Section Intro avec H1 principal -->
+        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" 
+                 role="region" 
+                 aria-labelledby="main-title">
             <div class="container row align-items-center justify-content-center g-5">
 
                 <header class="col-lg-6 col-12 text-center text-lg-start">
-                    <h2 id="intro-title" class="fw-bold">
+                    <h1 id="main-title" class="fw-bold">
                         Mondes Virtuels, Liens Réels : L'Inclusion à Portée de main
-                    </h2>
+                    </h1>
                     <p class="lead text">Venez découvrir nos actions sur place !</p>
-                    <a href="#" class="btn-neon text-white mt-2"
-                       aria-label="Découvrir GNUT 06">
+                    <a href="{{ path('app_a_propos') }}" 
+                       class="btn-neon text-white mt-2" 
+                       aria-label="Découvrir les actions de GNUT 06 pour l'inclusion numérique">
                         Découvrez GNUT 06
                     </a>
                 </header>
 
                 <div class="col-lg-6 col-12">
                     <figure>
-                        <img src="{{ asset('images/webp/immersion-3.webp') }}"
-                             class="img-fluid rounded shadow"
-                             alt="Illustration immersion GNUT">
+                        <img src="{{ asset('images/webp/immersion-3.webp') }}" 
+                             class="img-fluid rounded shadow" 
+                             alt="Illustration d'une immersion dans un monde virtuel accessible pour l'inclusion numérique"
+                             role="img">
                     </figure>
                 </div>
 
             </div>
         </section>
 
-        <!-- Section principale de l'événement -->
-        <section class="bg-main w-100 pt-0"
+        <!-- ✅ Section principale de l'événement -->
+        <section class="bg-main w-100 pt-0" 
+                 role="region" 
                  aria-labelledby="event-title">
             <div class="container px-3">
 
                 {% if data_actu.banner is defined and data_actu.banner %}
                     <figure class="mb-5">
-                        <img src="{{ data_actu.banner.publicUrl }}"
-                             class="w-100 h-100 object-fit-cover rounded shadow"
-                             alt="Bannière de {{ data_actu.title }}">
+                        <img src="{{ data_actu.banner.publicUrl }}" 
+                             class="w-100 h-100 object-fit-cover rounded shadow" 
+                             alt="Bannière de l'événement {{ data_actu.title }}"
+                             role="img">
                     </figure>
                 {% endif %}
 
@@ -50,125 +293,402 @@
                 </h2>
 
                 {% if app.request.attributes.get('formType') == 'Event' %}
-                    <article class="row gy-4 justify-content-center"
-                             aria-label="Détails de l'événement {{ data_actu.title }}">
+                    <article class="row gy-4 justify-content-center" 
+                             aria-labelledby="event-title">
 
-                        <!-- Description -->
-                        <section class="col-12" aria-labelledby="description-title">
-                            <h3 id="description-title" class="visually-hidden">Description</h3>
-                            <p class="fs-5 text text-center">
-                                {{ data_actu.description|nl2br }}
-                            </p>
+                        <!-- ✅ Description avec structure sémantique -->
+                        <section class="col-12" 
+                                 role="region" 
+                                 aria-labelledby="description-title">
+                            <h3 id="description-title" class="visually-hidden">Description de l'événement</h3>
+                            <div aria-label="Description détaillée de l'événement {{ data_actu.title }}">
+                                <p class="fs-5 text text-center" role="text">
+                                    {{ data_actu.description|nl2br }}
+                                </p>
+                            </div>
                         </section>
 
-                        <!-- Tarifs -->
-                        <section class="col-12" aria-labelledby="tarifs-title">
+                        <!-- ✅ Section tarifs accessible -->
+                        {% if data_actu.tiers is defined and data_actu.tiers|length > 0 %}
+                        <section class="col-12" 
+                                 role="region" 
+                                 aria-labelledby="tarifs-title">
                             <h3 id="tarifs-title" class="text-center mt-5 mb-3 fw-bold text-white">
                                 Tarifs et formules
                             </h3>
 
-                            <!-- Table des tarifs (version desktop) -->
-                            <div class="table-responsive d-none d-md-block" role="region" aria-labelledby="tarifs-title">
-                                <table class="table table-striped table-hover mt-3 align-middle">
-                                    <caption class="visually-hidden">Liste des formules disponibles et leurs tarifs</caption>
+                            <!-- ✅ Tableau accessible (version desktop) -->
+                            <div class="table-responsive d-none d-md-block" 
+                                 role="region" 
+                                 aria-labelledby="tarifs-title">
+                                <table class="table table-striped table-hover mt-3 align-middle" 
+                                       role="table" 
+                                       aria-label="Liste des formules disponibles avec tarifs">
+                                    <caption class="visually-hidden">
+                                        Tableau présentant les différentes formules disponibles pour {{ data_actu.title }}, 
+                                        leurs descriptions et tarifs respectifs
+                                    </caption>
                                     <thead class="table-success">
-                                    <tr>
-                                        <th scope="col">Formule</th>
-                                        <th scope="col">Description</th>
-                                        <th scope="col">Tarif</th>
-                                    </tr>
+                                        <tr role="row">
+                                            <th scope="col" role="columnheader">Formule</th>
+                                            <th scope="col" role="columnheader">Description</th>
+                                            <th scope="col" role="columnheader">Tarif</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    {% for tier in data_actu.tiers %}
-                                        <tr>
-                                            <th scope="row">{{ tier.label }}</th>
-                                            <td>{{ tier.description }}</td>
-                                            <td class="fw-bold">
-                                                {{ (tier.price / 100)|number_format(2, ',', ' ') }} €
-                                            </td>
-                                        </tr>
-                                    {% else %}
-                                        <tr>
-                                            <td colspan="3" class="text-center">Aucune formule disponible.</td>
-                                        </tr>
-                                    {% endfor %}
+                                        {% for tier in data_actu.tiers %}
+                                            <tr role="row">
+                                                <th scope="row" role="rowheader">{{ tier.label }}</th>
+                                                <td role="cell">{{ tier.description }}</td>
+                                                <td class="fw-bold" role="cell">
+                                                    <span aria-label="{{ (tier.price / 100)|number_format(2, ',', ' ') }} euros">
+                                                        {{ (tier.price / 100)|number_format(2, ',', ' ') }}€
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
 
-                            <!-- Version mobile en cartes -->
-                            <div class="d-block d-md-none" aria-label="Liste des formules disponibles (version mobile)">
+                            <!-- ✅ Version mobile accessible -->
+                            <div class="d-block d-md-none" 
+                                 role="list" 
+                                 aria-label="Liste des formules disponibles pour appareils mobiles">
                                 {% for tier in data_actu.tiers %}
-                                    <article class="card mb-3 shadow-sm" aria-labelledby="tier-title-{{ loop.index }}">
+                                    <article class="card mb-3 shadow-sm" 
+                                             role="listitem" 
+                                             aria-labelledby="tier-title-{{ loop.index }}">
                                         <div class="card-body">
-                                            <h4 id="tier-title-{{ loop.index }}" class="card-title fw-bold">{{ tier.label }}</h4>
-                                            <p class="card-text">{{ tier.description }}</p>
-                                            <p class="fw-bold text-success mb-0">
-                                                {{ (tier.price / 100)|number_format(2, ',', ' ') }} €
+                                            <h4 id="tier-title-{{ loop.index }}" class="card-title fw-bold">
+                                                {{ tier.label }}
+                                            </h4>
+                                            <p class="card-text" role="text">{{ tier.description }}</p>
+                                            <p class="fw-bold text-success mb-0" 
+                                               role="text" 
+                                               aria-label="Prix : {{ (tier.price / 100)|number_format(2, ',', ' ') }} euros">
+                                                {{ (tier.price / 100)|number_format(2, ',', ' ') }}€
                                             </p>
                                         </div>
                                     </article>
-                                {% else %}
-                                    <p class="text-center text-muted">Aucune formule disponible.</p>
                                 {% endfor %}
                             </div>
                         </section>
+                        {% endif %}
 
-                        <!-- Bouton de réservation -->
-                        <div class="col-12 text-center">
-                            <button class="btn btn-outline-gradient text-white fw-bold shadow-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modal_tier"
-                                    aria-haspopup="dialog"
-                                    aria-controls="modal_tier">
-                                Réserver
-                            </button>
-                        </div>
+                        <!-- ✅ Section dates et lieu avec Google Maps -->
+                        {% if data_actu.startDate is defined or data_actu.endDate is defined or data_actu.place is defined %}
+                        <section class="col-12" 
+                                 role="region" 
+                                 aria-labelledby="event-details-title">
+                            <h3 id="event-details-title" class="text-center mt-5 mb-3 fw-bold text-white">
+                                Informations pratiques
+                            </h3>
+                            
+                            <div class="row g-4 justify-content-center">
+                                <!-- Dates -->
+                                {% if data_actu.startDate is defined or data_actu.endDate is defined %}
+                                <div class="col-lg-6">
+                                    <div class="alert alert-info text-center" role="status">
+                                        <h4 class="alert-heading">
+                                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                                            Dates
+                                        </h4>
+                                        {% if data_actu.startDate is defined %}
+                                            <p class="mb-1">
+                                                <strong>Début :</strong> 
+                                                <time datetime="{{ data_actu.startDate|date('Y-m-d\\TH:i:sP') }}">
+                                                    {{ data_actu.startDate|format_datetime('full', 'short', locale='fr', timezone='Europe/Paris') }}
+                                                </time>
+                                            </p>
+                                        {% endif %}
+                                        {% if data_actu.endDate is defined %}
+                                            <p class="mb-0">
+                                                <strong>Fin :</strong> 
+                                                <time datetime="{{ data_actu.endDate|date('Y-m-d\\TH:i:sP') }}">
+                                                    {{ data_actu.endDate|format_datetime('full', 'short', locale='fr', timezone='Europe/Paris') }}
+                                                </time>
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Lieu avec Google Maps -->
+                                {% if data_actu.place is defined and data_actu.place %}
+                                <div class="col-lg-6">
+                                    <div class="alert alert-success text-center" role="status">
+                                        <h4 class="alert-heading">
+                                            <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                                            Lieu
+                                        </h4>
+                                        <address class="mb-3">
+                                            <strong>{{ data_actu.place.name }}</strong><br>
+                                            {{ data_actu.place.address }}<br>
+                                            {{ data_actu.place.zipCode }} {{ data_actu.place.city }}
+                                        </address>
+                                        
+                                        {% set full_address = data_actu.place.address ~ ', ' ~ data_actu.place.zipCode ~ ' ' ~ data_actu.place.city %}
+                                        {% set encoded_address = full_address|url_encode %}
+                                        
+                                        <!-- ✅ Google Maps avec variable API key -->
+                                        {% if googleMapsApiKey is defined and googleMapsApiKey %}
+                                            <div class="google-map-container" role="region" aria-labelledby="map-title">
+                                                <h5 id="map-title" class="visually-hidden">
+                                                    Carte interactive de l'emplacement : {{ data_actu.place.name }}
+                                                </h5>
+                                                
+                                                <iframe class="google-map-iframe"
+                                                        src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}&q={{ encoded_address }}&zoom=15&maptype=roadmap"
+                                                        title="Carte interactive montrant l'emplacement de {{ data_actu.place.name }} à {{ full_address }}"
+                                                        aria-label="Carte Google Maps de l'événement {{ data_actu.title }} situé à {{ full_address }}"
+                                                        tabindex="0"
+                                                        referrerpolicy="no-referrer-when-downgrade"
+                                                        loading="lazy">
+                                                </iframe>
+                                                
+                                                <!-- ✅ Instructions d'utilisation AMÉLIORÉES -->
+                                                <div class="map-instructions" role="region" aria-label="Instructions d'utilisation de la carte">
+                                                    <div class="instructions-title">
+                                                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                                        Comment utiliser la carte :
+                                                    </div>
+                                                    
+                                                    <ul class="instructions-list ps-0 list-unstyled">
+                                                        <li><strong>•</strong> Cliquez sur la carte pour l'activer</li>
+                                                        <li><strong>•</strong> Utilisez Tab pour accéder aux contrôles</li>
+                                                        <li><strong>•</strong> Utilisez les touches directionnelles pour naviguer</li>
+                                                        <li><strong>•</strong> Appuyez sur + et - pour zoomer</li>
+                                                    </ul>
+                                                    
+                                                    <a href="https://www.google.com/maps/search/{{ encoded_address }}" 
+                                                       class="external-link"
+                                                       target="_blank" 
+                                                       rel="noopener noreferrer"
+                                                       aria-label="Ouvrir dans Google Maps (nouvel onglet) : {{ full_address }}">
+                                                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                                                        Ouvrir dans Google Maps
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <!-- ✅ Fallback si pas d'API key -->
+                                            <div class="map-fallback" role="region" aria-labelledby="location-title">
+                                                <div class="location-icon" aria-hidden="true">
+                                                    <i class="bi bi-geo-alt-fill"></i>
+                                                </div>
+                                                
+                                                <h5 id="location-title" class="text-white mb-3">
+                                                    Localisation de l'événement
+                                                </h5>
+                                                
+                                                <p class="text-white mb-3">
+                                                    Cliquez sur un service de carte pour localiser cet événement :
+                                                </p>
 
-                        <!-- Modal réservation -->
-                        <div class="modal fade modal-lg"
-                             id="modal_tier"
-                             tabindex="-1"
-                             role="dialog"
-                             aria-labelledby="ModalLabel_tier"
-                             aria-modal="true"
-                             aria-hidden="true">
+                                                <!-- ✅ Liens vers différents services de cartes -->
+                                                <nav class="map-links" aria-label="Services de navigation vers le lieu">
+                                                    <a href="https://www.google.com/maps/search/{{ encoded_address }}" 
+                                                       class="map-link"
+                                                       target="_blank" 
+                                                       rel="noopener noreferrer"
+                                                       aria-label="Ouvrir dans Google Maps : {{ full_address }}">
+                                                        <i class="bi bi-map" aria-hidden="true"></i>
+                                                        Google Maps
+                                                    </a>
+                                                    
+                                                    <a href="https://www.openstreetmap.org/search?query={{ encoded_address }}" 
+                                                       class="map-link"
+                                                       target="_blank" 
+                                                       rel="noopener noreferrer"
+                                                       aria-label="Ouvrir dans OpenStreetMap : {{ full_address }}">
+                                                        <i class="bi bi-globe" aria-hidden="true"></i>
+                                                        OpenStreetMap
+                                                    </a>
+                                                    
+                                                    <a href="https://maps.apple.com/?q={{ encoded_address }}" 
+                                                       class="map-link"
+                                                       target="_blank" 
+                                                       rel="noopener noreferrer"
+                                                       aria-label="Ouvrir dans Apple Plans : {{ full_address }}">
+                                                        <i class="bi bi-phone" aria-hidden="true"></i>
+                                                        Apple Plans
+                                                    </a>
+                                                </nav>
+                                            </div>
+                                        {% endif %}
+
+                                        <!-- ✅ Alternative textuelle pour accessibilité -->
+                                        <details class="mt-3">
+                                            <summary class="btn btn-sm btn-outline-light" 
+                                                     aria-label="Afficher les informations d'accès détaillées">
+                                                <i class="bi bi-universal-access" aria-hidden="true"></i>
+                                                Informations d'accès
+                                            </summary>
+                                            <div class="mt-2 p-3 bg-dark rounded">
+                                                <h6>Comment s'y rendre :</h6>
+                                                <ul class="text-start">
+                                                    <li><strong>Adresse complète :</strong> {{ full_address }}</li>
+                                                    <li><strong>Transport en commun :</strong> 
+                                                        Consultez les horaires sur 
+                                                        <a href="https://www.lignesdazur.com/" 
+                                                           target="_blank" 
+                                                           rel="noopener noreferrer"
+                                                           class="text-white text-decoration-underline">
+                                                            Lignes d'Azur
+                                                        </a>
+                                                    </li>
+                                                    <li><strong>Parking :</strong> Vérifiez la disponibilité des places dans les environs</li>
+                                                    <li><strong>Accessibilité PMR :</strong> Nous nous efforçons de rendre nos événements accessibles à tous</li>
+                                                </ul>
+                                                <p><small>
+                                                    Pour toute question d'accessibilité, 
+                                                    <a href="{{ path('app_contact') }}" class="text-white text-decoration-underline">
+                                                        contactez-nous
+                                                    </a>.
+                                                </small></p>
+                                            </div>
+                                        </details>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </section>
+                        {% endif %}
+
+                        <!-- ✅ Section bouton de réservation -->
+                        <section class="col-12 text-center" 
+                                 role="region" 
+                                 aria-labelledby="booking-section">
+                            <h3 id="booking-section" class="visually-hidden">Réservation</h3>
+                            
+                            {% if data_actu.saleEndDate is defined and data_actu.saleEndDate < "now"|date('Y-m-d') %}
+                                <div class="alert alert-warning text-center" 
+                                     role="alert" 
+                                     aria-live="polite">
+                                    <strong>
+                                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                        <span>Les réservations sont fermées pour cet événement.</span>
+                                    </strong>
+                                    {% if data_actu.saleEndDate is defined %}
+                                        <p class="mb-0 mt-2">
+                                            Date limite de réservation dépassée : 
+                                            <time datetime="{{ data_actu.saleEndDate|date('Y-m-d\\TH:i:sP') }}">
+                                                {{ data_actu.saleEndDate|format_datetime('full', 'short', locale='fr', timezone='Europe/Paris') }}
+                                            </time>
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <button class="btn btn-outline-gradient text-white fw-bold shadow-sm" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modal_tier" 
+                                        aria-haspopup="dialog" 
+                                        aria-controls="modal_tier"
+                                        aria-label="Ouvrir le formulaire de réservation pour {{ data_actu.title }}"
+                                        aria-describedby="booking-help">
+                                    <i class="bi bi-calendar-event-fill" aria-hidden="true"></i>
+                                    Réserver maintenant
+                                </button>
+                                <div id="booking-help" class="visually-hidden">
+                                    Cliquez pour ouvrir le formulaire de réservation dans une fenêtre modale
+                                </div>
+                                
+                                {% if data_actu.saleEndDate is defined %}
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-clock" aria-hidden="true"></i>
+                                            Réservation possible jusqu'au 
+                                            <time datetime="{{ data_actu.saleEndDate|date('Y-m-d\\TH:i:sP') }}">
+                                                {{ data_actu.saleEndDate|format_datetime('full', 'short', locale='fr', timezone='Europe/Paris') }}
+                                            </time>
+                                        </small>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </section>
+
+                        <!-- ✅ Modal de réservation accessible -->
+                        <div class="modal fade modal-lg" 
+                             id="modal_tier" 
+                             tabindex="-1" 
+                             role="dialog" 
+                             aria-labelledby="ModalLabel_tier" 
+                             aria-modal="true" 
+                             aria-hidden="true"
+                             aria-describedby="modal-description">
                             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                                 <div class="modal-content">
                                     <header class="modal-header">
-                                        <h1 class="modal-title fs-5" id="ModalLabel_tier">
-                                            {{ data_actu.title }}
-                                        </h1>
-                                        <button type="button"
-                                                class="btn-close"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Fermer la fenêtre de réservation"></button>
+                                        <h2 class="modal-title fs-5" id="ModalLabel_tier">
+                                            Réservation : {{ data_actu.title }}
+                                        </h2>
+                                        <button type="button" 
+                                                class="btn-close" 
+                                                data-bs-dismiss="modal" 
+                                                aria-label="Fermer la fenêtre de réservation pour {{ data_actu.title }}"></button>
                                     </header>
-                                    <div class="modal-body p-0">
-                                        <iframe id="haWidget"
-                                                title="Formulaire de réservation pour {{ data_actu.title }}"
-                                                src="{{ data_actu.widgetFullUrl }}"
-                                                class="w-100 border-0"
-                                                style="height: 80vh;">
-                                        </iframe>
+                                    <div class="modal-body p-0" id="modal-description">
+                                        <div class="visually-hidden">
+                                            Formulaire de réservation pour {{ data_actu.title }}. 
+                                            Utilisez Tab pour naviguer dans le formulaire.
+                                            Appuyez sur Échap pour fermer cette fenêtre.
+                                        </div>
+                                        <iframe id="haWidget" 
+                                                title="Formulaire de réservation interactif pour {{ data_actu.title }}" 
+                                                src="{{ data_actu.widgetFullUrl }}" 
+                                                class="w-100 border-0" 
+                                                style="height: 80vh;"
+                                                aria-label="Formulaire de réservation externe HelloAsso"
+                                                onload="this.focus(); window.addEventListener('message', e => { if(e.data.height) this.style.height = e.data.height + 'px'; })"></iframe>
                                     </div>
+                                    <footer class="modal-footer">
+                                        <button type="button" 
+                                                class="btn-asso" 
+                                                data-bs-dismiss="modal"
+                                                aria-label="Fermer la fenêtre de réservation">
+                                            <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                            Fermer
+                                        </button>
+                                    </footer>
                                 </div>
                             </div>
                         </div>
 
                     </article>
+                {% else %}
+                    <!-- ✅ Message si ce n'est pas un événement -->
+                    <div class="alert alert-info text-center" role="alert">
+                        <h3 class="alert-heading">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            Information
+                        </h3>
+                        <p class="mb-0">Ce contenu n'est pas un événement réservable.</p>
+                    </div>
                 {% endif %}
 
-                <!-- Bouton retour -->
-                <nav class="col-12 mt-4 text-center pb-5" aria-label="Navigation secondaire">
+                <!-- ✅ Navigation de retour accessible -->
+                <nav class="col-12 mt-4 text-center pb-5" 
+                     role="navigation" 
+                     aria-label="Navigation de retour">
                     {% if app.request.headers.get('Referer') %}
-                        <a class="text-white shadow-sm"
-                           href="{{ app.request.headers.get('Referer')|e('html_attr') }}"
-                           aria-label="Retourner à la page précédente">
-                            Retourner à la page précédente.
+                        <a class="text text-decoration-underline shadow-sm" 
+                           href="{{ app.request.headers.get('Referer')|e('html_attr') }}" 
+                           aria-label="Retourner à la page précédente : liste des événements">
+                            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                            Retourner à la page précédente
                         </a>
                     {% else %}
-                        <p class="text-muted">Impossible de retourner à la page précédente.</p>
+                        <div role="status" aria-live="polite">
+                            <p class="text-muted" role="alert">
+                                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                <a href="{{ path('app_billetteries') }}" 
+                                   class="text-decoration-underline"
+                                   aria-label="Retourner à la liste des événements">
+                                    Retourner aux événements
+                                </a>
+                            </p>
+                        </div>
                     {% endif %}
                 </nav>
 

@@ -1,216 +1,57 @@
 {# templates/profil/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Profil de l'utilisateur{% endblock %}
+{% block title %}Profil utilisateur - {{ user.email }} - GNUT 06{% endblock %}
 
-{% block body %}
-     <div class="w-100 bg-main pt-5 pb-5"> <!-- Ajout de pb-5 -->
-        <div class="container my-4 pt-3 bg-light rounded-5 shadow mb-0"> <!-- Ajout de mb-0 -->
-
-            <div class="row flex-column flex-md-row">
-                <!-- ✅ Colonne gauche : navigation -->
-                <div class="col-md-3 col-sm-4 my-2 sidebar-nav">
-                    <ul class="nav nav-tabs flex-column text-center">
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'profile' or app.request.attributes.get('_route') == 'app_profil') ? ' active' : '' }}"
-                               href="{{ path('app_profil') }}">
-                                <img src="{{ asset('images/webp/element-4.svg') }}" alt="Profil" role="img" aria-label="Photo de profil" style="width:16px; height:16px;">
-                                <span class="mt-1" style="font-size: 16px">Profil</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'orders') ? ' active' : '' }}"
-                               href="{{ path('app_profil_page', {'page': '1', 'donnees': 'orders'}) }}">
-                                <img src="{{ asset('images/webp/cart-frame.svg') }}" alt="Commandes" style="width:16px; height:16px;">
-                                <span class="mt-1" style="font-size: 16px">Commandes</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'payments') ? ' active' : '' }}"
-                               href="{{ path('app_profil_page', {'page': '1', 'donnees': 'payments'}) }}">
-                                <img src="{{ asset('images/webp/cash.svg') }}" alt="Paiements" style="width:16px; height:16px;">
-                                <span class="mt-1" style="font-size: 16px">Paiements</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- ✅ Colonne droite : contenu dynamique -->
-                <div class="col-md-9 text-start p-3">
-
-                    <p class="fs-5 mb-1">Bienvenue, {{ user.email }}</p>
-                    <p id="date" class="text-muted"></p>
-
-                    <div class="container rounded mb-4">
-                        <img src="{{ asset('images/webp/degrade.png') }}" class="rounded-top-3 mb-5" style="height: 100px; width: 100%;" alt="">
-
-                        <div class="d-flex align-items-center">
-                            {% if user.profilePicture %}
-                                <!-- ✅ Photo de profil existante -->
-                                <img src="{{ asset('uploads/profilePictures/' ~ user.profilePicture) }}"
-                                     class="rounded-circle shadow me-3"
-                                     style="width: 150px; height: 150px; object-fit: cover;">
-                                <div>
-                                    <a href="{{ path('edit_profile_picture') }}" class="btn btn-primary me-2">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="{{ path('delete_profile_picture') }}"
-                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer l\'image ?')"
-                                       class="btn btn-danger">
-                                        <i class="bi bi-trash" style="color:white"></i>
-                                    </a>
-                                </div>
-                            {% else %}
-                                <!-- ✅ Photo par défaut -->
-                                <div class="d-flex flex-column align-items-start">
-                                    <img src="{{ asset('images/user_profil.jpg') }}"
-                                         class="rounded-circle shadow mb-2"
-                                         style="width: 95px; height: 95px; object-fit: cover;">
-                                    <a href="{{ path('edit_profile_picture') }}"
-                                       class="shadow rounded-circle bg-light d-flex justify-content-center align-items-center linkedin-circle"
-                                       style="width:36px;height:36px;">
-                                        <img src="{{ asset('images/webp/edit-03.svg') }}" style="width:18px;">
-                                    </a>
-                                </div>
-                            {% endif %}
-
-                            <div class="ms-4">
-                                <p class="fs-4">
-                                    {{ user.email }}
-                                    <i class="bi bi-patch-check {{ user.isVerified == 1 ? 'text-success' : 'text-danger' }}"></i>
-                                    {% if user.isVerified == 0 %}
-                                        <a href="{{ path('app_verify_email_renew', {'id': user.id}) }}">Demander un nouvel envoi d'email de confirmation</a>
-                                    {% endif %}
-                                </p>
-                                <p>Identifiant : {{ user.id }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {# 🔄 Contenu dynamique selon le menu cliqué #}
-                    {% set section = app.request.attributes.get('donnees') ?? (app.request.attributes.get('_route') == 'app_profil' ? 'profile' : '') %}
-
-                    {% if section == 'profile' %}
-                        <!-- 🧍‍♂️ Formulaire du profil -->
-                        <div class="container my-5 p-4 bg-light rounded shadow">
-                            <form action="#" method="post" class="text-start">
-                                <div class="row">
-                                    <!-- Colonne gauche -->
-                                    <div class="col-12 col-md-6">
-                                        <div class="mb-3">
-                                            <label for="firstName" class="form-label">
-                                                Prénom <span style="color:#FF1DBB">*</span>
-                                            </label>
-                                            <input type="text" class="form-control" id="firstName" name="firstName"
-                                                   placeholder="Entrez votre prénom"
-                                                   value="{{ data_items['data'][0].payer.firstName ?? '' }}">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="address" class="form-label">
-                                                Adresse <span style="color:#FF1DBB">*</span>
-                                            </label>
-                                            <input type="text" class="form-control" id="address" name="address"
-                                                   placeholder="Entrez votre adresse"
-                                                   value="{{ data_items['data'][0].payer.address ?? '' }}">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="zipCode" class="form-label">
-                                                Code postal <span style="color:#FF1DBB">*</span>
-                                            </label>
-                                            <input type="text" class="form-control" id="zipCode" name="zipCode"
-                                                   placeholder="Entrez votre code postal"
-                                                   value="{{ data_items['data'][0].payer.zipCode ?? '' }}">
-                                        </div>
-                                    </div>
-
-                                    <!-- Colonne droite -->
-                                    <div class="col-12 col-md-6">
-                                        <div class="mb-3">
-                                            <label for="lastName" class="form-label">
-                                                Nom <span style="color:#FF1DBB">*</span>
-                                            </label>
-                                            <input type="text" class="form-control" id="lastName" name="lastName"
-                                                   placeholder="Entrez votre nom"
-                                                   value="{{ data_items['data'][0].payer.lastName ?? '' }}">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="city" class="form-label">
-                                                Ville <span style="color:#FF1DBB">*</span>
-                                            </label>
-                                            <input type="text" class="form-control" id="city" name="city"
-                                                   placeholder="Entrez votre ville"
-                                                   value="{{ data_items['data'][0].payer.city ?? '' }}">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="phone" class="form-label">
-                                                Numéro de téléphone <span style="color:#FF1DBB">*</span>
-                                            </label>
-                                            <input type="text" class="form-control" id="phone" name="phone"
-                                                   placeholder="Entrez votre numéro de téléphone"
-                                                   value="{{ data_items['data'][0].payer.phone ?? '' }}">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- ✅ Mention des champs obligatoires -->
-                                <p class="mt-3 text-center" style="color:#FF1DBB;">
-                                    Champs obligatoires <span>*</span>
-                                </p>
-                                <div class="text-center mt-4">
-                                    <button type="submit" class="btn btn-success px-4">
-                                        <i class="bi bi-save"></i> Enregistrer les modifications
-                                    </button>
-                                </div>
-
-                            </form>
-                        </div>
-
-                    {% elseif section == 'orders' %}
-                        <!-- 🛒 Section Commandes -->
-                        <div class="container my-5">
-                            <h4>Mes dernières commandes</h4>
-                            {% if data_items is defined and data_items['data'] is not empty %}
-                                {% for item in data_items['data'] %}
-                                    {% include 'profil/orders.html.twig' %}
-                                {% endfor %}
-                            {% else %}
-                                <p>Aucune commande à afficher.</p>
-                            {% endif %}
-                        </div>
-
-                    {% elseif section == 'payments' %}
-                        <!-- 💶 Section Paiements -->
-                        <div class="container my-5">
-                            <h4>Mes paiements</h4>
-                            {% if data_items is defined and data_items['data'] is not empty %}
-                                {% for item in data_items['data'] %}
-                                    {% include 'profil/payments.html.twig' %}
-                                {% endfor %}
-                            {% else %}
-                                <p>Aucun paiement à afficher.</p>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                </div> <!-- Fin colonne droite -->
-            </div> <!-- Fin row -->
-        </div> <!-- Fin container -->
-    </div>
- <style>
-        /* Correction pour éviter la bande blanche */
-        .w-100.bg-main {
-            min-height: calc(100vh - 200px); /* Ajustez selon la hauteur de votre header/footer */
+{% block stylesheets %}
+    {{ parent() }}
+     <style>
+        /* ✅ CORRECTION WCAG 2.1 AA - Focus visible obligatoire */
+        .nav-link:focus,
+        .btn:focus,
+        input:focus,
+        a:focus {
+            outline: 3px solid #F86CF8 !important;
+            outline-offset: 2px !important;
+            box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
         }
 
-        /* ✅ Taille de la colonne */
+        /* ✅ CORRECTION - Skip links */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #000000;
+            color: #ffffff;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 0 0 4px 4px;
+            z-index: 1000;
+            font-weight: bold;
+        }
+
+        .skip-link:focus {
+            top: 0;
+            outline: 3px solid #F86CF8;
+        }
+
+        /* ✅ CORRECTION - Layout responsive */
+        .w-100.bg-main {
+            min-height: calc(100vh - 200px);
+            margin-bottom: 0 !important;
+        }
+
+        /* ✅ CORRECTION - Sidebar responsive */
         .sidebar-nav {
-            flex: 0 0 200px;
+            flex: 0 0 220px;
             max-width: 220px;
+        }
+
+        @media (max-width: 1199px) {
+            .sidebar-nav {
+                flex: 0 0 200px;
+                max-width: 200px;
+            }
         }
 
         @media (max-width: 991px) {
@@ -226,45 +67,859 @@
                 max-width: 100%;
                 margin-bottom: 1rem;
             }
+
+            .nav-tabs {
+                flex-direction: row !important;
+                justify-content: space-around;
+            }
+
+            .nav-tabs .nav-item {
+                flex: 1;
+                margin-bottom: 0 !important;
+                margin-right: 0.5rem;
+            }
+
+            .nav-tabs .nav-item:last-child {
+                margin-right: 0;
+            }
         }
 
-        /* ✅ Apparence des onglets */
+        /* ✅ CORRECTION - Navigation accessible */
         .nav-tabs {
             border-bottom: none !important;
         }
 
         .nav-tabs .nav-link {
-            border: none !important;
-            border-radius: 10px;
-            transition: background-color 0.2s ease;
-            font-size: 16px;
-        }
-
-        .nav-tabs .nav-link.active {
-            background-color: #f0f0f0;
-            font-weight: 600;
+            border: 2px solid transparent !important;
+            border-radius: 10px !important;
+            transition: all 0.3s ease !important;
+            font-size: 16px !important;
+            padding: 0.75rem 1rem !important;
+            min-height: 60px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            text-decoration: none !important;
+            color: #495057 !important;
         }
 
         .nav-tabs .nav-link:hover {
-            background-color: #f8f9fa;
+            background-color: #f8f9fa !important;
+            border-color: #dee2e6 !important;
+            color: #495057 !important;
         }
 
-        /* Correction spécifique pour éviter les espaces blancs */
+        .nav-tabs .nav-link.active {
+            background-color: #F86CF8 !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            border-color: #F86CF8 !important;
+        }
+
+        .nav-tabs .nav-link img {
+            filter: brightness(0) saturate(100%) invert(31%) sepia(16%) saturate(563%) hue-rotate(202deg) brightness(94%) contrast(86%);
+        }
+
+        .nav-tabs .nav-link.active img {
+            filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7500%) hue-rotate(180deg) brightness(100%) contrast(100%);
+        }
+
+        /* ✅ CORRECTION - Profil header responsive */
+        .profile-header {
+            background: var(--Bubble-Gum, linear-gradient(90deg, #F86CF8 0%, #64CEF5 100%));
+            border-radius: 1rem 1rem 0 0;
+            height: 120px;
+            position: relative;
+        }
+
+        .profile-avatar {
+            position: relative;
+            margin-top: -60px;
+        }
+
+        .profile-avatar img {
+            border: 4px solid #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ✅ CORRECTION - Boutons accessibles */
+        .btn {
+            min-height: 44px !important;
+            min-width: 44px !important;
+            border: 2px solid transparent !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .btn-primary {
+            background-color: #F86CF8 !important;
+            border-color: #F86CF8 !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #e055d6 !important;
+            border-color: #e055d6 !important;
+        }
+
+        .btn-success {
+            background-color: #198754 !important;
+            border-color: #198754 !important;
+        }
+
+        .btn-danger {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+        }
+
+        /* ✅ CORRECTION - Formulaire accessible */
+        .form-control {
+            border: 2px solid #ced4da !important;
+            border-radius: 0.375rem !important;
+            padding: 0.75rem !important;
+            font-size: 1rem !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+        }
+
+        .form-control:focus {
+            border-color: #F86CF8 !important;
+            box-shadow: 0 0 0 0.25rem rgba(248, 108, 248, 0.25) !important;
+        }
+
+        .form-control:invalid {
+            border-color: #dc3545 !important;
+        }
+
+        .form-control:valid {
+            border-color: #198754 !important;
+        }
+
+        .form-label {
+            font-weight: 600 !important;
+            margin-bottom: 0.5rem !important;
+            color: #212529 !important;
+        }
+
+        .required-field {
+            color: #dc3545 !important;
+            font-weight: bold !important;
+        }
+
+        /* ✅ CORRECTION - Contraste des textes amélioré */
+        .text-muted {
+            color: #6c757d !important;
+        }
+
+        /* ✅ CORRECTION - Titres et textes sur fond clair */
+        #profile-title,
+        #profile-info-title,
+        #profile-form-title,
+        #orders-title,
+        #payments-title {
+            color: #212529 !important;
+        }
+
+        /* ✅ CORRECTION - Textes dans les cartes */
+        .profile-card .text-muted,
+        .profile-card p,
+        .profile-card .h4,
+        .profile-card .h6 {
+            color: #495057 !important;
+        }
+
+        /* ✅ CORRECTION - Textes d'aide formulaire */
+        .form-text {
+            color: #495057 !important;
+            font-size: 0.875rem !important;
+        }
+
+        /* ✅ CORRECTION - Identifiant utilisateur */
+        .profile-card .text-muted strong {
+            color: #212529 !important;
+        }
+
+        /* ✅ CORRECTION - Messages d'alerte */
+        .alert-warning {
+            color: #664d03 !important;
+            background-color: #fff3cd !important;
+            border-color: #ffecb5 !important;
+        }
+
+        .alert-warning .h6 {
+            color: #664d03 !important;
+        }
+
+        .alert-info {
+            color: #055160 !important;
+            background-color: #d1ecf1 !important;
+            border-color: #b8daff !important;
+        }
+
+        /* ✅ CORRECTION - Description sous titres */
+        .text-muted p {
+            color: #6c757d !important;
+        }
+
+        /* ✅ CORRECTION - Texte de bienvenue */
+        header .text-muted {
+            color: #6c757d !important;
+        }
+
+        /* ✅ CORRECTION - Texte dans les alertes */
+        .alert p,
+        .alert .mb-0 {
+            color: inherit !important;
+        }
+
+        /* ✅ CORRECTION - Titre des sections */
+        section header h3 {
+            color: #212529 !important;
+        }
+
+        /* ✅ CORRECTION - Paragraphes de description */
+        section header p.text-muted {
+            color: #6c757d !important;
+        }
+
+        /* ✅ CORRECTION - Texte des boutons d'aide */
+        #save-help,
+        #form-help {
+            color: #495057 !important;
+        }
+
+        /* ✅ CORRECTION - Messages d'erreur */
+        .invalid-feedback {
+            color: #dc3545 !important;
+        }
+
+        /* ✅ CORRECTION - Texte des cartes sur fond blanc */
+        .card,
+        .profile-card {
+            color: #212529 !important;
+        }
+
+        .card .text-muted,
+        .profile-card .text-muted {
+            color: #6c757d !important;
+        }
+
+        /* ✅ CORRECTION - Override des couleurs Bootstrap */
+        .bg-light {
+            color: #212529 !important;
+        }
+
+        .bg-light .text-muted {
+            color: #6c757d !important;
+        }
+
+        /* ✅ CORRECTION - Status badges avec meilleur contraste */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-verified {
+            background-color: #d1edff;
+            color: #084298 !important;
+            border: 1px solid #9ec5fe;
+        }
+
+        .status-unverified {
+            background-color: #f8d7da;
+            color: #58151c !important;
+            border: 1px solid #f1aeb5;
+        }
+
+        /* ✅ CORRECTION - Placeholder des inputs */
+        .form-control::placeholder {
+            color: #6c757d !important;
+            opacity: 0.7;
+        }
+
+        /* ✅ CORRECTION - Liens dans les alertes */
+        .alert-link {
+            color: inherit !important;
+            font-weight: 600 !important;
+            text-decoration: underline !important;
+        }
+
+        /* ✅ CORRECTION - Cards responsive */
+        .profile-card {
+            border: 2px solid #e9ecef !important;
+            border-radius: 1rem !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* ✅ CORRECTION - Mobile responsiveness */
+        @media (max-width: 575px) {
+            .container {
+                padding: 0.5rem !important;
+            }
+
+            .profile-header {
+                height: 80px;
+            }
+
+            .profile-avatar {
+                margin-top: -40px;
+                text-align: center;
+            }
+
+            .profile-avatar img {
+                width: 80px !important;
+                height: 80px !important;
+            }
+
+            .fs-4 {
+                font-size: 1.25rem !important;
+            }
+
+            .nav-tabs .nav-link {
+                font-size: 14px !important;
+                padding: 0.5rem !important;
+                min-height: 50px !important;
+            }
+
+            .nav-tabs .nav-link span {
+                font-size: 12px !important;
+            }
+
+            .form-control {
+                font-size: 16px !important; /* Évite le zoom sur iOS */
+            }
+        }
+
+        /* ✅ Animation respectueuse des préférences */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ✅ Support haut contraste */
+        @media (prefers-contrast: high) {
+            .nav-tabs .nav-link {
+                border: 3px solid #000000 !important;
+            }
+
+            .nav-tabs .nav-link.active {
+                border: 3px solid #F86CF8 !important;
+                background-color: #000000 !important;
+                color: #ffffff !important;
+            }
+
+            .form-control {
+                border: 3px solid #000000 !important;
+            }
+
+            .btn {
+                border: 3px solid !important;
+            }
+
+            .status-verified {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                border: 3px solid #000000 !important;
+            }
+
+            .status-unverified {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                border: 3px solid #000000 !important;
+            }
+        }
+
+        /* ✅ Correction pour éviter les espaces blancs */
         body {
             margin: 0;
             padding: 0;
         }
-        
-        .w-100.bg-main {
-            margin-bottom: 0 !important;
-        }
     </style>
+{% endblock %}
 
+{% block body %}
+    <!-- ✅ CORRECTION - Skip links ajoutés -->
+    <nav aria-label="Navigation rapide" class="visually-hidden-focusable">
+        <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+        <a href="#profile-nav" class="skip-link">Aller à la navigation du profil</a>
+        <a href="#profile-content" class="skip-link">Aller au contenu du profil</a>
+    </nav>
+
+    <div class="w-100 bg-main pt-5 pb-5">
+        <div class="container my-4 pt-3 bg-light rounded-5 shadow mb-0">
+
+            <main id="main-content" role="main" aria-labelledby="profile-title">
+                <div class="row flex-column flex-md-row">
+                    
+                    <!-- ✅ CORRECTION - Navigation accessible -->
+                    <nav id="profile-nav" 
+                         class="col-md-3 col-sm-4 my-2 sidebar-nav" 
+                         aria-label="Navigation du profil utilisateur"
+                         role="navigation">
+                        
+                        <h2 class="visually-hidden">Menu du profil</h2>
+                        
+                        <ul class="nav nav-tabs flex-column text-center" 
+                            role="tablist" 
+                            aria-label="Sections du profil">
+                            
+                            <li class="nav-item mb-2" role="presentation">
+                                <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'profile' or app.request.attributes.get('_route') == 'app_profil') ? ' active' : '' }}"
+                                   href="{{ path('app_profil') }}"
+                                   role="tab"
+                                   aria-controls="profile-content"
+                                   aria-selected="{{ (app.request.attributes.get('donnees') == 'profile' or app.request.attributes.get('_route') == 'app_profil') ? 'true' : 'false' }}"
+                                   aria-label="Voir et modifier les informations de profil">
+                                    <img src="{{ asset('images/webp/element-4.svg') }}" 
+                                         alt="" 
+                                         aria-hidden="true" 
+                                         style="width:18px; height:18px;">
+                                    <span class="mt-1">Profil</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item mb-2" role="presentation">
+                                <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'orders') ? ' active' : '' }}"
+                                   href="{{ path('app_profil_page', {'page': '1', 'donnees': 'orders'}) }}"
+                                   role="tab"
+                                   aria-controls="profile-content"
+                                   aria-selected="{{ (app.request.attributes.get('donnees') == 'orders') ? 'true' : 'false' }}"
+                                   aria-label="Consulter l'historique de vos commandes">
+                                    <img src="{{ asset('images/webp/cart-frame.svg') }}" 
+                                         alt="" 
+                                         aria-hidden="true" 
+                                         style="width:18px; height:18px;">
+                                    <span class="mt-1">Commandes</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item mb-2" role="presentation">
+                                <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'payments') ? ' active' : '' }}"
+                                   href="{{ path('app_profil_page', {'page': '1', 'donnees': 'payments'}) }}"
+                                   role="tab"
+                                   aria-controls="profile-content"
+                                   aria-selected="{{ (app.request.attributes.get('donnees') == 'payments') ? 'true' : 'false' }}"
+                                   aria-label="Consulter l'historique de vos paiements">
+                                    <img src="{{ asset('images/webp/cash.svg') }}" 
+                                         alt="" 
+                                         aria-hidden="true" 
+                                         style="width:18px; height:18px;">
+                                    <span class="mt-1">Paiements</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <!-- ✅ CORRECTION - Contenu principal accessible -->
+                    <div id="profile-content" 
+                         class="col-md-9 text-start p-3" 
+                         role="tabpanel" 
+                         aria-labelledby="profile-title">
+
+                        <!-- ✅ CORRECTION - En-tête utilisateur amélioré -->
+                        <header class="mb-4">
+                            <h1 id="profile-title" class="fs-4 mb-1">
+                                Bienvenue, {{ user.email }}
+                            </h1>
+                            <p id="current-date" 
+                               class="text-muted" 
+                               aria-live="polite" 
+                               aria-label="Date du jour"></p>
+                        </header>
+
+                        <!-- ✅ CORRECTION - Carte profil accessible -->
+                        <section class="profile-card rounded mb-4" 
+                                 aria-labelledby="profile-info-title">
+                            
+                            <div class="profile-header"></div>
+
+                            <div class="profile-avatar px-3">
+                                <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start">
+                                    
+                                    {% if user.profilePicture %}
+                                        <!-- ✅ Photo de profil existante -->
+                                        <div class="text-center">
+                                            <img src="{{ asset('uploads/profilePictures/' ~ user.profilePicture) }}"
+                                                 class="rounded-circle"
+                                                 style="width: 120px; height: 120px; object-fit: cover;"
+                                                 alt="Photo de profil de {{ user.email }}"
+                                                 role="img">
+                                            <div class="mt-3">
+                                                <a href="{{ path('edit_profile_picture') }}" 
+                                                   class="btn btn-primary me-2" 
+                                                   aria-label="Modifier la photo de profil">
+                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                                    <span class="d-none d-sm-inline ms-1">Modifier</span>
+                                                </a>
+                                                <a href="{{ path('delete_profile_picture') }}"
+                                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer votre photo de profil ?')"
+                                                   class="btn btn-danger"
+                                                   aria-label="Supprimer la photo de profil">
+                                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                                    <span class="d-none d-sm-inline ms-1">Supprimer</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <!-- ✅ Photo par défaut -->
+                                        <div class="text-center">
+                                            <img src="{{ asset('images/user_profil.jpg') }}"
+                                                 class="rounded-circle"
+                                                 style="width: 120px; height: 120px; object-fit: cover;"
+                                                 alt="Photo de profil par défaut"
+                                                 role="img">
+                                            <div class="mt-3">
+                                                <a href="{{ path('edit_profile_picture') }}"
+                                                   class="btn btn-primary"
+                                                   aria-label="Ajouter une photo de profil">
+                                                    <i class="bi bi-camera" aria-hidden="true"></i>
+                                                    <span class="d-none d-sm-inline ms-1">Ajouter une photo</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    <!-- ✅ CORRECTION - Informations utilisateur -->
+                                    <div class="ms-md-4 mt-3 mt-md-0 text-center text-md-start">
+                                        <h2 id="profile-info-title" class="fs-4 mb-3">
+                                            {{ user.email }}
+                                            
+                                            {% if user.isVerified == 1 %}
+                                                <span class="status-badge status-verified" 
+                                                      aria-label="Compte vérifié">
+                                                    <i class="bi bi-patch-check" aria-hidden="true"></i>
+                                                    Vérifié
+                                                </span>
+                                            {% else %}
+                                                <span class="status-badge status-unverified" 
+                                                      aria-label="Compte non vérifié">
+                                                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                                    Non vérifié
+                                                </span>
+                                            {% endif %}
+                                        </h2>
+                                        
+                                        <p class="text-muted mb-2">
+                                            <strong>Identifiant :</strong> {{ user.id }}
+                                        </p>
+                                        
+                                        {% if user.isVerified == 0 %}
+                                            <div class="alert alert-warning" role="alert">
+                                                <h3 class="h6 mb-2">
+                                                    <i class="bi bi-envelope" aria-hidden="true"></i>
+                                                    Vérification requise
+                                                </h3>
+                                                <p class="mb-2">Votre compte n'est pas encore vérifié.</p>
+                                                <a href="{{ path('app_verify_email_renew', {'id': user.id}) }}" 
+                                                   class="btn btn-warning btn-sm"
+                                                   aria-label="Renvoyer l'email de confirmation pour vérifier votre compte">
+                                                    <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+                                                    Renvoyer l'email de confirmation
+                                                </a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {# ✅ CORRECTION - Contenu dynamique selon le menu cliqué #}
+                        {% set section = app.request.attributes.get('donnees') ?? (app.request.attributes.get('_route') == 'app_profil' ? 'profile' : '') %}
+
+                        {% if section == 'profile' %}
+                            <!-- ✅ CORRECTION - Formulaire du profil accessible -->
+                            <section class="profile-card p-4" 
+                                     aria-labelledby="profile-form-title">
+                                
+                                <header class="mb-4">
+                                    <h3 id="profile-form-title" class="h4">
+                                        <i class="bi bi-person-gear me-2" aria-hidden="true"></i>
+                                        Informations personnelles
+                                    </h3>
+                                    <p class="text-muted">
+                                        Complétez vos informations pour personnaliser votre profil.
+                                    </p>
+                                </header>
+
+                                <form action="#" 
+                                      method="post" 
+                                      class="needs-validation" 
+                                      novalidate
+                                      aria-describedby="form-help">
+                                    
+                                    <fieldset>
+                                        <legend class="visually-hidden">Informations personnelles</legend>
+                                        
+                                        <div class="row">
+                                            <!-- Colonne gauche -->
+                                            <div class="col-12 col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="firstName" class="form-label">
+                                                        Prénom <span class="required-field" aria-label="obligatoire">*</span>
+                                                    </label>
+                                                    <input type="text" 
+                                                           class="form-control" 
+                                                           id="firstName" 
+                                                           name="firstName"
+                                                           placeholder="Entrez votre prénom"
+                                                           value="{{ data_items['data'][0].payer.firstName ?? '' }}"
+                                                           required
+                                                           autocomplete="given-name"
+                                                           aria-describedby="firstName-error"
+                                                           aria-invalid="false">
+                                                    <div id="firstName-error" class="invalid-feedback" role="alert">
+                                                        Veuillez saisir votre prénom.
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="address" class="form-label">
+                                                        Adresse <span class="required-field" aria-label="obligatoire">*</span>
+                                                    </label>
+                                                    <input type="text" 
+                                                           class="form-control" 
+                                                           id="address" 
+                                                           name="address"
+                                                           placeholder="Entrez votre adresse"
+                                                           value="{{ data_items['data'][0].payer.address ?? '' }}"
+                                                           required
+                                                           autocomplete="street-address"
+                                                           aria-describedby="address-error"
+                                                           aria-invalid="false">
+                                                    <div id="address-error" class="invalid-feedback" role="alert">
+                                                        Veuillez saisir votre adresse.
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="zipCode" class="form-label">
+                                                        Code postal <span class="required-field" aria-label="obligatoire">*</span>
+                                                    </label>
+                                                    <input type="text" 
+                                                           class="form-control" 
+                                                           id="zipCode" 
+                                                           name="zipCode"
+                                                           placeholder="Entrez votre code postal"
+                                                           value="{{ data_items['data'][0].payer.zipCode ?? '' }}"
+                                                           required
+                                                           autocomplete="postal-code"
+                                                           pattern="[0-9]{5}"
+                                                           aria-describedby="zipCode-help zipCode-error"
+                                                           aria-invalid="false">
+                                                    <div id="zipCode-help" class="form-text">
+                                                        Format : 5 chiffres (ex: 06000)
+                                                    </div>
+                                                    <div id="zipCode-error" class="invalid-feedback" role="alert">
+                                                        Veuillez saisir un code postal valide (5 chiffres).
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Colonne droite -->
+                                            <div class="col-12 col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="lastName" class="form-label">
+                                                        Nom <span class="required-field" aria-label="obligatoire">*</span>
+                                                    </label>
+                                                    <input type="text" 
+                                                           class="form-control" 
+                                                           id="lastName" 
+                                                           name="lastName"
+                                                           placeholder="Entrez votre nom"
+                                                           value="{{ data_items['data'][0].payer.lastName ?? '' }}"
+                                                           required
+                                                           autocomplete="family-name"
+                                                           aria-describedby="lastName-error"
+                                                           aria-invalid="false">
+                                                    <div id="lastName-error" class="invalid-feedback" role="alert">
+                                                        Veuillez saisir votre nom.
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="city" class="form-label">
+                                                        Ville <span class="required-field" aria-label="obligatoire">*</span>
+                                                    </label>
+                                                    <input type="text" 
+                                                           class="form-control" 
+                                                           id="city" 
+                                                           name="city"
+                                                           placeholder="Entrez votre ville"
+                                                           value="{{ data_items['data'][0].payer.city ?? '' }}"
+                                                           required
+                                                           autocomplete="address-level2"
+                                                           aria-describedby="city-error"
+                                                           aria-invalid="false">
+                                                    <div id="city-error" class="invalid-feedback" role="alert">
+                                                        Veuillez saisir votre ville.
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="phone" class="form-label">
+                                                        Numéro de téléphone <span class="required-field" aria-label="obligatoire">*</span>
+                                                    </label>
+                                                    <input type="tel" 
+                                                           class="form-control" 
+                                                           id="phone" 
+                                                           name="phone"
+                                                           placeholder="Entrez votre numéro de téléphone"
+                                                           value="{{ data_items['data'][0].payer.phone ?? '' }}"
+                                                           required
+                                                           autocomplete="tel"
+                                                           pattern="[0-9+\-\s\(\)]+"
+                                                           aria-describedby="phone-help phone-error"
+                                                           aria-invalid="false">
+                                                    <div id="phone-help" class="form-text">
+                                                        Format : 06 12 34 56 78 ou +33 6 12 34 56 78
+                                                    </div>
+                                                    <div id="phone-error" class="invalid-feedback" role="alert">
+                                                        Veuillez saisir un numéro de téléphone valide.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <!-- ✅ CORRECTION - Mention des champs obligatoires accessible -->
+                                    <div id="form-help" class="alert alert-info mt-3" role="status">
+                                        <p class="mb-0">
+                                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                                            Les champs marqués d'un astérisque (<span class="required-field">*</span>) sont obligatoires.
+                                        </p>
+                                    </div>
+
+                                    <div class="text-center mt-4">
+                                        <button type="submit" 
+                                                class="btn-asso px-4"
+                                                role="button"
+                                                aria-describedby="save-help">
+                                            <i class="bi bi-save me-2" aria-hidden="true"></i>
+                                            Enregistrer les modifications
+                                        </button>
+                                        <div id="save-help" class="form-text mt-2">
+                                            Vos informations seront mises à jour de manière sécurisée.
+                                        </div>
+                                    </div>
+                                </form>
+                            </section>
+
+                        {% elseif section == 'orders' %}
+                            <!-- ✅ CORRECTION - Section Commandes accessible -->
+                            <section aria-labelledby="orders-title">
+                                <header class="mb-4">
+                                    <h3 id="orders-title" class="h4">
+                                        <i class="bi bi-bag-check me-2" aria-hidden="true"></i>
+                                        Mes dernières commandes
+                                    </h3>
+                                </header>
+                                
+                                {% if data_items is defined and data_items['data'] is not empty %}
+                                    <div role="list" aria-label="Liste de vos commandes">
+                                        {% for item in data_items['data'] %}
+                                            <div role="listitem">
+                                                {% include 'profil/orders.html.twig' %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-info text-center" role="status">
+                                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                                        Aucune commande à afficher pour le moment.
+                                    </div>
+                                {% endif %}
+                            </section>
+
+                        {% elseif section == 'payments' %}
+                            <!-- ✅ CORRECTION - Section Paiements accessible -->
+                            <section aria-labelledby="payments-title">
+                                <header class="mb-4">
+                                    <h3 id="payments-title" class="h4">
+                                        <i class="bi bi-credit-card me-2" aria-hidden="true"></i>
+                                        Mes paiements
+                                    </h3>
+                                </header>
+                                
+                                {% if data_items is defined and data_items['data'] is not empty %}
+                                    <div role="list" aria-label="Liste de vos paiements">
+                                        {% for item in data_items['data'] %}
+                                            <div role="listitem">
+                                                {% include 'profil/payments.html.twig' %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-info text-center" role="status">
+                                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                                        Aucun paiement à afficher pour le moment.
+                                    </div>
+                                {% endif %}
+                            </section>
+                        {% endif %}
+                        
+                    </div> <!-- Fin contenu principal -->
+                </div> <!-- Fin row -->
+            </main>
+        </div> <!-- Fin container -->
+    </div>
+
+    <!-- ✅ CORRECTION - Script accessible pour la date -->
     <script>
-        // Récupère la date du jour
-        const today = new Date();
-        const options = {year: 'numeric', month: 'long', day: 'numeric'};
-        const formattedDate = today.toLocaleDateString('fr-FR', options);
-        document.getElementById('date').textContent = formattedDate;
+        document.addEventListener('DOMContentLoaded', function() {
+            // Affichage de la date du jour
+            const today = new Date();
+            const options = {
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                weekday: 'long'
+            };
+            const formattedDate = today.toLocaleDateString('fr-FR', options);
+            const dateElement = document.getElementById('current-date');
+            
+            if (dateElement) {
+                dateElement.textContent = formattedDate;
+                dateElement.setAttribute('aria-label', `Date du jour : ${formattedDate}`);
+            }
+
+            // Validation de formulaire accessible
+            const form = document.querySelector('.needs-validation');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        
+                        // Focus sur le premier champ invalide
+                        const firstInvalid = form.querySelector(':invalid');
+                        if (firstInvalid) {
+                            firstInvalid.focus();
+                        }
+                        
+                        // Annonce pour lecteurs d'écran
+                        const announcement = document.createElement('div');
+                        announcement.className = 'visually-hidden';
+                        announcement.setAttribute('aria-live', 'assertive');
+                        announcement.textContent = 'Veuillez corriger les erreurs dans le formulaire';
+                        document.body.appendChild(announcement);
+                        
+                        setTimeout(() => {
+                            document.body.removeChild(announcement);
+                        }, 3000);
+                    }
+                    
+                    form.classList.add('was-validated');
+                }, false);
+            }
+
+            console.log('✅ Page profil accessible initialisée');
+        });
     </script>
 {% endblock %}
