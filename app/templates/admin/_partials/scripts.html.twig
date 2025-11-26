@@ -1,9 +1,12 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('.loader').style.display = 'block';
-	setTimeout(() => {
-		document.querySelector('.loader').style.display = 'none';
-	}, 1000);
+    const loader = document.querySelector('.loader');
+    if (loader) {
+        loader.style.display = 'block';
+        setTimeout(() => {
+            loader.style.display = 'none';
+        }, 1000);
+    }
 });
 
 // Définissez l'URL de l'image par défaut en dehors du gestionnaire d'événements

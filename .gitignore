@@ -8,6 +8,14 @@
 /app/vendor/
 /app/public/bundles/
 /app/node_modules/
+/app/public/build/
+
+# SSL Certificates (sécurité)
+/app/ssl/
+*.key
+*.crt
+*.pem
+*.p12
 
 # IDE
 .vscode/
