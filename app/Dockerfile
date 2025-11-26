@@ -70,11 +70,12 @@ RUN npm install -g npm@11.2.0
 EXPOSE 443
 RUN apt-get update && apt-get install -y openssl
 RUN mkdir -p /etc/apache2/ssl && \
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
     -keyout /etc/apache2/ssl/apache.key \
     -out /etc/apache2/ssl/apache.crt \
-    -subj "/C=FR/ST=France/L=Paris/O=Dev/OU=Dev/CN=localhost"
-RUN a2enmod ssl
+    -subj "/C=FR/ST=PACA/L=Nice/O=GNUT06/OU=Association/CN=localhost" \
+    -addext "subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1"
+RUN a2enmod ssl headers
 COPY ./config/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
 RUN a2ensite default-ssl
 
