@@ -2,144 +2,609 @@
 
 {% block title %}S'enregistrer - GNUT 06{% endblock %}
 
-{% block body %}
-    <main id="main-content" role="main" aria-labelledby="register-title">
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* ✅ CORRECTION WCAG 2.1 AA - Focus visible obligatoire */
+        .btn-neon:focus,
+        .btn-outline-gradient:focus,
+        .btn-asso:focus,
+        .form-control:focus,
+        .form-check-input:focus,
+        a:focus {
+            outline: 3px solid #F86CF8 !important;
+            outline-offset: 2px !important;
+            box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+        }
 
+        /* ✅ CORRECTION - Contraste des textes amélioré */
+        .text {
+            color: #ffffff !important;
+            line-height: 1.6 !important;
+        }
+
+        #register-subtitle {
+            color: #ffffff !important;
+            font-weight: 500 !important;
+        }
+
+        /* ✅ CORRECTION - Skip links */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #000000;
+            color: #ffffff;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 0 0 4px 4px;
+            z-index: 1000;
+            font-weight: bold;
+        }
+
+        .skip-link:focus {
+            top: 0;
+            outline: 3px solid #F86CF8;
+        }
+
+        /* ✅ CORRECTION - Amélioration formulaire */
+        .form-control {
+            border: 2px solid #dee2e6 !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+        }
+
+        .form-control:focus {
+            border-color: #F86CF8 !important;
+            box-shadow: 0 0 0 0.25rem rgba(248, 108, 248, 0.25) !important;
+        }
+
+        .form-control:invalid {
+            border-color: #dc3545 !important;
+        }
+
+        .form-control:valid {
+            border-color: #198754 !important;
+        }
+
+        /* ✅ CORRECTION - Messages d'erreur visibles */
+        .alert {
+            font-weight: 500 !important;
+            border: 2px solid !important;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24 !important;
+        }
+
+        /* ✅ CORRECTION - Amélioration des boutons */
+        .btn-asso {
+            background-color: #F86CF8 !important;
+            border: 2px solid #F86CF8 !important;
+            color: #ffffff !important;
+            font-weight: 500 !important;
+            padding: 0.75rem 1rem !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .btn-asso:hover {
+            background-color: #e055d6 !important;
+            border-color: #e055d6 !important;
+            transform: translateY(-1px) !important;
+        }
+
+        .btn-asso:active {
+            transform: translateY(0) !important;
+        }
+
+        /* ✅ CORRECTION - Amélioration des labels et textes d'aide */
+        .form-label {
+            color: #212529 !important;
+            font-weight: 500 !important;
+        }
+
+        .form-text {
+            font-size: 0.875rem !important;
+            color: #6c757d !important;
+        }
+
+        .form-check-label {
+            color: #212529 !important;
+        }
+
+        /* ✅ CORRECTION - Card accessible */
+        .card {
+            border: 2px solid rgba(0, 0, 0, 0.125) !important;
+            background-color: #ffffff !important;
+        }
+
+        /* ✅ CORRECTION - Amélioration checkbox */
+        .form-check-input {
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+            border: 2px solid #dee2e6 !important;
+        }
+
+        .form-check-input:checked {
+            background-color: #F86CF8 !important;
+            border-color: #F86CF8 !important;
+        }
+
+        /* ✅ CORRECTION - Texte OAuth visible */
+        .oauth-info {
+            color: #6c757d !important;
+            font-size: 0.875rem !important;
+        }
+
+        /* ✅ CORRECTION - Responsive mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem !important;
+            }
+
+            h1 {
+                font-size: 1.75rem !important;
+            }
+
+            h2 {
+                font-size: 1.25rem !important;
+            }
+
+            .btn-asso,
+            .btn-neon,
+            .btn-outline-gradient {
+                padding: 0.875rem 1rem !important;
+                font-size: 1rem !important;
+            }
+        }
+
+        /* ✅ Animation respectueuse des préférences */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .btn-asso:hover {
+                transform: none !important;
+            }
+        }
+
+        /* ✅ Support haut contraste */
+        @media (prefers-contrast: high) {
+            .form-control {
+                border: 3px solid #000000 !important;
+                background-color: #ffffff !important;
+            }
+
+            .form-control:focus {
+                border-color: #F86CF8 !important;
+                outline: 3px solid #F86CF8 !important;
+            }
+
+            .card {
+                border: 3px solid #000000 !important;
+                background-color: #ffffff !important;
+            }
+
+            .btn-asso {
+                border: 3px solid #F86CF8 !important;
+                font-weight: 700 !important;
+            }
+
+            .form-check-input {
+                border: 3px solid #000000 !important;
+            }
+        }
+                /* ✅ CORRECTION - Texte OAuth visible comme dans login */
+        .oauth-info {
+            color: #e9ecef !important;
+            font-size: 0.875rem !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- ✅ CORRECTION - Skip links ajoutés -->
+    <nav aria-label="Navigation rapide" class="visually-hidden-focusable">
+        <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+        <a href="#register-form" class="skip-link">Aller au formulaire d'enregistrement</a>
+        <a href="#alt-register" class="skip-link">Aller aux connexions alternatives</a>
+    </nav>
+
+    <main id="main-content" class="bg-main" role="main" aria-labelledby="register-title">
+
+        <!-- ✅ CORRECTION - Messages d'erreur email améliorés -->
         {% for flash_error in app.flashes('verify_email_error') %}
             <div class="alert alert-danger text-center mt-3"
                  role="alert"
-                 aria-live="assertive">
+                 aria-live="assertive"
+                 aria-atomic="true"
+                 tabindex="0">
+                <strong>Erreur de vérification email :</strong>
                 {{ flash_error }}
             </div>
         {% endfor %}
 
         <div class="container mt-5">
             <div class="row justify-content-center mb-5 text">
-                <div class="col-md-6">
+                <div class="col-md-6 col-lg-5">
 
-                    <!-- En-tête du formulaire -->
-                    <header class="text-center mb-4 text">
+                    <!-- ✅ CORRECTION - En-tête amélioré -->
+                    <header class="text-center mb-4">
                         <h1 id="register-title" class="gradient-text mb-2">GNUT 06</h1>
-                        <h2 id="register-subtitle" style="color: black !important;">Créer un compte</h2>
-                        <p id="register-infos">Commencez votre voyage !</p>
+                        <h2 id="register-subtitle" class="h3 mb-3 fw-normal">
+                            Créer un compte
+                        </h2>
+                        <p id="register-infos" class="text">
+                            Commencez votre voyage avec nous !<br>
+                            Rejoignez notre communauté inclusive et engagée.
+                        </p>
                     </header>
 
-                    <!-- Carte contenant le formulaire -->
-                    <section class="card p-4 shadow" aria-labelledby="register-subtitle">
+                    <!-- ✅ CORRECTION - Carte contenant le formulaire accessible -->
+                    <section class="card p-4 shadow" 
+                             aria-labelledby="register-subtitle"
+                             role="group">
 
-                        <!-- Gestion des erreurs -->
+                        <!-- ✅ CORRECTION - Gestion des erreurs améliorée -->
                         {% if form_errors(registrationForm) %}
-                            <div class="alert alert-danger" role="alert" aria-live="assertive">
+                            <div class="alert alert-danger mb-4" 
+                                 role="alert" 
+                                 aria-live="assertive"
+                                 aria-atomic="true"
+                                 tabindex="0">
+                                <strong>Erreurs dans le formulaire :</strong>
                                 {{ form_errors(registrationForm) }}
                             </div>
                         {% endif %}
 
                         {{ form_start(registrationForm, {
                             'attr': {
-                                'class': 'g-3',
+                                'id': 'register-form',
+                                'class': 'needs-validation',
+                                'novalidate': 'novalidate',
                                 'aria-describedby': 'register-infos',
-                                'aria-label': 'Formulaire d’enregistrement GNUT 06'
+                                'aria-label': 'Formulaire d\'enregistrement sécurisé GNUT 06',
+                                'role': 'form'
                             }
                         }) }}
 
-                        <!-- Champ email -->
-                        <div class="mb-3">
-                            {{ form_label(registrationForm.email, 'Adresse e-mail', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(registrationForm.email, {
-                                'attr': {
-                                    'class': 'form-control',
-                                    'aria-required': 'true',
-                                    'autocomplete': 'email',
-                                    'placeholder': 'exemple@domaine.fr'
-                                }
-                            }) }}
-                            {{ form_errors(registrationForm.email) }}
-                        </div>
+                        <fieldset>
+                            <legend class="visually-hidden">Informations de compte</legend>
 
-                        <!-- Champ mot de passe -->
-                        <div class="mb-3">
-                            {{ form_label(registrationForm.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(registrationForm.plainPassword.first, {
-                                'attr': {
-                                    'class': 'form-control',
-                                    'aria-required': 'true',
-                                    'autocomplete': 'new-password',
-                                    'aria-describedby': 'password-help'
-                                }
-                            }) }}
-                            <small id="password-help" class="form-text text-muted">
-                                Utilisez au moins 8 caractères, incluant des chiffres et des lettres.
-                            </small>
-                            {{ form_errors(registrationForm.plainPassword.first) }}
-                        </div>
+                            <!-- ✅ CORRECTION - Champ email amélioré -->
+                            <div class="mb-3">
+                                {{ form_label(registrationForm.email, 'Adresse e-mail', {
+                                    'label_attr': {
+                                        'class': 'form-label'
+                                    }
+                                }) }}
+                                <span class="text-danger" aria-hidden="true">*</span>
+                                {{ form_widget(registrationForm.email, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'aria-required': 'true',
+                                        'autocomplete': 'email',
+                                        'placeholder': 'exemple@domaine.fr',
+                                        'aria-describedby': 'email-help email-error',
+                                        'aria-invalid': 'false'
+                                    }
+                                }) }}
+                                <div id="email-help" class="form-text">
+                                    Format attendu : nom@domaine.com
+                                </div>
+                                <div id="email-error" class="invalid-feedback" role="alert">
+                                    Veuillez saisir une adresse e-mail valide.
+                                </div>
+                                {% if form_errors(registrationForm.email) %}
+                                    <div class="text-danger small mt-1" role="alert">
+                                        {{ form_errors(registrationForm.email) }}
+                                    </div>
+                                {% endif %}
+                            </div>
 
-                        <!-- Confirmation mot de passe -->
-                        <div class="mb-3">
-                            {{ form_label(registrationForm.plainPassword.second, 'Confirmez le mot de passe', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(registrationForm.plainPassword.second, {
-                                'attr': {
-                                    'class': 'form-control',
-                                    'aria-required': 'true',
-                                    'autocomplete': 'new-password'
-                                }
-                            }) }}
-                            {{ form_errors(registrationForm.plainPassword.second) }}
-                        </div>
+                            <!-- ✅ CORRECTION - Champ mot de passe amélioré -->
+                            <div class="mb-3">
+                                {{ form_label(registrationForm.plainPassword.first, 'Mot de passe', {
+                                    'label_attr': {
+                                        'class': 'form-label'
+                                    }
+                                }) }}
+                                <span class="text-danger" aria-hidden="true">*</span>
+                                {{ form_widget(registrationForm.plainPassword.first, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'aria-required': 'true',
+                                        'autocomplete': 'new-password',
+                                        'aria-describedby': 'password-help password-error',
+                                        'minlength': '8',
+                                        'aria-invalid': 'false'
+                                    }
+                                }) }}
+                                <div id="password-help" class="form-text">
+                                    Utilisez au moins 8 caractères, incluant des chiffres et des lettres.
+                                </div>
+                                <div id="password-error" class="invalid-feedback" role="alert">
+                                    Le mot de passe doit contenir au moins 8 caractères.
+                                </div>
+                                {% if form_errors(registrationForm.plainPassword.first) %}
+                                    <div class="text-danger small mt-1" role="alert">
+                                        {{ form_errors(registrationForm.plainPassword.first) }}
+                                    </div>
+                                {% endif %}
+                            </div>
 
-                        <!-- Checkbox conditions -->
-                        <div class="mb-3 form-check">
-                            {{ form_widget(registrationForm.agreeTerms, {
-                                'attr': {
-                                    'class': 'form-check-input',
-                                    'aria-required': 'true'
-                                }
-                            }) }}
-                            <label class="form-check-label" for="{{ registrationForm.agreeTerms.vars.id }}">
-                                Je suis en accord avec
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#valuesModal">les valeurs de GNUT 06</a>
-                            </label>
-                            {{ form_errors(registrationForm.agreeTerms) }}
-                        </div>
+                            <!-- ✅ CORRECTION - Confirmation mot de passe améliorée -->
+                            <div class="mb-3">
+                                {{ form_label(registrationForm.plainPassword.second, 'Confirmez le mot de passe', {
+                                    'label_attr': {
+                                        'class': 'form-label'
+                                    }
+                                }) }}
+                                <span class="text-danger" aria-hidden="true">*</span>
+                                {{ form_widget(registrationForm.plainPassword.second, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'aria-required': 'true',
+                                        'autocomplete': 'new-password',
+                                        'aria-describedby': 'password-confirm-help password-confirm-error',
+                                        'aria-invalid': 'false'
+                                    }
+                                }) }}
+                                <div id="password-confirm-help" class="form-text">
+                                    Saisissez à nouveau votre mot de passe pour confirmation.
+                                </div>
+                                <div id="password-confirm-error" class="invalid-feedback" role="alert">
+                                    Les mots de passe ne correspondent pas.
+                                </div>
+                                {% if form_errors(registrationForm.plainPassword.second) %}
+                                    <div class="text-danger small mt-1" role="alert">
+                                        {{ form_errors(registrationForm.plainPassword.second) }}
+                                    </div>
+                                {% endif %}
+                            </div>
 
-                        <!-- reCAPTCHA caché -->
-                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" aria-hidden="true">
+                            <!-- ✅ CORRECTION - Checkbox conditions améliorée -->
+                            <div class="mb-4 form-check">
+                                {{ form_widget(registrationForm.agreeTerms, {
+                                    'attr': {
+                                        'class': 'form-check-input',
+                                        'aria-required': 'true',
+                                        'aria-describedby': 'terms-help terms-error'
+                                    }
+                                }) }}
+                                <label class="form-check-label" for="{{ registrationForm.agreeTerms.vars.id }}">
+                                    <span class="text-danger" aria-hidden="true">*</span>
+                                    Je suis en accord avec
+                                    <a href="#" 
+                                       data-bs-toggle="modal" 
+                                       data-bs-target="#valuesModal"
+                                       aria-label="Ouvrir la fenêtre modale des valeurs de GNUT 06">
+                                        les valeurs de GNUT 06
+                                    </a>
+                                </label>
+                                <div id="terms-help" class="form-text">
+                                    Vous devez accepter nos valeurs pour créer un compte.
+                                </div>
+                                <div id="terms-error" class="invalid-feedback" role="alert">
+                                    Veuillez accepter les valeurs de GNUT 06.
+                                </div>
+                                {% if form_errors(registrationForm.agreeTerms) %}
+                                    <div class="text-danger small mt-1" role="alert">
+                                        {{ form_errors(registrationForm.agreeTerms) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </fieldset>
 
-                        <!-- Bouton d'envoi -->
-                        <div class="text-center mb-3">
+                        <!-- ✅ CORRECTION - reCAPTCHA accessible -->
+                        <input type="hidden" 
+                               id="g-recaptcha-response" 
+                               name="g-recaptcha-response" 
+                               aria-hidden="true"
+                               aria-label="Token de sécurité reCAPTCHA">
+
+                        <!-- ✅ CORRECTION - Bouton d'envoi amélioré -->
+                        <div class="text-center mb-4">
                             <button type="submit"
-                                    class="btn btn-primary"
-                                    aria-label="Créer un compte GNUT 06">
+                                    class="btn-asso btn-lg w-100"
+                                    aria-describedby="register-button-help">
+                                <i class="bi bi-person-plus me-2" aria-hidden="true"></i>
                                 S'enregistrer
                             </button>
-                        </div>
-
-                        <!-- Connexions alternatives -->
-                        <div class="text-center" aria-labelledby="alt-register-title">
-                            <p id="alt-register-title">Ou connectez-vous avec :</p>
-
-                            <a href="{{ path('connect_google_start') }}"
-                               class="btn btn-danger w-100 mb-2"
-                               role="button"
-                               aria-label="Se connecter avec Google">
-                                <i class="fab fa-google" aria-hidden="true"></i> Se connecter avec Google
-                            </a>
-
-                            <a href="{{ path('connect_outlook_start') }}"
-                               class="btn w-100"
-                               style="background-color: #0078D4; color: white;"
-                               role="button"
-                               aria-label="Se connecter avec Microsoft">
-                                <i class="fab fa-microsoft" aria-hidden="true"></i> Se connecter avec Microsoft
-                            </a>
+                            <div id="register-button-help" class="form-text mt-2">
+                                En créant un compte, vous acceptez nos conditions d'utilisation.
+                            </div>
                         </div>
 
                         {{ form_end(registrationForm) }}
                     </section>
+
+                    <!-- ✅ CORRECTION - Connexions alternatives améliorées -->
+                    <section id="alt-register" 
+                             class="text-center mt-4 pb-5" 
+                             aria-labelledby="alt-register-title"
+                             role="group">
+                        
+                        <h3 id="alt-register-title" class="h5 mb-3 text-white">
+                            Ou connectez-vous avec :
+                        </h3>
+
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('connect_google_start') }}"
+                               class="btn-neon text d-flex align-items-center justify-content-center"
+                               role="button"
+                               aria-label="Se connecter rapidement avec votre compte Google">
+                                <i class="bi bi-google me-2" aria-hidden="true"></i>
+                                Se connecter avec Google
+                            </a>
+
+                            <a href="{{ path('connect_outlook_start') }}"
+                               class="btn-outline-gradient text d-flex align-items-center justify-content-center"
+                               role="button"
+                               aria-label="Se connecter rapidement avec votre compte Microsoft">
+                                <i class="bi bi-microsoft me-2" aria-hidden="true"></i>
+                                Se connecter avec Microsoft
+                            </a>
+                        </div>
+                        
+                        <p class="oauth-info small mt-3 text-white">
+                            Connexion sécurisée via OAuth 2.0
+                        </p>
+                    </section>
+
                 </div>
             </div>
         </div>
 
-        <!-- reCAPTCHA script -->
+        <!-- ✅ CORRECTION - Script de validation accessible -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('register-form');
+                const emailInput = document.querySelector('input[type="email"]');
+                const passwordInput = document.querySelector('input[name*="[plainPassword][first]"]');
+                const passwordConfirmInput = document.querySelector('input[name*="[plainPassword][second]"]');
+                const termsCheckbox = document.querySelector('input[type="checkbox"]');
+
+                // Validation en temps réel accessible
+                function validateEmail(input) {
+                    const isValid = input.validity.valid && input.value.includes('@');
+                    input.setAttribute('aria-invalid', !isValid);
+                    
+                    if (!isValid && input.value) {
+                        input.classList.add('is-invalid');
+                        input.classList.remove('is-valid');
+                    } else if (isValid) {
+                        input.classList.add('is-valid');
+                        input.classList.remove('is-invalid');
+                    }
+                    
+                    return isValid;
+                }
+
+                function validatePassword(input) {
+                    const isValid = input.value.length >= 8;
+                    input.setAttribute('aria-invalid', !isValid);
+                    
+                    if (!isValid && input.value) {
+                        input.classList.add('is-invalid');
+                        input.classList.remove('is-valid');
+                    } else if (isValid) {
+                        input.classList.add('is-valid');
+                        input.classList.remove('is-invalid');
+                    }
+                    
+                    return isValid;
+                }
+
+                function validatePasswordConfirm(input) {
+                    const isValid = input.value === passwordInput.value && input.value.length > 0;
+                    input.setAttribute('aria-invalid', !isValid);
+                    
+                    if (!isValid && input.value) {
+                        input.classList.add('is-invalid');
+                        input.classList.remove('is-valid');
+                    } else if (isValid) {
+                        input.classList.add('is-valid');
+                        input.classList.remove('is-invalid');
+                    }
+                    
+                    return isValid;
+                }
+
+                function validateTerms(input) {
+                    const isValid = input.checked;
+                    input.setAttribute('aria-invalid', !isValid);
+                    
+                    return isValid;
+                }
+
+                // Événements de validation
+                if (emailInput) {
+                    emailInput.addEventListener('blur', function() {
+                        validateEmail(this);
+                    });
+                }
+
+                if (passwordInput) {
+                    passwordInput.addEventListener('blur', function() {
+                        validatePassword(this);
+                        // Re-valider la confirmation si elle a déjà été saisie
+                        if (passwordConfirmInput.value) {
+                            validatePasswordConfirm(passwordConfirmInput);
+                        }
+                    });
+                }
+
+                if (passwordConfirmInput) {
+                    passwordConfirmInput.addEventListener('blur', function() {
+                        validatePasswordConfirm(this);
+                    });
+                }
+
+                if (termsCheckbox) {
+                    termsCheckbox.addEventListener('change', function() {
+                        validateTerms(this);
+                    });
+                }
+
+                // Validation avant soumission
+                if (form) {
+                    form.addEventListener('submit', function(event) {
+                        event.preventDefault();
+                        
+                        const isEmailValid = emailInput ? validateEmail(emailInput) : true;
+                        const isPasswordValid = passwordInput ? validatePassword(passwordInput) : true;
+                        const isPasswordConfirmValid = passwordConfirmInput ? validatePasswordConfirm(passwordConfirmInput) : true;
+                        const isTermsValid = termsCheckbox ? validateTerms(termsCheckbox) : true;
+                        
+                        if (isEmailValid && isPasswordValid && isPasswordConfirmValid && isTermsValid) {
+                            // Indication de chargement
+                            const submitBtn = form.querySelector('button[type="submit"]');
+                            const originalText = submitBtn.innerHTML;
+                            submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2" aria-hidden="true"></i>Création du compte...';
+                            submitBtn.disabled = true;
+                            
+                            // Soumettre le formulaire
+                            setTimeout(() => {
+                                form.submit();
+                            }, 500);
+                        } else {
+                            // Focus sur le premier champ invalide
+                            if (!isEmailValid && emailInput) {
+                                emailInput.focus();
+                            } else if (!isPasswordValid && passwordInput) {
+                                passwordInput.focus();
+                            } else if (!isPasswordConfirmValid && passwordConfirmInput) {
+                                passwordConfirmInput.focus();
+                            } else if (!isTermsValid && termsCheckbox) {
+                                termsCheckbox.focus();
+                            }
+                            
+                            // Annonce pour lecteurs d'écran
+                            const errorAnnouncement = document.createElement('div');
+                            errorAnnouncement.className = 'visually-hidden';
+                            errorAnnouncement.setAttribute('aria-live', 'assertive');
+                            errorAnnouncement.textContent = 'Veuillez corriger les erreurs dans le formulaire';
+                            document.body.appendChild(errorAnnouncement);
+                            
+                            setTimeout(() => {
+                                if (document.body.contains(errorAnnouncement)) {
+                                    document.body.removeChild(errorAnnouncement);
+                                }
+                            }, 3000);
+                        }
+                    });
+                }
+
+                console.log('✅ Validation de formulaire d\'enregistrement accessible initialisée');
+            });
+        </script>
+
+        <!-- ✅ CORRECTION - reCAPTCHA script -->
         <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
         <script>
             grecaptcha.ready(function() {
@@ -150,14 +615,5 @@
         </script>
 
         {% include '_partials/valeurs.html.twig' %}
-
-        {% block stylesheets %}
-            {{ parent() }}
-            <link rel="stylesheet"
-                  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-                  integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2DhKN5C1Fj3vJdO5t6bLhS0NwOZp2rF7JbZsYk3yxj4gSgkVzNqVQkBKu5G+xh9wQ=="
-                  crossorigin="anonymous"
-                  referrerpolicy="no-referrer">
-        {% endblock %}
     </main>
 {% endblock %}

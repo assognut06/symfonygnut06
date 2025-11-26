@@ -2,16 +2,179 @@
 
 {% block title %}Contactez-nous - GNUT 06{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* ✅ CORRECTION WCAG 2.1 AA - Focus visible obligatoire */
+.btn-neon:focus,
+input:focus,
+textarea:focus,
+.form-check-input:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ CORRECTION - Zones de clic minimales 44px et espacement */
+.btn-neon {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.75rem 1.5rem !important;
+}
+
+.form-check-input {
+    width: 20px !important;
+    height: 20px !important;
+    flex-shrink: 0 !important;
+}
+
+.form-check {
+    min-height: 44px !important;
+    padding: 0.5rem 0 !important;
+}
+
+.form-check-label {
+    font-weight: 500 !important;
+    cursor: pointer !important;
+}
+
+/* ✅ CORRECTION - Contraste des textes amélioré */
+.text {
+    color: #ffffff !important;
+    line-height: 1.6 !important;
+}
+
+/* ✅ CORRECTION - Titres coordonnées plus petits */
+.contact-title {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.5rem !important;
+    color: #ffffff !important;
+}
+
+/* ✅ CORRECTION - Skip links */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #000000;
+    color: #ffffff;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 0 0 4px 4px;
+    z-index: 1000;
+    font-weight: bold;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 3px solid #F86CF8;
+}
+
+/* ✅ CORRECTION - Lien externe */
+.external-link::after {
+    content: " (nouvelle fenêtre)";
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ✅ CORRECTION - Messages d'erreur accessibles */
+.alert {
+    padding: 1rem !important;
+    border-radius: 0.375rem !important;
+    border: 2px solid transparent !important;
+}
+
+.alert-success {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: #ffffff !important;
+}
+
+.alert-danger {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+/* ✅ CORRECTION - Fieldset accessible */
+fieldset {
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 0.375rem !important;
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+
+legend {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    padding: 0 0.5rem !important;
+    color: #ffffff !important;
+}
+
+/* ✅ CORRECTION - Responsive mobile */
+@media (max-width: 768px) {
+    .text {
+        font-size: 16px !important;
+    }
+    
+    h1, h2, h3 {
+        font-size: 1.25rem !important;
+    }
+    
+    .contact-title {
+        font-size: 18px !important;
+    }
+}
+
+/* ✅ Animation respectueuse des préférences */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ✅ Support haut contraste */
+@media (prefers-contrast: high) {
+    .text {
+        color: #ffffff !important;
+        background-color: #000000 !important;
+    }
+    
+    .form-control {
+        border: 3px solid #ffffff !important;
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+    
+    .btn-neon {
+        border: 3px solid #ffffff !important;
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+}
+</style>
+{% endblock %}
+
 {% block body %}
+    <!-- ✅ CORRECTION - Skip links ajoutés -->
+    <nav aria-label="Navigation rapide" class="visually-hidden-focusable">
+        <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+        <a href="#services" class="skip-link">Aller au formulaire</a>
+    </nav>
+
     <main id="main-content" role="main" aria-labelledby="contact-title">
 
-        <!-- Section Contact -->
-        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" aria-labelledby="contact-title">
+        <!-- ✅ CORRECTION - Section Contact avec H1 -->
+        <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="contact-title">
             <div class="container row align-items-start justify-content-center g-5">
 
                 <!-- Partie gauche -->
                 <header class="col-12 col-lg-6 mb-4 mb-lg-0">
-                    <h2 id="contact-title">Nous Contacter</h2>
+                    <!-- ✅ CORRECTION - H1 visible -->
+                    <h1 id="contact-title" class="mb-4">Nous Contacter</h1>
                     <p class="text">
                         Pour toute question, n'hésitez pas à nous contacter via les informations ci-dessous.
                     </p>
@@ -22,39 +185,58 @@
 
                     <!-- Email -->
                     <div class="d-flex align-items-start gap-3">
-                        <img src="{{ asset('images/webp/envelope.svg') }}" width="24" alt="Icône e-mail">
+                        <img src="{{ asset('images/webp/envelope.svg') }}" 
+                             width="24" 
+                             height="24"
+                             alt=""
+                             aria-hidden="true">
                         <div>
-                            <h3>Email</h3>
+                            <h2 class="contact-title">Email</h2>
                             <p class="text">
-                                <a href="mailto:contact@gnut06.org" class="text-white" aria-label="Envoyer un e-mail à contact@gnut06.org">contact@gnut06.org</a>
+                                <a href="mailto:contact@gnut06.org" 
+                                   class="text-white" 
+                                   aria-label="Envoyer un e-mail à contact@gnut06.org">
+                                   contact@gnut06.org
+                                </a>
                             </p>
                         </div>
                     </div>
 
                     <!-- Téléphone -->
                     <div class="d-flex align-items-start gap-3">
-                        <img src="{{ asset('images/webp/phone.svg') }}" width="24" alt="Icône téléphone">
+                        <img src="{{ asset('images/webp/phone.svg') }}" 
+                             width="24" 
+                             height="24"
+                             alt=""
+                             aria-hidden="true">
                         <div>
-                            <h3>Téléphone</h3>
+                            <h2 class="contact-title">Téléphone</h2>
                             <p class="text">
-                                <a href="tel:+33666215687" class="text-white" aria-label="Appeler +33 6 66 21 56 87">+33 6 66 21 56 87</a>
+                                <a href="tel:+33666215687" 
+                                   class="text-white" 
+                                   aria-label="Appeler le 06 66 21 56 87">
+                                   +33 6 66 21 56 87
+                                </a>
                             </p>
                         </div>
                     </div>
 
                     <!-- Visio -->
                     <div class="d-flex align-items-start gap-3">
-                        <img src="{{ asset('images/webp/camera-reels.svg') }}" width="24" alt="Icône visio">
+                        <img src="{{ asset('images/webp/camera-reels.svg') }}" 
+                             width="24" 
+                             height="24"
+                             alt=""
+                             aria-hidden="true">
                         <div>
-                            <h3>Visio</h3>
+                            <h2 class="contact-title">Visio</h2>
                             <p class="text">
                                 <a href="https://outlook.office.com/bookwithme/user/c2263f462357476d857beeb43b542bc5@gnut06.org/meetingtype/_x-b5BhbV0ymFVtF1yRmMA2?anonymous&amp;ismsaljsauthenabled&amp;ep=mlink"
-                                   class="text-white text-decoration-none"
-                                   style="text-decoration: none;"
+                                   class="text-white text-decoration-none external-link"
                                    target="_blank"
                                    rel="noopener noreferrer"
-                                   aria-label="Réserver un créneau Visio dès maintenant">
-                                    Réserver un créneau Visio dès maintenant.
+                                   aria-label="Réserver un créneau Visio - s'ouvre dans un nouvel onglet">
+                                    Réserver un créneau Visio dès maintenant
                                 </a>
                             </p>
                         </div>
@@ -62,9 +244,13 @@
 
                     <!-- Adresse -->
                     <div class="d-flex align-items-start gap-3">
-                        <img src="{{ asset('images/webp/map.svg') }}" width="24" alt="Icône carte">
+                        <img src="{{ asset('images/webp/map.svg') }}" 
+                             width="24" 
+                             height="24"
+                             alt=""
+                             aria-hidden="true">
                         <div>
-                            <h3>Bureau</h3>
+                            <h2 class="contact-title">Bureau</h2>
                             <p class="text">
                                 9 Rue du Pont-Vieux<br>
                                 06300 NICE<br>
@@ -76,41 +262,51 @@
             </div>
         </section>
 
-        <!-- Section Google Map -->
-        <section class="bg-main py-4" aria-label="Localisation GNUT 06">
+        <!-- ✅ CORRECTION - Section Google Map accessible -->
+        <section class="bg-main py-4" role="region" aria-labelledby="map-title">
             <div class="container">
+                <h2 id="map-title" class="visually-hidden">Localisation de nos bureaux</h2>
                 <div class="map-responsive">
                     <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2879.535153559595!2d7.27434047682833!3d43.69735505091502!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cddab64640f7c7%3A0x7287fa7d41d32db9!2s9%20Rue%20du%20Pont%20Vieux%2C%2006300%20Nice!5e0!3m2!1sfr!2sfr!4v1731240000000!5m2!1sfr!2sfr"
-                            width="100%"
-                            height="450"
-                            style="border:0;"
-                            allowfullscreen=""
-                            loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade"
-                            title="Carte Google Maps de GNUT 06, 9 Rue du Pont-Vieux, Nice">
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2879.535153559595!2d7.27434047682833!3d43.69735505091502!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cddab64640f7c7%3A0x7287fa7d41d32db9!2s9%20Rue%20du%20Pont%20Vieux%2C%2006300%20Nice!5e0!3m2!1sfr!2sfr!4v1731240000000!5m2!1sfr!2sfr"
+                        width="100%"
+                        height="450"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Carte interactive Google Maps - GNUT 06, 9 Rue du Pont-Vieux, 06300 Nice, France"
+                        aria-label="Carte Google Maps montrant l'emplacement de GNUT 06 à Nice">
                     </iframe>
                 </div>
             </div>
         </section>
 
-        <!-- Section Formulaire -->
-        <section id="services" class="bg-main pt-2" aria-labelledby="form-title">
+        <!-- ✅ CORRECTION - Section Formulaire accessible -->
+        <section id="services" class="bg-main pt-2" role="region" aria-labelledby="form-title">
             <div class="container py-5">
-                <h2 id="form-title" class="text-center mb-4">Besoin d'un projet ? Demandez un devis.</h2>
+                <h2 id="form-title" class="text-center mb-4">Besoin d'un projet ? Demandez un devis</h2>
                 <p class="text text-center">
                     Vous pouvez utiliser le formulaire ci-dessous. Nous répondons généralement dans les 24 heures.
                 </p>
 
                 {% if message_envoye %}
-                    <div class="alert alert-success text-center" role="alert">
-                        Votre message a bien été envoyé.
+                    <div class="alert alert-success text-center" 
+                         role="alert" 
+                         aria-live="polite"
+                         aria-atomic="true">
+                        <strong>Succès :</strong> Votre message a bien été envoyé.
                     </div>
                 {% endif %}
 
                 {% if errors is not empty %}
-                    <div class="alert alert-danger" role="alert" aria-live="assertive">
-                        <ul>
+                    <div class="alert alert-danger" 
+                         role="alert" 
+                         aria-live="assertive"
+                         aria-atomic="true"
+                         aria-labelledby="error-title">
+                        <h3 id="error-title" class="h5 mb-2">Erreurs dans le formulaire :</h3>
+                        <ul class="mb-0">
                             {% for error in errors %}
                                 <li>{{ error }}</li>
                             {% endfor %}
@@ -123,124 +319,249 @@
                           method="POST"
                           action="{{ path('app_contact') }}"
                           novalidate
-                          aria-describedby="form-required"
+                          aria-describedby="form-required form-help"
                           aria-label="Formulaire de contact GNUT 06">
+
+                        <!-- ✅ CORRECTION - Instructions du formulaire -->
+                        <div class="col-12">
+                            <p id="form-help" class="text">
+                                Remplissez tous les champs marqués d'un astérisque (*) pour nous contacter.
+                            </p>
+                        </div>
 
                         <!-- Prénom -->
                         <div class="col-lg-6">
-                            <label for="first_name" class="text">Prénom <span class="text-danger">*</span></label>
+                            <label for="first_name" class="form-label text">
+                                Prénom <span class="text-danger" aria-label="obligatoire">*</span>
+                            </label>
                             <input type="text"
                                    id="first_name"
                                    name="first_name"
                                    class="form-control"
-                                   placeholder="Prénom"
+                                   placeholder="Votre prénom"
                                    required
                                    autocomplete="given-name"
-                                   aria-label="Prénom">
-                            <div class="invalid-feedback">Veuillez entrer votre prénom.</div>
+                                   aria-required="true"
+                                   aria-describedby="first_name_error">
+                            <div id="first_name_error" class="invalid-feedback">
+                                Veuillez entrer votre prénom.
+                            </div>
                         </div>
 
                         <!-- Nom -->
                         <div class="col-lg-6">
-                            <label for="last_name" class="text">Nom <span class="text-danger">*</span></label>
+                            <label for="last_name" class="form-label text">
+                                Nom <span class="text-danger" aria-label="obligatoire">*</span>
+                            </label>
                             <input type="text"
                                    id="last_name"
                                    name="last_name"
                                    class="form-control"
-                                   placeholder="Nom"
+                                   placeholder="Votre nom"
                                    required
                                    autocomplete="family-name"
-                                   aria-label="Nom">
-                            <div class="invalid-feedback">Veuillez entrer votre nom.</div>
+                                   aria-required="true"
+                                   aria-describedby="last_name_error">
+                            <div id="last_name_error" class="invalid-feedback">
+                                Veuillez entrer votre nom.
+                            </div>
                         </div>
 
                         <!-- Email -->
                         <div class="col-lg-6">
-                            <label for="email" class="text">Email <span class="text-danger">*</span></label>
+                            <label for="email" class="form-label text">
+                                Email <span class="text-danger" aria-label="obligatoire">*</span>
+                            </label>
                             <input type="email"
                                    id="email"
                                    name="email"
                                    class="form-control"
-                                   placeholder="Email"
+                                   placeholder="votre@email.com"
                                    required
                                    autocomplete="email"
-                                   aria-label="Adresse e-mail">
-                            <div class="invalid-feedback">Veuillez entrer une adresse email valide.</div>
+                                   aria-required="true"
+                                   aria-describedby="email_error email_help">
+                            <div id="email_help" class="form-text text">
+                                Exemple : contact@exemple.fr
+                            </div>
+                            <div id="email_error" class="invalid-feedback">
+                                Veuillez entrer une adresse email valide.
+                            </div>
                         </div>
 
                         <!-- Téléphone -->
                         <div class="col-lg-6">
-                            <label for="tel" class="text">Téléphone <span class="text-danger">*</span></label>
+                            <label for="tel" class="form-label text">
+                                Téléphone <span class="text-danger" aria-label="obligatoire">*</span>
+                            </label>
                             <input type="tel"
                                    id="tel"
                                    name="tel"
                                    class="form-control"
-                                   placeholder="+33"
+                                   placeholder="+33 6 12 34 56 78"
                                    required
                                    autocomplete="tel"
                                    pattern="^(\+?\d{1,3}[- ]?)?\d{9,12}$"
-                                   aria-label="Numéro de téléphone">
-                            <div class="invalid-feedback">Veuillez entrer un numéro de téléphone valide.</div>
+                                   aria-required="true"
+                                   aria-describedby="tel_error tel_help">
+                            <div id="tel_help" class="form-text text">
+                                Format français : +33 6 12 34 56 78
+                            </div>
+                            <div id="tel_error" class="invalid-feedback">
+                                Veuillez entrer un numéro de téléphone valide.
+                            </div>
                         </div>
 
-                        <!-- Type de projet -->
-                        <fieldset class="col-lg-6" aria-required="true" aria-label="Type de projet">
-                            <legend class="text">Type de projet <span class="text-danger">*</span></legend>
+                         <!-- ✅ CORRECTION - Type de projet avec décalage plus important -->
+                        <fieldset class="col-12" aria-required="true">
+                            <legend class="form-label text">
+                                Type de projet <span class="text-danger" aria-label="obligatoire">*</span>
+                            </legend>
+                            
+                            <div role="radiogroup" aria-describedby="project_type_error project_type_help" class="ps-5">
+                                <div id="project_type_help" class="form-text text mb-3">
+                                    Sélectionnez le type de projet qui correspond à vos besoins
+                                </div>
 
-                            <div class="form-check">
-                                <input type="radio" id="projet-site" name="project_type" value="site_web" class="form-check-input" required aria-label="Site web simple">
-                                <label for="projet-site" class="form-check-label text">Site web simple</label>
+                                <div class="form-check d-flex align-items-start mb-3">
+                                    <input type="radio" 
+                                           id="projet-site" 
+                                           name="project_type" 
+                                           value="site_web" 
+                                           class="form-check-input me-3 mt-1" 
+                                           required
+                                           aria-describedby="projet-site-desc">
+                                    <div class="flex-grow-1">
+                                        <label for="projet-site" class="form-check-label text d-block mb-1">
+                                            Site web simple
+                                        </label>
+                                        <div id="projet-site-desc" class="form-text text small">
+                                            Site vitrine, blog, portfolio
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-check d-flex align-items-start mb-3">
+                                    <input type="radio" 
+                                           id="projet-app" 
+                                           name="project_type" 
+                                           value="application" 
+                                           class="form-check-input me-3 mt-1"
+                                           aria-describedby="projet-app-desc">
+                                    <div class="flex-grow-1">
+                                        <label for="projet-app" class="form-check-label text d-block mb-1">
+                                            Application mobile
+                                        </label>
+                                        <div id="projet-app-desc" class="form-text text small">
+                                            App iOS, Android, Progressive Web App
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-check d-flex align-items-start mb-3">
+                                    <input type="radio" 
+                                           id="projet-3d" 
+                                           name="project_type" 
+                                           value="salle_3d" 
+                                           class="form-check-input me-3 mt-1"
+                                           aria-describedby="projet-3d-desc">
+                                    <div class="flex-grow-1">
+                                        <label for="projet-3d" class="form-check-label text d-block mb-1">
+                                            Salle 3D Immersive
+                                        </label>
+                                        <div id="projet-3d-desc" class="form-text text small">
+                                            Environnement virtuel, métavers
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-check d-flex align-items-start mb-3">
+                                    <input type="radio" 
+                                           id="projet-grand" 
+                                           name="project_type" 
+                                           value="grand_projet" 
+                                           class="form-check-input me-3 mt-1"
+                                           aria-describedby="projet-grand-desc">
+                                    <div class="flex-grow-1">
+                                        <label for="projet-grand" class="form-check-label text d-block mb-1">
+                                            Grands projets
+                                        </label>
+                                        <div id="projet-grand-desc" class="form-text text small">
+                                            Projets complexes, solutions sur mesure
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ✅ NOUVEAU - Option "Autre question" -->
+                                <div class="form-check d-flex align-items-start mb-3">
+                                    <input type="radio" 
+                                           id="projet-autre" 
+                                           name="project_type" 
+                                           value="autre_question" 
+                                           class="form-check-input me-3 mt-1"
+                                           aria-describedby="projet-autre-desc">
+                                    <div class="flex-grow-1">
+                                        <label for="projet-autre" class="form-check-label text d-block mb-1">
+                                            Autre question
+                                        </label>
+                                        <div id="projet-autre-desc" class="form-text text small">
+                                            Question générale, demande d'information
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="form-check">
-                                <input type="radio" id="projet-app" name="project_type" value="application" class="form-check-input" aria-label="Application mobile">
-                                <label for="projet-app" class="form-check-label text">Application mobile</label>
+                            <div id="project_type_error" class="invalid-feedback d-block">
+                                Veuillez sélectionner un type de projet.
                             </div>
-
-                            <div class="form-check">
-                                <input type="radio" id="projet-3d" name="project_type" value="salle_3d" class="form-check-input" aria-label="Salle 3D Immersive">
-                                <label for="projet-3d" class="form-check-label text">Salle 3D Immersive</label>
-                            </div>
-
-                            <div class="form-check">
-                                <input type="radio" id="projet-grand" name="project_type" value="grand_projet" class="form-check-input" aria-label="Grands projets">
-                                <label for="projet-grand" class="form-check-label text">Grands projets</label>
-                            </div>
-
-                            <div class="invalid-feedback d-block">Veuillez sélectionner un type de projet.</div>
                         </fieldset>
 
                         <!-- Message -->
                         <div class="col-12">
-                            <label for="message" class="text">Message <span class="text-danger">*</span></label>
+                            <label for="message" class="form-label text">
+                                Message <span class="text-danger" aria-label="obligatoire">*</span>
+                            </label>
                             <textarea id="message"
                                       name="message"
                                       rows="5"
                                       class="form-control"
-                                      placeholder="Tapez votre message..."
+                                      placeholder="Décrivez votre projet, vos besoins, votre budget..."
                                       required
                                       aria-required="true"
-                                      aria-label="Message"></textarea>
-                            <div class="invalid-feedback">Veuillez entrer un message.</div>
+                                      aria-describedby="message_error message_help"></textarea>
+                            <div id="message_help" class="form-text text">
+                                Minimum 10 caractères. Décrivez votre projet en détail.
+                            </div>
+                            <div id="message_error" class="invalid-feedback">
+                                Veuillez entrer un message d'au moins 10 caractères.
+                            </div>
                         </div>
 
-                        <!-- Captcha -->
+                        <!-- Captcha caché -->
                         <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
 
-                        <!-- Infos sur les champs obligatoires -->
-                        <p id="form-required" class="text mt-2" style="color: #FF1DBB;">
-                            Champs obligatoires <span>*</span>
-                        </p>
+                        <!-- ✅ CORRECTION - Infos sur les champs obligatoires -->
+                        <div class="col-12">
+                            <p id="form-required" class="text mt-2" style="color: #FF1DBB;">
+                                <span class="text-danger">*</span> Champs obligatoires
+                            </p>
+                        </div>
 
                         <!-- Bouton -->
                         <div class="col-12 text-center">
-                            <button type="submit" name="envoyer" value="Envoyer" class="btn-neon" aria-label="Soumettre le formulaire de contact">
-                                Soumettre
+                            <button type="submit" 
+                                    name="envoyer" 
+                                    value="Envoyer" 
+                                    class="btn-neon"
+                                    aria-describedby="submit-help">
+                                <i class="bi bi-send" aria-hidden="true"></i>
+                                Envoyer le message
                             </button>
+                            <div id="submit-help" class="form-text text mt-2">
+                                En soumettant ce formulaire, vous acceptez d'être recontacté par GNUT 06
+                            </div>
                         </div>
                     </form>
                 </div>
-
             </div>
         </section>
 
@@ -262,9 +583,30 @@
                         if (!form.checkValidity()) {
                             event.preventDefault();
                             event.stopPropagation();
+                            
+                            // ✅ CORRECTION - Focus sur premier champ en erreur
+                            const firstInvalid = form.querySelector(':invalid');
+                            if (firstInvalid) {
+                                firstInvalid.focus();
+                                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
                         }
                         form.classList.add('was-validated');
                     }, false);
+                });
+
+                // ✅ CORRECTION - Validation en temps réel accessible
+                const inputs = document.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    input.addEventListener('blur', function() {
+                        if (this.checkValidity()) {
+                            this.classList.remove('is-invalid');
+                            this.classList.add('is-valid');
+                        } else {
+                            this.classList.remove('is-valid');
+                            this.classList.add('is-invalid');
+                        }
+                    });
                 });
             })();
         </script>

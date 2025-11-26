@@ -2,27 +2,202 @@
 
 {% block title %}Plongez dans un univers inclusif : découvrez le métavers Gnut 06!{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* ✅ CORRECTION WCAG 2.1 AA - Focus visible obligatoire */
+.btn-neon:focus,
+.btn-outline-gradient:focus,
+a:focus,
+.card:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ CORRECTION - Zones de clic minimales 44px */
+.btn-neon,
+.btn-outline-gradient {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.75rem 1.5rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+}
+
+/* ✅ CORRECTION - Contraste des textes amélioré */
+.text {
+    color: #ffffff !important;
+    line-height: 1.6 !important;
+}
+
+.card-text {
+    color: #e8e8e8 !important;
+}
+
+/* ✅ CORRECTION - Cartes accessibles avec navigation clavier */
+.card {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover,
+.card:focus,
+.card:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(248, 108, 248, 0.2);
+    border-color: rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ CORRECTION - H1 visible mais stylé comme H2 */
+#metavers-title {
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    margin-bottom: 1rem !important;
+    color: #ffffff !important;
+}
+
+/* ✅ CORRECTION - FAQ accessible */
+dt {
+    font-size: 1.1rem !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+dd {
+    margin-bottom: 1rem !important;
+    padding-left: 1rem !important;
+}
+
+/* ✅ CORRECTION - Skip links */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #000000;
+    color: #ffffff;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 0 0 4px 4px;
+    z-index: 1000;
+    font-weight: bold;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 3px solid #F86CF8;
+}
+
+/* ✅ CORRECTION - Lien externe sécurisé */
+.external-link::after {
+    content: " (nouvelle fenêtre)";
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ✅ Animation respectueuse des préférences */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .card {
+        transform: none !important;
+    }
+}
+
+/* ✅ Support haut contraste */
+@media (prefers-contrast: high) {
+    .text,
+    .card-text {
+        color: #ffffff !important;
+        background-color: #000000 !important;
+    }
+    
+    .card {
+        border: 3px solid #ffffff !important;
+        background-color: #000000 !important;
+    }
+    
+    .btn-neon,
+    .btn-outline-gradient {
+        border: 3px solid #ffffff !important;
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+}
+
+/* ✅ Responsive mobile */
+@media (max-width: 768px) {
+    .text,
+    .card-text {
+        font-size: 16px !important;
+    }
+    
+    dt {
+        font-size: 18px !important;
+    }
+    
+    #metavers-title {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* ✅ CORRECTION - Support lecteurs d'écran Windows */
+@media screen and (-ms-high-contrast: active) {
+    .btn-neon,
+    .btn-outline-gradient {
+        border: 2px solid WindowText !important;
+        background: Window !important;
+        color: WindowText !important;
+    }
+    
+    .card {
+        border: 2px solid WindowText !important;
+        background: Window !important;
+    }
+    
+    .text {
+        color: WindowText !important;
+    }
+}
+</style>
+{% endblock %}
+
 {% block body %}
+    <!-- ✅ CORRECTION - Skip links ajoutés -->
+    <nav aria-label="Navigation rapide" class="visually-hidden-focusable">
+        <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+        <a href="#section-etapes" class="skip-link">Aller aux étapes</a>
+        <a href="#section-faq" class="skip-link">Aller à la FAQ</a>
+    </nav>
+
     <main id="main-content" role="main" aria-labelledby="metavers-title">
 
-        <!-- Section immersion -->
-        <section class="bg-main py-5" aria-labelledby="section-immersion-title">
+        <!-- ✅ CORRECTION - Section immersion avec H1 visible -->
+        <section class="bg-main py-5" role="region" aria-labelledby="section-immersion-title">
             <div class="container row align-items-center g-5 m-auto">
                 <div class="col-lg-6">
                     <header>
-                        <h1 id="metavers-title" class="visually-hidden">
+                        <!-- ✅ CORRECTION - H1 visible mais stylé comme le H2 original -->
+                        <h1 id="metavers-title" class="mb-3">
                             Plongez dans un univers inclusif : découvrez le métavers GNUT 06
                         </h1>
-                        <h2 id="section-immersion-title">
+                        <h2 id="section-immersion-title" class="h3 mb-4">
                             Les avantages incroyables du 3D Immersif pour votre expérience en ligne.
                         </h2>
                     </header>
 
-                    <p class="text">
-                        Profitez dès aujourd’hui d’une immersion totale dans des espaces entièrement reconstitués en 3D et
-                        échangez en temps réel avec d’autres utilisateurs. Bien plus qu’une vidéoconférence classique, une
+                    <p class="text mb-3">
+                        Profitez dès aujourd'hui d'une immersion totale dans des espaces entièrement reconstitués en 3D et
+                        échangez en temps réel avec d'autres utilisateurs. Bien plus qu'une vidéoconférence classique, une
                         salle 3D donne une véritable sensation de présence simultanée et offre une nouvelle manière
-                        d’appréhender le monde virtuel.
+                        d'appréhender le monde virtuel.
                     </p>
                     <p class="text">
                         Explorez ces environnements virtuels riches et engageants et collaborez sans limite !
@@ -30,88 +205,139 @@
                 </div>
 
                 <div class="col-lg-6 text-center">
-                    <img src="{{ asset('images/webp/immersion-2.webp') }}"
-                         class="img-fluid rounded"
-                         alt="Un utilisateur explorant un environnement immersif en 3D, illustrant l’expérience GNUT 06.">
+                    <!-- ✅ CORRECTION - Figure ajoutée pour sémantique -->
+                    <figure>
+                        <img src="{{ asset('images/webp/immersion-2.webp') }}"
+                             class="img-fluid rounded"
+                             alt="Un utilisateur explorant un environnement immersif en 3D avec un casque de réalité virtuelle, illustrant l'expérience GNUT 06 dans un monde virtuel accessible"
+                             role="img">
+                    </figure>
                 </div>
             </div>
         </section>
 
-        <!-- Section étapes -->
-        <section class="bg-main py-5" aria-labelledby="section-etapes-title">
+        <!-- ✅ CORRECTION - Section étapes avec navigation clavier -->
+        <section id="section-etapes" class="bg-main py-5" role="region" aria-labelledby="section-etapes-title">
             <div class="container text-center">
-                <h2 id="section-etapes-title" class="text-start">
+                <h2 id="section-etapes-title" class="text-start mb-4">
                     Découvrez comment naviguer dans les Salles 3D Immersives
                 </h2>
-                <p class="text text-start">
+                <p class="text text-start mb-4">
                     Les salles 3D immersives offrent une expérience immersive unique. Suivez ces étapes simples pour explorer et interagir dans cet univers numérique accessible à tous. Préparez-vous à découvrir un nouveau monde de possibilités.
                 </p>
 
-                <div class="row g-4 mt-4" role="list">
+                <!-- ✅ CORRECTION - Liste ordonnée sémantique avec navigation -->
+                <ol class="row g-4 mt-4 list-unstyled" role="list" aria-label="Étapes pour naviguer dans les salles 3D">
                     <!-- Étape 1 -->
-                    <article class="col-md-4" role="listitem" aria-labelledby="etape1-title">
-                        <div class="card text-white bg-black h-100">
-                            <img src="{{ asset('images/webp/avatars.webp') }}" class="card-img-top"
-                                 alt="Exemple d’avatars personnalisables dans le métavers.">
+                    <li class="col-md-4" role="listitem">
+                        <article class="card text-white bg-black h-100" 
+                                 tabindex="0"
+                                 role="button"
+                                 aria-labelledby="etape1-title"
+                                 aria-describedby="etape1-desc">
+                            <figure class="m-0">
+                                <img src="{{ asset('images/webp/avatars.webp') }}" 
+                                     class="card-img-top"
+                                     alt="Interface de création d'avatar montrant différentes options de personnalisation disponibles dans le métavers"
+                                     role="img">
+                            </figure>
                             <div class="card-body">
-                                <h3 class="card-title text-start" id="etape1-title">Étape 1 : Créez votre avatar</h3>
-                                <p class="card-text text-start">Personnalisez votre avatar pour refléter votre style.</p>
+                                <h3 class="card-title text-start" id="etape1-title">
+                                    <span class="fw-bold text-primary">Étape 1 :</span> Créez votre avatar
+                                </h3>
+                                <p class="card-text text-start" id="etape1-desc">
+                                    Personnalisez votre avatar pour refléter votre style unique dans l'environnement virtuel.
+                                </p>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                    </li>
 
                     <!-- Étape 2 -->
-                    <article class="col-md-4" role="listitem" aria-labelledby="etape2-title">
-                        <div class="card text-white bg-black h-100">
-                            <img src="{{ asset('images/webp/hub.webp') }}" class="card-img-top"
-                                 alt="Interface d’un environnement virtuel 3D à explorer.">
+                    <li class="col-md-4" role="listitem">
+                        <article class="card text-white bg-black h-100" 
+                                 tabindex="0"
+                                 role="button"
+                                 aria-labelledby="etape2-title"
+                                 aria-describedby="etape2-desc">
+                            <figure class="m-0">
+                                <img src="{{ asset('images/webp/hub.webp') }}" 
+                                     class="card-img-top"
+                                     alt="Vue d'ensemble d'un hub virtuel 3D avec différentes zones à explorer et des avatars d'utilisateurs"
+                                     role="img">
+                            </figure>
                             <div class="card-body">
-                                <h3 class="card-title text-start" id="etape2-title">Étape 2 : Explorez l'environnement</h3>
-                                <p class="card-text text-start">Déplacez-vous à travers les différentes zones du métavers.</p>
+                                <h3 class="card-title text-start" id="etape2-title">
+                                    <span class="fw-bold text-primary">Étape 2 :</span> Explorez l'environnement
+                                </h3>
+                                <p class="card-text text-start" id="etape2-desc">
+                                    Déplacez-vous à travers les différentes zones du métavers et découvrez les espaces disponibles.
+                                </p>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                    </li>
 
                     <!-- Étape 3 -->
-                    <article class="col-md-4" role="listitem" aria-labelledby="etape3-title">
-                        <div class="card text-white bg-black h-100">
-                            <img src="{{ asset('images/webp/openspace.webp') }}" class="card-img-top"
-                                 alt="Personnes interagissant dans une salle virtuelle 3D.">
+                    <li class="col-md-4" role="listitem">
+                        <article class="card text-white bg-black h-100" 
+                                 tabindex="0"
+                                 role="button"
+                                 aria-labelledby="etape3-title"
+                                 aria-describedby="etape3-desc">
+                            <figure class="m-0">
+                                <img src="{{ asset('images/webp/openspace.webp') }}" 
+                                     class="card-img-top"
+                                     alt="Plusieurs avatars interagissant dans une salle virtuelle 3D ouverte avec des outils de collaboration"
+                                     role="img">
+                            </figure>
                             <div class="card-body">
-                                <h3 class="card-title text-start" id="etape3-title">Étape 3 : Interagissez</h3>
-                                <p class="card-text text-start">Participez à des activités et discutez avec d'autres utilisateurs.</p>
+                                <h3 class="card-title text-start" id="etape3-title">
+                                    <span class="fw-bold text-primary">Étape 3 :</span> Interagissez
+                                </h3>
+                                <p class="card-text text-start" id="etape3-desc">
+                                    Participez à des activités collaboratives et discutez avec d'autres utilisateurs en temps réel.
+                                </p>
                             </div>
-                        </div>
-                    </article>
-                </div>
+                        </article>
+                    </li>
+                </ol>
 
-                <a href="https://framevr.io/vfl-ivc-bky"
-                   class="btn-neon btn-sm text-white mt-4"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   aria-label="Démarrer une immersion 3D dans FrameVR.io (ouvre un nouvel onglet)">
-                    Démarrer une immersion
-                </a>
+                <div class="mt-5">
+                    <!-- ✅ CORRECTION - Lien externe avec indication -->
+                    <a href="https://framevr.io/vfl-ivc-bky"
+                       class="btn-neon text-white external-link"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       aria-label="Démarrer une immersion 3D dans FrameVR.io - S'ouvre dans un nouvel onglet"
+                       aria-describedby="immersion-help">
+                        <i class="bi bi-play-circle" aria-hidden="true"></i>
+                        Démarrer une immersion
+                    </a>
+                    <div id="immersion-help" class="visually-hidden">
+                        Lien externe vers la plateforme FrameVR pour commencer votre expérience 3D immersive
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Section témoignages -->
-        <section class="bg-main py-5" aria-labelledby="section-temoignages-title">
+        <!-- ✅ CORRECTION - Section témoignages accessible -->
+        <section class="bg-main py-5" role="region" aria-labelledby="section-temoignages-title">
             <div class="container text-center">
-                <h2 id="section-temoignages-title" class="text-md-center text-start">Témoignages utilisateurs</h2>
-                <p class="text text-md-center text-start">
+                <h2 id="section-temoignages-title" class="text-md-center text-start mb-4">
+                    Témoignages utilisateurs
+                </h2>
+                <p class="text text-md-center text-start mb-4">
                     Découvrez ce que nos utilisateurs pensent des Salles 3D Immersives !
                 </p>
 
-                <div class="row g-4 mt-4" role="list">
+                <div class="row g-4 mt-4" role="list" aria-label="Liste des témoignages utilisateurs">
                     {% for temoignage in [
-                        {texte: 'Une belle aventure qui aide les personnes en situation de handicap à accéder à un nouveau monde.', auteur: 'Luna', role: 'Éducatrice'},
-                        {texte: 'Super! ça permet de jouer et de ne pas s’ennuyer', auteur: 'Rudolphe', role: 'Personne handicapée'},
-                        {texte: 'J’ai adoré une activité comme ça !', auteur: 'Aurélie', role: 'Personne handicapée'}
+                        {'texte': 'Une belle aventure qui aide les personnes en situation de handicap à accéder à un nouveau monde.', 'auteur': 'Luna', 'role': 'Éducatrice'},
+                        {'texte': 'Super! ça permet de jouer et de ne pas s\'ennuyer', 'auteur': 'Rudolphe', 'role': 'Personne handicapée'},
+                        {'texte': 'J\'ai adoré une activité comme ça !', 'auteur': 'Aurélie', 'role': 'Personne handicapée'}
                     ] %}
-                        <article class="col-md-4" role="listitem" aria-labelledby="temoignage-{{ loop.index }}-title">
-                            <div class="card text-white bg-black h-100">
-                                <div class="stars py-2" aria-label="Évaluation de 5 étoiles">
+                        <article class="col-md-4" role="listitem" aria-labelledby="temoignage-{{ loop.index }}-auteur">
+                            <div class="card text-white bg-black h-100" tabindex="0">
+                                <div class="stars py-3" role="img" aria-label="Évaluation de 5 étoiles sur 5">
                                     {% for i in 1..5 %}
                                         <img src="{{ asset('images/webp/star.svg') }}"
                                              alt=""
@@ -119,15 +345,22 @@
                                              height="20"
                                              aria-hidden="true">
                                     {% endfor %}
+                                    <span class="visually-hidden">5 étoiles sur 5</span>
                                 </div>
                                 <div class="card-body">
-                                    <blockquote>
-                                        <h3 class="card-title text-md-center text-start" id="temoignage-{{ loop.index }}-title">
-                                            “{{ temoignage.texte }}”
-                                        </h3>
-                                        <footer>
-                                            <p class="card-text mb-0 text-md-center text-start">{{ temoignage.auteur }}</p>
-                                            <p class="card-text text-md-center text-start"><em>{{ temoignage.role }}</em></p>
+                                    <blockquote class="mb-0">
+                                        <p class="card-title text-md-center text-start mb-3 fs-6">
+                                            "{{ temoignage.texte }}"
+                                        </p>
+                                        <footer class="blockquote-footer">
+                                            <cite>
+                                                <p class="card-text mb-1 text-md-center text-start fw-bold" id="temoignage-{{ loop.index }}-auteur">
+                                                    {{ temoignage.auteur }}
+                                                </p>
+                                                <p class="card-text text-md-center text-start small">
+                                                    <em>{{ temoignage.role }}</em>
+                                                </p>
+                                            </cite>
                                         </footer>
                                     </blockquote>
                                 </div>
@@ -138,40 +371,81 @@
             </div>
         </section>
 
-        <!-- Section FAQ -->
-        <section id="section-faq" class="bg-main py-5" aria-labelledby="section-faq-title">
+        <!-- ✅ CORRECTION - Section FAQ entièrement accessible -->
+        <section id="section-faq" class="bg-main py-5" role="region" aria-labelledby="section-faq-title">
             <div class="container text-center">
-                <h2 id="section-faq-title">FAQ</h2>
-                <p class="mb-4 text">
+                <h2 id="section-faq-title" class="mb-4">Questions Fréquemment Posées (FAQ)</h2>
+                <p class="mb-5 text">
                     Découvrez les réponses aux questions les plus fréquentes sur le 3D Immersif
                 </p>
 
+                <!-- ✅ CORRECTION - FAQ avec structure accessible -->
                 <div class="text-start mx-auto mb-5" style="max-width: 800px;">
-                    <dl>
-                        <dt class="text mb-3 mt-5"><strong>Qu'est-ce que le 3D Immersif ?</strong></dt>
-                        <dd class="text">Le 3D Immersif est un espace virtuel où les utilisateurs peuvent interagir, créer et explorer. Il combine la réalité augmentée, la réalité virtuelle et des environnements numériques. C'est un nouveau monde d'opportunités sociales et économiques.</dd>
+                    <dl class="faq-list" role="list" aria-label="Liste des questions fréquentes">
+                        
+                        <div class="faq-item mb-4" role="listitem">
+                            <dt class="text mb-2" id="faq-q1">
+                                <strong>Qu'est-ce que le 3D Immersif ?</strong>
+                            </dt>
+                            <dd class="text ps-3" aria-labelledby="faq-q1">
+                                Le 3D Immersif est un espace virtuel où les utilisateurs peuvent interagir, créer et explorer. Il combine la réalité augmentée, la réalité virtuelle et des environnements numériques. C'est un nouveau monde d'opportunités sociales et économiques.
+                            </dd>
+                        </div>
 
-                        <dt class="text mb-3 mt-5"><strong>Comment y accéder ?</strong></dt>
-                        <dd class="text">Pour accéder au métavers, vous aurez besoin d'un appareil compatible, comme un casque VR ou un ordinateur. Une connexion Internet stable est également essentielle. Inscrivez-vous sur notre plateforme pour commencer votre aventure.</dd>
+                        <div class="faq-item mb-4" role="listitem">
+                            <dt class="text mb-2" id="faq-q2">
+                                <strong>Comment y accéder ?</strong>
+                            </dt>
+                            <dd class="text ps-3" aria-labelledby="faq-q2">
+                                Pour accéder au métavers, vous aurez besoin d'un appareil compatible, comme un casque VR ou un ordinateur. Une connexion Internet stable est également essentielle. Inscrivez-vous sur notre plateforme pour commencer votre aventure.
+                            </dd>
+                        </div>
 
-                        <dt class="text mb-3 mt-5"><strong>Quels sont les bénéfices ?</strong></dt>
-                        <dd class="text">Le métavers offre des expériences interactives et immersives qui enrichissent l'apprentissage et le divertissement. Il permet également de créer des communautés et de développer des compétences numériques. De plus, il ouvre des possibilités économiques inédites.</dd>
+                        <div class="faq-item mb-4" role="listitem">
+                            <dt class="text mb-2" id="faq-q3">
+                                <strong>Quels sont les bénéfices ?</strong>
+                            </dt>
+                            <dd class="text ps-3" aria-labelledby="faq-q3">
+                                Le métavers offre des expériences interactives et immersives qui enrichissent l'apprentissage et le divertissement. Il permet également de créer des communautés et de développer des compétences numériques. De plus, il ouvre des possibilités économiques inédites.
+                            </dd>
+                        </div>
 
-                        <dt class="text mb-3 mt-5"><strong>Est-ce sécurisé ?</strong></dt>
-                        <dd class="text">La sécurité est une priorité dans le métavers. Nous mettons en place des protocoles de sécurité robustes pour protéger vos données et votre expérience. Restez vigilant et suivez nos conseils pour naviguer en toute sécurité.</dd>
+                        <div class="faq-item mb-4" role="listitem">
+                            <dt class="text mb-2" id="faq-q4">
+                                <strong>Est-ce sécurisé ?</strong>
+                            </dt>
+                            <dd class="text ps-3" aria-labelledby="faq-q4">
+                                La sécurité est une priorité dans le métavers. Nous mettons en place des protocoles de sécurité robustes pour protéger vos données et votre expérience. Restez vigilant et suivez nos conseils pour naviguer en toute sécurité.
+                            </dd>
+                        </div>
 
-                        <dt class="text mb-3 mt-5"><strong>Puis-je créer du contenu ?</strong></dt>
-                        <dd class="text">Oui, le métavers encourage la créativité et la création de contenu. Vous pouvez concevoir des objets, des environnements et même des expériences interactives. Partagez vos créations avec d'autres utilisateurs et collaborez sur des projets passionnants.</dd>
+                        <div class="faq-item mb-4" role="listitem">
+                            <dt class="text mb-2" id="faq-q5">
+                                <strong>Puis-je créer du contenu ?</strong>
+                            </dt>
+                            <dd class="text ps-3" aria-labelledby="faq-q5">
+                                Oui, le métavers encourage la créativité et la création de contenu. Vous pouvez concevoir des objets, des environnements et même des expériences interactives. Partagez vos créations avec d'autres utilisateurs et collaborez sur des projets passionnants.
+                            </dd>
+                        </div>
+
                     </dl>
                 </div>
 
-                <h3>Des questions supplémentaires?</h3>
-                <p class="text">N'hésitez pas à nous contacter pour plus d'informations.</p>
-                <a href="{{ path('app_contact') }}"
-                   class="btn-outline-gradient btn-sm text-white mt-3 {{ app.request.attributes.get('_route') == 'app_contact' ? ' active' }}"
-                   aria-label="Contacter GNUT 06 pour plus d’informations sur le métavers">
-                    Nous contacter
-                </a>
+                <!-- ✅ CORRECTION - Section contact améliorée -->
+                <div class="mt-5">
+                    <h3 class="h4 mb-3">Des questions supplémentaires ?</h3>
+                    <p class="text mb-4">N'hésitez pas à nous contacter pour plus d'informations.</p>
+                    <a href="{{ path('app_contact') }}"
+                       class="btn-outline-gradient text-white"
+                       aria-label="Contacter GNUT 06 pour plus d'informations sur le métavers et les salles 3D immersives"
+                       aria-describedby="contact-help">
+                        <i class="bi bi-envelope" aria-hidden="true"></i>
+                        Nous contacter
+                    </a>
+                    <div id="contact-help" class="visually-hidden">
+                        Page de contact pour poser vos questions sur le métavers GNUT 06
+                    </div>
+                </div>
             </div>
         </section>
 
