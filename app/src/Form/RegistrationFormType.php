@@ -58,8 +58,9 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('isTih', CheckboxType::class, [
                 'label'    => 'Je suis une personne en situation de handicap (TIH)',
+                'value'    => true,
                 'required' => false,
-                'mapped'   => true,
+                'mapped'   => false,
             ]);;
     }
 

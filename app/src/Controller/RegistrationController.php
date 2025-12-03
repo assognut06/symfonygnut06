@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Tih;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Message\Notification;
@@ -42,9 +43,6 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $recaptchaToken = $request->request->get('g-recaptcha-response');
-            $ip = $request->getClientIp();
-
             if (!$recaptchaVerifier->verify($request)) {
                 $this->addFlash('danger', 'La vérification reCAPTCHA a échoué. Veuillez réessayer.');
                 return $this->render('registration/register.html.twig', [
@@ -56,6 +54,10 @@ class RegistrationController extends AbstractController
             $user->setPassword(
                 $userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData())
             );
+
+            if($form->get('isTih')->getData() === true) {
+                $user->setTih(new Tih());
+            }
             $entityManager->persist($user);
             $entityManager->flush();
 

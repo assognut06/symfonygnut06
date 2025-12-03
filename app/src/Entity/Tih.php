@@ -5,9 +5,11 @@ namespace App\Entity;
 use App\Repository\TihRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TihRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Tih
 {
     #[ORM\Id]
@@ -54,11 +56,11 @@ class Tih
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $attestationTih = null;
 
-    #[ORM\Column(type: 'datetime')]
-    private \DateTimeInterface $dateCreation;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
+    private \DateTimeInterface $createdAt;
 
-    #[ORM\Column(type: 'datetime')]
-    private \DateTimeInterface $dateMiseAJour;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
+    private \DateTimeInterface $updatedAt;
 
     #[ORM\ManyToMany(targetEntity: Competence::class)]
     private Collection $competences;
@@ -73,6 +75,20 @@ class Tih
     {
         $this->competences = new ArrayCollection();
         $this->isValidate = false;
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
+    {
+        $now = new \DateTimeImmutable();
+        $this->createdAt = $now;
+        $this->updatedAt = $now;
+    }
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int { return $this->id; }
@@ -116,11 +132,11 @@ class Tih
     public function getAttestationTih(): ?string { return $this->attestationTih; }
     public function setAttestationTih(?string $attestationTih): self { $this->attestationTih = $attestationTih; return $this; }
 
-    public function getDateCreation(): \DateTimeInterface { return $this->dateCreation; }
-    public function setDateCreation(\DateTimeInterface $dateCreation): self { $this->dateCreation = $dateCreation; return $this; }
+    public function getCreatedAt(): \DateTimeInterface { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeInterface $createdAt): self { $this->createdAt = $createdAt; return $this; }
 
-    public function getDateMiseAJour(): \DateTimeInterface { return $this->dateMiseAJour; }
-    public function setDateMiseAJour(\DateTimeInterface $dateMiseAJour): self { $this->dateMiseAJour = $dateMiseAJour; return $this; }
+    public function getUpdatedAt(): \DateTimeInterface { return $this->updatedAt; }
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self { $this->updatedAt = $updatedAt; return $this; }
 
     /** @return Collection<int, Competence> */
     public function getCompetences(): Collection { return $this->competences; }

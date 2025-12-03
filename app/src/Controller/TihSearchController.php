@@ -22,7 +22,7 @@ class TihSearchController extends AbstractController
         // ✅ Ne récupérer que les TIH validés
         $tihs = $tihRepository->findBy(
             ['isValidate' => true],
-            ['dateCreation' => 'DESC']
+            ['createdAt' => 'DESC']
         );
 
         return $this->render('tih_search/index.html.twig', [

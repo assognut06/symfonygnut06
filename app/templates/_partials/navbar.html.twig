@@ -211,7 +211,7 @@
                                         </a>
                                     </li>
                                 {% endif %}
-                                {% if app.user and is_granted('ROLE_ADMIN') or is_granted('ROLE_ENTREPRISE') %}
+                                {% if app.user and is_granted('ROLE_ENTREPRISE') %}
                                     <li role="none">
                                         <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'app_tih_search' ? 'active' : '' }}"
                                            href="{{ path('app_tih_search') }}"

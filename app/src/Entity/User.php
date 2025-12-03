@@ -58,24 +58,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $azureId = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_creation = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
+    private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_mise_a_jour = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
+    private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\PrePersist]
     public function onPrePersist(): void
     {
         $now = new \DateTimeImmutable();
-        $this->date_creation = $now;
-        $this->date_mise_a_jour = $now;
+        $this->createdAt = $now;
+        $this->updatedAt = $now;
     }
 
     #[ORM\PreUpdate]
     public function onPreUpdate(): void
     {
-        $this->date_mise_a_jour = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
 
@@ -207,25 +207,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getDateCreation(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->date_creation;
+        return $this->createdAt;
     }
 
-    public function setDateCreation(\DateTimeInterface $date_creation): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
-        $this->date_creation = $date_creation;
+        $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getDateMiseAJour(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->date_mise_a_jour;
+        return $this->updatedAt;
     }
 
-    public function setDateMiseAJour(\DateTimeInterface $date_mise_a_jour): self
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
-        $this->date_mise_a_jour = $date_mise_a_jour;
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 
