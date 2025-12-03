@@ -29,8 +29,8 @@ class TihController extends AbstractController
         if (!$tih) {
             $tih = new Tih();
             $tih->setUser($user);
-            $tih->setDateCreation(new \DateTime());
-            $tih->setDateMiseAJour(new \DateTime());
+            $tih->setCreatedAt(new \DateTime());
+            $tih->setUpdatedAt(new \DateTime());
             $tih->setIsValidate(false);
         }
 
@@ -78,7 +78,7 @@ class TihController extends AbstractController
                     $user->setRoles($roles);
                 }
 
-                $tih->setDateMiseAJour(new \DateTime());
+                $tih->setUpdatedAt(new \DateTime());
                 $tih->setIsValidate(false); // retour en attente après modif
 
                 $em->persist($tih);
