@@ -1,0 +1,311 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ title }}
+	-
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.Handi-3D-container {
+			padding: 2rem 0;
+			min-height: 80vh;
+		}
+
+		.hero-section {
+			background: linear-gradient(#010208, #010206, #040008, #010101);
+			color: white;
+			padding: 4rem 0;
+			text-align: center;
+		}
+
+		.feature-card {
+			background: white;
+			border-radius: 10px;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+			padding: 2rem;
+			margin-bottom: 2rem;
+			transition: transform 0.3s ease;
+		}
+
+		.feature-card:hover {
+			transform: translateY(-5px);
+		}
+
+		.btn-3d {
+			background: linear-gradient(45deg, #667eea, #764ba2);
+			color: white;
+			border: none;
+			padding: 12px 30px;
+			border-radius: 25px;
+			text-decoration: none;
+			display: inline-block;
+			margin: 10px;
+			transition: all 0.3s ease;
+		}
+
+		.btn-3d:hover {
+			color: white;
+			transform: scale(1.05);
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+		}
+
+		.text-contrast {
+			color: #2c3e50 !important;
+			font-weight: 500;
+		}
+
+		.text-readable {
+			color: #34495e !important;
+			line-height: 1.6;
+		}
+
+		.border-primary {
+			border-color: #3498db !important;
+		}
+
+		.border-success {
+			border-color: #27ae60 !important;
+		}
+
+		.border-warning {
+			border-color: #f39c12 !important;
+		}
+
+		.text-primary-dark {
+			color: #2980b9 !important;
+		}
+
+		.text-success-dark {
+			color: #229954 !important;
+		}
+
+		.text-warning-dark {
+			color: #d68910 !important;
+		}
+
+		.text-white-force {
+			color: white !important;
+		}
+
+		.bg-dark-section {
+			background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+			color: white;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div
+		class="Handi-3D-container">
+		<!-- Hero Section -->
+		<section class="hero-section">
+			<div class="container">
+				<div class="text-center mb-4">
+					<h1 class="display-4 mb-4">♿ Handi-3D</h1>
+				</div>
+			</div>
+			<div class="container mb-4 px-5">
+				<img src="{{ asset('images/webp/hnadi-3D.png') }}" alt="Handi-3D - Réalité virtuelle inclusive" class="img-fluid w-100" style="object-fit: contain; object-position: center;">
+			</div>
+			<div class="container">
+				<div class="text-center">
+					<p class="lead mb-4">Explorez l'expérience immersive ♿ Handi-3D</p>
+					<a href="https://framevr.io/handi-metavers" class="btn-3d btn-outline-gradient text-white position-relative" role="button" target="_blank" rel="noopener noreferrer" aria-label="Découvrir Handi-3D, notre espace virtuel inclusif (ouvre dans un nouvel onglet)" target="_blank" rel="noopener noreferrer">
+						🎯 Lancer la salle immersive ♿ Handi-3D
+						<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger" style="transform: translate(-50%, -50%) rotate(23deg); transform-origin: center;" aria-label="Nouveau">
+							New
+						</span>
+					</a>
+				</div>
+				{# <a href="{{ path('hand_3d_gallery') }}" class="btn-3d">
+				                🖼️ Voir la Galerie
+				            </a> #}
+			</div>
+		</section>
+
+		<!-- Features Section -->
+		{# <section class="container my-5">
+		        <div class="row">
+		            <div class="col-md-4">
+		                <div class="feature-card text-center">
+		                    <div class="mb-3">
+		                        <i class="fas fa-cube fa-3x text-primary"></i>
+		                    </div>
+		                    <h3>Modélisation 3D</h3>
+		                    <p>Visualisation interactive des prothèses de main en temps réel avec des modèles 3D détaillés.</p>
+		                </div>
+		            </div>
+		            
+		            <div class="col-md-4">
+		                <div class="feature-card text-center">
+		                    <div class="mb-3">
+		                        <i class="fas fa-hand-paper fa-3x text-success"></i>
+		                    </div>
+		                    <h3>Simulation Gestuelle</h3>
+		                    <p>Testez différents mouvements et gestes avec nos simulations avancées.</p>
+		                </div>
+		            </div>
+		            
+		            <div class="col-md-4">
+		                <div class="feature-card text-center">
+		                    <div class="mb-3">
+		                        <i class="fas fa-cogs fa-3x text-warning"></i>
+		                    </div>
+		                    <h3>Personnalisation</h3>
+		                    <p>Adaptez les paramètres selon vos besoins spécifiques et vos préférences.</p>
+		                </div>
+		            </div>
+		        </div>
+		    </section> #}
+
+		<!-- Focus 2026 Section -->
+			<section class="container my-5"> <div class="row">
+				<div class="col-12">
+					<div class="feature-card bg-dark-section">
+						<div class="text-center mb-4">
+							<h2 class="h1 text-white-force">🎯 Focus 2026 : Le Projet de Gnut 06 "Handi-3D"</h2>
+							<div class="underline mx-auto" style="width: 100px; height: 4px; background: linear-gradient(45deg, #667eea, #764ba2); margin: 1rem auto;"></div>
+						</div>
+
+						<p class="lead text-center mb-5 text-white-force">
+							Pour l'horizon 2026, l'association franchit une nouvelle étape majeure dans sa mission d'inclusion avec le lancement du projet
+							<strong>Handi 3D</strong>. Ce programme vise à briser les barrières physiques et sociales en plaçant les technologies immersives au cœur du parcours des personnes en situation de handicap.
+						</p>
+
+						<div class="row mt-5">
+							<div class="col-md-4 mb-4">
+								<div class="h-100 p-4 border-start border-5 border-primary" style="background: rgba(52, 152, 219, 0.2);">
+									<h4 class="text-white-force mb-3 fw-bold">
+										<i class="fas fa-vr-cardboard me-2"></i>
+										1. L'Évasion et l'Épanouissement par la Réalité Virtuelle
+									</h4>
+									<p class="mb-3 text-white-force">Grâce à l'utilisation de casques de réalité virtuelle (comme le Meta Quest 3), le projet permet de proposer des expériences "hors les murs".</p>
+
+									<div class="mb-3">
+										<h6 class="fw-bold text-white-force">
+											<i class="fas fa-map-marked-alt me-2"></i>Mobilité virtuelle :</h6>
+										<p class="text-white-force">Offrir à ceux dont la mobilité est réduite la possibilité d'explorer des environnements inaccessibles (fonds marins, sommets montagneux, voyages lointains), procurant un sentiment de liberté et d'évasion indispensable au bien-être émotionnel.</p>
+									</div>
+
+									<div>
+										<h6 class="fw-bold text-white-force">
+											<i class="fas fa-users me-2"></i>Réduction de l'isolement :</h6>
+										<p class="text-white-force">Créer des espaces de rencontre virtuels sécurisés où le handicap s'efface derrière l'avatar, permettant une socialisation plus fluide et spontanée.</p>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-4 mb-4">
+								<div class="h-100 p-4 border-start border-5 border-success" style="background: rgba(39, 174, 96, 0.2);">
+									<h4 class="text-white-force mb-3 fw-bold">
+										<i class="fas fa-graduation-cap me-2"></i>
+										2. La Formation et la Réinsertion Professionnelle
+									</h4>
+									<p class="mb-3 text-white-force">Le projet Handi 3D ne se limite pas aux loisirs ; il est un levier vers l'emploi :</p>
+
+									<div class="mb-3">
+										<h6 class="fw-bold text-white-force">
+											<i class="fas fa-brain me-2"></i>Apprentissage immersif :</h6>
+										<p class="text-white-force">Utiliser la 3D pour former aux métiers du numérique ou simuler des situations professionnelles dans un environnement contrôlé, réduisant ainsi l'anxiété liée à l'apprentissage.</p>
+									</div>
+
+									<div>
+										<h6 class="fw-bold text-white-force">
+											<i class="fas fa-chart-line me-2"></i>Développement de compétences :</h6>
+										<p class="text-white-force">Maîtriser ces outils de pointe donne aux bénéficiaires un avantage compétitif sur le marché du travail, transformant la technologie en un véritable vecteur d'autonomie financière et sociale.</p>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-4 mb-4">
+								<div class="h-100 p-4 border-start border-5 border-warning" style="background: rgba(243, 156, 18, 0.2);">
+									<h4 class="text-white-force mb-3 fw-bold">
+										<i class="fas fa-heart me-2"></i>
+										3. Une Dimension Humaniste et Émotionnelle
+									</h4>
+									<p class="mb-3 text-white-force">Au-delà de la technique, Handi 3D porte une vision profondément humaine :</p>
+
+									<div class="mb-3">
+										<h6 class="fw-bold text-white-force">
+											<i class="fas fa-thumbs-up me-2"></i>Redonner confiance :</h6>
+										<p class="text-white-force">En réussissant des défis dans des mondes virtuels, les participants reconstruisent une image positive d'eux-mêmes et de leurs capacités.</p>
+									</div>
+
+									<div>
+										<h6 class="fw-bold text-white-force">
+											<i class="fas fa-shield-alt me-2"></i>Lutter contre la stigmatisation :</h6>
+										<p class="text-white-force">Le projet montre que, grâce à l'adaptation technologique, le handicap n'est plus un frein à la découverte du monde ou à l'expression de son talent.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="text-center my-5">
+							<img src="{{ asset('images/webp/handi-3D.png') }}" alt="Handi-3D - Projet immersif" class="img-fluid rounded shadow-lg" style="max-width: 100%; height: auto;">
+						</div>
+						<div class="text-center mt-5 p-4 rounded" style="background: rgba(255, 255, 255, 0.1);">
+							<h5 class="text-white-force mb-3">
+								<i class="fas fa-rocket me-2"></i>
+								Vision 2026
+							</h5>
+							<p class="mb-0 fst-italic text-white-force">
+								Avec
+								<strong>Handi 3D</strong>, Gnut 06 ambitionne de faire de 2026 l'année où la technologie ne se contente plus d'assister, mais devient une véritable
+								<em>extension des possibles</em>
+								pour chaque individu, quel que soit son parcours de vie.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Info Section -->
+		{# <section class="container my-5">
+		        <div class="row align-items-center text">
+		            <div class="col-md-6">
+		                <h2>Technologie Avancée</h2>
+		                <p>Notre plateforme utilise les dernières technologies WebGL et Three.js pour offrir une expérience immersive.</p>
+		                <ul>
+		                    <li>Rendu 3D en temps réel</li>
+		                    <li>Interface intuitive</li>
+		                    <li>Compatible multi-appareils</li>
+		                    <li>Modèles haute fidélité</li>
+		                </ul>
+		            </div>
+		            <div class="col-md-6 text-center">
+		                <div class="placeholder-3d" style="height: 300px; background: #f8f9fa; border: 2px dashed #dee2e6; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+		                    <div>
+		                        <i class="fas fa-hand-rock fa-5x text-muted mb-3"></i>
+		                        <p class="text-muted">Zone de prévisualisation 3D</p>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		    </section> #}
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	 <script>
+	        // Animation au chargement
+	        document.addEventListener('DOMContentLoaded', function() {
+	            const cards = document.querySelectorAll('.feature-card');
+	            cards.forEach((card, index) => {
+	                setTimeout(() => {
+	                    card.style.opacity = '0';
+	                    card.style.transform = 'translateY(30px)';
+	                    card.style.transition = 'all 0.6s ease';
+	                    
+	                    setTimeout(() => {
+	                        card.style.opacity = '1';
+	                        card.style.transform = 'translateY(0)';
+	                    }, 100);
+	                }, index * 200);
+	            });
+	        });
+	    </script>
+{% endblock %}
