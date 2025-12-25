@@ -1,6 +1,9 @@
 <?php
 namespace App\Controller;
 
+use App\Application\Command\RegisterUserCommand;
+use App\Application\DTO\RegisterUserDTO;
+use App\Domain\ValueObject\UserType;
 use App\Entity\Tih;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
@@ -38,8 +41,8 @@ class RegistrationController extends AbstractController
         RecaptchaVerifier $recaptchaVerifier,
         EmailService $emailService
     ): Response {
-        $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $dto = new RegisterUserDTO();
+        $form = $this->createForm(RegistrationFormType::class, $dto);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -51,11 +54,20 @@ class RegistrationController extends AbstractController
                 ]);
             }
 
-            $user->setPassword(
-                $userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData())
+            // Create command from DTO with proper value object
+            $command = new RegisterUserCommand(
+                email: $dto->email,
+                plainPassword: $dto->plainPassword,
+                userType: $dto->isTih ? UserType::tih() : UserType::regular()
             );
 
-            if($form->get('isTih')->getData() === true) {
+            $user = new User();
+            $user->setEmail($dto->email);
+            $user->setPassword(
+                $userPasswordHasher->hashPassword($user, $dto->plainPassword)
+            );
+
+            if($dto->isTih === true) {
                 $user->setTih(new Tih());
             }
             $entityManager->persist($user);

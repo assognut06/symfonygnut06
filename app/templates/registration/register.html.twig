@@ -308,13 +308,13 @@
 
                             <!-- ✅ CORRECTION - Champ mot de passe amélioré -->
                             <div class="mb-3">
-                                {{ form_label(registrationForm.plainPassword.first, 'Mot de passe', {
+                                {{ form_label(registrationForm.plainPassword, 'Mot de passe', {
                                     'label_attr': {
                                         'class': 'form-label'
                                     }
                                 }) }}
                                 <span class="text-danger" aria-hidden="true">*</span>
-                                {{ form_widget(registrationForm.plainPassword.first, {
+                                {{ form_widget(registrationForm.plainPassword, {
                                     'attr': {
                                         'class': 'form-control',
                                         'aria-required': 'true',
@@ -330,22 +330,22 @@
                                 <div id="password-error" class="invalid-feedback" role="alert">
                                     Le mot de passe doit contenir au moins 8 caractères.
                                 </div>
-                                {% if form_errors(registrationForm.plainPassword.first) %}
+                                {% if form_errors(registrationForm.plainPassword) %}
                                     <div class="text-danger small mt-1" role="alert">
-                                        {{ form_errors(registrationForm.plainPassword.first) }}
+                                        {{ form_errors(registrationForm.plainPassword) }}
                                     </div>
                                 {% endif %}
                             </div>
 
                             <!-- ✅ CORRECTION - Confirmation mot de passe améliorée -->
                             <div class="mb-3">
-                                {{ form_label(registrationForm.plainPassword.second, 'Confirmez le mot de passe', {
+                                {{ form_label(registrationForm.confirmPassword, 'Confirmez le mot de passe', {
                                     'label_attr': {
                                         'class': 'form-label'
                                     }
                                 }) }}
                                 <span class="text-danger" aria-hidden="true">*</span>
-                                {{ form_widget(registrationForm.plainPassword.second, {
+                                {{ form_widget(registrationForm.confirmPassword, {
                                     'attr': {
                                         'class': 'form-control',
                                         'aria-required': 'true',
@@ -360,9 +360,9 @@
                                 <div id="password-confirm-error" class="invalid-feedback" role="alert">
                                     Les mots de passe ne correspondent pas.
                                 </div>
-                                {% if form_errors(registrationForm.plainPassword.second) %}
+                                {% if form_errors(registrationForm.confirmPassword) %}
                                     <div class="text-danger small mt-1" role="alert">
-                                        {{ form_errors(registrationForm.plainPassword.second) }}
+                                        {{ form_errors(registrationForm.confirmPassword) }}
                                     </div>
                                 {% endif %}
                             </div>
