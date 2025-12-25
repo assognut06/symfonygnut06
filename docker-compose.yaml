@@ -48,6 +48,7 @@ services:
     ports:
       - "8000:80"
       - "443:443"
+      - "9003:9003"
     depends_on:
       - mysql
 
