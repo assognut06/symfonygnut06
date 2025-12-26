@@ -11,6 +11,8 @@
     "npm": ">=11.2.0"
   },
   "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@symfony/stimulus-bridge": "^3.2.3",
     "bootstrap-icons": "^1.11.3",
     "core-js": "^3.42.0",
     "node-fs-extra": "^0.8.2",

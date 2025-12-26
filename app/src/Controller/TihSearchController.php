@@ -2,45 +2,58 @@
 
 namespace App\Controller;
 
+use App\Application\Command\CommandBus;
+use App\Application\Command\Tih\SendTihContactCommand;
+use App\Application\Query\QueryBus;
+use App\Application\Query\Tih\GetAvailableFiltersQuery;
+use App\Application\Query\Tih\SearchTihQuery;
+use App\Application\DTO\Tih\TihContactDTO;
+use App\Application\ViewModel\Tih\TihContactViewModel;
+use App\Application\ViewModel\Tih\TihDetailsViewModel;
 use App\Entity\Tih;
+use App\Form\TihContactType;
 use App\Repository\TihRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 #[Route('/tih')]
 class TihSearchController extends AbstractController
 {
     private const ITEMS_PER_PAGE = 12;
 
+    public function __construct(
+        private QueryBus $queryBus,
+        private CommandBus $commandBus
+    ) {}
+
     #[Route('/tih_search', name: 'app_tih_search', methods: ['GET'])]
-    public function index(Request $request, TihRepository $tihRepository): Response
+    public function index(Request $request): Response
     {
         $page = max(1, (int) $request->query->get('page', 1));
-        $searchTerm = $request->query->get('q', '');
 
         // Get filters from request
         $queryParams = $request->query->all();
         $filters = [
-            'skills' => array_filter((array) ($queryParams['skills'] ?? [])),
+            'skills' => array_filter(array_map('intval', (array) ($queryParams['skills'] ?? []))),
             'cities' => array_filter((array) ($queryParams['cities'] ?? [])),
             'availability' => array_filter((array) ($queryParams['availability'] ?? [])),
         ];
 
-        // Get paginated results with filters
-        $paginator = $tihRepository->searchWithFilters($filters, $page, self::ITEMS_PER_PAGE);
+        // Execute query to get paginated results with filters
+        $paginator = $this->queryBus->ask(
+            new SearchTihQuery($filters, $page, self::ITEMS_PER_PAGE)
+        );
         
         // Calculate pagination data
         $totalItems = count($paginator);
         $totalPages = (int) ceil($totalItems / self::ITEMS_PER_PAGE);
 
-        // Get available filters based on current selection
-        $availableFilters = $tihRepository->getAvailableFilters($filters);
+        // Execute query to get available filters based on current selection
+        $availableFilters = $this->queryBus->ask(
+            new GetAvailableFiltersQuery($filters)
+        );
 
         return $this->render('tih_search/index.html.twig', [
             'tihs' => $paginator,
@@ -50,7 +63,6 @@ class TihSearchController extends AbstractController
             'totalPages' => $totalPages,
             'totalItems' => $totalItems,
             'itemsPerPage' => self::ITEMS_PER_PAGE,
-            'searchTerm' => $searchTerm,
         ]);
     }
 
@@ -64,12 +76,12 @@ class TihSearchController extends AbstractController
         }
 
         return $this->render('tih_search/details.html.twig', [
-            'tih' => $tih,
+            'tih' => TihDetailsViewModel::fromEntity($tih),
         ]);
     }
 
     #[Route('/tih/{id}/contact', name: 'app_tih_contact', methods: ['GET', 'POST'])]
-    public function contact(Request $request, MailerInterface $mailer, TihRepository $tihRepository, int $id): Response
+    public function contact(Request $request, TihRepository $tihRepository, int $id): Response
     {
         $tih = $tihRepository->find($id);
 
@@ -77,78 +89,34 @@ class TihSearchController extends AbstractController
             throw $this->createNotFoundException('TIH non trouvé.');
         }
 
-        $form = $this->createFormBuilder()
-            ->add('nom', TextType::class, [
-                'label' => 'Votre nom',
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('prenom', TextType::class, [
-                'label' => 'Votre prénom',
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('entreprise', TextType::class, [
-                'label' => 'Nom de l\'entreprise',
-                'required' => false,
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('telephone', TextType::class, [
-                'label' => 'Téléphone',
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('email', TextType::class, [
-                'label' => 'Adresse email',
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('subject', TextType::class, [
-                'label' => 'Objet',
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('message', TextareaType::class, [
-                'label' => 'Message',
-                'attr' => ['class' => 'form-control', 'rows' => 6],
-            ])
-            ->getForm();
-
+        $tihViewModel = TihContactViewModel::fromEntity($tih);
+        $form = $this->createForm(TihContactType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
+            /** @var TihContactDTO $contactData */
+            $contactData = $form->getData();
 
-            $htmlContent = $this->renderView('mailjet/contact_tih.html.twig', [
-                'prenom'     => $data['prenom'],
-                'nom'        => $data['nom'],
-                'entreprise' => $data['entreprise'],
-                'telephone'  => $data['telephone'],
-                'email'      => $data['email'],
-                'message'    => $data['message'],
-            ]);
-
-            $email = (new Email())
-                ->from('gnut@gnut06.org')
-                ->to($tih->getEmailPro())
-                // ->addTo('gnut@gnut06.org')
-                ->subject($data['subject'])
-                ->html($htmlContent)
-                ->embedFromPath(
-                    $this->getParameter('kernel.project_dir') . '/public/images/logo_trans-min_300.png',
-                    'eye-image'
+            try {
+                $this->commandBus->dispatch(
+                    new SendTihContactCommand($id, $contactData)
                 );
-
-            // (optionnel) utile pour pouvoir répondre directement au demandeur
-            if (!empty($data['email'])) {
-                $email->replyTo($data['email']);
+                
+                $this->addFlash('success', sprintf(
+                    'Votre message a été envoyé avec succès à %s.',
+                    $tihViewModel->fullName
+                ));
+                
+                return $this->redirectToRoute('app_tih_details', ['id' => $id]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Une erreur est survenue lors de l\'envoi du message. Veuillez réessayer.');
+                // Let the form re-render with the error message
             }
-
-            $mailer->send($email);
-
-            $this->addFlash('success', 'Votre message a été envoyé à ' . $tih->getPrenom());
-
-            return $this->redirectToRoute('app_tih_details', ['id' => $id]);
         }
 
         return $this->render('tih_search/contact.html.twig', [
-            'form' => $form->createView(),
-            'tih'  => $tih,
+            'form' => $form,
+            'tih' => $tihViewModel,
         ]);
     }
 }

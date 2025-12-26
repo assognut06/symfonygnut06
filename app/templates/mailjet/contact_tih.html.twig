@@ -1,13 +1,13 @@
 <h3>Expéditeur :</h3>
-<p>{{ prenom }} {{ nom }}</p>
-{% if entreprise %}
-<p>Entreprise : {{ entreprise }}</p>
+<p>{{ data.prenom }} {{ data.nom }}</p>
+{% if data.entreprise %}
+<p>Entreprise : {{ data.entreprise }}</p>
 {% endif %}
-<p>Téléphone : {{ telephone }}</p>
-<p>Email : {{ email }}</p>
+<p>Téléphone : {{ data.telephone }}</p>
+<p>Email : {{ data.email }}</p>
 
 <h3>Message :</h3>
-<p>{{ message|nl2br }}</p>
+<p>{{ data.message|nl2br }}</p>
 
 <hr style="margin: 30px 0;">
 

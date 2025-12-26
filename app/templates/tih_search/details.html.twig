@@ -8,18 +8,18 @@
 
     <div class="card mx-auto shadow rounded" style="max-width: 600px;">
         <div class="card-body">
-            <h5 class="card-title text-center">{{ tih.nom }} {{ tih.prenom }}</h5>
+            <h5 class="card-title text-center">{{ tih.fullName }}</h5>
             <hr>
             <p class="card-text">
-                <strong>Civilité :</strong> {{ tih.civilite }}<br>
+                <strong>Civilité :</strong> {{ tih.title }}<br>
                 <strong>Email Pro :</strong> 
-                <a href="mailto:{{ tih.emailPro }}" class="text-decoration-none">{{ tih.emailPro }}</a><br>
+                <a href="mailto:{{ tih.professionalEmail }}" class="text-decoration-none">{{ tih.professionalEmail }}</a><br>
                 <strong>Téléphone :</strong> 
-                <a href="tel:{{ tih.telephone }}" class="text-decoration-none">{{ tih.telephone }}</a><br>
+                <a href="tel:{{ tih.phone }}" class="text-decoration-none">{{ tih.phone }}</a><br>
                 <strong>Numéro de Siret :</strong> {{ tih.siret }}<br>
-                <strong>Adresse :</strong> {{ tih.adresse }}, {{ tih.codePostal }} {{ tih.ville }}<br>
+                <strong>Adresse :</strong> {{ tih.fullAddress }}<br>
                 <strong>Compétences :</strong> {{ tih.competences|join(', ') }}<br>
-                <strong>Disponibilité :</strong> {{ tih.disponibilite }}<br>
+                <strong>Disponibilité :</strong> {{ tih.availability }}<br>
             </p>
             <div class="d-flex justify-content-center gap-2 mt-3">
                 {% if tih.cv %}

@@ -21,31 +21,31 @@ class Tih
     private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $civilite = null;
+    private ?string $title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $nom = null;
+    private ?string $lastName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $prenom = null;
+    private ?string $firstName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $emailPro = null;
+    private ?string $professionalEmail = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $telephone = null;
+    private ?string $phone = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $adresse = null;
+    private ?string $address = null;
 
     #[ORM\Column(length: 10, nullable: true)]
-    private ?string $codePostal = null;
+    private ?string $postalCode = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $ville = null;
+    private ?string $city = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $disponibilite = null;
+    private ?string $availability = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $cv = null;
@@ -99,32 +99,32 @@ class Tih
     public function getUser(): ?User { return $this->user; }
     public function setUser(?User $user): self { $this->user = $user; return $this; }
 
-    public function getCivilite(): ?string { return $this->civilite; }
-    public function setCivilite(?string $civilite): self { $this->civilite = $civilite; return $this; }
+    public function getTitle(): ?string { return $this->title; }
+    public function setTitle(?string $title): self { $this->title = $title; return $this; }
 
-    public function getNom(): ?string { return $this->nom; }
-    public function setNom(?string $nom): self { $this->nom = $nom; return $this; }
+    public function getLastName(): ?string { return $this->lastName; }
+    public function setLastName(?string $lastName): self { $this->lastName = $lastName; return $this; }
 
-    public function getPrenom(): ?string { return $this->prenom; }
-    public function setPrenom(?string $prenom): self { $this->prenom = $prenom; return $this; }
+    public function getFirstName(): ?string { return $this->firstName; }
+    public function setFirstName(?string $firstName): self { $this->firstName = $firstName; return $this; }
 
-    public function getEmailPro(): ?string { return $this->emailPro; }
-    public function setEmailPro(?string $emailPro): self { $this->emailPro = $emailPro; return $this; }
+    public function getProfessionalEmail(): ?string { return $this->professionalEmail; }
+    public function setProfessionalEmail(?string $professionalEmail): self { $this->professionalEmail = $professionalEmail; return $this; }
 
-    public function getTelephone(): ?string { return $this->telephone; }
-    public function setTelephone(?string $telephone): self { $this->telephone = $telephone; return $this; }
+    public function getPhone(): ?string { return $this->phone; }
+    public function setPhone(?string $phone): self { $this->phone = $phone; return $this; }
 
-    public function getAdresse(): ?string { return $this->adresse; }
-    public function setAdresse(?string $adresse): self { $this->adresse = $adresse; return $this; }
+    public function getAddress(): ?string { return $this->address; }
+    public function setAddress(?string $address): self { $this->address = $address; return $this; }
 
-    public function getCodePostal(): ?string { return $this->codePostal; }
-    public function setCodePostal(?string $codePostal): self { $this->codePostal = $codePostal; return $this; }
+    public function getPostalCode(): ?string { return $this->postalCode; }
+    public function setPostalCode(?string $postalCode): self { $this->postalCode = $postalCode; return $this; }
 
-    public function getVille(): ?string { return $this->ville; }
-    public function setVille(?string $ville): self { $this->ville = $ville; return $this; }
+    public function getCity(): ?string { return $this->city; }
+    public function setCity(?string $city): self { $this->city = $city; return $this; }
 
-    public function getDisponibilite(): ?string { return $this->disponibilite; }
-    public function setDisponibilite(?string $disponibilite): self { $this->disponibilite = $disponibilite; return $this; }
+    public function getAvailability(): ?string { return $this->availability; }
+    public function setAvailability(?string $availability): self { $this->availability = $availability; return $this; }
 
     public function getCv(): ?string { return $this->cv; }
     public function setCv(?string $cv): self { $this->cv = $cv; return $this; }

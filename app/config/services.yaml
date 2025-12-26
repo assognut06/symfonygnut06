@@ -9,6 +9,8 @@ parameters:
     mailjet.api_key: '%env(APIMAILJET)%'
     mailjet.api_secret: '%env(APIMAILJETSECRET)%'
     ohme.api_key: '%env(SECRETOHME)%'
+    app.email.from: 'gnut@gnut06.org'
+    app.email.admin: 'gnut@gnut06.org'
     parameters:
     photos_directory: '%kernel.project_dir%/public/uploads/profilePictures'
     bordereau_directory: '%kernel.project_dir%/public/uploads/bordereau'
@@ -37,7 +39,29 @@ services:
             - '../src/Kernel.php'
             - '../src/Message/'
             - '../src/Application/DTO/'
+            - '../src/Application/ViewModel/'
             - '../src/Application/Command/*Command.php'
+            - '../src/Application/Query/*Query.php'
+
+    # CQRS - Query Bus Configuration
+    App\Application\Query\QueryBus:
+        arguments:
+            $handlers: !service_locator
+                App\Application\Query\Tih\SearchTihQuery: '@App\Application\Query\Tih\SearchTihQueryHandler'
+                App\Application\Query\Tih\GetAvailableFiltersQuery: '@App\Application\Query\Tih\GetAvailableFiltersQueryHandler'
+
+    # CQRS - Command Bus Configuration
+    App\Application\Command\CommandBus:
+        arguments:
+            $handlers: !service_locator
+                App\Application\Command\Tih\SendTihContactCommand: '@App\Application\Command\Tih\SendTihContactCommandHandler'
+
+    # TIH Email Service Configuration
+    App\Service\TihEmailService:
+        arguments:
+            $fromEmail: '%app.email.from%'
+            $adminEmail: '%app.email.admin%'
+            $logoPath: '%kernel.project_dir%/public/images/logo_trans-min_300.png'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
