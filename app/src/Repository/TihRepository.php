@@ -2,6 +2,10 @@
 
 namespace App\Repository;
 
+use App\Application\DTO\Tih\AvailabilityFilterDTO;
+use App\Application\DTO\Tih\AvailableFiltersDTO;
+use App\Application\DTO\Tih\CityFilterDTO;
+use App\Application\DTO\Tih\SkillFilterDTO;
 use App\Entity\Tih;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -41,13 +45,13 @@ class TihRepository extends ServiceEntityRepository
             // Use LIKE for searching across multiple fields
             $qb->andWhere(
                 $qb->expr()->orX(
-                    $qb->expr()->like('t.nom', ':searchLike'),
-                    $qb->expr()->like('t.prenom', ':searchLike'),
-                    $qb->expr()->like('t.ville', ':searchLike'),
-                    $qb->expr()->like('t.adresse', ':searchLike'),
-                    $qb->expr()->like('t.emailPro', ':searchLike'),
-                    $qb->expr()->like('t.disponibilite', ':searchLike'),
-                    $qb->expr()->like('t.codePostal', ':searchLike'),
+                    $qb->expr()->like('t.lastName', ':searchLike'),
+                    $qb->expr()->like('t.firstName', ':searchLike'),
+                    $qb->expr()->like('t.city', ':searchLike'),
+                    $qb->expr()->like('t.address', ':searchLike'),
+                    $qb->expr()->like('t.professionalEmail', ':searchLike'),
+                    $qb->expr()->like('t.availability', ':searchLike'),
+                    $qb->expr()->like('t.postalCode', ':searchLike'),
                     $qb->expr()->like('c.name', ':searchLike')
                 )
             )
@@ -104,13 +108,13 @@ class TihRepository extends ServiceEntityRepository
 
         // Filter by cities
         if (!empty($filters['cities'])) {
-            $qb->andWhere('t.ville IN (:cities)')
+            $qb->andWhere('t.city IN (:cities)')
                ->setParameter('cities', $filters['cities']);
         }
 
         // Filter by availability
         if (!empty($filters['availability'])) {
-            $qb->andWhere('t.disponibilite IN (:availability)')
+            $qb->andWhere('t.availability IN (:availability)')
                ->setParameter('availability', $filters['availability']);
         }
 
@@ -127,9 +131,9 @@ class TihRepository extends ServiceEntityRepository
      * Get available filter options with counts based on current filters
      * 
      * @param array $filters Current filters applied
-     * @return array ['skills' => [], 'cities' => [], 'availability' => []]
+     * @return AvailableFiltersDTO
      */
-    public function getAvailableFilters(array $filters = []): array
+    public function getAvailableFilters(array $filters = []): AvailableFiltersDTO
     {
         // Base query for validated TIH
         $qb = $this->createQueryBuilder('t')
@@ -143,11 +147,11 @@ class TihRepository extends ServiceEntityRepository
         // Get available skills with count
         $qbSkills = clone $qb;
         if (!empty($tempFilters['cities'])) {
-            $qbSkills->andWhere('t.ville IN (:cities)')
+            $qbSkills->andWhere('t.city IN (:cities)')
                    ->setParameter('cities', $tempFilters['cities']);
         }
         if (!empty($tempFilters['availability'])) {
-            $qbSkills->andWhere('t.disponibilite IN (:availability)')
+            $qbSkills->andWhere('t.availability IN (:availability)')
                    ->setParameter('availability', $tempFilters['availability']);
         }
         $skills = $qbSkills->select('c.id', 'c.name', 'COUNT(DISTINCT t.id) as count')
@@ -164,13 +168,13 @@ class TihRepository extends ServiceEntityRepository
                      ->setParameter('skills', $tempFilters['skills']);
         }
         if (!empty($tempFilters['availability'])) {
-            $qbCities->andWhere('t.disponibilite IN (:availability)')
+            $qbCities->andWhere('t.availability IN (:availability)')
                      ->setParameter('availability', $tempFilters['availability']);
         }
-        $cities = $qbCities->select('t.ville', 't.codePostal', 'COUNT(DISTINCT t.id) as count')
-            ->andWhere('t.ville IS NOT NULL')
-            ->groupBy('t.ville', 't.codePostal')
-            ->orderBy('t.ville', 'ASC')
+        $cities = $qbCities->select('t.city', 't.postalCode', 'COUNT(DISTINCT t.id) as count')
+            ->andWhere('t.city IS NOT NULL')
+            ->groupBy('t.city', 't.postalCode')
+            ->orderBy('t.city', 'ASC')
             ->getQuery()
             ->getResult();
 
@@ -181,20 +185,20 @@ class TihRepository extends ServiceEntityRepository
                     ->setParameter('skills', $tempFilters['skills']);
         }
         if (!empty($tempFilters['cities'])) {
-            $qbAvailability->andWhere('t.ville IN (:cities)')
+            $qbAvailability->andWhere('t.city IN (:cities)')
                     ->setParameter('cities', $tempFilters['cities']);
         }
-        $availability = $qbAvailability->select('t.disponibilite', 'COUNT(DISTINCT t.id) as count')
-            ->andWhere('t.disponibilite IS NOT NULL')
-            ->groupBy('t.disponibilite')
-            ->orderBy('t.disponibilite', 'ASC')
+        $availability = $qbAvailability->select('t.availability', 'COUNT(DISTINCT t.id) as count')
+            ->andWhere('t.availability IS NOT NULL')
+            ->groupBy('t.availability')
+            ->orderBy('t.availability', 'ASC')
             ->getQuery()
             ->getResult();
 
-        return [
-            'skills' => $skills,
-            'cities' => $cities,
-            'availability' => $availability,
-        ];
+        return new AvailableFiltersDTO(
+            skills: array_map(fn($data) => SkillFilterDTO::fromArray($data), $skills),
+            cities: array_map(fn($data) => CityFilterDTO::fromArray($data), $cities),
+            availability: array_map(fn($data) => AvailabilityFilterDTO::fromArray($data), $availability)
+        );
     }
 }

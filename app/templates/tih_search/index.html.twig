@@ -8,7 +8,10 @@
 {% endblock %}
 
 {% block body %}
-<main class="bg-main min-vh-100 py-5" role="main">
+<main class="bg-main min-vh-100 py-5" role="main" 
+      data-controller="tih-search"
+      data-tih-search-url-value="{{ path('app_tih_search') }}"
+      data-action="popstate@window->tih-search&#35;handleBrowserNavigation">
     <div class="container-fluid">
         <header class="text-center mb-5">
             <h1 class="gradient-text mb-3">Recherche de Profils TIH</h1>
@@ -16,7 +19,7 @@
                 Découvrez nos Travailleurs Indépendants Handicapés et leurs compétences
             </p>
             {% if totalItems > 0 %}
-                <p class="text-white-50 mt-2">
+                <p class="text-white-50 mt-2" data-tih-search-target="resultsInfo">
                     <i class="bi bi-info-circle me-1"></i>
                     {{ totalItems }} profil{{ totalItems > 1 ? 's' : '' }} trouvé{{ totalItems > 1 ? 's' : '' }}
                 </p>
@@ -27,12 +30,13 @@
             {# Sidebar with filters #}
             <aside class="col-lg-3 mb-4">
                 <div class="card bg-dark border-secondary sticky-top" style="top: 1rem;">
-                    <div class="card-body">
+                    <div class="card-body" data-tih-search-target="sidebar">
                         <h5 class="card-title text-white mb-4">
                             <i class="bi bi-funnel me-2"></i>Filtres
                         </h5>
 
-                        <form id="filter-form" method="GET" action="{{ path('app_tih_search') }}">
+                        <form id="filter-form" method="GET" action="{{ path('app_tih_search') }}"
+                              data-tih-search-target="form">
                             {# Skills Filter #}
                             <div class="filter-section mb-4">
                                 <h6 class="text-white mb-3">
@@ -45,6 +49,7 @@
                                                name="skills[]" 
                                                value="{{ skill.id }}" 
                                                id="skill-{{ skill.id }}"
+                                               data-action="change->tih-search&#35;filterChange"
                                                {% if skill.id in currentFilters.skills %}checked{% endif %}>
                                         <label class="form-check-label text-white-50" for="skill-{{ skill.id }}">
                                             {{ skill.name }} <span class="badge bg-secondary">{{ skill.count }}</span>
@@ -63,11 +68,12 @@
                                         <input class="form-check-input filter-checkbox" 
                                                type="checkbox" 
                                                name="cities[]" 
-                                               value="{{ city.ville }}" 
-                                               id="city-{{ city.ville|replace({' ': '-'}) }}"
-                                               {% if city.ville in currentFilters.cities %}checked{% endif %}>
-                                        <label class="form-check-label text-white-50" for="city-{{ city.ville|replace({' ': '-'}) }}">
-                                            {{ city.ville }} ({{ city.codePostal }}) <span class="badge bg-secondary">{{ city.count }}</span>
+                                               value="{{ city.city }}" 
+                                               data-action="change->tih-search&#35;filterChange"
+                                               id="city-{{ city.city|replace({' ': '-'}) }}"
+                                               {% if city.city in currentFilters.cities %}checked{% endif %}>
+                                        <label class="form-check-label text-white-50" for="city-{{ city.city|replace({' ': '-'}) }}">
+                                            {{ city.city }} ({{ city.postalCode }}) <span class="badge bg-secondary">{{ city.count }}</span>
                                         </label>
                                     </div>
                                 {% endfor %}
@@ -83,17 +89,19 @@
                                         <input class="form-check-input filter-checkbox" 
                                                type="checkbox" 
                                                name="availability[]" 
-                                               value="{{ avail.disponibilite }}" 
-                                               id="availability-{{ avail.disponibilite|replace({' ': '-'}) }}"
-                                               {% if avail.disponibilite in currentFilters.availability %}checked{% endif %}>
-                                        <label class="form-check-label text-white-50" for="availability-{{ avail.disponibilite|replace({' ': '-'}) }}">
-                                            {{ avail.disponibilite }} <span class="badge bg-secondary">{{ avail.count }}</span>
+                                               value="{{ avail.availability }}" 
+                                               data-action="change->tih-search&#35;filterChange"
+                                               id="availability-{{ avail.availability|replace({' ': '-'}) }}"
+                                               {% if avail.availability in currentFilters.availability %}checked{% endif %}>
+                                        <label class="form-check-label text-white-50" for="availability-{{ avail.availability|replace({' ': '-'}) }}">
+                                            {{ avail.availability }} <span class="badge bg-secondary">{{ avail.count }}</span>
                                         </label>
                                     </div>
                                 {% endfor %}
                             </div>
 
-                            <button type="button" id="clear-filters" class="btn btn-outline-light w-100">
+                            <button type="button" id="clear-filters" class="btn btn-outline-light w-100"
+                                    data-action="click->tih-search&#35;clearFilters">
                                 <i class="bi bi-x-circle me-2"></i>Effacer les filtres
                             </button>
                         </form>
@@ -104,21 +112,25 @@
             {# Main content #}
             <div class="col-lg-9">
                 {# Loading overlay #}
-                <div id="search-loader" class="search-loader-overlay" style="display: none;">
+                <div class="loading-overlay d-none" 
+                     data-tih-search-target="loader">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Recherche en cours...</span>
                     </div>
                 </div>
 
-        {# Grille de cartes TIH #}
-        <div id="tih-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" role="list" aria-label="Liste des profils TIH">
-            {% for tih in tihs %}
+                {# Grille de cartes TIH #}
+                <div id="tih-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" 
+                     role="list" 
+                     aria-label="Liste des profils TIH"
+                     data-tih-search-target="results">
+                    {% for tih in tihs %}
                 <article class="col d-flex" role="listitem">
                     <div class="card text-center h-100 bg-dark border-secondary" tabindex="0">
                         {% if tih.photo %}
                             <img src="{{ asset('uploads/tih/' ~ tih.photo) }}" 
                                  class="card-img-top img-fluid" 
-                                 alt="Photo de profil de {{ tih.prenom }} {{ tih.nom }}" 
+                                 alt="Photo de profil de {{ tih.firstName }} {{ tih.lastName }}" 
                                  role="img">
                         {% else %}
                             <img src="{{ asset('images/user_profil.jpg') }}" 
@@ -129,13 +141,13 @@
                         
                         <div class="card-body d-flex flex-column bg-dark">
                             <h3 class="card-title text-white mb-2 h5">
-                                {{ tih.prenom|default('') }} {{ tih.nom|default('') }}
+                                {{ tih.firstName|default('') }} {{ tih.lastName|default('') }}
                             </h3>
                             
-                            {% if tih.ville or tih.codePostal %}
+                            {% if tih.city or tih.postalCode %}
                                 <p class="tih-location mb-2">
                                     <i class="bi bi-geo-alt-fill me-1"></i>
-                                    {{ tih.codePostal|default('') }} {{ tih.ville|default('') }}
+                                    {{ tih.postalCode|default('') }} {{ tih.city|default('') }}
                                 </p>
                             {% endif %}
 
@@ -150,17 +162,17 @@
                                 </div>
                             {% endif %}
 
-                            {% if tih.disponibilite %}
-                                {% set availabilityClass = tih.disponibilite|lower == 'disponible' ? 'disponible' : (tih.disponibilite|lower == 'occupé' ? 'occupe' : 'partiellement') %}
+                            {% if tih.availability %}
+                                {% set availabilityClass = tih.availability|lower == 'disponible' ? 'disponible' : (tih.availability|lower == 'occupé' ? 'occupe' : 'partiellement') %}
                                 <span class="availability-badge availability-{{ availabilityClass }}">
-                                    {{ tih.disponibilite }}
+                                    {{ tih.availability }}
                                 </span>
                             {% endif %}
 
                             <div class="mt-auto pt-3">
                                 <a href="{{ path('app_tih_details', {'id': tih.id}) }}"
                                    class="btn btn-outline-light btn-sm w-100"
-                                   aria-label="Voir le profil détaillé de {{ tih.prenom }} {{ tih.nom }}">
+                                   aria-label="Voir le profil détaillé de {{ tih.firstName }} {{ tih.lastName }}">
                                     <i class="bi bi-eye me-2"></i>Voir le profil
                                 </a>
                             </div>
@@ -171,11 +183,7 @@
                 <div class="col-12">
                     <div class="alert alert-info text-center" role="status">
                         <i class="bi bi-info-circle me-2"></i>
-                        {% if searchTerm %}
-                            Aucun profil TIH trouvé pour "{{ searchTerm }}".
-                        {% else %}
-                            Aucun profil TIH disponible.
-                        {% endif %}
+                           Aucun profil TIH disponible.
                     </div>
                 </div>
             {% endfor %}
@@ -183,13 +191,15 @@
 
         {# Pagination #}
         {% if totalPages > 1 %}
-            <nav aria-label="Navigation des pages de résultats" class="mt-5">
+            <nav aria-label="Navigation des pages de résultats" class="mt-5"
+                 data-tih-search-target="pagination">
                 <ul class="pagination justify-content-center">
                     {# Previous button #}
                     <li class="page-item {{ currentPage == 1 ? 'disabled' : '' }}">
                         <a class="page-link" 
-                           href="{{ currentPage > 1 ? path('app_tih_search', {'q': searchTerm, 'page': currentPage - 1}) : '#' }}"
+                           href="{{ currentPage > 1 ? path('app_tih_search', {'page': currentPage - 1}) : '#' }}"
                            aria-label="Page précédente"
+                           data-action="click->tih-search&#35;handlePagination"
                            {{ currentPage == 1 ? 'tabindex="-1" aria-disabled="true"' : '' }}>
                             <i class="bi bi-chevron-left"></i>
                         </a>
@@ -201,7 +211,9 @@
 
                     {% if startPage > 1 %}
                         <li class="page-item">
-                            <a class="page-link" href="{{ path('app_tih_search', {'q': searchTerm, 'page': 1}) }}">1</a>
+                            <a class="page-link" 
+                               href="{{ path('app_tih_search', {'page': 1}) }}"
+                               data-action="click->tih-search&#35;handlePagination">1</a>
                         </li>
                         {% if startPage > 2 %}
                             <li class="page-item disabled">
@@ -212,7 +224,9 @@
 
                     {% for page in startPage..endPage %}
                         <li class="page-item {{ page == currentPage ? 'active' : '' }}">
-                            <a class="page-link" href="{{ path('app_tih_search', {'q': searchTerm, 'page': page}) }}">
+                            <a class="page-link" 
+                               href="{{ path('app_tih_search', { 'page': page}) }}"
+                               data-action="click->tih-search&#35;handlePagination">
                                 {{ page }}
                                 {% if page == currentPage %}
                                     <span class="visually-hidden">(page actuelle)</span>
@@ -228,15 +242,18 @@
                             </li>
                         {% endif %}
                         <li class="page-item">
-                            <a class="page-link" href="{{ path('app_tih_search', {'q': searchTerm, 'page': totalPages}) }}">{{ totalPages }}</a>
+                            <a class="page-link" 
+                               href="{{ path('app_tih_search', { 'page': totalPages}) }}"
+                               data-action="click->tih-search&#35;handlePagination">{{ totalPages }}</a>
                         </li>
                     {% endif %}
 
                     {# Next button #}
                     <li class="page-item {{ currentPage == totalPages ? 'disabled' : '' }}">
                         <a class="page-link" 
-                           href="{{ currentPage < totalPages ? path('app_tih_search', {'q': searchTerm, 'page': currentPage + 1}) : '#' }}"
+                           href="{{ currentPage < totalPages ? path('app_tih_search', {'page': currentPage + 1}) : '#' }}"
                            aria-label="Page suivante"
+                           data-action="click->tih-search&#35;handlePagination"
                            {{ currentPage == totalPages ? 'tabindex="-1" aria-disabled="true"' : '' }}>
                             <i class="bi bi-chevron-right"></i>
                         </a>
@@ -244,6 +261,8 @@
                 </ul>
             </nav>
         {% endif %}
+            </div>
+        </div>
     </div>
 </main>
 {% endblock %}

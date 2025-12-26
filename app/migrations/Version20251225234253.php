@@ -22,15 +22,11 @@ final class Version20251225234253 extends AbstractMigration
         // Add photo field
         $this->addSql('ALTER TABLE tih ADD photo VARCHAR(255) DEFAULT NULL');
         
-        // Create FULLTEXT indexes for search optimization
-        $this->addSql('CREATE FULLTEXT INDEX tih_fulltext_search ON tih (nom, prenom, ville, adresse, email_pro)');
     }
 
     public function down(Schema $schema): void
     {
-        // Drop FULLTEXT index
-        $this->addSql('DROP INDEX tih_fulltext_search ON tih');
-        
+
         // Drop photo field
         $this->addSql('ALTER TABLE tih DROP photo');
     }
