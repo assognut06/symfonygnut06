@@ -25,10 +25,11 @@ class TihSearchController extends AbstractController
         $searchTerm = $request->query->get('q', '');
 
         // Get filters from request
+        $queryParams = $request->query->all();
         $filters = [
-            'competences' => array_filter((array) $request->query->all('competences')),
-            'villes' => array_filter((array) $request->query->all('villes')),
-            'disponibilite' => array_filter((array) $request->query->all('disponibilite')),
+            'competences' => array_filter((array) ($queryParams['competences'] ?? [])),
+            'villes' => array_filter((array) ($queryParams['villes'] ?? [])),
+            'disponibilite' => array_filter((array) ($queryParams['disponibilite'] ?? [])),
         ];
 
         // Get paginated results with filters
