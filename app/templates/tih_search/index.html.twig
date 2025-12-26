@@ -33,21 +33,21 @@
                         </h5>
 
                         <form id="filter-form" method="GET" action="{{ path('app_tih_search') }}">
-                            {# Competences Filter #}
+                            {# Skills Filter #}
                             <div class="filter-section mb-4">
                                 <h6 class="text-white mb-3">
                                     <i class="bi bi-briefcase me-2"></i>Compétences
                                 </h6>
-                                {% for competence in availableFilters.competences %}
+                                {% for skill in availableFilters.skills %}
                                     <div class="form-check">
                                         <input class="form-check-input filter-checkbox" 
                                                type="checkbox" 
-                                               name="competences[]" 
-                                               value="{{ competence.id }}" 
-                                               id="competence-{{ competence.id }}"
-                                               {% if competence.id in currentFilters.competences %}checked{% endif %}>
-                                        <label class="form-check-label text-white-50" for="competence-{{ competence.id }}">
-                                            {{ competence.name }} <span class="badge bg-secondary">{{ competence.count }}</span>
+                                               name="skills[]" 
+                                               value="{{ skill.id }}" 
+                                               id="skill-{{ skill.id }}"
+                                               {% if skill.id in currentFilters.skills %}checked{% endif %}>
+                                        <label class="form-check-label text-white-50" for="skill-{{ skill.id }}">
+                                            {{ skill.name }} <span class="badge bg-secondary">{{ skill.count }}</span>
                                         </label>
                                     </div>
                                 {% endfor %}
@@ -58,16 +58,16 @@
                                 <h6 class="text-white mb-3">
                                     <i class="bi bi-geo-alt me-2"></i>Villes
                                 </h6>
-                                {% for ville in availableFilters.villes %}
+                                {% for city in availableFilters.cities %}
                                     <div class="form-check">
                                         <input class="form-check-input filter-checkbox" 
                                                type="checkbox" 
-                                               name="villes[]" 
-                                               value="{{ ville.ville }}" 
-                                               id="ville-{{ ville.ville|replace({' ': '-'}) }}"
-                                               {% if ville.ville in currentFilters.villes %}checked{% endif %}>
-                                        <label class="form-check-label text-white-50" for="ville-{{ ville.ville|replace({' ': '-'}) }}">
-                                            {{ ville.ville }} ({{ ville.codePostal }}) <span class="badge bg-secondary">{{ ville.count }}</span>
+                                               name="cities[]" 
+                                               value="{{ city.ville }}" 
+                                               id="city-{{ city.ville|replace({' ': '-'}) }}"
+                                               {% if city.ville in currentFilters.cities %}checked{% endif %}>
+                                        <label class="form-check-label text-white-50" for="city-{{ city.ville|replace({' ': '-'}) }}">
+                                            {{ city.ville }} ({{ city.codePostal }}) <span class="badge bg-secondary">{{ city.count }}</span>
                                         </label>
                                     </div>
                                 {% endfor %}
@@ -78,16 +78,16 @@
                                 <h6 class="text-white mb-3">
                                     <i class="bi bi-clock me-2"></i>Disponibilité
                                 </h6>
-                                {% for dispo in availableFilters.disponibilites %}
+                                {% for avail in availableFilters.availability %}
                                     <div class="form-check">
                                         <input class="form-check-input filter-checkbox" 
                                                type="checkbox" 
-                                               name="disponibilite[]" 
-                                               value="{{ dispo.disponibilite }}" 
-                                               id="dispo-{{ dispo.disponibilite|replace({' ': '-'}) }}"
-                                               {% if dispo.disponibilite in currentFilters.disponibilite %}checked{% endif %}>
-                                        <label class="form-check-label text-white-50" for="dispo-{{ dispo.disponibilite|replace({' ': '-'}) }}">
-                                            {{ dispo.disponibilite }} <span class="badge bg-secondary">{{ dispo.count }}</span>
+                                               name="availability[]" 
+                                               value="{{ avail.disponibilite }}" 
+                                               id="availability-{{ avail.disponibilite|replace({' ': '-'}) }}"
+                                               {% if avail.disponibilite in currentFilters.availability %}checked{% endif %}>
+                                        <label class="form-check-label text-white-50" for="availability-{{ avail.disponibilite|replace({' ': '-'}) }}">
+                                            {{ avail.disponibilite }} <span class="badge bg-secondary">{{ avail.count }}</span>
                                         </label>
                                     </div>
                                 {% endfor %}
