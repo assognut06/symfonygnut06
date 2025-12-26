@@ -2,71 +2,200 @@
 
 {% block title %}Recherche TIH{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('tih_search') }}
+{% endblock %}
+
 {% block body %}
-<div class="container my-5">
-  <h2 class="text-center mb-4">Liste des TIH</h2>
-
-  {# Champ de filtre live (utilise le script générique list-live-filter) #}
-  <div class="row mb-3">
-    <div class="col-12">
-      <input type="text"
-             class="form-control list-live-filter"
-             data-target="#tih-grid"
-             placeholder="Filtrer par nom, prénom, ville, email pro, compétence…"
-             autocomplete="off">
-    </div>
-  </div>
-
-  {# Grille de cartes TIH #}
-  <div id="tih-grid" class="row">
-    {% for tih in tihs %}
-      {# Data-search : concatène les champs pertinents pour la recherche #}
-      <div class="col-md-4 mb-4"
-           data-search="{{
-             (
-               (tih.nom|default('')) ~ ' ' ~
-               (tih.prenom|default('')) ~ ' ' ~
-               (tih.ville|default('')) ~ ' ' ~
-               (tih.codePostal|default('')) ~ ' ' ~
-               (tih.adresse|default('')) ~ ' ' ~
-               (tih.emailPro|default('')) ~ ' ' ~
-               (tih.disponibilite|default('')) ~ ' ' ~
-               (tih.civilite|default('')) ~ ' ' ~
-               (tih.competences is defined and tih.competences ? tih.competences|join(' ') : '')
-             )|lower
-           }}">
-        <div class="card shadow-sm h-100">
-          <div class="card-body">
-            <h5 class="card-title">
-              {{ tih.nom|default('') }} {{ tih.prenom|default('') }}
-            </h5>
-
-            <p class="card-text">
-              <strong>Civilité :</strong> {{ tih.civilite|default('—') }}<br>
-              <strong>Email Pro :</strong> {{ tih.emailPro|default('—') }}<br>
-              <strong>Téléphone :</strong> {{ tih.telephone|default('—') }}<br>
-              <strong>Adresse :</strong>
-              {{ tih.adresse|default('—') }}{% if tih.codePostal or tih.ville %}, {% endif %}
-              {{ tih.codePostal|default('') }} {{ tih.ville|default('') }}<br>
-              <strong>Compétences :</strong>
-              {% if tih.competences is defined and tih.competences|length > 0 %}
-                {{ tih.competences|join(', ') }}
-              {% else %}
-                —
-              {% endif %}<br>
-              <strong>Disponibilité :</strong> {{ tih.disponibilite|default('—') }}
+<main class="bg-main min-vh-100 py-5" role="main">
+    <div class="container">
+        <header class="text-center mb-5">
+            <h1 class="gradient-text mb-3">Recherche de Profils TIH</h1>
+            <p class="text text-white">
+                Découvrez nos Travailleurs Indépendants Handicapés et leurs compétences
             </p>
+            {% if totalItems > 0 %}
+                <p class="text-white-50 mt-2">
+                    <i class="bi bi-info-circle me-1"></i>
+                    {{ totalItems }} profil{{ totalItems > 1 ? 's' : '' }} trouvé{{ totalItems > 1 ? 's' : '' }}
+                    {% if searchTerm %}pour "{{ searchTerm }}"{% endif %}
+                </p>
+            {% endif %}
+        </header>
 
-            <a href="{{ path('app_tih_details', {'id': tih.id}) }}"
-               class="btn btn-primary btn-sm">Voir les détails</a>
-          </div>
+        {# Search Form #}
+        <div class="row mb-5">
+            <div class="col-12 col-lg-8 mx-auto">
+                <form method="GET" action="{{ path('app_tih_search') }}" class="position-relative" role="search">
+                    <label for="tih-search" class="form-label text-white mb-2">
+                        <i class="bi bi-search me-2"></i>Rechercher
+                    </label>
+                    <div class="position-relative">
+                        <input type="text"
+                               id="tih-search"
+                               name="q"
+                               value="{{ searchTerm }}"
+                               class="form-control search-input"
+                               placeholder="Nom, ville, compétence, disponibilité… (min. 3 caractères)"
+                               autocomplete="off"
+                               aria-label="Rechercher des profils TIH">
+                        {% if searchTerm %}
+                            <button type="button" id="clear-search" class="btn btn-link clear-search-btn" aria-label="Effacer la recherche">
+                                <i class="bi bi-x-circle"></i>
+                            </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
-    {% else %}
-      <div class="col-12">
-        <p class="text-center">Aucun TIH trouvé.</p>
-      </div>
-    {% endfor %}
-  </div>
-</div>
+
+        {# Loading overlay #}
+        <div id="search-loader" class="search-loader-overlay" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Recherche en cours...</span>
+            </div>
+        </div>
+
+        {# Grille de cartes TIH #}
+        <div id="tih-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" role="list" aria-label="Liste des profils TIH">
+            {% for tih in tihs %}
+                <article class="col d-flex" role="listitem">
+                    <div class="card text-center h-100 bg-dark border-secondary" tabindex="0">
+                        {% if tih.photo %}
+                            <img src="{{ asset('uploads/tih/' ~ tih.photo) }}" 
+                                 class="card-img-top img-fluid" 
+                                 alt="Photo de profil de {{ tih.prenom }} {{ tih.nom }}" 
+                                 role="img">
+                        {% else %}
+                            <img src="{{ asset('images/user_profil.jpg') }}" 
+                                 class="card-img-top img-fluid" 
+                                 alt="Photo de profil par défaut" 
+                                 role="img">
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column bg-dark">
+                            <h3 class="card-title text-white mb-2 h5">
+                                {{ tih.prenom|default('') }} {{ tih.nom|default('') }}
+                            </h3>
+                            
+                            {% if tih.ville or tih.codePostal %}
+                                <p class="tih-location mb-2">
+                                    <i class="bi bi-geo-alt-fill me-1"></i>
+                                    {{ tih.codePostal|default('') }} {{ tih.ville|default('') }}
+                                </p>
+                            {% endif %}
+
+                            {% if tih.competences is defined and tih.competences|length > 0 %}
+                                <div class="mb-3 flex-grow-1">
+                                    {% for competence in tih.competences|slice(0, 3) %}
+                                        <span class="competence-badge">{{ competence }}</span>
+                                    {% endfor %}
+                                    {% if tih.competences|length > 3 %}
+                                        <span class="competence-badge">+{{ tih.competences|length - 3 }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            {% if tih.disponibilite %}
+                                {% set availabilityClass = tih.disponibilite|lower == 'disponible' ? 'disponible' : (tih.disponibilite|lower == 'occupé' ? 'occupe' : 'partiellement') %}
+                                <span class="availability-badge availability-{{ availabilityClass }}">
+                                    {{ tih.disponibilite }}
+                                </span>
+                            {% endif %}
+
+                            <div class="mt-auto pt-3">
+                                <a href="{{ path('app_tih_details', {'id': tih.id}) }}"
+                                   class="btn btn-outline-light btn-sm w-100"
+                                   aria-label="Voir le profil détaillé de {{ tih.prenom }} {{ tih.nom }}">
+                                    <i class="bi bi-eye me-2"></i>Voir le profil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center" role="status">
+                        <i class="bi bi-info-circle me-2"></i>
+                        {% if searchTerm %}
+                            Aucun profil TIH trouvé pour "{{ searchTerm }}".
+                        {% else %}
+                            Aucun profil TIH disponible.
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# Pagination #}
+        {% if totalPages > 1 %}
+            <nav aria-label="Navigation des pages de résultats" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {# Previous button #}
+                    <li class="page-item {{ currentPage == 1 ? 'disabled' : '' }}">
+                        <a class="page-link" 
+                           href="{{ currentPage > 1 ? path('app_tih_search', {'q': searchTerm, 'page': currentPage - 1}) : '#' }}"
+                           aria-label="Page précédente"
+                           {{ currentPage == 1 ? 'tabindex="-1" aria-disabled="true"' : '' }}>
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    {# Page numbers #}
+                    {% set startPage = max(1, currentPage - 2) %}
+                    {% set endPage = min(totalPages, currentPage + 2) %}
+
+                    {% if startPage > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_tih_search', {'q': searchTerm, 'page': 1}) }}">1</a>
+                        </li>
+                        {% if startPage > 2 %}
+                            <li class="page-item disabled">
+                                <span class="page-link">…</span>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+
+                    {% for page in startPage..endPage %}
+                        <li class="page-item {{ page == currentPage ? 'active' : '' }}">
+                            <a class="page-link" href="{{ path('app_tih_search', {'q': searchTerm, 'page': page}) }}">
+                                {{ page }}
+                                {% if page == currentPage %}
+                                    <span class="visually-hidden">(page actuelle)</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+
+                    {% if endPage < totalPages %}
+                        {% if endPage < totalPages - 1 %}
+                            <li class="page-item disabled">
+                                <span class="page-link">…</span>
+                            </li>
+                        {% endif %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_tih_search', {'q': searchTerm, 'page': totalPages}) }}">{{ totalPages }}</a>
+                        </li>
+                    {% endif %}
+
+                    {# Next button #}
+                    <li class="page-item {{ currentPage == totalPages ? 'disabled' : '' }}">
+                        <a class="page-link" 
+                           href="{{ currentPage < totalPages ? path('app_tih_search', {'q': searchTerm, 'page': currentPage + 1}) : '#' }}"
+                           aria-label="Page suivante"
+                           {{ currentPage == totalPages ? 'tabindex="-1" aria-disabled="true"' : '' }}>
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('tih_search') }}
 {% endblock %}

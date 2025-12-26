@@ -29,6 +29,7 @@ Encore
     */
    .addEntry('app', './assets/app.js')
    .addEntry('profil', './assets/profil.js')
+   .addEntry('tih_search', './assets/tih_search.js')
    .enableVersioning() // Active le versionnement
    
    // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
