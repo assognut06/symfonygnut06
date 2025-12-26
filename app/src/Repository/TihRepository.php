@@ -79,7 +79,7 @@ class TihRepository extends ServiceEntityRepository
     /**
      * Search TIH profiles with filters and pagination
      * 
-     * @param array $filters ['competences' => [], 'villes' => [], 'disponibilite' => []]
+     * @param array $filters ['skills' => [], 'cities' => [], 'availability' => []]
      * @param int $page
      * @param int $limit
      * @return Paginator
@@ -90,28 +90,28 @@ class TihRepository extends ServiceEntityRepository
             ->where('t.isValidate = :validated')
             ->setParameter('validated', true);
 
-        // Filter by competences - using subquery to avoid GROUP BY issues
-        if (!empty($filters['competences'])) {
+        // Filter by skills - using subquery to avoid GROUP BY issues
+        if (!empty($filters['skills'])) {
             $subQuery = $this->createQueryBuilder('t2')
                 ->select('t2.id')
                 ->leftJoin('t2.competences', 'c2')
-                ->where('c2.id IN (:competences)')
+                ->where('c2.id IN (:skills)')
                 ->getDQL();
             
             $qb->andWhere($qb->expr()->in('t.id', $subQuery))
-               ->setParameter('competences', $filters['competences']);
+               ->setParameter('skills', $filters['skills']);
         }
 
-        // Filter by villes
-        if (!empty($filters['villes'])) {
-            $qb->andWhere('t.ville IN (:villes)')
-               ->setParameter('villes', $filters['villes']);
+        // Filter by cities
+        if (!empty($filters['cities'])) {
+            $qb->andWhere('t.ville IN (:cities)')
+               ->setParameter('cities', $filters['cities']);
         }
 
-        // Filter by disponibilite
-        if (!empty($filters['disponibilite'])) {
-            $qb->andWhere('t.disponibilite IN (:disponibilite)')
-               ->setParameter('disponibilite', $filters['disponibilite']);
+        // Filter by availability
+        if (!empty($filters['availability'])) {
+            $qb->andWhere('t.disponibilite IN (:availability)')
+               ->setParameter('availability', $filters['availability']);
         }
 
         $qb->orderBy('t.createdAt', 'DESC');
@@ -127,7 +127,7 @@ class TihRepository extends ServiceEntityRepository
      * Get available filter options with counts based on current filters
      * 
      * @param array $filters Current filters applied
-     * @return array ['competences' => [], 'villes' => [], 'disponibilites' => []]
+     * @return array ['skills' => [], 'cities' => [], 'availability' => []]
      */
     public function getAvailableFilters(array $filters = []): array
     {
@@ -140,51 +140,51 @@ class TihRepository extends ServiceEntityRepository
         // Apply existing filters except the one we're getting options for
         $tempFilters = $filters;
         
-        // Get available competences with count
-        $qbComp = clone $qb;
-        if (!empty($tempFilters['villes'])) {
-            $qbComp->andWhere('t.ville IN (:villes)')
-                   ->setParameter('villes', $tempFilters['villes']);
+        // Get available skills with count
+        $qbSkills = clone $qb;
+        if (!empty($tempFilters['cities'])) {
+            $qbSkills->andWhere('t.ville IN (:cities)')
+                   ->setParameter('cities', $tempFilters['cities']);
         }
-        if (!empty($tempFilters['disponibilite'])) {
-            $qbComp->andWhere('t.disponibilite IN (:disponibilite)')
-                   ->setParameter('disponibilite', $tempFilters['disponibilite']);
+        if (!empty($tempFilters['availability'])) {
+            $qbSkills->andWhere('t.disponibilite IN (:availability)')
+                   ->setParameter('availability', $tempFilters['availability']);
         }
-        $competences = $qbComp->select('c.id', 'c.name', 'COUNT(DISTINCT t.id) as count')
+        $skills = $qbSkills->select('c.id', 'c.name', 'COUNT(DISTINCT t.id) as count')
             ->andWhere('c.id IS NOT NULL')
             ->groupBy('c.id', 'c.name')
             ->orderBy('c.name', 'ASC')
             ->getQuery()
             ->getResult();
 
-        // Get available villes with count and code postal
-        $qbVilles = clone $qb;
-        if (!empty($tempFilters['competences'])) {
-            $qbVilles->andWhere('c.id IN (:competences)')
-                     ->setParameter('competences', $tempFilters['competences']);
+        // Get available cities with count and postal code
+        $qbCities = clone $qb;
+        if (!empty($tempFilters['skills'])) {
+            $qbCities->andWhere('c.id IN (:skills)')
+                     ->setParameter('skills', $tempFilters['skills']);
         }
-        if (!empty($tempFilters['disponibilite'])) {
-            $qbVilles->andWhere('t.disponibilite IN (:disponibilite)')
-                     ->setParameter('disponibilite', $tempFilters['disponibilite']);
+        if (!empty($tempFilters['availability'])) {
+            $qbCities->andWhere('t.disponibilite IN (:availability)')
+                     ->setParameter('availability', $tempFilters['availability']);
         }
-        $villes = $qbVilles->select('t.ville', 't.codePostal', 'COUNT(DISTINCT t.id) as count')
+        $cities = $qbCities->select('t.ville', 't.codePostal', 'COUNT(DISTINCT t.id) as count')
             ->andWhere('t.ville IS NOT NULL')
             ->groupBy('t.ville', 't.codePostal')
             ->orderBy('t.ville', 'ASC')
             ->getQuery()
             ->getResult();
 
-        // Get available disponibilites with count
-        $qbDispo = clone $qb;
-        if (!empty($tempFilters['competences'])) {
-            $qbDispo->andWhere('c.id IN (:competences)')
-                    ->setParameter('competences', $tempFilters['competences']);
+        // Get available availability options with count
+        $qbAvailability = clone $qb;
+        if (!empty($tempFilters['skills'])) {
+            $qbAvailability->andWhere('c.id IN (:skills)')
+                    ->setParameter('skills', $tempFilters['skills']);
         }
-        if (!empty($tempFilters['villes'])) {
-            $qbDispo->andWhere('t.ville IN (:villes)')
-                    ->setParameter('villes', $tempFilters['villes']);
+        if (!empty($tempFilters['cities'])) {
+            $qbAvailability->andWhere('t.ville IN (:cities)')
+                    ->setParameter('cities', $tempFilters['cities']);
         }
-        $disponibilites = $qbDispo->select('t.disponibilite', 'COUNT(DISTINCT t.id) as count')
+        $availability = $qbAvailability->select('t.disponibilite', 'COUNT(DISTINCT t.id) as count')
             ->andWhere('t.disponibilite IS NOT NULL')
             ->groupBy('t.disponibilite')
             ->orderBy('t.disponibilite', 'ASC')
@@ -192,9 +192,9 @@ class TihRepository extends ServiceEntityRepository
             ->getResult();
 
         return [
-            'competences' => $competences,
-            'villes' => $villes,
-            'disponibilites' => $disponibilites,
+            'skills' => $skills,
+            'cities' => $cities,
+            'availability' => $availability,
         ];
     }
 }
