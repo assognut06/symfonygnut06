@@ -16,17 +16,28 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 #[Route('/tih')]
 class TihSearchController extends AbstractController
 {
+    private const ITEMS_PER_PAGE = 12;
+
     #[Route('/tih_search', name: 'app_tih_search', methods: ['GET'])]
-    public function index(TihRepository $tihRepository): Response
+    public function index(Request $request, TihRepository $tihRepository): Response
     {
-        // ✅ Ne récupérer que les TIH validés
-        $tihs = $tihRepository->findBy(
-            ['isValidate' => true],
-            ['createdAt' => 'DESC']
-        );
+        $searchTerm = $request->query->get('q', '');
+        $page = max(1, (int) $request->query->get('page', 1));
+
+        // Get paginated results with search
+        $paginator = $tihRepository->searchWithPagination($searchTerm, $page, self::ITEMS_PER_PAGE);
+        
+        // Calculate pagination data
+        $totalItems = count($paginator);
+        $totalPages = (int) ceil($totalItems / self::ITEMS_PER_PAGE);
 
         return $this->render('tih_search/index.html.twig', [
-            'tihs' => $tihs,
+            'tihs' => $paginator,
+            'searchTerm' => $searchTerm,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalItems' => $totalItems,
+            'itemsPerPage' => self::ITEMS_PER_PAGE,
         ]);
     }
 

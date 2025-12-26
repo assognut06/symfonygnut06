@@ -56,6 +56,9 @@ class Tih
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $attestationTih = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
     private \DateTimeInterface $createdAt;
 
@@ -158,4 +161,7 @@ class Tih
 
     public function getValidationMessage(): ?string { return $this->validationMessage; }
     public function setValidationMessage(?string $validationMessage): self { $this->validationMessage = $validationMessage; return $this; }
+
+    public function getPhoto(): ?string { return $this->photo; }
+    public function setPhoto(?string $photo): self { $this->photo = $photo; return $this; }
 }
