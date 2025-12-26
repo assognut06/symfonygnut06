@@ -9,7 +9,7 @@
 
 {% block body %}
 <main class="bg-main min-vh-100 py-5" role="main">
-    <div class="container">
+    <div class="container-fluid">
         <header class="text-center mb-5">
             <h1 class="gradient-text mb-3">Recherche de Profils TIH</h1>
             <p class="text text-white">
@@ -19,43 +19,96 @@
                 <p class="text-white-50 mt-2">
                     <i class="bi bi-info-circle me-1"></i>
                     {{ totalItems }} profil{{ totalItems > 1 ? 's' : '' }} trouvé{{ totalItems > 1 ? 's' : '' }}
-                    {% if searchTerm %}pour "{{ searchTerm }}"{% endif %}
                 </p>
             {% endif %}
         </header>
 
-        {# Search Form #}
-        <div class="row mb-5">
-            <div class="col-12 col-lg-8 mx-auto">
-                <form method="GET" action="{{ path('app_tih_search') }}" class="position-relative" role="search">
-                    <label for="tih-search" class="form-label text-white mb-2">
-                        <i class="bi bi-search me-2"></i>Rechercher
-                    </label>
-                    <div class="position-relative">
-                        <input type="text"
-                               id="tih-search"
-                               name="q"
-                               value="{{ searchTerm }}"
-                               class="form-control search-input"
-                               placeholder="Nom, ville, compétence, disponibilité… (min. 3 caractères)"
-                               autocomplete="off"
-                               aria-label="Rechercher des profils TIH">
-                        {% if searchTerm %}
-                            <button type="button" id="clear-search" class="btn btn-link clear-search-btn" aria-label="Effacer la recherche">
-                                <i class="bi bi-x-circle"></i>
-                            </button>
-                        {% endif %}
-                    </div>
-                </form>
-            </div>
-        </div>
+        <div class="row">
+            {# Sidebar with filters #}
+            <aside class="col-lg-3 mb-4">
+                <div class="card bg-dark border-secondary sticky-top" style="top: 1rem;">
+                    <div class="card-body">
+                        <h5 class="card-title text-white mb-4">
+                            <i class="bi bi-funnel me-2"></i>Filtres
+                        </h5>
 
-        {# Loading overlay #}
-        <div id="search-loader" class="search-loader-overlay" style="display: none;">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Recherche en cours...</span>
-            </div>
-        </div>
+                        <form id="filter-form" method="GET" action="{{ path('app_tih_search') }}">
+                            {# Competences Filter #}
+                            <div class="filter-section mb-4">
+                                <h6 class="text-white mb-3">
+                                    <i class="bi bi-briefcase me-2"></i>Compétences
+                                </h6>
+                                {% for competence in availableFilters.competences %}
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" 
+                                               type="checkbox" 
+                                               name="competences[]" 
+                                               value="{{ competence.id }}" 
+                                               id="competence-{{ competence.id }}"
+                                               {% if competence.id in currentFilters.competences %}checked{% endif %}>
+                                        <label class="form-check-label text-white-50" for="competence-{{ competence.id }}">
+                                            {{ competence.name }} <span class="badge bg-secondary">{{ competence.count }}</span>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            {# Cities Filter #}
+                            <div class="filter-section mb-4">
+                                <h6 class="text-white mb-3">
+                                    <i class="bi bi-geo-alt me-2"></i>Villes
+                                </h6>
+                                {% for ville in availableFilters.villes %}
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" 
+                                               type="checkbox" 
+                                               name="villes[]" 
+                                               value="{{ ville.ville }}" 
+                                               id="ville-{{ ville.ville|replace({' ': '-'}) }}"
+                                               {% if ville.ville in currentFilters.villes %}checked{% endif %}>
+                                        <label class="form-check-label text-white-50" for="ville-{{ ville.ville|replace({' ': '-'}) }}">
+                                            {{ ville.ville }} ({{ ville.codePostal }}) <span class="badge bg-secondary">{{ ville.count }}</span>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            {# Availability Filter #}
+                            <div class="filter-section mb-4">
+                                <h6 class="text-white mb-3">
+                                    <i class="bi bi-clock me-2"></i>Disponibilité
+                                </h6>
+                                {% for dispo in availableFilters.disponibilites %}
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" 
+                                               type="checkbox" 
+                                               name="disponibilite[]" 
+                                               value="{{ dispo.disponibilite }}" 
+                                               id="dispo-{{ dispo.disponibilite|replace({' ': '-'}) }}"
+                                               {% if dispo.disponibilite in currentFilters.disponibilite %}checked{% endif %}>
+                                        <label class="form-check-label text-white-50" for="dispo-{{ dispo.disponibilite|replace({' ': '-'}) }}">
+                                            {{ dispo.disponibilite }} <span class="badge bg-secondary">{{ dispo.count }}</span>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <button type="button" id="clear-filters" class="btn btn-outline-light w-100">
+                                <i class="bi bi-x-circle me-2"></i>Effacer les filtres
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </aside>
+
+            {# Main content #}
+            <div class="col-lg-9">
+                {# Loading overlay #}
+                <div id="search-loader" class="search-loader-overlay" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Recherche en cours...</span>
+                    </div>
+                </div>
 
         {# Grille de cartes TIH #}
         <div id="tih-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" role="list" aria-label="Liste des profils TIH">

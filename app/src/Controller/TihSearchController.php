@@ -21,23 +21,35 @@ class TihSearchController extends AbstractController
     #[Route('/tih_search', name: 'app_tih_search', methods: ['GET'])]
     public function index(Request $request, TihRepository $tihRepository): Response
     {
-        $searchTerm = $request->query->get('q', '');
         $page = max(1, (int) $request->query->get('page', 1));
+        $searchTerm = $request->query->get('q', '');
 
-        // Get paginated results with search
-        $paginator = $tihRepository->searchWithPagination($searchTerm, $page, self::ITEMS_PER_PAGE);
+        // Get filters from request
+        $filters = [
+            'competences' => array_filter((array) $request->query->all('competences')),
+            'villes' => array_filter((array) $request->query->all('villes')),
+            'disponibilite' => array_filter((array) $request->query->all('disponibilite')),
+        ];
+
+        // Get paginated results with filters
+        $paginator = $tihRepository->searchWithFilters($filters, $page, self::ITEMS_PER_PAGE);
         
         // Calculate pagination data
         $totalItems = count($paginator);
         $totalPages = (int) ceil($totalItems / self::ITEMS_PER_PAGE);
 
+        // Get available filters based on current selection
+        $availableFilters = $tihRepository->getAvailableFilters($filters);
+
         return $this->render('tih_search/index.html.twig', [
             'tihs' => $paginator,
-            'searchTerm' => $searchTerm,
+            'currentFilters' => $filters,
+            'availableFilters' => $availableFilters,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'totalItems' => $totalItems,
             'itemsPerPage' => self::ITEMS_PER_PAGE,
+            'searchTerm' => $searchTerm,
         ]);
     }
 
