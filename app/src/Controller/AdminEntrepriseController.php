@@ -10,14 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class AdminEntrepriseController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
-    // Injection de EntityManagerInterface via le constructeur
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -42,29 +39,6 @@ class AdminEntrepriseController extends AbstractController
     
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-    
-            /** @var UploadedFile $logoFile */
-            $logoFile = $form->get('logo')->getData();
-    
-            if ($logoFile) {
-                // Génère le nouveau nom à partir du nom de l'entreprise
-                $newFilename = $entreprise->getNom() . '.' . $logoFile->guessExtension();
-    
-                try {
-                    $logoFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/uploads/logo_entreprises',
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $this->addFlash('danger', 'Erreur lors de l\'upload du logo.');
-                    return $this->render('admin_entreprise/new.html.twig', [
-                        'form' => $form->createView(),
-                    ]);
-                }
-    
-                $entreprise->setLogo($newFilename);
-            }
-    
             $this->entityManager->persist($entreprise);
             $this->entityManager->flush();
     
@@ -84,39 +58,6 @@ class AdminEntrepriseController extends AbstractController
     
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-    
-            /** @var UploadedFile $logoFile */
-            $logoFile = $form->get('logo')->getData();
-    
-            if ($logoFile) {
-                // Chemin vers les logos
-                $logoDirectory = $this->getParameter('kernel.project_dir') . '/public/uploads/logo_entreprises';
-                // Nom du fichier actuel
-                $oldLogo = $entreprise->getLogo();
-                // Nouveau nom basé sur le nom de l'entreprise
-                $newFilename = $entreprise->getNom() . '.' . $logoFile->guessExtension();
-    
-                try {
-                    // Supprime l'ancien logo s'il existe
-                    if ($oldLogo && file_exists($logoDirectory . '/' . $oldLogo)) {
-                        unlink($logoDirectory . '/' . $oldLogo);
-                    }
-    
-                    // Upload du nouveau logo
-                    $logoFile->move($logoDirectory, $newFilename);
-    
-                } catch (FileException $e) {
-                    $this->addFlash('danger', 'Erreur lors de l\'upload du logo.');
-                    return $this->render('admin_entreprise/edit.html.twig', [
-                        'form' => $form->createView(),
-                        'entreprise' => $entreprise,
-                    ]);
-                }
-    
-                // Met à jour le nom du logo dans la BDD
-                $entreprise->setLogo($newFilename);
-            }
-    
             $this->entityManager->flush();
     
             $this->addFlash('success', 'Entreprise mise à jour avec succès !');
