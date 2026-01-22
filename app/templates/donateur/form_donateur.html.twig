@@ -76,8 +76,8 @@
 		<div class="row justify-content-center mt-5">
 			<div class="col-md-8 col-lg-6">
 				<div class="text-center mb-4">
-					<button id="btn-physique" class="btn btn-outline-primary me-2">Personne Physique</button>
-					<button id="btn-societe" class="btn btn-outline-secondary">Société</button>
+					<button id="btn-physique" class="btn me-2">Personne Physique</button>
+					<button id="btn-societe" class="btn">Société</button>
 				</div>
 
 				{# Formulaire Personne Physique #}
@@ -221,7 +221,7 @@
 						            document.getElementById('g-recaptcha-response-societe').value = token;
 						        });
 						    });
-						
+
 						    function validateRecaptcha(formType) {
 						        let token = document.getElementById('g-recaptcha-response-' + formType).value;
 						        if (!token) {
@@ -230,22 +230,22 @@
 						        }
 						        return true;
 						    }
-						
+
 						    document.getElementById('btn-physique').addEventListener('click', () => {
 						        document.getElementById('form-physique').style.display = 'block';
 						        document.getElementById('form-societe').style.display = 'none';
 						    });
-						
+
 						    document.getElementById('btn-societe').addEventListener('click', () => {
 						        document.getElementById('form-physique').style.display = 'none';
 						        document.getElementById('form-societe').style.display = 'block';
 						    });
-						
+
 						function goToStep(type, step) {
 						    if (step === 2) {
 						        const step1 = document.querySelectorAll(`#${type}-step-1 input, #${type}-step-1 select`);
 						        let valid = true;
-						
+
 						        step1.forEach(field => {
 						            if (field.required && !field.value.trim()) {
 						                field.classList.add('is-invalid');
@@ -254,16 +254,16 @@
 						                field.classList.remove('is-invalid');
 						            }
 						        });
-						
+
 						        if (!valid) {
 						            return;
 						        }
 						    }
-						
+
 						    document.getElementById(`${type}-step-1`).style.display = (step === 1) ? 'block' : 'none';
 						    document.getElementById(`${type}-step-2`).style.display = (step === 2) ? 'block' : 'none';
 						}
-						
+
 						</script>
 {% endblock %}{% block javascripts %}
 <script src="{{ asset('js/scripts.js') }}"></script>
