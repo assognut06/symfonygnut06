@@ -44,8 +44,23 @@ class Tih
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $city = null;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $region = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $departement = null;
+
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $availability = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $availabilityDate = null;
+
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    private ?string $rate = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $rateType = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $cv = null;
@@ -123,8 +138,23 @@ class Tih
     public function getCity(): ?string { return $this->city; }
     public function setCity(?string $city): self { $this->city = $city; return $this; }
 
+    public function getRegion(): ?string { return $this->region; }
+    public function setRegion(?string $region): self { $this->region = $region; return $this; }
+
+    public function getDepartement(): ?string { return $this->departement; }
+    public function setDepartement(?string $departement): self { $this->departement = $departement; return $this; }
+
     public function getAvailability(): ?string { return $this->availability; }
     public function setAvailability(?string $availability): self { $this->availability = $availability; return $this; }
+
+    public function getAvailabilityDate(): ?\DateTimeInterface { return $this->availabilityDate; }
+    public function setAvailabilityDate(?\DateTimeInterface $availabilityDate): self { $this->availabilityDate = $availabilityDate; return $this; }
+
+    public function getRate(): ?string { return $this->rate; }
+    public function setRate(?string $rate): self { $this->rate = $rate; return $this; }
+
+    public function getRateType(): ?string { return $this->rateType; }
+    public function setRateType(?string $rateType): self { $this->rateType = $rateType; return $this; }
 
     public function getCv(): ?string { return $this->cv; }
     public function setCv(?string $cv): self { $this->cv = $cv; return $this; }
