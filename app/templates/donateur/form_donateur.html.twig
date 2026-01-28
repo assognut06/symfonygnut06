@@ -15,7 +15,7 @@
 
 
 
-		<div class=" col-md-4 mb-4 order-md-2">
+		<div class=" col-md-4 mb-4">
 			<div class="text-justify text">
 
 				<p class="">
@@ -39,7 +39,7 @@
 			</div>
 
 		</div>
-	<div class="text-center col col-md-8 order-md-1">
+	<div class="text-center col col-md-8">
 		<img src="{{ asset('images/donDeCasque.webp') }}" alt="Donateur" class="img-fluid rounded-4 shadow-lg">
 	</div>
 	<div class="text-justify text my-5">
@@ -87,8 +87,8 @@
 		<div class="row justify-content-center mt-5">
 			<div class="col-md-8 col-lg-6">
 				<div class="text-center mb-4">
-					<button id="btn-physique" class="btn me-2">Personne Physique</button>
-					<button id="btn-societe" class="btn">Société</button>
+					<button id="btn-physique" class="btn me-2 btn-neon text-white">Personne Physique</button>
+					<button id="btn-societe" class="btn text-white btn-outline-gradient">Société</button>
 				</div>
 
 				{# Formulaire Personne Physique #}
@@ -279,5 +279,6 @@
 {% endblock %}{% block javascripts %}
 <script src="{{ asset('js/scripts.js') }}"></script>
 {{ parent() }}
+
 <script src="{{ asset('js/adresse_auto_complete.js') }}"></script>
 {% endblock %}
