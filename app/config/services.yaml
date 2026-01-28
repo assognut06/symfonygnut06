@@ -119,6 +119,10 @@ services:
 
     App\Service\EmailService: ~
 
+    App\Service\GeocodeService:
+        arguments:
+            $googleMapsApiKey: '%env(GNUT06MAPAPI)%'
+
     App\Controller\RegistrationController:
         arguments:
             $recaptchaSecret: '%nocaptcha.secret%'

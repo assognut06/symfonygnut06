@@ -11,6 +11,20 @@
 <main class="bg-main min-vh-100 py-5" role="main" 
       data-controller="tih-search"
       data-tih-search-url-value="{{ path('app_tih_search') }}"
+      data-tih-search-profiles-value="{{ allTihs|map(profile => {
+        'id': profile.id,
+        'firstName': profile.firstName,
+        'lastName': profile.lastName,
+        'city': profile.city,
+        'postalCode': profile.postalCode,
+        'photo': profile.photo,
+        'rate': profile.rate,
+        'rateType': profile.rateType,
+        'availability': profile.availability,
+        'availabilityDate': profile.availabilityDate ? profile.availabilityDate|date('Y-m-d') : null
+      })|json_encode|e('html_attr') }}"
+      data-tih-search-api-key-value="{{ app.request.server.get('GNUT06MAPAPI') }}"
+      data-tih-search-city-coordinates-value="{{ cityCoordinates|json_encode|e('html_attr') }}"
       data-action="popstate@window->tih-search&#35;handleBrowserNavigation">
     <div class="container-fluid">
         <header class="text-center mb-5">
@@ -58,25 +72,51 @@
                                 {% endfor %}
                             </div>
 
-                            {# Cities Filter #}
+                            {# Region Filter #}
                             <div class="filter-section mb-4">
                                 <h6 class="text-white mb-3">
-                                    <i class="bi bi-geo-alt me-2"></i>Villes
+                                    <i class="bi bi-map me-2"></i>Régions
                                 </h6>
-                                {% for city in availableFilters.cities %}
+                                {% for region in availableFilters.regions %}
                                     <div class="form-check">
-                                        <input class="form-check-input filter-checkbox" 
+                                        <input class="form-check-input filter-checkbox region-checkbox" 
                                                type="checkbox" 
-                                               name="cities[]" 
-                                               value="{{ city.city }}" 
-                                               data-action="change->tih-search&#35;filterChange"
-                                               id="city-{{ city.city|replace({' ': '-'}) }}"
-                                               {% if city.city in currentFilters.cities %}checked{% endif %}>
-                                        <label class="form-check-label text-white-50" for="city-{{ city.city|replace({' ': '-'}) }}">
-                                            {{ city.city }} ({{ city.postalCode }}) <span class="badge bg-secondary">{{ city.count }}</span>
+                                               name="regions[]" 
+                                               value="{{ region.region }}" 
+                                               data-action="change->tih-search&#35;regionChange"
+                                               id="region-{{ region.region|replace({' ': '-', '\'': ''}) }}"
+                                               {% if region.region in currentFilters.regions %}checked{% endif %}>
+                                        <label class="form-check-label text-white-50" for="region-{{ region.region|replace({' ': '-', '\'': ''}) }}">
+                                            {{ region.region }} <span class="badge bg-secondary">{{ region.count }}</span>
                                         </label>
                                     </div>
                                 {% endfor %}
+                            </div>
+
+                            {# Département Filter #}
+                            <div class="filter-section mb-4" data-tih-search-target="departementSection">
+                                <h6 class="text-white mb-3">
+                                    <i class="bi bi-signpost me-2"></i>Départements
+                                </h6>
+                                <div data-tih-search-target="departementContainer">
+                                {% for dept in availableFilters.departements %}
+                                    <div class="form-check departement-item" 
+                                         data-region="{{ dept.region }}"
+                                         style="{% if currentFilters.regions is empty %}display: none;{% elseif dept.region not in currentFilters.regions %}display: none;{% endif %}">
+                                        <input class="form-check-input filter-checkbox" 
+                                               type="checkbox" 
+                                               name="departements[]" 
+                                               value="{{ dept.departement }}" 
+                                               data-action="change->tih-search&#35;filterChange"
+                                               data-region="{{ dept.region }}"
+                                               id="dept-{{ dept.departement|replace({' ': '-', '\'': ''}) }}"
+                                               {% if dept.departement in currentFilters.departements %}checked{% endif %}>
+                                        <label class="form-check-label text-white-50" for="dept-{{ dept.departement|replace({' ': '-', '\'': ''}) }}">
+                                            {{ dept.departement }} <span class="badge bg-secondary">{{ dept.count }}</span>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                                </div>
                             </div>
 
                             {# Availability Filter #}
@@ -100,6 +140,65 @@
                                 {% endfor %}
                             </div>
 
+                            {# Rate Filter with Type #}
+                            {% if availableFilters.minRate is not null and availableFilters.maxRate is not null %}
+                            <div class="filter-section mb-4">
+                                <h6 class="text-white mb-3">
+                                    <i class="bi bi-cash me-2"></i>Fourchette de tarif
+                                </h6>
+                                <div class="mb-3">
+                                    <label class="form-label text-white-50 small">
+                                        <span id="rateValue">{{ currentFilters.minRate ?? availableFilters.minRate }}€ - {{ currentFilters.maxRate ?? availableFilters.maxRate }}€</span>
+                                    </label>
+                                    <div id="rateSlider" 
+                                         class="mt-3 mb-3"
+                                         data-min="{{ availableFilters.minRate }}"
+                                         data-max="{{ availableFilters.maxRate }}"></div>
+                                    <input type="hidden" name="minRate" id="minRateInput" value="{{ currentFilters.minRate ?? availableFilters.minRate }}">
+                                    <input type="hidden" name="maxRate" id="maxRateInput" value="{{ currentFilters.maxRate ?? availableFilters.maxRate }}">
+                                    <div class="d-flex justify-content-between text-white-50 small mt-1">
+                                        <span>{{ availableFilters.minRate }}€</span>
+                                        <span>{{ availableFilters.maxRate }}€</span>
+                                    </div>
+                                </div>
+                                
+                                {# Rate Type Radio Buttons #}
+                                {% if availableFilters.rateTypes is not empty %}
+                                <div class="mt-3">
+                                    <label class="form-label text-white-50 small">Type</label>
+                                    <div class="d-flex gap-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" 
+                                                   type="radio" 
+                                                   name="rateType" 
+                                                   value="" 
+                                                   data-action="change->tih-search&#35;filterChange"
+                                                   id="rateTypeRadio-all"
+                                                   {% if currentFilters.rateType is not defined or currentFilters.rateType == '' %}checked{% endif %}>
+                                            <label class="form-check-label text-white-50" for="rateTypeRadio-all">
+                                                Tous
+                                            </label>
+                                        </div>
+                                        {% for rateType in availableFilters.rateTypes %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" 
+                                                       type="radio" 
+                                                       name="rateType" 
+                                                       value="{{ rateType.rateType }}" 
+                                                       data-action="change->tih-search&#35;filterChange"
+                                                       id="rateTypeRadio-{{ loop.index }}"
+                                                       {% if currentFilters.rateType is defined and currentFilters.rateType == rateType.rateType %}checked{% endif %}>
+                                                <label class="form-check-label text-white-50" for="rateTypeRadio-{{ loop.index }}">
+                                                    {{ rateType.rateType == 'Horaire' ? 'Heure' : 'Jour' }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
                             <button type="button" id="clear-filters" class="btn btn-outline-light w-100"
                                     data-action="click->tih-search&#35;clearFilters">
                                 <i class="bi bi-x-circle me-2"></i>Effacer les filtres
@@ -111,12 +210,35 @@
 
             {# Main content #}
             <div class="col-lg-9">
+                {# View Toggle #}
+                <div class="mb-4 d-flex justify-content-end">
+                    <div class="btn-group" role="group" aria-label="Vue">
+                        <button type="button" 
+                                class="btn btn-outline-light active" 
+                                id="gridViewBtn"
+                                data-action="click->tih-search#showGridView">
+                            <i class="bi bi-grid-3x3-gap me-1"></i>Grille
+                        </button>
+                        <button type="button" 
+                                class="btn btn-outline-light" 
+                                id="mapViewBtn"
+                                data-action="click->tih-search#showMapView">
+                            <i class="bi bi-map me-1"></i>Carte
+                        </button>
+                    </div>
+                </div>
+
                 {# Loading overlay #}
                 <div class="loading-overlay d-none" 
                      data-tih-search-target="loader">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Recherche en cours...</span>
                     </div>
+                </div>
+
+                {# Map View #}
+                <div id="map-view" class="d-none mb-4" data-tih-search-target="mapView">
+                    <div id="tih-map" style="height: calc(100vh - 200px); min-height: 600px; border-radius: 1rem;"></div>
                 </div>
 
                 {# Grille de cartes TIH #}
@@ -160,6 +282,13 @@
                                         <span class="competence-badge">+{{ tih.competences|length - 3 }}</span>
                                     {% endif %}
                                 </div>
+                            {% endif %}
+
+                            {% if tih.rate and tih.rateType %}
+                                <p class="text-white mb-2">
+                                    <i class="bi bi-currency-euro me-1"></i>
+                                    <strong>{{ tih.rate }}€</strong> / {{ tih.rateType }}
+                                </p>
                             {% endif %}
 
                             {% if tih.availability %}
@@ -269,5 +398,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('tih_search') }}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 {% endblock %}

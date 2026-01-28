@@ -71,6 +71,17 @@ class TihController extends AbstractController
                     $tih->setAttestationTih($newFilename);
                 }
 
+                /** @var UploadedFile|null $photoFile */
+                $photoFile = $form->get('photo')->getData();
+                if ($photoFile) {
+                    $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename)->lower();
+                    $newFilename = uniqid() . '-' . $safeFilename . '.' . $photoFile->guessExtension();
+
+                    $photoFile->move($this->getParameter('kernel.project_dir') . '/public/uploads/tih', $newFilename);
+                    $tih->setPhoto($newFilename);
+                }
+
                 // Ajout du rôle ROLE_TIH si non présent
                 $roles = $user->getRoles();
                 if (!in_array('ROLE_TIH', $roles)) {

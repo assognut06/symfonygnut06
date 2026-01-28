@@ -13,6 +13,7 @@ use App\Application\ViewModel\Tih\TihDetailsViewModel;
 use App\Entity\Tih;
 use App\Form\TihContactType;
 use App\Repository\TihRepository;
+use App\Service\GeocodeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +26,8 @@ class TihSearchController extends AbstractController
 
     public function __construct(
         private QueryBus $queryBus,
-        private CommandBus $commandBus
+        private CommandBus $commandBus,
+        private GeocodeService $geocodeService
     ) {}
 
     #[Route('/tih_search', name: 'app_tih_search', methods: ['GET'])]
@@ -37,9 +39,43 @@ class TihSearchController extends AbstractController
         $queryParams = $request->query->all();
         $filters = [
             'skills' => array_filter(array_map('intval', (array) ($queryParams['skills'] ?? []))),
-            'cities' => array_filter((array) ($queryParams['cities'] ?? [])),
+            'regions' => array_filter((array) ($queryParams['regions'] ?? [])),
+            'departements' => array_filter((array) ($queryParams['departements'] ?? [])),
             'availability' => array_filter((array) ($queryParams['availability'] ?? [])),
         ];
+
+        // Rate filters
+        if (isset($queryParams['minRate']) && $queryParams['minRate'] !== '') {
+            $filters['minRate'] = (float) $queryParams['minRate'];
+        }
+        if (isset($queryParams['maxRate']) && $queryParams['maxRate'] !== '') {
+            $filters['maxRate'] = (float) $queryParams['maxRate'];
+        }
+        if (isset($queryParams['rateType']) && $queryParams['rateType'] !== '' && $queryParams['rateType'] !== 'all') {
+            $filters['rateType'] = $queryParams['rateType'];
+        }
+
+        // Availability period filter (instead of specific date)
+        if (isset($queryParams['availabilityPeriod']) && $queryParams['availabilityPeriod'] !== '') {
+            $period = $queryParams['availabilityPeriod'];
+            $now = new \DateTime();
+            
+            if ($period === '1') {
+                // Available within 1 month
+                $targetDate = (clone $now)->modify('+1 month');
+                $filters['availabilityDate'] = $targetDate;
+            } elseif ($period === '3') {
+                // Available within 3 months
+                $targetDate = (clone $now)->modify('+3 months');
+                $filters['availabilityDate'] = $targetDate;
+            } elseif ($period === '3+') {
+                // Available after 3 months
+                $targetDate = (clone $now)->modify('+3 months');
+                $filters['availabilityDateAfter'] = $targetDate;
+            }
+            
+            $filters['availabilityPeriod'] = $period;
+        }
 
         // Execute query to get paginated results with filters
         $paginator = $this->queryBus->ask(
@@ -55,14 +91,33 @@ class TihSearchController extends AbstractController
             new GetAvailableFiltersQuery($filters)
         );
 
+        // Get ALL filtered results (not paginated) for map display
+        $allFilteredResults = $this->queryBus->ask(
+            new SearchTihQuery($filters, 1, 10000) // Get all results with high limit
+        );
+
+        // Extract unique cities from ALL results and geocode them
+        $cities = [];
+        foreach ($allFilteredResults as $tih) {
+            $city = $tih->getCity();
+            if (!empty($city) && !in_array($city, $cities, true)) {
+                $cities[] = $city;
+            }
+        }
+        
+        // Get coordinates for all cities (will use cache to avoid repeated API calls)
+        $cityCoordinates = $this->geocodeService->getCitiesCoordinates($cities);
+
         return $this->render('tih_search/index.html.twig', [
             'tihs' => $paginator,
+            'allTihs' => iterator_to_array($allFilteredResults), // All results for map
             'currentFilters' => $filters,
             'availableFilters' => $availableFilters,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'totalItems' => $totalItems,
             'itemsPerPage' => self::ITEMS_PER_PAGE,
+            'cityCoordinates' => $cityCoordinates,
         ]);
     }
 

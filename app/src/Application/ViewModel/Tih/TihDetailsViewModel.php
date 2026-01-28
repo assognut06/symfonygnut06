@@ -21,8 +21,12 @@ final readonly class TihDetailsViewModel
         public string $fullAddress,
         public array $competences,
         public string $availability,
+        public ?\DateTimeInterface $availabilityDate,
+        public ?string $rate,
+        public ?string $rateType,
         public ?string $cv,
         public ?string $attestationTih,
+        public ?string $photo,
     ) {}
 
     public static function fromEntity(Tih $tih): self
@@ -52,8 +56,12 @@ final readonly class TihDetailsViewModel
             ), ', '),
             competences: $competenceNames,
             availability: $tih->getAvailability() ?? '',
+            availabilityDate: $tih->getAvailabilityDate(),
+            rate: $tih->getRate(),
+            rateType: $tih->getRateType(),
             cv: $tih->getCv(),
-            attestationTih: $tih->getAttestationTih()
+            attestationTih: $tih->getAttestationTih(),
+            photo: $tih->getPhoto()
         );
     }
 }
