@@ -4,7 +4,7 @@
 
 {% block body %}
 {% if donateur %}
-    <div id="divFormulaire" class="container mt-5">
+    <div id="divFormulaire" class="container mt-5 mb-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <h1 class="text-center mb-4">Bienvenue  {{ donateur.civilite }} {{ donateur.nom }}</h1>
@@ -122,9 +122,9 @@
             <div class="row justify-content-center align-items-center">
                 <div class="col-md-8 text-center">
                     <h1 class="mb-4">Bienvenue sur la page de création de don</h1>
-                    <p>Pour créer un don, vous devez d'abord renseigner vos informations personnelles.</p>
+                    <p class="text">Pour créer un don, vous devez d'abord renseigner vos informations personnelles.</p>
                     
-                    <a href="{{ path('donateur_formulaire') }}" class="btn btn-primary">Renseigner mes informations</a>
+                    <a href="{{ path('donateur_formulaire') }}" class="btn btn-primary mb-5">Renseigner mes informations</a>
                     </div>
             </div>
     {% endif %}
