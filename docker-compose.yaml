@@ -50,7 +50,7 @@ services:
       - "443:443"
     depends_on:
       - mysql
-    #command: php -S 0.0.0.0:8000 -t /var/www/app/public
+    command: php -S 0.0.0.0:8000 -t /var/www/app/public
 
 
 
