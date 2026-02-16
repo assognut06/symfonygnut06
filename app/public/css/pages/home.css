@@ -1,0 +1,153 @@
+/* ✅ Focus visible obligatoire WCAG 2.1 AA */
+.btn-neon:focus,
+.btn-outline-gradient:focus,
+.carousel-control-prev:focus,
+.carousel-control-next:focus,
+.carousel-indicators button:focus,
+a:focus {
+  outline: 3px solid #F86CF8 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ Amélioration du contraste */
+.text {
+  color: #ffffff !important;
+}
+
+.card-text {
+  color: #e0e0e0 !important;
+}
+
+/* ✅ Amélioration de la lisibilité pour les rôles */
+.team-role {
+  color: #ffffff !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7) !important;
+  line-height: 1.4 !important;
+}
+
+/* ✅ Style pour les liens actifs */
+.btn-neon.active,
+.btn-outline-gradient.active {
+  background-color: rgba(248, 108, 248, 0.3) !important;
+  border-color: #F86CF8 !important;
+  font-weight: bold;
+}
+
+/* ✅ Style des badges "New" (.badge = classe bootstrap et .badge-new = classe custom)*/
+.badge-new {
+  font-size: 0.7rem !important;
+  transform: translate(-50%, -50%) rotate(23deg);
+  transform-origin: center;
+}
+
+/* ✅ Icônes de la section "Comment aider" : faire un don et devenir adhérent */
+.icon-don-adherent {
+  width: 64px;
+}
+
+/* ✅ Amélioration des cartes équipe */
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 8px 25px rgba(248, 108, 248, 0.3) !important;
+}
+
+/* ✅ Style des cercles LinkedIn (profil LinkedIn des membres de l'équipe) */
+.linkedin-circle {
+  width: 36px;
+  height: 36px;
+  transition: all 0.3s ease !important;
+}
+
+.linkedin-circle:hover {
+  background-color: #0077B5 !important;
+  transform: scale(1.1) !important;
+}
+
+/* ✅ Style des icônes ("linkedin")*/
+.linkedin-circle-icon {
+  width: 18px;
+}
+
+/* ✅ Amélioration des indicateurs carousel */
+.carousel-indicators button {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.carousel-indicators button.active {
+  background-color: #F86CF8 !important;
+  border-color: #F86CF8 !important;
+}
+
+.carousel-indicators button:hover {
+  background-color: rgba(248, 108, 248, 0.7) !important;
+}
+
+/* ✅ Amélioration des contrôles carousel */
+.carousel-control-prev,
+.carousel-control-next {
+  transition: all 0.3s ease !important;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ✅ Style des images carousel */
+.carousel-item img {
+  border-radius: 1rem !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ✅ Responsive pour mobile */
+@media (max-width: 768px) {
+  .carousel-indicators {
+    bottom: -50px !important;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 40px !important;
+  }
+}
+
+/* ✅ Accessibilité - Mode contraste élevé */
+@media (prefers-contrast: high) {
+  .carousel-indicators button {
+    border-width: 3px !important;
+  }
+}
+
+/* ✅ Accessibilité - Respect des préférences de mouvement */
+@media (prefers-reduced-motion: reduce) {
+
+  .card,
+  .linkedin-circle,
+  .carousel-indicators button,
+  .carousel-control-prev,
+  .carousel-control-next {
+    transition: none !important;
+  }
+
+  .card:hover {
+    transform: none !important;
+  }
+
+  .linkedin-circle:hover {
+    transform: none !important;
+  }
+
+  /* ✅ Désactive le carousel automatique si mouvement réduit */
+  .carousel {
+    animation-play-state: paused !important;
+  }
+}
