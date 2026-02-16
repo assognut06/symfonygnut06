@@ -5,146 +5,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        /* ✅ Focus visible obligatoire WCAG 2.1 AA */
-        .btn-neon:focus,
-        .btn-outline-gradient:focus,
-        .carousel-control-prev:focus,
-        .carousel-control-next:focus,
-        .carousel-indicators button:focus,
-        a:focus {
-            outline: 3px solid #F86CF8 !important;
-            outline-offset: 2px !important;
-            box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
-        }
-
-        /* ✅ Amélioration du contraste */
-        .text {
-            color: #ffffff !important;
-        }
-
-        .card-text {
-            color: #e0e0e0 !important;
-        }
-
-        /* ✅ Amélioration de la lisibilité pour les rôles */
-        .team-role {
-            color: #ffffff !important;
-            font-size: 0.95rem !important;
-            font-weight: 500 !important;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7) !important;
-            line-height: 1.4 !important;
-        }
-
-        /* ✅ Style pour les liens actifs */
-        .btn-neon.active,
-        .btn-outline-gradient.active {
-            background-color: rgba(248, 108, 248, 0.3) !important;
-            border-color: #F86CF8 !important;
-            font-weight: bold;
-        }
-
-        /* ✅ Style des badges "New" */
-        .badge {
-            font-size: 0.7rem !important;
-        }
-
-        /* ✅ Amélioration des cartes équipe */
-        .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-        }
-
-        .card:hover {
-            transform: translateY(-5px) !important;
-            box-shadow: 0 8px 25px rgba(248, 108, 248, 0.3) !important;
-        }
-
-        /* ✅ Style des liens LinkedIn */
-        .linkedin-circle {
-            transition: all 0.3s ease !important;
-        }
-
-        .linkedin-circle:hover {
-            background-color: #0077B5 !important;
-            transform: scale(1.1) !important;
-        }
-
-        /* ✅ Amélioration des indicateurs carousel */
-        .carousel-indicators button {
-            background-color: rgba(255, 255, 255, 0.5) !important;
-            border: 2px solid rgba(255, 255, 255, 0.3) !important;
-            transition: all 0.3s ease !important;
-        }
-
-        .carousel-indicators button.active {
-            background-color: #F86CF8 !important;
-            border-color: #F86CF8 !important;
-        }
-
-        .carousel-indicators button:hover {
-            background-color: rgba(248, 108, 248, 0.7) !important;
-        }
-
-        /* ✅ Amélioration des contrôles carousel */
-        .carousel-control-prev,
-        .carousel-control-next {
-            transition: all 0.3s ease !important;
-        }
-
-        .carousel-control-prev:hover,
-        .carousel-control-next:hover {
-            background-color: rgba(0, 0, 0, 0.3) !important;
-        }
-
-        /* ✅ Style des images carousel */
-        .carousel-item img {
-            border-radius: 1rem !important;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
-        }
-
-        /* ✅ Responsive pour mobile */
-        @media (max-width: 768px) {
-            .carousel-indicators {
-                bottom: -50px !important;
-            }
-            
-            .carousel-control-prev,
-            .carousel-control-next {
-                width: 40px !important;
-            }
-        }
-
-        /* ✅ Accessibilité - Mode contraste élevé */
-        @media (prefers-contrast: high) {
-            .carousel-indicators button {
-                border-width: 3px !important;
-            }
-        }
-
-        /* ✅ Accessibilité - Respect des préférences de mouvement */
-        @media (prefers-reduced-motion: reduce) {
-            .card,
-            .linkedin-circle,
-            .carousel-indicators button,
-            .carousel-control-prev,
-            .carousel-control-next {
-                transition: none !important;
-            }
-            
-            .card:hover {
-                transform: none !important;
-            }
-            
-            .linkedin-circle:hover {
-                transform: none !important;
-            }
-
-            /* ✅ Désactive le carousel automatique si mouvement réduit */
-            .carousel {
-                animation-play-state: paused !important;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/pages/home.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -194,7 +55,7 @@
 						</a>
 						<a href="{{ path('handi_3d_index') }}" class="btn-outline-gradient text-white position-relative" role="button" rel="noopener noreferrer" aria-label="Découvrir Handi-3D, notre espace virtuel inclusif (ouvre dans un nouvel onglet)">
 							Découvrez ♿ Handi-3D
-							<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger" style="transform: translate(-50%, -50%) rotate(23deg); transform-origin: center;" aria-label="Nouveau">
+							<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger badge-new" aria-label="Nouveau">
 								New
 							</span>
 						</a>
@@ -334,7 +195,7 @@
 					</p>
 					<div class="row g-4" role="list" aria-label="Façons de nous soutenir">
 						<article class="col-6 text-center text-md-start" role="listitem">
-							<img src="{{ asset ('images/webp/send_money.svg') }}" style="width:64px;" alt="Icône représentant un don financier" role="img"/>
+							<img class="icon-don-adherent" src="{{ asset ('images/webp/send_money.svg') }}" alt="Icône représentant un don financier" role="img"/>
 							<h3>Faites un don</h3>
 							<p class="text">
 								Aidez-nous à financer nos projets et initiatives.
@@ -344,7 +205,7 @@
 							</a>
 						</article>
 						<article class="col-6 text-center text-md-start" role="listitem">
-							<img src="{{ asset ('images/webp/volunteer_activism.svg') }}" style="width:64px;" alt="Icône représentant l'engagement bénévole" role="img"/>
+							<img class="icon-don-adherent" src="{{ asset ('images/webp/volunteer_activism.svg') }}" alt="Icône représentant l'engagement bénévole" role="img"/>
 							<h3>Devenez adhérent.e</h3>
 							<p class="text">
 								Participez activement à nos activités et évènements.
@@ -418,8 +279,8 @@
 									<h4 class="card-title text-white mb-2">{{ member.name }}</h4>
 									<p class="team-role flex-grow-1 mb-3">{{ member.role }}</p>
 									<div class="mt-auto d-flex justify-content-start">
-										<a href="{{ member.linkedin }}" aria-label="Voir le profil LinkedIn de {{ member.name }} (ouvre dans un nouvel onglet)" class="rounded-circle bg-white d-flex justify-content-center align-items-center linkedin-circle" style="width:36px;height:36px;" target="_blank" rel="noopener noreferrer">
-											<img src="{{ asset('images/webp/linkedin.svg') }}" style="width:18px;" alt="" aria-hidden="true">
+										<a href="{{ member.linkedin }}" aria-label="Voir le profil LinkedIn de {{ member.name }} (ouvre dans un nouvel onglet)" class="rounded-circle bg-white d-flex justify-content-center align-items-center linkedin-circle" target="_blank" rel="noopener noreferrer">
+											<img class="linkedin-circle-icon" src="{{ asset('images/webp/linkedin.svg') }}" alt="" aria-hidden="true">
 										</a>
 									</div>
 								</div>
