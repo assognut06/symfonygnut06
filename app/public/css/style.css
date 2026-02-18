@@ -18,13 +18,11 @@ body {
   font-size: 20px;
   leading-trim: NONE;
   line-height: 36px;
-
 }
 
 
 .nav-link:hover{
     color: var(--Primary) !important;
-
 }
 
 .btn-outline-gradient {

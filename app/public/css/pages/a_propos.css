@@ -1,0 +1,67 @@
+/* Styles de la page A Propos ("Notre mission"), a_propos/index.html.twig */
+/* Auteur : Simon Fanny */
+/* Date : 2026-02-16 */
+
+/* ✅ Focus visible obligatoire WCAG 2.1 AA */
+.card:focus,
+a:focus,
+.btn:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ Amélioration du contraste */
+.text {
+    color: #ffffff !important;
+}
+
+.card-text {
+    color: #e0e0e0 !important;
+    line-height: 1.6 !important;
+}
+
+/* ✅ Style pour le nom de l'association avec meilleur contraste */
+.association-name {
+    color: #FF66CC !important; /* Rose plus clair pour un meilleur contraste */
+    font-weight: bold !important;
+}
+
+/* ✅ Amélioration des cartes */
+.action-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-card:hover,
+.action-card:focus-within {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(248, 108, 248, 0.3);
+}
+
+/* ✅ Amélioration de la lisibilité */
+.president-message {
+    line-height: 1.8 !important;
+    font-size: 1.1rem !important;
+}
+
+/* Portrait du président */
+.president-portrait {
+  max-width: 400px;
+}
+
+/* Illustration mask */
+.mask-illustration {
+  max-width: 300px;
+}
+
+.card-title {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+.section-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    margin-bottom: 2rem !important;
+}
