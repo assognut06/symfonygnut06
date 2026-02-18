@@ -5,61 +5,7 @@
 
 {% block stylesheets %}
 {{ parent() }}
-<style>
-/* ✅ Focus visible obligatoire WCAG 2.1 AA */
-.card:focus,
-a:focus,
-.btn:focus {
-    outline: 3px solid #F86CF8 !important;
-    outline-offset: 2px !important;
-    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
-}
-
-/* ✅ Amélioration du contraste */
-.text {
-    color: #ffffff !important;
-}
-
-.card-text {
-    color: #e0e0e0 !important;
-    line-height: 1.6 !important;
-}
-
-/* ✅ Style pour le nom de l'association avec meilleur contraste */
-.association-name {
-    color: #FF66CC !important; /* Rose plus clair pour un meilleur contraste */
-    font-weight: bold !important;
-}
-
-/* ✅ Amélioration des cartes */
-.action-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.action-card:hover,
-.action-card:focus-within {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(248, 108, 248, 0.3);
-}
-
-/* ✅ Amélioration de la lisibilité */
-.president-message {
-    line-height: 1.8 !important;
-    font-size: 1.1rem !important;
-}
-
-.card-title {
-    color: #ffffff !important;
-    font-weight: 600 !important;
-}
-
-.section-title {
-    color: #ffffff !important;
-    font-weight: 700 !important;
-    margin-bottom: 2rem !important;
-}
-</style>
+<link rel="stylesheet" href="{{ asset('css/pages/a_propos.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -106,9 +52,8 @@ a:focus,
         <div class="container row align-items-center justify-content-center g-5">
             <figure class="col-lg-6 col-12 text-center">
                 <img src="{{ asset('images/webp/mask.svg') }}" 
-                     class="img-fluid mb-4"
-                     alt="Illustration symbolisant les technologies immersives : casque de réalité virtuelle stylisé"
-                     style="max-width: 300px;"
+                    class="img-fluid mb-4 mask-illustration"
+                     alt="Illustration symbolisant les technologies immersives : casque de réalité virtuelle stylisé"                   
                      role="img">
                 <h2 id="technologies-innovantes" class="section-title text-center">
                     Technologies innovantes
@@ -257,8 +202,7 @@ a:focus,
             
             <figure class="col-lg-6 col-12 text-center order-1 order-lg-2">
                 <img src="{{ asset('images/webp/gerald.webp') }}" 
-                     class="img-fluid rounded-circle shadow-lg"
-                     style="max-width: 400px;"
+                     class="img-fluid rounded-circle shadow-lg president-portrait"
                      alt="Portrait de Gérald Col, président fondateur de l'association GNUT 06"
                      role="img">
                 <figcaption class="visually-hidden">
