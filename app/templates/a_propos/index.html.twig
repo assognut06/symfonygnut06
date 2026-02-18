@@ -4,62 +4,8 @@
 {% endblock %}
 
 {% block stylesheets %}
-	{{ parent() }}
-	<style>
-		/* ✅ Focus visible obligatoire WCAG 2.1 AA */
-		.card:focus,
-		a:focus,
-		.btn:focus {
-			outline: 3px solid #F86CF8 !important;
-			outline-offset: 2px !important;
-			box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
-		}
-
-		/* ✅ Amélioration du contraste */
-		.text {
-			color: #ffffff !important;
-		}
-
-		.card-text {
-			color: #e0e0e0 !important;
-			line-height: 1.6 !important;
-		}
-
-		/* ✅ Style pour le nom de l'association avec meilleur contraste */
-		.association-name {
-			color: #FF66CC !important; /* Rose plus clair pour un meilleur contraste */
-			font-weight: bold !important;
-		}
-
-		/* ✅ Amélioration des cartes */
-		.action-card {
-			transition: transform 0.3s ease, box-shadow 0.3s ease;
-			border: 1px solid rgba(255, 255, 255, 0.1);
-		}
-
-		.action-card:hover,
-		.action-card:focus-within {
-			transform: translateY(-5px);
-			box-shadow: 0 8px 25px rgba(248, 108, 248, 0.3);
-		}
-
-		/* ✅ Amélioration de la lisibilité */
-		.president-message {
-			line-height: 1.8 !important;
-			font-size: 1.1rem !important;
-		}
-
-		.card-title {
-			color: #ffffff !important;
-			font-weight: 600 !important;
-		}
-
-		.section-title {
-			color: #ffffff !important;
-			font-weight: 700 !important;
-			margin-bottom: 2rem !important;
-		}
-	</style>
+{{ parent() }}
+<link rel="stylesheet" href="{{ asset('css/pages/a_propos.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -97,38 +43,37 @@
 			</div>
 		</section>
 
-		<!-- ✅ Section technologies accessible -->
-		<section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="technologies-innovantes">
-			<div class="container row align-items-center justify-content-center g-5">
-				<figure class="col-lg-6 col-12 text-center">
-					<img src="{{ asset('images/webp/mask.svg') }}" class="img-fluid mb-4" alt="Illustration symbolisant les technologies immersives : casque de réalité virtuelle stylisé" style="max-width: 300px;" role="img">
-					<h2 id="technologies-innovantes" class="section-title text-center">
-						Technologies innovantes
-					</h2>
-				</figure>
-				<article class="col-lg-6 col-12">
-					<div class="text president-message" role="text">
-						<p>
-							Grâce aux outils innovants tels que la
-							<strong>réalité virtuelle</strong>, 
-								                        la
-							<strong>réalité augmentée</strong>
-							ou la
-							<strong>réalité mixte</strong>, 
-								                        nous concevons des solutions immersives pour favoriser l'inclusion des 
-								                        personnes en situation de handicap.
-						</p>
-						<p>
-							Alliant technologie et impact social, nos projets sont pensés pour faire 
-							                        le lien entre les mondes virtuel et réel et ouvrir de nouvelles voies à 
-							                        l'apprentissage et au lien social.
-						</p>
-					</div>
-				</article>
-			</div>
-		</section>
-
-
+    <!-- ✅ Section technologies accessible -->
+    <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" 
+             role="region" 
+             aria-labelledby="technologies-innovantes">
+        <div class="container row align-items-center justify-content-center g-5">
+            <figure class="col-lg-6 col-12 text-center">
+                <img src="{{ asset('images/webp/mask.svg') }}" 
+                    class="img-fluid mb-4 mask-illustration"
+                     alt="Illustration symbolisant les technologies immersives : casque de réalité virtuelle stylisé"                   
+                     role="img">
+                <h2 id="technologies-innovantes" class="section-title text-center">
+                    Technologies innovantes
+                </h2>
+            </figure>
+            <article class="col-lg-6 col-12">
+                <div class="text president-message" role="text">
+                    <p>
+                        Grâce aux outils innovants tels que la <strong>réalité virtuelle</strong>, 
+                        la <strong>réalité augmentée</strong> ou la <strong>réalité mixte</strong>, 
+                        nous concevons des solutions immersives pour favoriser l'inclusion des 
+                        personnes en situation de handicap.
+                    </p>
+                    <p>
+                        Alliant technologie et impact social, nos projets sont pensés pour faire 
+                        le lien entre les mondes virtuel et réel et ouvrir de nouvelles voies à 
+                        l'apprentissage et au lien social.
+                    </p>
+                </div>
+            </article>
+        </div>
+    </section>
 
 		<!-- ✅ Section actions accessible -->
 		<section class="bg-main w-100 d-flex flex-column justify-content-center pt-5 pb-5" role="region" aria-labelledby="nos-actions">
@@ -251,58 +196,60 @@
 			</div>
 		</section>
 
-		<!-- ✅ Section mot du président accessible -->
-		<section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="mot-president">
-			<div class="container row align-items-center justify-content-center g-5">
-				<article class="col-lg-6 col-12 order-2 order-lg-1">
-					<h2 id="mot-president" class="section-title">Mot du Président</h2>
-					<div class="text president-message" role="text">
-						<p>
-							<strong>Chers membres et visiteurs,</strong>
-						</p>
-
-						<p>
-							En tant que Président de l'association GNUT 06 - Groupement Numérique d’Utilité Territoriale des Alpes‑Maritimes (06), je suis ravi de vous 
-							                        accueillir sur notre site. Notre association est une communauté où 
-							                        chacun peut s'épanouir dans le domaine de la technologie et des 
-							                        logiciels libres.
-						</p>
-
-						<p>
-							À une époque où la technologie évolue rapidement, il est crucial de 
-							                        garder l'humain au cœur de cette révolution. Chez GNUT 06, nous 
-							                        croyons que la technologie doit servir l'humanité. Nous nous engageons 
-							                        à promouvoir des valeurs de partage et de solidarité.
-						</p>
-
-						<p>
-							Chaque membre apporte une richesse unique, et c'est cette diversité qui 
-							                        nous rend forts. Je vous invite à participer à nos projets et événements. 
-							                        Votre voix est importante, et ensemble, nous pouvons faire la différence.
-						</p>
-
-						<p>
-							Merci de votre soutien. Continuons à avancer vers un monde où la 
-							                        technologie est au service de l'humain.
-						</p>
-
-						<p>
-							<em>Avec gratitude,</em><br>
-							<strong>Gérald Col</strong><br>
-							Président de
-							<span class="association-name">GNUT 06</span>
-						</p>
-					</div>
-				</article>
-
-				<figure class="col-lg-6 col-12 text-center order-1 order-lg-2">
-					<img src="{{ asset('images/webp/gerald.webp') }}" class="img-fluid rounded-circle shadow-lg w-75 w-sm-50 w-md-75" style="max-width: 400px;" alt="Portrait de Gérald Col, président fondateur de l'association GNUT 06" role="img">
-					<figcaption class="visually-hidden">
-						Gérald Col, président et fondateur de GNUT 06
-					</figcaption>
-				</figure>
-			</div>
-		</section>
+    <!-- ✅ Section mot du président accessible -->
+    <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" 
+             role="region" 
+             aria-labelledby="mot-president">
+        <div class="container row align-items-center justify-content-center g-5">
+            <article class="col-lg-6 col-12 order-2 order-lg-1">
+                <h2 id="mot-president" class="section-title">Mot du Président</h2>
+                <div class="text president-message" role="text">
+                    <p><strong>Chers membres et visiteurs,</strong></p>
+                    
+                    <p>
+                        En tant que Président de l'association GNUT 06 - Groupement Numérique d’Utilité Territoriale des Alpes‑Maritimes (06), je suis ravi de vous 
+                        accueillir sur notre site. Notre association est une communauté où 
+                        chacun peut s'épanouir dans le domaine de la technologie et des 
+                        logiciels libres.
+                    </p>
+                    
+                    <p>
+                        À une époque où la technologie évolue rapidement, il est crucial de 
+                        garder l'humain au cœur de cette révolution. Chez GNUT 06, nous 
+                        croyons que la technologie doit servir l'humanité. Nous nous engageons 
+                        à promouvoir des valeurs de partage et de solidarité.
+                    </p>
+                    
+                    <p>
+                        Chaque membre apporte une richesse unique, et c'est cette diversité qui 
+                        nous rend forts. Je vous invite à participer à nos projets et événements. 
+                        Votre voix est importante, et ensemble, nous pouvons faire la différence.
+                    </p>
+                    
+                    <p>
+                        Merci de votre soutien. Continuons à avancer vers un monde où la 
+                        technologie est au service de l'humain.
+                    </p>
+                    
+                    <p>
+                        <em>Avec gratitude,</em><br>
+                        <strong>Gérald Col</strong><br>
+                        Président de <span class="association-name">GNUT 06</span>
+                    </p>
+                </div>
+            </article>
+            
+            <figure class="col-lg-6 col-12 text-center order-1 order-lg-2">
+                <img src="{{ asset('images/webp/gerald.webp') }}" 
+                     class="img-fluid rounded-circle shadow-lg president-portrait"
+                     alt="Portrait de Gérald Col, président fondateur de l'association GNUT 06"
+                     role="img">
+                <figcaption class="visually-hidden">
+                    Gérald Col, président et fondateur de GNUT 06
+                </figcaption>
+            </figure>
+        </div>
+    </section>
 
 		<!-- ✅ Navigation et appel à l'action -->
 		<section class="bg-main w-100 py-5" role="region" aria-labelledby="rejoignez-nous">
