@@ -1,0 +1,12 @@
+liip_imagine:
+    resolvers:
+        default:
+            web_path: ~
+
+    filter_sets:
+        cache: ~
+        
+        logo_thumbnail:
+            quality: 75
+            filters:
+                thumbnail: { size: [ 150, 150 ], mode: inset }
