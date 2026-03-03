@@ -1,0 +1,243 @@
+/* Styles de la page billetteries/detail.html.twig*/
+/* Auteur : Simon Fanny */
+/* Date : 2026-03-03 */ 
+
+/*==========================================*/
+
+
+/* ✅ Focus visible obligatoire WCAG 2.1 AA */
+.btn-neon:focus,
+.btn:focus, 
+.btn-close:focus,
+a:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ Amélioration du contraste pour les liens */
+.text a {
+    color: #ffffff !important;
+    text-decoration: underline !important;
+}
+
+.text a:hover {
+    color: #F86CF8 !important;
+}
+
+/* ✅ Zones de clic minimales WCAG */
+.btn-neon,
+.btn-outline-gradient,
+.btn-asso {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.75rem 1.5rem !important;
+}
+
+/* ✅ Amélioration de la lisibilité */
+.text {
+    line-height: 1.6 !important;
+}
+
+.table th,
+.table td {
+    vertical-align: middle !important;
+}
+
+/* ✅ Style pour Google Maps accessible */
+.google-map-container {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.google-map-iframe {
+    width: 100%;
+    height: 300px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+}
+
+/* ✅ Style pour les iframes de réservation */
+.ha-iframe {
+  height: 80vh;
+}
+
+.google-map-iframe:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ Instructions pour la carte - AMÉLIORÉES */
+.map-instructions {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+    border: 2px solid rgba(248, 108, 248, 0.5);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.map-instructions .instructions-title {
+    color: #F86CF8 !important;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.map-instructions .instructions-list {
+    color: #ffffff !important;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.map-instructions .instructions-list li {
+    margin-bottom: 0.25rem;
+    padding-left: 0.5rem;
+}
+
+.map-instructions .external-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(248, 108, 248, 0.2);
+    border: 1px solid rgba(248, 108, 248, 0.4);
+    border-radius: 25px;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.map-instructions .external-link:hover,
+.map-instructions .external-link:focus {
+    background: rgba(248, 108, 248, 0.3);
+    border-color: #F86CF8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(248, 108, 248, 0.3);
+}
+
+/* ✅ Fallback si pas d'API key */
+.map-fallback {
+    background: linear-gradient(135deg, rgba(248, 108, 248, 0.1), rgba(108, 99, 255, 0.1));
+    border: 2px solid rgba(248, 108, 248, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.map-fallback .location-icon {
+    font-size: 3rem;
+    color: #F86CF8;
+    margin-bottom: 1rem;
+}
+
+.map-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+    min-height: 44px;
+}
+
+.map-link:hover,
+.map-link:focus {
+    background-color: rgba(248, 108, 248, 0.2) !important;
+    border-color: #F86CF8 !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+/* ✅ Animation respectueuse des préférences utilisateur */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .map-link,
+    .external-link {
+        transform: none !important;
+    }
+}
+
+/* ✅ Amélioration pour les écrans à fort contraste */
+@media (prefers-contrast: high) {
+    .text {
+        color: #ffffff !important;
+    }
+    
+    .btn-outline-gradient {
+        border-width: 2px !important;
+    }
+    
+    
+    .google-map-iframe {
+        border-width: 3px !important;
+        border-color: #ffffff !important;
+    }
+    
+    .map-instructions {
+        background: #000000 !important;
+        border: 3px solid #ffffff !important;
+    }
+    
+    .map-instructions .instructions-title,
+    .map-instructions .instructions-list {
+        color: #ffffff !important;
+    }
+}
+
+/* Responsive pour la carte */
+@media (max-width: 768px) {
+    .google-map-iframe {
+        height: 250px;
+    }
+    
+    .map-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .map-link {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+    }
+    
+    .map-instructions {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .map-instructions .external-link {
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+}
