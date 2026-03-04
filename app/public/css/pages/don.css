@@ -1,0 +1,117 @@
+/* Styles de la page "Nous soutenir", don/index.html.twig*/
+/* Auteur : Simon Fanny */
+/* Date : 2026-02-16 */
+
+/*==========================================*/
+
+/* ✅ CORRECTION WCAG 2.1 AA - Focus visible obligatoire */
+.btn-neon:focus,
+a:focus,
+iframe:focus {
+  outline: 3px solid #F86CF8 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ CORRECTION - Contraste des textes amélioré */
+.text {
+  color: #ffffff !important;
+  line-height: 1.6 !important;
+}
+
+/* ✅ CORRECTION - Skip links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000000;
+  color: #ffffff;
+  padding: 8px 12px;
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+  z-index: 1000;
+  font-weight: bold;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid #F86CF8;
+}
+
+/* ✅ CORRECTION - Iframe pleine largeur */
+iframe {
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 0.375rem !important;
+  min-height: 600px !important;
+  max-width: 100% !important;
+}
+
+/* ✅ CORRECTION - Container iframe pleine largeur */
+.iframe-container {
+  margin: 0 !important;
+  padding: 1rem !important;
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.custom-alert-info {
+  max-width: 600px !important;
+}
+
+#haWidget {
+  width: 100% !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 0.375rem !important;
+}
+
+/* ✅ CORRECTION - Liste accessible */
+ul {
+  margin-bottom: 1rem !important;
+}
+
+li {
+  margin-bottom: 0.75rem !important;
+}
+
+/* ✅ CORRECTION - Responsive mobile */
+@media(max-width: 768px) {
+  .text {
+    font-size: 16px !important;
+  }
+
+  h1,
+  h2 {
+    font-size: 1.25rem !important;
+  }
+
+  .iframe-container {
+    padding: 0.5rem !important;
+  }
+
+  iframe {
+    min-height: 500px !important;
+    border-radius: 0 !important;
+  }
+}
+
+/* ✅ Animation respectueuse des préférences */
+@media(prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ✅ Support haut contraste */
+@media(prefers-contrast: high) {
+  .text {
+    color: #ffffff !important;
+    background-color: #000000 !important;
+  }
+
+  iframe {
+    border: 3px solid #ffffff !important;
+    background-color: #000000 !important;
+  }
+}
