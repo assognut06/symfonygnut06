@@ -1,10 +1,15 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/pages/profil.css') }}">
+{% endblock %}
+
 {% block body %}
     <h1 class="text-center my-4">Modifier votre photo de profil</h1>
 
     <div class="container d-flex justify-content-center">
-        <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+        <div class="card shadow-sm p-4 w-100 edit-picture-card">
             <div class="card-body">
                 {{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data' } }) }}
                     <div class="mb-3">
