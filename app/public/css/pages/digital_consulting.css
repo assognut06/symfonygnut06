@@ -1,0 +1,129 @@
+/* Styles de la page Digital Consulting, digital_consulting/index.html.twig */
+/* Auteur : Simon Fanny */
+/* Date : 2026-02-16 */
+
+/*==========================================*/
+
+/* ✅ CORRECTION WCAG 2.1 AA - Focus visible obligatoire */
+.btn-neon:focus,
+.btn-outline-gradient:focus,
+a:focus,
+.card:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ CORRECTION - Zones de clic minimales 44px */
+.btn-neon,
+.btn-outline-gradient {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.75rem 1.5rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+}
+
+/* ✅ CORRECTION - Contraste des textes amélioré */
+.text {
+    color: #ffffff !important;
+    line-height: 1.6 !important;
+}
+
+.card-text {
+    color: #e8e8e8 !important;
+}
+
+/* ✅ CORRECTION - Cartes accessibles avec navigation clavier */
+.card {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover,
+.card:focus,
+.card:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(248, 108, 248, 0.2);
+    border-color: rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ CORRECTION - Skip links */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #000000;
+    color: #ffffff;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 0 0 4px 4px;
+    z-index: 1000;
+    font-weight: bold;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 3px solid #F86CF8;
+}
+
+.external-link {
+    color: #ffffff;
+    text-decoration: underline;
+    text-decoration-color: #ffffff;
+}
+
+/* ✅ CORRECTION - Lien externe sécurisé */
+.external-link::after {
+    content: " (nouvelle fenêtre)";
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ✅ Animation respectueuse des préférences */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .card {
+        transform: none !important;
+    }
+}
+
+/* ✅ Support haut contraste */
+@media (prefers-contrast: high) {
+    .text,
+    .card-text {
+        color: #ffffff !important;
+        background-color: #000000 !important;
+    }
+    
+    .card {
+        border: 3px solid #ffffff !important;
+        background-color: #000000 !important;
+    }
+    
+    .btn-neon,
+    .btn-outline-gradient {
+        border: 3px solid #ffffff !important;
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+}
+
+/* ✅ Responsive mobile */
+@media (max-width: 768px) {
+    .text,
+    .card-text {
+        font-size: 16px !important;
+    }
+    
+    h2, h3 {
+        font-size: 1.25rem !important;
+    }
+}
