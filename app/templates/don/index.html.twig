@@ -5,107 +5,7 @@
 
 {% block stylesheets %}
 	{{ parent() }}
-	<style>
-		/* ✅ CORRECTION WCAG 2.1 AA - Focus visible obligatoire */
-		.btn-neon:focus,
-		a:focus,
-		iframe:focus {
-			outline: 3px solid #F86CF8 !important;
-			outline-offset: 2px !important;
-			box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
-		}
-
-		/* ✅ CORRECTION - Contraste des textes amélioré */
-		.text {
-			color: #ffffff !important;
-			line-height: 1.6 !important;
-		}
-
-		/* ✅ CORRECTION - Skip links */
-		.skip-link {
-			position: absolute;
-			top: -40px;
-			left: 6px;
-			background: #000000;
-			color: #ffffff;
-			padding: 8px 12px;
-			text-decoration: none;
-			border-radius: 0 0 4px 4px;
-			z-index: 1000;
-			font-weight: bold;
-		}
-
-		.skip-link:focus {
-			top: 0;
-			outline: 3px solid #F86CF8;
-		}
-
-		/* ✅ CORRECTION - Iframe pleine largeur */
-		iframe {
-			border: 2px solid rgba(255, 255, 255, 0.3) !important;
-			border-radius: 0.375rem !important;
-			min-height: 600px !important;
-			max-width: 100% !important;
-		}
-
-		/* ✅ CORRECTION - Container iframe pleine largeur */
-		.iframe-container {
-			margin: 0 !important;
-			padding: 1rem !important;
-		}
-
-		/* ✅ CORRECTION - Liste accessible */
-		ul {
-			margin-bottom: 1rem !important;
-		}
-
-		li {
-			margin-bottom: 0.75rem !important;
-		}
-
-		/* ✅ CORRECTION - Responsive mobile */
-		@media(max-width: 768px) {
-			.text {
-				font-size: 16px !important;
-			}
-
-			h1,
-			h2 {
-				font-size: 1.25rem !important;
-			}
-
-			.iframe-container {
-				padding: 0.5rem !important;
-			}
-
-			iframe {
-				min-height: 500px !important;
-				border-radius: 0 !important;
-			}
-		}
-
-		/* ✅ Animation respectueuse des préférences */
-		@media(prefers-reduced-motion: reduce) {
-			* {
-				animation-duration: 0.01ms !important;
-				animation-iteration-count: 1 !important;
-				transition-duration: 0.01ms !important;
-			}
-		}
-
-		/* ✅ Support haut contraste */
-		@media(prefers-contrast: high) {
-			.text {
-				color: #ffffff !important;
-				background-color: #000000 !important;
-			}
-
-			iframe {
-				border: 3px solid #ffffff !important;
-				background-color: #000000 !important;
-			}
-		}
-	</style>
+	<link rel="stylesheet" href="{{ asset('css/pages/don.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -218,11 +118,11 @@
 				class="w-100">
 				<!-- ✅ CORRECTION - Iframe accessible avec fallback -->
 				<div
-					class="iframe-container" style="position: relative; background: rgba(255, 255, 255, 0.1); padding: 1rem;">
+					class="iframe-container">
 
 					<!-- Message de fallback si iframe ne charge pas -->
 					<noscript>
-						<div class="alert alert-info text-center p-4 mx-auto" style="max-width: 600px;">
+						<div class="alert alert-info text-center p-4 mx-auto custom-alert-info">
 							<h3 class="h5 mb-3">JavaScript requis</h3>
 							<p class="mb-3">Pour faire un don, veuillez activer JavaScript ou</p>
 							<a href="https://www.helloasso.com/associations/gnut-06/formulaires/1" class="btn btn-primary" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir le formulaire de don HelloAsso dans un nouvel onglet">
@@ -232,7 +132,7 @@
 					</noscript>
 
 					<!-- ✅ CORRECTION - Iframe avec attributs d'accessibilité complets -->
-					<iframe id="haWidget" title="Formulaire de don HelloAsso pour soutenir l'association GNUT 06 dans ses actions d'inclusion des personnes handicapées" allowtransparency="true" src="https://www.helloasso.com/associations/gnut-06/formulaires/1/widget" style="width: 100%; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 0.375rem;" loading="lazy" aria-label="Formulaire de don sécurisé HelloAsso" aria-describedby="iframe-help" tabindex="0" onload="window.addEventListener('message', function(e) {
+					<iframe id="haWidget" title="Formulaire de don HelloAsso pour soutenir l'association GNUT 06 dans ses actions d'inclusion des personnes handicapées" allowtransparency="true" src="https://www.helloasso.com/associations/gnut-06/formulaires/1/widget" loading="lazy" aria-label="Formulaire de don sécurisé HelloAsso" aria-describedby="iframe-help" tabindex="0" onload="window.addEventListener('message', function(e) {
 						                                if (e.origin !== 'https://www.helloasso.com') return;
 						                                const dataHeight = e.data.height;
 						                                const haWidgetElement = document.getElementById('haWidget');
