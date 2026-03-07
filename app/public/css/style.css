@@ -378,6 +378,11 @@ h3{
     line-height: 150%; /* 24px */
 }
 
+/* Style pour le texte "GNUT Team" du footer */
+
+#gnutTeamText {
+    color: #F86CF8;
+}
 
 
 .carousel.pointer-event {
