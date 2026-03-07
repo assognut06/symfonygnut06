@@ -1,0 +1,72 @@
+/* Styles de la Navbar, _partials/navbar.html.twig*/
+/* Auteur : Simon Fanny */
+/* Date : 2026-03-07 */ 
+
+/*==========================================*/
+
+/* ✅ Focus visible obligatoire WCAG 2.1 AA */
+.nav-link:focus,
+.btn-neon:focus,
+.btn-outline-gradient:focus,
+.navbar-toggler:focus,
+.dropdown-toggle:focus,
+.dropdown-item:focus {
+    outline: 3px solid #F86CF8 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+}
+
+/* ✅ Amélioration du contraste */
+.nav-link {
+    color: #ffffff !important;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    color: #F86CF8 !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Style pour la page active */
+.nav-link.active,
+.btn-neon.active,
+.btn-outline-gradient.active {
+    font-weight: bold !important;
+    background-color: rgba(248, 108, 248, 0.2) !important;
+    border-radius: 4px;
+}
+
+/* ✅ Dropdown accessible */
+.dropdown-menu.bg-navbar {
+    background-color: #121212;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dropdown-menu .dropdown-item {
+    color: #ffffff !important;
+    transition: all 0.3s ease;
+}
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+    background-color: rgba(248, 108, 248, 0.2) !important;
+    color: #ffffff !important;
+}
+
+.dropdown-divider {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ✅ Style pour les liens du dropdown actifs */
+.dropdown-item.active {
+    font-weight: bold !important;
+    background-color: rgba(248, 108, 248, 0.3) !important;
+}
+
+/* ✅ Amélioration mobile */
+@media (max-width: 1199.98px) {
+    .nav-item {
+        margin-bottom: 0.5rem;
+    }
+}
