@@ -8,93 +8,7 @@
 
 {% block stylesheets %}
 	{{ parent() }}
-	<style>
-		.Handi-3D-container {
-			padding: 2rem 0;
-			min-height: 80vh;
-		}
-
-		.hero-section {
-			background: linear-gradient(#010208, #010206, #040008, #010101);
-			color: white;
-			padding: 4rem 0;
-			text-align: center;
-		}
-
-		.feature-card {
-			background: white;
-			border-radius: 10px;
-			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-			padding: 2rem;
-			margin-bottom: 2rem;
-			transition: transform 0.3s ease;
-		}
-
-		.feature-card:hover {
-			transform: translateY(-5px);
-		}
-
-		.btn-3d {
-			background: linear-gradient(45deg, #667eea, #764ba2);
-			color: white;
-			border: none;
-			padding: 12px 30px;
-			border-radius: 25px;
-			text-decoration: none;
-			display: inline-block;
-			margin: 10px;
-			transition: all 0.3s ease;
-		}
-
-		.btn-3d:hover {
-			color: white;
-			transform: scale(1.05);
-			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-		}
-
-		.text-contrast {
-			color: #2c3e50 !important;
-			font-weight: 500;
-		}
-
-		.text-readable {
-			color: #34495e !important;
-			line-height: 1.6;
-		}
-
-		.border-primary {
-			border-color: #3498db !important;
-		}
-
-		.border-success {
-			border-color: #27ae60 !important;
-		}
-
-		.border-warning {
-			border-color: #f39c12 !important;
-		}
-
-		.text-primary-dark {
-			color: #2980b9 !important;
-		}
-
-		.text-success-dark {
-			color: #229954 !important;
-		}
-
-		.text-warning-dark {
-			color: #d68910 !important;
-		}
-
-		.text-white-force {
-			color: white !important;
-		}
-
-		.bg-dark-section {
-			background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-			color: white;
-		}
-	</style>
+	<link rel="stylesheet" href="{{ asset('css/handi_3d/handi_3d.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -108,14 +22,14 @@
 				</div>
 			</div>
 			<div class="container mb-4 px-5">
-				<img src="{{ asset('images/webp/hnadi-3D.png') }}" alt="Handi-3D - Réalité virtuelle inclusive" class="img-fluid w-100" style="object-fit: contain; object-position: center;">
+				<img src="{{ asset('images/webp/hnadi-3D.png') }}" alt="Handi-3D - Réalité virtuelle inclusive" class="img-fluid w-100" id="virtuels-worlds-image">
 			</div>
 			<div class="container">
 				<div class="text-center">
 					<p class="lead mb-4">Explorez l'expérience immersive ♿ Handi-3D</p>
 					<a href="https://framevr.io/handi-metavers" class="btn-3d btn-outline-gradient text-white position-relative" role="button" target="_blank" rel="noopener noreferrer" aria-label="Découvrir Handi-3D, notre espace virtuel inclusif (ouvre dans un nouvel onglet)" target="_blank" rel="noopener noreferrer">
 						🎯 Lancer la salle immersive ♿ Handi-3D
-						<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger" style="transform: translate(-50%, -50%) rotate(23deg); transform-origin: center;" aria-label="Nouveau">
+						<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger badge-new"  aria-label="Nouveau">
 							New
 						</span>
 					</a>
@@ -167,7 +81,7 @@
 					<div class="feature-card bg-dark-section">
 						<div class="text-center mb-4">
 							<h2 class="h1 text-white-force">🎯 Focus 2026 : Le Projet de Gnut 06 "Handi-3D"</h2>
-							<div class="underline mx-auto" style="width: 100px; height: 4px; background: linear-gradient(45deg, #667eea, #764ba2); margin: 1rem auto;"></div>
+							<div class="underline mx-auto underline-3d"></div>
 						</div>
 
 						<p class="lead text-center mb-5 text-white-force">
@@ -177,7 +91,7 @@
 
 						<div class="row mt-5">
 							<div class="col-md-4 mb-4">
-								<div class="h-100 p-4 border-start border-5 border-primary" style="background: rgba(52, 152, 219, 0.2);">
+								<div class="h-100 p-4 border-start border-5 border-primary left-card-3d">
 									<h4 class="text-white-force mb-3 fw-bold">
 										<i class="fas fa-vr-cardboard me-2"></i>
 										1. L'Évasion et l'Épanouissement par la Réalité Virtuelle
@@ -199,7 +113,7 @@
 							</div>
 
 							<div class="col-md-4 mb-4">
-								<div class="h-100 p-4 border-start border-5 border-success" style="background: rgba(39, 174, 96, 0.2);">
+								<div class="h-100 p-4 border-start border-5 border-success middle-card-3d">
 									<h4 class="text-white-force mb-3 fw-bold">
 										<i class="fas fa-graduation-cap me-2"></i>
 										2. La Formation et la Réinsertion Professionnelle
@@ -221,7 +135,7 @@
 							</div>
 
 							<div class="col-md-4 mb-4">
-								<div class="h-100 p-4 border-start border-5 border-warning" style="background: rgba(243, 156, 18, 0.2);">
+								<div class="h-100 p-4 border-start border-5 border-warning right-card-3d">
 									<h4 class="text-white-force mb-3 fw-bold">
 										<i class="fas fa-heart me-2"></i>
 										3. Une Dimension Humaniste et Émotionnelle
@@ -243,9 +157,9 @@
 							</div>
 						</div>
 						<div class="text-center my-5">
-							<img src="{{ asset('images/webp/handi-3D.png') }}" alt="Handi-3D - Projet immersif" class="img-fluid rounded shadow-lg" style="max-width: 100%; height: auto;">
+							<img src="{{ asset('images/webp/handi-3D.png') }}" alt="Handi-3D - Projet immersif" class="img-fluid rounded shadow-lg" id="handi-3d-image">
 						</div>
-						<div class="text-center mt-5 p-4 rounded" style="background: rgba(255, 255, 255, 0.1);">
+						<div class="text-center mt-5 p-4 rounded" class="vision-title-section">
 							<h5 class="text-white-force mb-3">
 								<i class="fas fa-rocket me-2"></i>
 								Vision 2026
