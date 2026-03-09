@@ -27,6 +27,9 @@
 	/* Style pour le texte du dropdown toggle */
 	.section_footer .dropdown-toggle {
 		color: inherit !important;
+		background: none !important;
+		border: none !important;
+		padding: 0 !important;
 	}
 
 	.section_footer .dropdown-toggle:hover {

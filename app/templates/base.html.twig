@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 	<head>
 		<meta charset="UTF-8">
 		<title>
@@ -8,13 +9,17 @@
 		</title>
 		<!-- Include header -->
 		{#  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-		#}
+				#}
 		{% include '_partials/header.html.twig' %}
 		{% block stylesheets %}
-			{{ encore_entry_link_tags('app') }}
-		{% endblock %}
+    {{ encore_entry_link_tags('app') }}
+    <link rel="stylesheet" href="{{ asset('css/_partials/navbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/_partials/logos_entreprises.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/_partials/footer.css') }}">
+{% endblock %}
 		{% include '_partials/analytics.html.twig' %}
 	</head>
+
 	<body>
 		<script defer data-cfasync='false' src='https://s.clickiocdn.com/t/243913_wv.js'></script>
 		<!-- Include navbar -->
@@ -44,8 +49,7 @@
 		{# {% include '_partials/agent_ai.html.twig' %} #}
 
 		<!-- Include javascripts -->
-		{% block javascripts %}
-			{{ encore_entry_script_tags('app') }}
-		{% endblock %}
-	</body>
-</html>
+			{% block javascripts %}
+		{{ encore_entry_script_tags('app') }}
+	{% endblock %}
+</body></html>
