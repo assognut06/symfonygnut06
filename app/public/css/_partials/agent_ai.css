@@ -1,0 +1,100 @@
+/* Styles de l'agent AI, _partials/agent_ai.html.twig*/
+/* Auteur : Simon Fanny */
+/* Date : 2026-03-09 */
+
+/*==========================================*/
+
+/*mouvement haut et bas*/
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Style pour l'image flottante */
+#openChat {
+  width: 90px;
+  height: 90px;
+  z-index: 1050;
+  border-radius: 40%;
+  cursor: pointer;
+  border: 1px solid #90cff6;
+  background-color: rgb(255, 255, 255);
+}
+
+.floating-icon {
+  animation: float 2.5s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
+.floating-icon:hover {
+  transform: scale(1.1);
+  animation-play-state: paused;
+  /* Optionnel : arrête la flotte pendant le hover */
+}
+
+/*vibration*/
+@keyframes shakeX {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-4px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.floating-icon.vibrate {
+  animation: shakeX 0.6s ease-in-out;
+}
+
+/* Style pour la bulle de chat moderne*/
+#chatBox {
+  width: 340px;
+  height: 550px;
+  z-index: 1051;
+  background: #ffffff;
+  border: 1px #90cff6;
+}
+
+#chatBox .card-header {
+  background-image: linear-gradient(135deg, #4a90e2, rgb(140, 0, 255));
+}
+
+#closeChat {
+  width: 28px;
+  height: 28px;
+}
+
+/* Style pour le corps de la bulle de chat */
+
+.card-body {
+  height: 300px;
+  width: 350px;
+}
+
+.card-body iframe {
+  width: 100%;
+  height: 440px;
+}
