@@ -1,0 +1,11 @@
+/* Styles de la page "Agent IA Handicap", agent_handicap/index.html.twig*/
+/* Auteur : Simon Fanny */
+/* Date : 2026-03-09 */
+
+/*==========================================*/
+
+
+#agent-handicap-iframe {
+  width: 100%;
+  height: 750px;
+}
