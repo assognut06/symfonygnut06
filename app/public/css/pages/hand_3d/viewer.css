@@ -1,0 +1,127 @@
+/* Styles de la page "Visualiseur 3D", hand_3d/viewer.html.twig*/
+/* Auteur : Simon Fanny */
+/* Date : 2026-03-09 */
+
+/*==========================================*/
+
+
+.viewer-container {
+  height: 100vh;
+  background: #1a1a1a;
+  color: white;
+  position: relative;
+}
+
+.viewer-header {
+  background: rgba(0,0,0,0.8);
+  padding: 1rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.viewer-main {
+  height: 100vh;
+  display: flex;
+}
+
+.viewer-3d {
+  flex: 1;
+  background: linear-gradient(45deg, #2c3e50, #34495e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+
+
+
+
+
+.viewer-controls {
+  width: 300px;
+  background: rgba(0,0,0,0.9);
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.control-group {
+  margin-bottom: 2rem;
+}
+
+.control-group h5 {
+  color: #3498db;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+.control-item {
+  margin-bottom: 1rem;
+}
+
+.control-item label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #ecf0f1;
+}
+
+.control-item input[type="range"] {
+  width: 100%;
+}
+
+.btn-control {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  margin: 2px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-control:hover {
+  background: #2980b9;
+}
+
+.hand-placeholder {
+  width: 400px;
+  height: 400px;
+  background: rgba(255,255,255,0.1);
+  border: 2px dashed rgba(255,255,255,0.3);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-animation {
+  animation: pulse 2s infinite;
+}
+
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+
+.loading-animation i {
+  color: rgba(255,255,255,0.5);
+}
+
+.loading-animation p {
+  color: rgba(255,255,255,0.7);
+}
+
+.loading-animation small {
+  color: rgba(255,255,255,0.5);
+}
+
+
