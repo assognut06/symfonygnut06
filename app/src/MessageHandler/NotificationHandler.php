@@ -17,7 +17,7 @@ class NotificationHandler
         $this->logger = $logger;
     }
 
-    public function __invoke(Notification $message)
+    public function __invoke(Notification $message): void
     {
         $this->logger->info('Received SmsNotification message: '.$message->getContent());
         $this->em->persist($message);

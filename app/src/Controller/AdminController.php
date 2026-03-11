@@ -6,12 +6,13 @@ namespace App\Controller;
 
 use App\Service\HelloAssoApiService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route; // Service dédié pour les appels API HelloAsso
 
 #[Route('/admin')]
 class AdminController extends AbstractController
 {
-    private $helloAssoApiService;
+    private HelloAssoApiService $helloAssoApiService;
 
     public function __construct(HelloAssoApiService $helloAssoApiService)
     {
@@ -19,7 +20,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('', name: 'admin_dashboard')]
-    public function dashboard()
+    public function dashboard(): Response
     {
         $url = 'https://api.helloasso.com/v5/organizations/'.$_ENV['SLUGASSO'];
 
@@ -32,7 +33,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/{donnees}/{formType}/{formSlug}/{tierTypes}/{page}', name: 'admin_api')]
-    public function api(string $donnees, string $page, string $formType, string $formSlug, string $tierTypes)
+    public function api(string $donnees, string $page, string $formType, string $formSlug, string $tierTypes): Response
     {
         $url = $this->buildApiUrl($donnees, $page, $formType, $formSlug, $tierTypes);
 
@@ -45,7 +46,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/details/{donnees}/{id}', name: 'admin_details_show')]
-    public function details(string $donnees, string $id)
+    public function details(string $donnees, string $id): Response
     {
         $url = $this->buildDetaislUrl($donnees, $id);
 
@@ -60,7 +61,8 @@ class AdminController extends AbstractController
                 'loading' => false,
             ]);
         }
-        if ('payments' === $donnees) {
+        // if ('payments' === $donnees) {
+        else {
             return $this->render('admin/orders/detailsPayment.html.twig', [
                 'data_forms' => $data_forms,
                 'googleMapsApiKey' => $googleMapsApiKey,
@@ -69,7 +71,7 @@ class AdminController extends AbstractController
         }
     }
 
-    private function buildApiUrl($donnees, $page, $formType, $formSlug, $tierTypes)
+    private function buildApiUrl(string $donnees, string $page, string $formType, string $formSlug, string $tierTypes): string
     {
         $baseUrl = 'https://api.helloasso.com/v5/organizations/'.$_ENV['SLUGASSO'];
         $url = '';
@@ -95,7 +97,7 @@ class AdminController extends AbstractController
         return $url;
     }
 
-    private function buildDetaislUrl($type, $id)
+    private function buildDetaislUrl(string $type, string $id): string
     {
         $baseUrl = 'https://api.helloasso.com/v5';
         switch ($type) {

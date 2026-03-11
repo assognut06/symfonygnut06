@@ -121,42 +121,6 @@ class AdminBenevoleController extends AbstractController
         ]);
     }
 
-    private function handleCvUpload(FormInterface $form, Benevole $benevole): void
-    {
-        $file = $form->get('cv')->getData();
-
-        if ($file) {
-            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeFilename = transliterator_transliterate(
-                'Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()',
-                $originalFilename
-            );
-            $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
-
-            try {
-                $file->move(
-                    $this->getParameter('kernel.project_dir').'/public/uploads/cv',
-                    $newFilename
-                );
-            } catch (FileException $e) {
-                $this->addFlash('danger', 'Un problème est survenu lors du téléversement du CV.');
-
-                return;
-            }
-
-            // Supprimer l’ancien fichier s’il existe
-            $oldFilename = $benevole->getCv();
-            if ($oldFilename) {
-                $oldPath = $this->getParameter('kernel.project_dir').'/public/uploads/cv/'.$oldFilename;
-                if (file_exists($oldPath)) {
-                    unlink($oldPath);
-                }
-            }
-
-            $benevole->setCv($newFilename);
-        }
-    }
-
     #[Route('/delete/{id}', name: 'benevole_delete')]
     public function delete(Benevole $benevole, EntityManagerInterface $em): Response
     {

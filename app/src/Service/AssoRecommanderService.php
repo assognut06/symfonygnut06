@@ -7,8 +7,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class AssoRecommanderService
 {
-    private $helloAssoApiService;
-    private $entityManager;
+    private HelloAssoApiService $helloAssoApiService;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(HelloAssoApiService $helloAssoApiService, EntityManagerInterface $entityManager)
     {
@@ -16,7 +16,7 @@ class AssoRecommanderService
         $this->entityManager = $entityManager;
     }
 
-    public function createdAssoRecommanderFromApi(string $organizationSlug)
+    public function createdAssoRecommanderFromApi(string $organizationSlug): ?AssoRecommander
     {
         $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}";
         $data = $this->helloAssoApiService->makeApiCall($url);
@@ -38,7 +38,11 @@ class AssoRecommanderService
         return null;
     }
 
-    public function updateAssoRecommanderFromApi(AssoRecommander $assoRecommander)
+    /**
+     * @param AssoRecommander $assoRecommander
+     * @return AssoRecommander|string
+     */
+    public function updateAssoRecommanderFromApi(AssoRecommander $assoRecommander): AssoRecommander|string
     {
         // $assos = $this->entityManager->getRepository(AssoRecommander::class)->findAll();
 
@@ -62,14 +66,16 @@ class AssoRecommanderService
         } elseif (false === $this->isDataChanged($assoRecommander, $data)) {
             return 'Pas de mise à jour requis pour le moment';
         } else {
-            return 'Pas de données à changés';
+            return 'Pas de données à changer';
         }
-        // }
-
-        return null;
     }
 
-    public function isDataChanged(AssoRecommander $assoRecommander, array $data)
+    /**
+     * @param AssoRecommander $assoRecommander
+     * @param array $data
+     * @return bool|string
+     */
+    public function isDataChanged(AssoRecommander $assoRecommander, array $data): bool|string
     {
         try {
             if (count($data) > 0) {
@@ -79,10 +85,10 @@ class AssoRecommanderService
                     return false;
                 }
             } else {
-                return 'Pas de données dans le tableau '.$data;
+                return 'Pas de données dans le tableau ';
             }
         } catch (\Exception $e) {
-            return $e;
+            throw new \RuntimeException('Erreur lors de la comparaison des données : '.$e->getMessage());
         }
     }
 }

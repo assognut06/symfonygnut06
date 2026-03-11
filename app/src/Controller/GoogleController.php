@@ -15,13 +15,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GoogleController extends AbstractController
 {
-    private EmailVerifier $emailVerifier;
-    private User $user;
     private LoggerInterface $logger;
 
     public function __construct(EmailVerifier $emailVerifier, LoggerInterface $logger)
     {
-        $this->emailVerifier = $emailVerifier;
         $this->logger = $logger;
     }
 
@@ -36,8 +33,9 @@ class GoogleController extends AbstractController
     }
 
     #[Route('/connect/google/check', name: 'connect_google_check')]
-    public function connectCheckAction(Request $request, Security $security, EmailService $emailService)
+    public function connectCheckAction(Request $request, Security $security, EmailService $emailService): RedirectResponse
     {
+        /** @var User $user */
         $user = $this->getUser();
         if ($user) {
             // Si l'utilisateur n'est pas encore vérifié, on envoie l'email de confirmation
@@ -50,14 +48,10 @@ class GoogleController extends AbstractController
             }
 
             return $this->redirectToRoute('app_profil');
-
-            return $security->login($user, 'form_login', 'main');
         } else {
             $this->addFlash('danger', "Erreur lors de l'authentification Google. Veuillez réessayer ou contacter l'administrateur.");
 
             return $this->redirectToRoute('app_login');
         }
-
-        return $this->redirectToRoute('app_profil');
     }
 }
