@@ -16,14 +16,10 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/assos/recommandees')]
 class AssoRecommanderController extends AbstractController
 {
-    private $assoRecommanderService;
-    private $assoRecommanderRepository;
-    private $helloAssoApiService;
+    private HelloAssoApiService $helloAssoApiService;
 
-    public function __construct(AssoRecommanderService $assoRecommanderService, AssoRecommanderRepository $assoRecommanderRepository, HelloAssoApiService $helloAssoApiService)
+    public function __construct(HelloAssoApiService $helloAssoApiService)
     {
-        $this->assoRecommanderService = $assoRecommanderService;
-        $this->assoRecommanderRepository = $assoRecommanderRepository;
         $this->helloAssoApiService = $helloAssoApiService;
     }
 
@@ -61,7 +57,7 @@ class AssoRecommanderController extends AbstractController
     public function search(Request $request, PaginationService $paginationService): Response
     {
         $query = $request->query->get('query');
-        $pagination = $paginationService->getPaginatedDataSearch(AssoRecommander::class, $query, 1);
+        $pagination = $paginationService->getPaginatedDataSearch(AssoRecommander::class, $query);
 
         return $this->render('asso_recommander/index.html.twig', [
             'data_forms' => $pagination['data'],

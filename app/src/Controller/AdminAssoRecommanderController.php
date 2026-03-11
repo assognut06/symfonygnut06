@@ -8,6 +8,7 @@ use App\Repository\AssoRecommanderRepository; // Add this line
 use App\Service\AssoRecommanderService;
 use App\Service\PaginationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,8 +16,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin')]
 class AdminAssoRecommanderController extends AbstractController
 {
-    private $assoRecommanderService;
-    private $assoRecommanderRepository;
+    private AssoRecommanderService $assoRecommanderService;
+    private AssoRecommanderRepository $assoRecommanderRepository;
 
     public function __construct(AssoRecommanderService $assoRecommanderService, AssoRecommanderRepository $assoRecommanderRepository)
     {
@@ -74,7 +75,7 @@ class AdminAssoRecommanderController extends AbstractController
     }
 
     #[Route('/update-data', name: 'app_asso_update_data')]
-    public function updateData()
+    public function updateData(): RedirectResponse
     {
         $assoRecommander = [];
         foreach ($this->assoRecommanderRepository->findAll() as $asso) {

@@ -9,7 +9,7 @@ use Twig\Environment;
 
 class AdhesionController extends AbstractController
 {
-    private $twig;
+    private Environment $twig;
 
     public function __construct(Environment $twig)
     {

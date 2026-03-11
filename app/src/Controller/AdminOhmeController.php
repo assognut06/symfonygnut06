@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AdminOhmeController extends AbstractController
 {
-    private $ohmeApiService;
+    private OhmeApiService $ohmeApiService;
 
     public function __construct(OhmeApiService $ohmeApiService)
     {

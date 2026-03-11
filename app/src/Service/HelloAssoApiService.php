@@ -8,8 +8,8 @@ use GuzzleHttp\Client;
 
 class HelloAssoApiService
 {
-    private $client;
-    private $helloAssoAuthService;
+    private Client $client;
+    private HelloAssoAuthService $helloAssoAuthService;
 
     public function __construct(HelloAssoAuthService $helloAssoAuthService)
     {

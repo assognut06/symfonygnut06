@@ -47,7 +47,8 @@ class AdminDonateurController extends AbstractController
     {
         if ('societe' == $donateur->getTypeDonateur()) {
             $form = $this->createForm(SocieteType::class, $donateur);
-        } elseif ('personne_physique' == $donateur->getTypeDonateur()) {
+        // } elseif ('personne_physique' == $donateur->getTypeDonateur()) {
+        } else {
             $form = $this->createForm(PersonnePhysiqueType::class, $donateur);
         }
 

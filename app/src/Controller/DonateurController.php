@@ -9,6 +9,7 @@ use App\Form\SocieteType;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface; // Ajouté pour gérer la session
@@ -16,9 +17,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DonateurController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $entityManager)
-    {
-    }
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager
+    ) {}
 
     #[Route('/donateur/formulaire', name: 'donateur_formulaire')]
     public function afficherFormulaires(Request $request, SessionInterface $session): Response
@@ -81,7 +82,7 @@ class DonateurController extends AbstractController
         return $this->renderWithForms($formPhysique, $formSociete);
     }
 
-    private function renderWithForms($formPhysique, $formSociete): Response
+    private function renderWithForms(FormInterface $formPhysique, FormInterface $formSociete): Response
     {
         return $this->render('donateur/form_donateur.html.twig', [
             'form_physique' => $formPhysique->createView(),

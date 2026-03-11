@@ -1,50 +1,51 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Security\UserProvider;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use KnpU\OAuth2ClientBundle\Security\User\OAuthUserProviderInterface;
-use League\OAuth2\Client\Provider\ResourceOwnerInterface;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class GoogleUserProvider implements OAuthUserProviderInterface, UserProviderInterface
+final class GoogleUserProvider implements UserProviderInterface
 {
-    private EntityManagerInterface $em;
-
-    public function __construct(EntityManagerInterface $em)
-    {
-        $this->em = $em;
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+    ) {
     }
 
-    public function loadUserByOAuthUserResponse(ResourceOwnerInterface $response)
+    public function loadUserByIdentifier(string $identifier): UserInterface
     {
-        $email = $response->getEmail();
-        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
-        if (!$user) {
-            $user = new User();
-            $user->setEmail($email);
-            $user->setRoles(['ROLE_USER']);
-            $this->em->persist($user);
-            $this->em->flush();
+        // Ici, $identifier = email (si tu l'utilises comme identifiant)
+        return $this->em->getRepository(User::class)->findOneBy(['email' => $identifier]);
+    }
+
+    public function loadUserByUsername(string $username): ?UserInterface
+    {
+        return $this->loadUserByIdentifier($username);
+    }
+
+    public function refreshUser(UserInterface $user): UserInterface
+    {
+        if (!$user instanceof User) {
+            throw new UnsupportedUserException(sprintf('Unsupported user class "%s".', $user::class));
         }
 
-        return $user;
+        $reloaded = $this->em->getRepository(User::class)->find($user->getId());
+
+        if (!$reloaded instanceof User) {
+            // user supprimé / plus trouvable
+            throw new UnsupportedUserException('User could not be reloaded from storage.');
+        }
+
+        return $reloaded;
     }
 
-    public function loadUserByUsername($username)
+    public function supportsClass(string $class): bool
     {
-        return $this->em->getRepository(User::class)->findOneBy(['email' => $username]);
-    }
-
-    public function refreshUser(UserInterface $user)
-    {
-        return $this->em->getRepository(User::class)->find($user->getId());
-    }
-
-    public function supportsClass($class)
-    {
-        return User::class === $class;
+        return $class === User::class || is_subclass_of($class, User::class);
     }
 }
