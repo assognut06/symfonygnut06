@@ -16,13 +16,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GoogleController extends AbstractController
 {
-    private EmailVerifier $emailVerifier;
-    private User $user;
     private LoggerInterface $logger;
 
     public function __construct(LoggerInterface $logger)
     {
-        $this->emailVerifier = $emailVerifier;
         $this->logger = $logger;
     }
 
@@ -52,14 +49,10 @@ class GoogleController extends AbstractController
             }
 
             return $this->redirectToRoute('app_profil');
-
-            return $security->login($user, 'form_login', 'main');
         } else {
             $this->addFlash('danger', "Erreur lors de l'authentification Google. Veuillez réessayer ou contacter l'administrateur.");
 
             return $this->redirectToRoute('app_login');
         }
-
-        return $this->redirectToRoute('app_profil');
     }
 }
