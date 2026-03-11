@@ -1,0 +1,481 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }} - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .gallery-container {
+            padding: 2rem 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .gallery-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .gallery-filters {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-btn {
+            background: white;
+            border: 2px solid #3498db;
+            color: #3498db;
+            padding: 8px 20px;
+            margin: 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: #3498db;
+            color: white;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .gallery-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .gallery-item-image {
+            height: 250px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gallery-item-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+        }
+        
+        .gallery-item-content {
+            padding: 1.5rem;
+        }
+        
+        .gallery-item-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .gallery-item-description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .gallery-item-tags {
+            margin-bottom: 1rem;
+        }
+        
+        .tag {
+            background: #ecf0f1;
+            color: #34495e;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            display: inline-block;
+        }
+        
+        .gallery-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-gallery {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .btn-view {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background: #2980b9;
+            color: white;
+        }
+        
+        .btn-download {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .btn-download:hover {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #aaa;
+        }
+        
+        .close:hover {
+            color: #333;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="gallery-container">
+    <div class="container">
+        <!-- Header -->
+        <div class="gallery-header">
+            <h1><i class="fas fa-images"></i> Galerie 3D Handi-3D</h1>
+            <p class="lead">Découvrez notre collection de modèles 3D de prothèses de main</p>
+            <a href="{{ path('handi_3d_index') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Retour à l'accueil
+            </a>
+        </div>
+
+        <!-- Filters -->
+        <div class="gallery-filters">
+            <button class="filter-btn active" data-filter="all">Tous</button>
+            <button class="filter-btn" data-filter="basic">Basique</button>
+            <button class="filter-btn" data-filter="advanced">Avancé</button>
+            <button class="filter-btn" data-filter="prosthetic">Prothèse</button>
+            <button class="filter-btn" data-filter="mechanical">Mécanique</button>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div class="gallery-grid">
+            <!-- Item 1 -->
+            <div class="gallery-item" data-category="basic">
+                <div class="gallery-item-image">
+                    <div class="text-center">
+                        <i class="fas fa-hand-paper fa-4x mb-2"></i>
+                        <h4>Modèle Basique</h4>
+                    </div>
+                </div>
+                <div class="gallery-item-content">
+                    <div class="gallery-item-title">Main Anatomique de Base</div>
+                    <div class="gallery-item-description">
+                        Modèle 3D anatomiquement correct d'une main humaine avec articulations de base. Parfait pour l'apprentissage et les démonstrations.
+                    </div>
+                    <div class="gallery-item-tags">
+                        <span class="tag">Anatomique</span>
+                        <span class="tag">Éducatif</span>
+                        <span class="tag">Basique</span>
+                    </div>
+                    <div class="gallery-item-actions">
+                        <a href="{{ path('handi_3d_viewer') }}" class="btn-gallery btn-view">
+                            <i class="fas fa-eye"></i> Visualiser
+                        </a>
+                        <button class="btn-gallery btn-download" onclick="downloadModel('basic-hand')">
+                            <i class="fas fa-download"></i> Télécharger
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="gallery-item" data-category="prosthetic">
+                <div class="gallery-item-image" style="background: linear-gradient(45deg, #ff7675, #fd79a8);">
+                    <div class="text-center">
+                        <i class="fas fa-hand-rock fa-4x mb-2"></i>
+                        <h4>Prothèse Moderne</h4>
+                    </div>
+                </div>
+                <div class="gallery-item-content">
+                    <div class="gallery-item-title">Prothèse Myoélectrique</div>
+                    <div class="gallery-item-description">
+                        Modèle avancé de prothèse myoélectrique avec capteurs intégrés et contrôle par signaux musculaires.
+                    </div>
+                    <div class="gallery-item-tags">
+                        <span class="tag">Prothèse</span>
+                        <span class="tag">Myoélectrique</span>
+                        <span class="tag">Avancé</span>
+                    </div>
+                    <div class="gallery-item-actions">
+                        <a href="{{ path('handi_3d_viewer') }}" class="btn-gallery btn-view">
+                            <i class="fas fa-eye"></i> Visualiser
+                        </a>
+                        <button class="btn-gallery btn-download" onclick="downloadModel('prosthetic-myo')">
+                            <i class="fas fa-download"></i> Télécharger
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="gallery-item" data-category="mechanical">
+                <div class="gallery-item-image" style="background: linear-gradient(45deg, #00b894, #00cec9);">
+                    <div class="text-center">
+                        <i class="fas fa-cogs fa-4x mb-2"></i>
+                        <h4>Main Mécanique</h4>
+                    </div>
+                </div>
+                <div class="gallery-item-content">
+                    <div class="gallery-item-title">Prothèse Mécanique</div>
+                    <div class="gallery-item-description">
+                        Conception mécanique traditionnelle avec système de câbles et harnais pour le contrôle des mouvements.
+                    </div>
+                    <div class="gallery-item-tags">
+                        <span class="tag">Mécanique</span>
+                        <span class="tag">Traditionnel</span>
+                        <span class="tag">Fiable</span>
+                    </div>
+                    <div class="gallery-item-actions">
+                        <a href="{{ path('handi_3d_viewer') }}" class="btn-gallery btn-view">
+                            <i class="fas fa-eye"></i> Visualiser
+                        </a>
+                        <button class="btn-gallery btn-download" onclick="downloadModel('mechanical-hand')">
+                            <i class="fas fa-download"></i> Télécharger
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="gallery-item" data-category="advanced">
+                <div class="gallery-item-image" style="background: linear-gradient(45deg, #a29bfe, #6c5ce7);">
+                    <div class="text-center">
+                        <i class="fas fa-robot fa-4x mb-2"></i>
+                        <h4>Main Bionique</h4>
+                    </div>
+                </div>
+                <div class="gallery-item-content">
+                    <div class="gallery-item-title">Prothèse Bionique Avancée</div>
+                    <div class="gallery-item-description">
+                        Technologie de pointe avec retour haptique, contrôle neural et doigts articulés indépendants.
+                    </div>
+                    <div class="gallery-item-tags">
+                        <span class="tag">Bionique</span>
+                        <span class="tag">IA</span>
+                        <span class="tag">Haptique</span>
+                    </div>
+                    <div class="gallery-item-actions">
+                        <a href="{{ path('handi_3d_viewer') }}" class="btn-gallery btn-view">
+                            <i class="fas fa-eye"></i> Visualiser
+                        </a>
+                        <button class="btn-gallery btn-download" onclick="downloadModel('bionic-hand')">
+                            <i class="fas fa-download"></i> Télécharger
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="gallery-item" data-category="prosthetic">
+                <div class="gallery-item-image" style="background: linear-gradient(45deg, #fdcb6e, #e17055);">
+                    <div class="text-center">
+                        <i class="fas fa-hand-scissors fa-4x mb-2"></i>
+                        <h4>Préhension Fine</h4>
+                    </div>
+                </div>
+                <div class="gallery-item-content">
+                    <div class="gallery-item-title">Prothèse de Préhension</div>
+                    <div class="gallery-item-description">
+                        Spécialement conçue pour les tâches de préhension fine et les mouvements de précision.
+                    </div>
+                    <div class="gallery-item-tags">
+                        <span class="tag">Préhension</span>
+                        <span class="tag">Précision</span>
+                        <span class="tag">Spécialisé</span>
+                    </div>
+                    <div class="gallery-item-actions">
+                        <a href="{{ path('handi_3d_viewer') }}" class="btn-gallery btn-view">
+                            <i class="fas fa-eye"></i> Visualiser
+                        </a>
+                        <button class="btn-gallery btn-download" onclick="downloadModel('precision-hand')">
+                            <i class="fas fa-download"></i> Télécharger
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="gallery-item" data-category="basic">
+                <div class="gallery-item-image" style="background: linear-gradient(45deg, #74b9ff, #0984e3);">
+                    <div class="text-center">
+                        <i class="fas fa-hand-peace fa-4x mb-2"></i>
+                        <h4>Modèle Pédagogique</h4>
+                    </div>
+                </div>
+                <div class="gallery-item-content">
+                    <div class="gallery-item-title">Main Éducative Interactive</div>
+                    <div class="gallery-item-description">
+                        Modèle interactif pour l'enseignement de l'anatomie de la main et des principes de prothétique.
+                    </div>
+                    <div class="gallery-item-tags">
+                        <span class="tag">Éducation</span>
+                        <span class="tag">Interactif</span>
+                        <span class="tag">Formation</span>
+                    </div>
+                    <div class="gallery-item-actions">
+                        <a href="{{ path('handi_3d_viewer') }}" class="btn-gallery btn-view">
+                            <i class="fas fa-eye"></i> Visualiser
+                        </a>
+                        <button class="btn-gallery btn-download" onclick="downloadModel('educational-hand')">
+                            <i class="fas fa-download"></i> Télécharger
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de téléchargement -->
+<div id="downloadModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3><i class="fas fa-download"></i> Téléchargement du modèle</h3>
+        <p>Le téléchargement du modèle 3D va commencer. Formats disponibles :</p>
+        <ul>
+            <li><strong>OBJ</strong> - Format universel</li>
+            <li><strong>STL</strong> - Pour impression 3D</li>
+            <li><strong>FBX</strong> - Avec animations</li>
+            <li><strong>GLTF</strong> - Optimisé web</li>
+        </ul>
+        <div class="text-center mt-3">
+            <button class="btn btn-primary" onclick="startDownload()">
+                <i class="fas fa-download"></i> Commencer le téléchargement
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Filtrage de la galerie
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Mise à jour des boutons actifs
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                const items = document.querySelectorAll('.gallery-item');
+                
+                items.forEach(item => {
+                    if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                        item.style.display = 'block';
+                        item.style.animation = 'fadeIn 0.5s ease';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Modal de téléchargement
+        const modal = document.getElementById('downloadModal');
+        const closeModal = document.querySelector('.close');
+        
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Fonction de téléchargement
+        function downloadModel(modelId) {
+            console.log(`Téléchargement du modèle: ${modelId}`);
+            modal.style.display = 'block';
+        }
+        
+        function startDownload() {
+            // Simulation du téléchargement
+            alert('Le téléchargement va commencer (simulation)');
+            modal.style.display = 'none';
+        }
+        
+        // Animation des cartes au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    item.style.transition = 'all 0.6s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, index * 150);
+            });
+        });
+    </script>
+    
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+{% endblock %}
