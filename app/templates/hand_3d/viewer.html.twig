@@ -1,0 +1,289 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }} - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .viewer-container {
+            height: 100vh;
+            background: #1a1a1a;
+            color: white;
+            position: relative;
+        }
+        
+        .viewer-header {
+            background: rgba(0,0,0,0.8);
+            padding: 1rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        
+        .viewer-main {
+            height: 100vh;
+            display: flex;
+        }
+        
+        .viewer-3d {
+            flex: 1;
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .viewer-controls {
+            width: 300px;
+            background: rgba(0,0,0,0.9);
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .control-group {
+            margin-bottom: 2rem;
+        }
+        
+        .control-group h5 {
+            color: #3498db;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .control-item {
+            margin-bottom: 1rem;
+        }
+        
+        .control-item label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ecf0f1;
+        }
+        
+        .control-item input[type="range"] {
+            width: 100%;
+        }
+        
+        .btn-control {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin: 2px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-control:hover {
+            background: #2980b9;
+        }
+        
+        .hand-placeholder {
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="viewer-container">
+    <!-- Header -->
+    <div class="viewer-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-hand-paper"></i> Visualiseur 3D Handi-3D</h2>
+            <div>
+                <a href="{{ path('handi_3d_index') }}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Viewer -->
+    <div class="viewer-main">
+        <!-- 3D Canvas Area -->
+        <div class="viewer-3d">
+            <div class="hand-placeholder loading-animation">
+                <i class="fas fa-hand-rock fa-5x mb-3" style="color: rgba(255,255,255,0.5);"></i>
+                <p style="color: rgba(255,255,255,0.7);">Zone de rendu 3D</p>
+                <small style="color: rgba(255,255,255,0.5);">Le moteur 3D sera intégré ici</small>
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="viewer-controls">
+            <!-- Rotation Controls -->
+            <div class="control-group">
+                <h5><i class="fas fa-redo"></i> Rotation</h5>
+                <div class="control-item">
+                    <label>Rotation X</label>
+                    <input type="range" min="0" max="360" value="0" id="rotationX">
+                    <span id="rotationX-value">0°</span>
+                </div>
+                <div class="control-item">
+                    <label>Rotation Y</label>
+                    <input type="range" min="0" max="360" value="0" id="rotationY">
+                    <span id="rotationY-value">0°</span>
+                </div>
+                <div class="control-item">
+                    <label>Rotation Z</label>
+                    <input type="range" min="0" max="360" value="0" id="rotationZ">
+                    <span id="rotationZ-value">0°</span>
+                </div>
+            </div>
+
+            <!-- Animation Controls -->
+            <div class="control-group">
+                <h5><i class="fas fa-play"></i> Animation</h5>
+                <div class="control-item">
+                    <button class="btn-control" id="playAnimation">
+                        <i class="fas fa-play"></i> Lecture
+                    </button>
+                    <button class="btn-control" id="pauseAnimation">
+                        <i class="fas fa-pause"></i> Pause
+                    </button>
+                    <button class="btn-control" id="resetAnimation">
+                        <i class="fas fa-stop"></i> Reset
+                    </button>
+                </div>
+                <div class="control-item">
+                    <label>Vitesse</label>
+                    <input type="range" min="0.1" max="3" value="1" step="0.1" id="animationSpeed">
+                    <span id="speed-value">1x</span>
+                </div>
+            </div>
+
+            <!-- Gesture Presets -->
+            <div class="control-group">
+                <h5><i class="fas fa-hand-paper"></i> Gestes</h5>
+                <div class="control-item">
+                    <button class="btn-control w-100 mb-2" data-gesture="open">
+                        ✋ Main ouverte
+                    </button>
+                    <button class="btn-control w-100 mb-2" data-gesture="fist">
+                        ✊ Poing fermé
+                    </button>
+                    <button class="btn-control w-100 mb-2" data-gesture="point">
+                        👉 Index pointé
+                    </button>
+                    <button class="btn-control w-100 mb-2" data-gesture="peace">
+                        ✌️ Signe de paix
+                    </button>
+                    <button class="btn-control w-100 mb-2" data-gesture="thumbs">
+                        👍 Pouce levé
+                    </button>
+                </div>
+            </div>
+
+            <!-- Display Options -->
+            <div class="control-group">
+                <h5><i class="fas fa-eye"></i> Affichage</h5>
+                <div class="control-item">
+                    <label>
+                        <input type="checkbox" id="showWireframe"> Wireframe
+                    </label>
+                </div>
+                <div class="control-item">
+                    <label>
+                        <input type="checkbox" id="showGrid" checked> Grille
+                    </label>
+                </div>
+                <div class="control-item">
+                    <label>
+                        <input type="checkbox" id="showAxes" checked> Axes
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Simulation des contrôles 3D
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mise à jour des valeurs des sliders
+            const sliders = ['rotationX', 'rotationY', 'rotationZ', 'animationSpeed'];
+            sliders.forEach(sliderId => {
+                const slider = document.getElementById(sliderId);
+                const valueSpan = document.getElementById(sliderId + '-value') || document.getElementById('speed-value');
+                
+                if (slider && valueSpan) {
+                    slider.addEventListener('input', function() {
+                        if (sliderId === 'animationSpeed') {
+                            valueSpan.textContent = this.value + 'x';
+                        } else {
+                            valueSpan.textContent = this.value + '°';
+                        }
+                        console.log(`${sliderId}: ${this.value}`);
+                    });
+                }
+            });
+
+            // Contrôles d'animation
+            document.getElementById('playAnimation')?.addEventListener('click', function() {
+                console.log('Animation démarrée');
+                this.disabled = true;
+                document.getElementById('pauseAnimation').disabled = false;
+            });
+
+            document.getElementById('pauseAnimation')?.addEventListener('click', function() {
+                console.log('Animation en pause');
+                this.disabled = true;
+                document.getElementById('playAnimation').disabled = false;
+            });
+
+            document.getElementById('resetAnimation')?.addEventListener('click', function() {
+                console.log('Animation réinitialisée');
+                document.getElementById('playAnimation').disabled = false;
+                document.getElementById('pauseAnimation').disabled = true;
+            });
+
+            // Gestes prédéfinis
+            document.querySelectorAll('[data-gesture]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const gesture = this.getAttribute('data-gesture');
+                    console.log(`Geste sélectionné: ${gesture}`);
+                    
+                    // Simulation visuelle
+                    const placeholder = document.querySelector('.hand-placeholder');
+                    placeholder.style.background = 'rgba(52, 152, 219, 0.2)';
+                    setTimeout(() => {
+                        placeholder.style.background = 'rgba(255,255,255,0.1)';
+                    }, 500);
+                });
+            });
+
+            // Options d'affichage
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    console.log(`${this.id}: ${this.checked}`);
+                });
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,58 @@
+﻿{
+  "eventType": "Form",
+  "data": {
+    "organizationSlug": "gnut-test-association",
+    "organizationName": "GNUT Test Association",
+    "formSlug": "adhesion-gnut-2024",
+    "formType": "Membership",
+    "title": "Adhesion GNUT 2024 - Test",
+    "description": "Formulaire adhesion test pour GNUT",
+    "state": "Public",
+    "currency": "EUR",
+    "url": "https://www.helloasso.com/associations/gnut-test-association/adhesions/adhesion-gnut-2024",
+    "startDate": "2024-01-01T00:00:00.000Z",
+    "endDate": "2024-12-31T23:59:59.000Z",
+    "placeCity": "Nice",
+    "placeZipCode": "06000",
+    "placeCountry": "FRA",
+    "activityType": "Association",
+    "organizationLogo": "https://example.com/gnut-logo.png",
+    "tiers": [
+      {
+        "id": 1,
+        "label": "Adhesion Standard GNUT",
+        "description": "Adhesion classique pour membres GNUT",
+        "price": 25.00,
+        "vatRate": 0.00,
+        "tierType": "Membership",
+        "isEligibleTaxReceipt": true,
+        "isFavorite": true,
+        "customFields": [
+          {
+            "id": 1,
+            "label": "Numero de licence",
+            "type": "text",
+            "isRequired": true
+          },
+          {
+            "id": 2,
+            "label": "Niveau d experience",
+            "type": "select",
+            "isRequired": false,
+            "values": ["Debutant", "Intermediaire", "Avance"]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "label": "Adhesion Premium GNUT",
+        "description": "Adhesion avec avantages premium",
+        "price": 50.00,
+        "vatRate": 0.00,
+        "tierType": "Membership",
+        "isEligibleTaxReceipt": true,
+        "isFavorite": false
+      }
+    ]
+  }
+}
