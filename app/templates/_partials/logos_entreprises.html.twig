@@ -10,7 +10,7 @@
                         {% if entreprise.logo %}
                             <div class="carrousel-slide">
                                 <a href="{{ entreprise.url }}" target="_blank" rel="noopener noreferrer" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ entreprise.nom }}">
-                                    <img src="{{ asset('uploads/logo_entreprises/' ~ entreprise.logo) }}" alt="Logo {{ entreprise.nom }}" class="carrousel-img">
+                                    <img src="{{ vich_uploader_asset(entreprise, 'logoFile') | imagine_filter('logo_thumbnail') }}" alt="Logo {{ entreprise.nom }}" class="carrousel-img">
                                 </a>
                             </div>
                         {% endif %}
