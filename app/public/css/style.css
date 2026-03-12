@@ -247,8 +247,8 @@ body {
 
 .card {
     border: none !important;
-    background: transparent; /* optionnel, si tu veux supprimer le fond blanc aussi */
-}
+    background: transparent; /* optionnel, si tu veux supprimer le fond blanc aussi */ 
+} 
 
 .logoNavbar{
     font-family: Orbitron;
@@ -397,9 +397,11 @@ h3{
 
  width: 180px;
 }
+
 .logoAssoFiche{
   width : 220px;
 }
+
 .emoji {
   font-size: 1.5rem; /* Adjust size of emojis */
 }
