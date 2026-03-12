@@ -8,29 +8,33 @@
     background: linear-gradient(145deg, #ffffff, #f8f9fa) 
   } */
 
-       /* 🎨 Effet de relief sur les cartes - Cartes blanches sur fond sombre */
-       .card-relief {
-        position: relative !important;
-        border: none !important;
-        border-radius: 15px !important;
-        /* ✅ Fond blanc pour les cartes */
-        background: linear-gradient(145deg, #ffffff, #f8f9fa) !important;
-        box-shadow: /* Ombres externes pour l'effet relief sur fond sombre */
-        20px 20px 40px rgba(0, 0, 0, 0.8), -10px -10px 30px rgba(255, 255, 255, 0.1), /* Ombres internes subtiles */
-        inset 3px 3px 8px rgba(0, 0, 0, 0.1), inset -3px -3px 8px rgba(255, 255, 255, 0.8) !important;
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-        transform: translateZ(0) !important;
-        /* ✅ Bordure subtile avec votre couleur thème */
-        border: 1px solid rgba(248, 108, 248, 0.2) !important;
-    }
+  /* 🎨 Effet de relief sur les cartes - Cartes blanches sur fond sombre */
+  .card-relief {
+    width: 21rem !important;
+    position: relative !important;
+    border: none !important;
+    border-radius: 15px !important;
+    /* ✅ Fond blanc pour les cartes */
+    background: linear-gradient(145deg, #ffffff, #f8f9fa) !important;
+    box-shadow:
+      /* Ombres externes pour l'effet relief sur fond sombre */
+      20px 20px 40px rgba(0, 0, 0, 0.8), -10px -10px 30px rgba(255, 255, 255, 0.1),
+      /* Ombres internes subtiles */
+      inset 3px 3px 8px rgba(0, 0, 0, 0.1), inset -3px -3px 8px rgba(255, 255, 255, 0.8) !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    transform: translateZ(0) !important;
+    /* ✅ Bordure subtile avec votre couleur thème */
+    border: 1px solid rgba(248, 108, 248, 0.2) !important;
+  }
 
-    /* 🌟 Effet hover avec relief plus prononcé */
-    .card-relief:hover {
-        transform: translateY(-10px) scale(1.03) !important;
-        box-shadow: /* Ombres plus intenses au hover */
-        30px 30px 60px rgba(0, 0, 0, 0.9), -15px -15px 40px rgba(255, 255, 255, 0.15), inset 5px 5px 12px rgba(0, 0, 0, 0.12), inset -5px -5px 12px rgba(255, 255, 255, 0.9) !important;
-        /* ✅ Bordure colorée au hover */
-        border: 1px solid rgba(248, 108, 248, 0.5) !important;
-        /* ✅ Effet de lueur */
-        filter: drop-shadow(0 0 20px rgba(248, 108, 248, 0.3)) !important;
-    }
+  /* 🌟 Effet hover avec relief plus prononcé */
+  .card-relief:hover {
+    transform: translateY(-10px) scale(1.03) !important;
+    box-shadow:
+      /* Ombres plus intenses au hover */
+      30px 30px 60px rgba(0, 0, 0, 0.9), -15px -15px 40px rgba(255, 255, 255, 0.15), inset 5px 5px 12px rgba(0, 0, 0, 0.12), inset -5px -5px 12px rgba(255, 255, 255, 0.9) !important;
+    /* ✅ Bordure colorée au hover */
+    border: 1px solid rgba(248, 108, 248, 0.5) !important;
+    /* ✅ Effet de lueur */
+    filter: drop-shadow(0 0 20px rgba(248, 108, 248, 0.3)) !important;
+  }
