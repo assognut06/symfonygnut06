@@ -89,12 +89,12 @@
 
 /* Style pour le corps de la bulle de chat */
 
-.card-body {
+.card-body-agent-ai {
   height: 300px;
   width: 350px;
 }
 
-.card-body iframe {
+.card-body-agent-ai iframe {
   width: 100%;
   height: 440px;
-}
+} 
