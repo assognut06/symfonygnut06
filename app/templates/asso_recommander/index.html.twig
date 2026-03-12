@@ -64,7 +64,7 @@
                     <div class="row align-items-start mx-auto" role="list" aria-label="Cartes des associations">
                         {% for item in data_forms %}
                             <div class="col d-flex justify-content-around my-3" role="listitem">
-                                <article class="card shadow-lg card-relief" style="width: 21rem;" aria-labelledby="card-title-{{ loop.index }}" tabindex="0">
+                                <article class="card shadow-lg card-relief" aria-labelledby="card-title-{{ loop.index }}" tabindex="0">
 
                                     <img src="{{ item.banner }}" class="card-img-top" alt="Bannière de l'association {{ item.name }}" role="img">
 
