@@ -10,3 +10,13 @@ liip_imagine:
             quality: 75
             filters:
                 thumbnail: { size: [ 150, 150 ], mode: inset }
+        
+        brand_tint:
+            # Ce filtre applique une teinte de couleur
+            filters:
+                # Étape 1 : Convertir en niveaux de gris pour une meilleure application de la couleur
+                grayscale: ~
+                # Étape 2 : Appliquer la couleur de votre charte graphique
+                # Remplacez '#00561B' par votre couleur hexadécimale
+                # 'amount' détermine l'intensité de la teinte (0-100)
+                # colorize: { color: '#7f29ff', amount: 100 }
