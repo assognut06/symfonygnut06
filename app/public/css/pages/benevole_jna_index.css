@@ -1,3 +1,10 @@
+/* Styles de la page "Devenir bénévoles VR pour la Journée des Aidants", benevole_jna/index.html.twig*/
+/* Auteur : Simon Fanny */
+/* Date : 2026-03-09 */
+
+/*==========================================*/
+
+
 body {
   background: var(--Color-Background, linear-gradient(180deg, #010208 16%, #010206 21%, #040008 25%, #010101 30%, #010101 34%, #010101 36%, #010101 100%));
 }
