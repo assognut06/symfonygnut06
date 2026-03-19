@@ -92,7 +92,7 @@
 				</div>
 
 				{# Formulaire Personne Physique #}
-				<div id="form-physique" class="card p-4 shadow-lg rounded-4 border-0" style="display: block;">
+				<div id="form-physique" class="card p-4 shadow-lg rounded-4 border-0 d-block">
 					{{ form_start(form_physique, {'attr': {'onsubmit': 'return validateRecaptcha("physique");'}}) }}
 
 					<div id="physique-step-1">
@@ -123,7 +123,7 @@
 
 					</div>
 
-					<div id="physique-step-2" style="display:none;">
+					<div id="physique-step-2" class="d-none">
 						<h4 class="text-center mb-4 text-primary">Votre adresse</h4>
 
 						<div class="mb-3">
@@ -155,7 +155,7 @@
 				</div>
 
 				{# Formulaire Société #}
-				<div id="form-societe" class="card p-4 shadow-lg rounded-4 border-0" style="display: none;">
+				<div id="form-societe" class="card p-4 shadow-lg rounded-4 border-0 d-none">
 					{{ form_start(form_societe, {'attr': {'onsubmit': 'return validateRecaptcha("societe");'}}) }}
 
 					<div id="societe-step-1">
@@ -190,7 +190,7 @@
 						</div>
 					</div>
 
-					<div id="societe-step-2" style="display:none;">
+					<div id="societe-step-2" class="d-none">
 						<h4 class="text-center mb-4 text-primary">Adresse</h4>
 
 						<div class="mb-3">
