@@ -4,158 +4,7 @@
 
 {% block stylesheets %}
 {{ parent() }}
-<style>
-/* ✅ CORRECTION WCAG 2.1 AA - Focus visible obligatoire */
-.btn-neon:focus,
-input:focus,
-textarea:focus,
-.form-check-input:focus {
-    outline: 3px solid #F86CF8 !important;
-    outline-offset: 2px !important;
-    box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
-}
-
-/* ✅ CORRECTION - Zones de clic minimales 44px et espacement */
-.btn-neon {
-    min-height: 44px !important;
-    min-width: 44px !important;
-    padding: 0.75rem 1.5rem !important;
-}
-
-.form-check-input {
-    width: 20px !important;
-    height: 20px !important;
-    flex-shrink: 0 !important;
-}
-
-.form-check {
-    min-height: 44px !important;
-    padding: 0.5rem 0 !important;
-}
-
-.form-check-label {
-    font-weight: 500 !important;
-    cursor: pointer !important;
-}
-
-/* ✅ CORRECTION - Contraste des textes amélioré */
-.text {
-    color: #ffffff !important;
-    line-height: 1.6 !important;
-}
-
-/* ✅ CORRECTION - Titres coordonnées plus petits */
-.contact-title {
-    font-size: 20px !important;
-    font-weight: 600 !important;
-    margin-bottom: 0.5rem !important;
-    color: #ffffff !important;
-}
-
-/* ✅ CORRECTION - Skip links */
-.skip-link {
-    position: absolute;
-    top: -40px;
-    left: 6px;
-    background: #000000;
-    color: #ffffff;
-    padding: 8px 12px;
-    text-decoration: none;
-    border-radius: 0 0 4px 4px;
-    z-index: 1000;
-    font-weight: bold;
-}
-
-.skip-link:focus {
-    top: 0;
-    outline: 3px solid #F86CF8;
-}
-
-/* ✅ CORRECTION - Lien externe */
-.external-link::after {
-    content: " (nouvelle fenêtre)";
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-/* ✅ CORRECTION - Messages d'erreur accessibles */
-.alert {
-    padding: 1rem !important;
-    border-radius: 0.375rem !important;
-    border: 2px solid transparent !important;
-}
-
-.alert-success {
-    background-color: #198754 !important;
-    border-color: #198754 !important;
-    color: #ffffff !important;
-}
-
-.alert-danger {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    color: #ffffff !important;
-}
-
-/* ✅ CORRECTION - Fieldset accessible */
-fieldset {
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: 0.375rem !important;
-    padding: 1rem !important;
-    margin-bottom: 1rem !important;
-}
-
-legend {
-    font-size: 1rem !important;
-    font-weight: 600 !important;
-    padding: 0 0.5rem !important;
-    color: #ffffff !important;
-}
-
-/* ✅ CORRECTION - Responsive mobile */
-@media (max-width: 768px) {
-    .text {
-        font-size: 16px !important;
-    }
-    
-    h1, h2, h3 {
-        font-size: 1.25rem !important;
-    }
-    
-    .contact-title {
-        font-size: 18px !important;
-    }
-}
-
-/* ✅ Animation respectueuse des préférences */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* ✅ Support haut contraste */
-@media (prefers-contrast: high) {
-    .text {
-        color: #ffffff !important;
-        background-color: #000000 !important;
-    }
-    
-    .form-control {
-        border: 3px solid #ffffff !important;
-        background-color: #000000 !important;
-        color: #ffffff !important;
-    }
-    
-    .btn-neon {
-        border: 3px solid #ffffff !important;
-        background-color: #000000 !important;
-        color: #ffffff !important;
-    }
-}
-</style>
+<link rel="stylesheet" href="{{ asset('css/pages/contact_index.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -267,11 +116,10 @@ legend {
             <div class="container">
                 <h2 id="map-title" class="visually-hidden">Localisation de nos bureaux</h2>
                 <div class="map-responsive">
-                    <iframe
+                     <iframe
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2879.535153559595!2d7.27434047682833!3d43.69735505091502!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cddab64640f7c7%3A0x7287fa7d41d32db9!2s9%20Rue%20du%20Pont%20Vieux%2C%2006300%20Nice!5e0!3m2!1sfr!2sfr!4v1731240000000!5m2!1sfr!2sfr"
-                        width="100%"
-                        height="450"
-                        style="border:0;"
+                        {# height="450" #}
+                        class="border-0 w-100"
                         allowfullscreen=""
                         loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"
@@ -541,7 +389,7 @@ legend {
 
                         <!-- ✅ CORRECTION - Infos sur les champs obligatoires -->
                         <div class="col-12">
-                            <p id="form-required" class="text mt-2" style="color: #FF1DBB;">
+                            <p id="form-required" class="text mt-2">
                                 <span class="text-danger">*</span> Champs obligatoires
                             </p>
                         </div>
