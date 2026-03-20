@@ -14,7 +14,7 @@
                     <h4 class="text-center mb-4 text-primary">Merci de compléter les informations ci-dessous</h4>
                     <p>
                        <span class="text-danger">*</span>
-                       <span style="color: grey;">: champ obligatoire</span>
+                       <span class="text-muted">: champ obligatoire</span>
                     </p>
                     
                     <div class="mb-3">
@@ -28,7 +28,7 @@
                         {# Les champs des casques seront ajoutés ici dynamiquement #}
                     </div>
 
-                    <div id="additional-fields" style="display: none;">
+                    <div id="additional-fields" class="d-none">
                         <div class="mb-3">
                             {{ form_row(form.modeLivraison, {'attr': {'class': 'form-select'}}) }}
                         </div>
