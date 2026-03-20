@@ -85,14 +85,14 @@
 	</div>
 </div>
 		<div class="row justify-content-center mt-5">
-			<div class="col-md-8 col-lg-6">
+			<div class="col-md-8 col-lg-6 form-donateur">
 				<div class="text-center mb-4">
 					<button id="btn-physique" class="btn me-2 btn-neon text-white">Personne Physique</button>
 					<button id="btn-societe" class="btn text-white btn-outline-gradient">Société</button>
 				</div>
 
 				{# Formulaire Personne Physique #}
-				<div id="form-physique" class="card p-4 shadow-lg rounded-4 border-0 d-block">
+				<div id="form-physique" class="card p-4 shadow-lg rounded-4 border-0 d-block bg-white">
 					{{ form_start(form_physique, {'attr': {'onsubmit': 'return validateRecaptcha("physique");'}}) }}
 
 					<div id="physique-step-1">
