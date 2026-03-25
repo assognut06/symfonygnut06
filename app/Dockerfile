@@ -22,10 +22,13 @@ libonig-dev \
 libxslt-dev \
 libcurl4-openssl-dev \
 libgd-dev \
+libwebp-dev \
 libssl-dev \
 libkrb5-dev
 
-RUN docker-php-ext-install curl pdo pdo_mysql mysqli gd opcache intl zip calendar dom mbstring gd xsl && a2enmod rewrite
+# Configure GD with WebP support
+RUN docker-php-ext-configure gd --with-webp --with-jpeg
+RUN docker-php-ext-install curl pdo pdo_mysql mysqli gd opcache intl zip calendar dom mbstring xsl && a2enmod rewrite
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
 echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen && \
@@ -41,7 +44,7 @@ mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
 # Configure and install extensions
 RUN docker-php-ext-configure intl
-RUN docker-php-ext-install pdo pdo_mysql mysqli gd opcache intl zip calendar dom mbstring gd xsl && a2enmod rewrite
+RUN docker-php-ext-install pdo pdo_mysql mysqli opcache intl zip calendar dom mbstring xsl && a2enmod rewrite
 RUN pecl install apcu && docker-php-ext-enable apcu
 
 # Use the mlocati installer for additional extensions

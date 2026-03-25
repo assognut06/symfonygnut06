@@ -4,147 +4,163 @@
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <style>
-        /* ✅ Focus visible obligatoire WCAG 2.1 AA */
-        .btn-neon:focus,
-        .btn-outline-gradient:focus,
-        .carousel-control-prev:focus,
-        .carousel-control-next:focus,
-        .carousel-indicators button:focus,
-        a:focus {
-            outline: 3px solid #F86CF8 !important;
-            outline-offset: 2px !important;
-            box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
-        }
+	{{ parent() }}
+	<style>
+		/* ✅ Focus visible obligatoire WCAG 2.1 AA */
+		.btn-neon:focus,
+		.btn-outline-gradient:focus,
+		.carousel-control-prev:focus,
+		.carousel-control-next:focus,
+		.carousel-indicators button:focus,
+		a:focus {
+			outline: 3px solid #F86CF8 !important;
+			outline-offset: 2px !important;
+			box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
+		}
 
-        /* ✅ Amélioration du contraste */
-        .text {
-            color: #ffffff !important;
-        }
+		/* ✅ Amélioration du contraste */
+		.text {
+			color: #ffffff !important;
+		}
 
-        .card-text {
-            color: #e0e0e0 !important;
-        }
+		.card-text {
+			color: #e0e0e0 !important;
+		}
 
-        /* ✅ Amélioration de la lisibilité pour les rôles */
-        .team-role {
-            color: #ffffff !important;
-            font-size: 0.95rem !important;
-            font-weight: 500 !important;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7) !important;
-            line-height: 1.4 !important;
-        }
+		/* ✅ Amélioration de la lisibilité pour les rôles */
+		.team-role {
+			color: #ffffff !important;
+			font-size: 0.95rem !important;
+			font-weight: 500 !important;
+			text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7) !important;
+			line-height: 1.4 !important;
+		}
 
-        /* ✅ Style pour les liens actifs */
-        .btn-neon.active,
-        .btn-outline-gradient.active {
-            background-color: rgba(248, 108, 248, 0.3) !important;
-            border-color: #F86CF8 !important;
-            font-weight: bold;
-        }
+		/* ✅ Style pour les liens actifs */
+		.btn-neon.active,
+		.btn-outline-gradient.active {
+			background-color: rgba(248, 108, 248, 0.3) !important;
+			border-color: #F86CF8 !important;
+			font-weight: bold;
+		}
 
-        /* ✅ Style des badges "New" */
-        .badge {
-            font-size: 0.7rem !important;
-        }
+		/* ✅ Style des badges "New" */
+		.badge {
+			font-size: 0.7rem !important;
+		}
 
-        /* ✅ Amélioration des cartes équipe */
-        .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-        }
+		/* ✅ Amélioration des cartes équipe */
+		.card {
+			transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+		}
 
-        .card:hover {
-            transform: translateY(-5px) !important;
-            box-shadow: 0 8px 25px rgba(248, 108, 248, 0.3) !important;
-        }
+		.card:hover {
+			transform: translateY(-5px) !important;
+			box-shadow: 0 8px 25px rgba(248, 108, 248, 0.3) !important;
+		}
 
-        /* ✅ Style des liens LinkedIn */
-        .linkedin-circle {
-            transition: all 0.3s ease !important;
-        }
+		/* ✅ Style des liens LinkedIn */
+		.linkedin-circle {
+			transition: all 0.3s ease !important;
+		}
 
-        .linkedin-circle:hover {
-            background-color: #0077B5 !important;
-            transform: scale(1.1) !important;
-        }
+		.linkedin-circle:hover {
+			background-color: #0077B5 !important;
+			transform: scale(1.1) !important;
+		}
 
-        /* ✅ Amélioration des indicateurs carousel */
-        .carousel-indicators button {
-            background-color: rgba(255, 255, 255, 0.5) !important;
-            border: 2px solid rgba(255, 255, 255, 0.3) !important;
-            transition: all 0.3s ease !important;
-        }
+		/* ✅ Amélioration des indicateurs carousel */
+		.carousel-indicators button {
+			background-color: rgba(255, 255, 255, 0.5) !important;
+			border: 2px solid rgba(255, 255, 255, 0.3) !important;
+			transition: all 0.3s ease !important;
+		}
 
-        .carousel-indicators button.active {
-            background-color: #F86CF8 !important;
-            border-color: #F86CF8 !important;
-        }
+		.carousel-indicators button.active {
+			background-color: #F86CF8 !important;
+			border-color: #F86CF8 !important;
+		}
 
-        .carousel-indicators button:hover {
-            background-color: rgba(248, 108, 248, 0.7) !important;
-        }
+		.carousel-indicators button:hover {
+			background-color: rgba(248, 108, 248, 0.7) !important;
+		}
 
-        /* ✅ Amélioration des contrôles carousel */
-        .carousel-control-prev,
-        .carousel-control-next {
-            transition: all 0.3s ease !important;
-        }
+		/* ✅ Amélioration des contrôles carousel */
+		.carousel-control-prev,
+		.carousel-control-next {
+			transition: all 0.3s ease !important;
+		}
 
-        .carousel-control-prev:hover,
-        .carousel-control-next:hover {
-            background-color: rgba(0, 0, 0, 0.3) !important;
-        }
+		.carousel-control-prev:hover,
+		.carousel-control-next:hover {
+			background-color: rgba(0, 0, 0, 0.3) !important;
+		}
 
-        /* ✅ Style des images carousel */
-        .carousel-item img {
-            border-radius: 1rem !important;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
-        }
+		/* ✅ Style des images carousel */
+		.carousel-item img {
+			border-radius: 1rem !important;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+		}
 
-        /* ✅ Responsive pour mobile */
-        @media (max-width: 768px) {
-            .carousel-indicators {
-                bottom: -50px !important;
-            }
-            
-            .carousel-control-prev,
-            .carousel-control-next {
-                width: 40px !important;
-            }
-        }
+		/* ✅ Responsive pour mobile */
+		@media(max-width: 768px) {
+			.carousel-indicators {
+				bottom: -50px !important;
+			}
 
-        /* ✅ Accessibilité - Mode contraste élevé */
-        @media (prefers-contrast: high) {
-            .carousel-indicators button {
-                border-width: 3px !important;
-            }
-        }
+			.carousel-control-prev,
+			.carousel-control-next {
+				width: 40px !important;
+			}
+		}
 
-        /* ✅ Accessibilité - Respect des préférences de mouvement */
-        @media (prefers-reduced-motion: reduce) {
-            .card,
-            .linkedin-circle,
-            .carousel-indicators button,
-            .carousel-control-prev,
-            .carousel-control-next {
-                transition: none !important;
-            }
-            
-            .card:hover {
-                transform: none !important;
-            }
-            
-            .linkedin-circle:hover {
-                transform: none !important;
-            }
+		/* ✅ Accessibilité - Mode contraste élevé */
+		@media(prefers-contrast: high) {
+			.carousel-indicators button {
+				border-width: 3px !important;
+			}
+		}
 
-            /* ✅ Désactive le carousel automatique si mouvement réduit */
-            .carousel {
-                animation-play-state: paused !important;
-            }
-        }
-    </style>
+		/* ✅ Accessibilité - Respect des préférences de mouvement */
+		@media(prefers-reduced-motion: reduce) {
+			.card,
+			.linkedin-circle,
+			.carousel-indicators button,
+			.carousel-control-prev,
+			.carousel-control-next {
+				transition: none !important;
+			}
+
+			.card:hover {
+				transform: none !important;
+			}
+
+			.linkedin-circle:hover {
+				transform: none !important;
+			}
+
+			/* ✅ Désactive le carousel automatique si mouvement réduit */
+			.carousel {
+				animation-play-state: paused !important;
+			}
+		}
+
+/* 1. Le parent donne la couleur de fond et masque ce qui dépasse des coins arrondis */
+.filtre-gnut06 {
+    background-color: #bd93f7 !important;
+    display: flex; 
+    overflow: hidden;
+}
+
+/* 2. L'enfant fusionne avec le fond du parent */
+.filtre-gnut06 img {
+    width: 100% !important; 
+    height: auto; 
+    object-fit: cover; 
+    display: block; 
+    mix-blend-mode: multiply; /* ✨ C'est cette ligne qui crée l'effet bichromie ! */
+}
+	</style>
 {% endblock %}
 
 {% block body %}
@@ -156,12 +172,15 @@
 		<!-- ✅ Section Hero accessible -->
 		<section class="bg-main w-100 py-5" role="region" aria-labelledby="hero-title">
 			<div class="container row align-items-center gx-5 m-auto">
-				<figure class="col-md-6 text-center order-1 order-md-2">
-					<img src="{{ asset('images/webp/immersion-hero-accueil.webp') }}" class="img-fluid rounded-4" alt="Personne utilisant une technologie immersive GNUT 06 pour l'inclusion numérique" role="img">
+				<div  class="col-md-6 text-center order-1 order-md-2">
+				<figure class="rounded-4 filtre-gnut06">
+					<img src="{{ asset('images/webp/apf_251112_001.webp') }}" class="img-fluid" alt="Personne utilisant une technologie immersive GNUT 06 pour l'inclusion numérique" role="img">
 				</figure>
+				</div>
 
 				<header class="col-md-6 text-center text-md-start order-2 order-md-1">
-					<h1 id="hero-title" class="gradient-text text-main text-start">GNUT 06</h1>
+					<h1 id="hero-title" class="gradient-text text-main text-start">Groupement Numérique d’Utilité Territoriale des Alpes‑Maritimes (06)
+					</h1>
 					<h2 class="text-start">L'inclusion par la<br>Technologie</h2>
 					<p class="text text-start">
 						GNUT 06 est une association engagée pour l'inclusion des personnes en situation de handicap à travers l'innovation numérique. Découvrez nos actions, nos projets en réalité virtuelle et rejoignez-nous pour construire un impact social durable.
@@ -264,7 +283,7 @@
 				<h2 id="rooms-title" class="text-start">Découvrez nos Salles 3D Immersives</h2>
 				<p class="text text-start">
 					Plongez dans une expérience immersive unique qui transforme votre vision du monde numérique. 
-															                Explorez les possibilités infinies et connectez-vous avec d'autres utilisateurs dans notre espace virtuel.
+																														                Explorez les possibilités infinies et connectez-vous avec d'autres utilisateurs dans notre espace virtuel.
 				</p>
 				<a href="{{ path('app_metavers') }}" class="btn-neon text-white mt-3" role="button" aria-label="Explorer nos salles 3D immersives et leurs fonctionnalités">
 					Explorer nos Salles 3D
@@ -273,37 +292,31 @@
 		</section>
 
 		<!-- ✅ Évènements avec carousel automatique - VERSION SIMPLIFIÉE -->
-        <section class="bg-main w-100 py-5" role="region" aria-labelledby="event-title">
-            <div class="container text-white">
-                <h2 id="event-title" class="text-center">Évènements</h2>
-                <p class="text text-center">Restez connectés à nos prochaines sessions d'infos !</p>
+		<section class="bg-main w-100 py-5" role="region" aria-labelledby="event-title">
+			<div class="container text-white">
+				<h2 id="event-title" class="text-center">Évènements</h2>
+				<p class="text text-center">Restez connectés à nos prochaines sessions d'infos !</p>
 
-                <div
-                    id="carouselExampleIndicators" 
-                    class="carousel slide" 
-                    data-bs-ride="carousel" 
-                    data-bs-interval="4000" 
-                    role="region" 
-                    aria-label="Galerie photos de nos évènements" 
-                    aria-roledescription="carousel">
+				<div
+					id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000" role="region" aria-label="Galerie photos de nos évènements" aria-roledescription="carousel">
 
-                    <!-- ✅ Instructions pour lecteurs d'écran -->
-                    <div class="visually-hidden" aria-live="polite" id="carousel-instructions">
-                        Galerie de 3 photos de nos évènements en lecture automatique. Utilisez les boutons précédent et suivant pour naviguer manuellement, ou les indicateurs numérotés pour aller directement à une image.
-                    </div>
+					<!-- ✅ Instructions pour lecteurs d'écran -->
+					<div class="visually-hidden" aria-live="polite" id="carousel-instructions">
+						Galerie de 3 photos de nos évènements en lecture automatique. Utilisez les boutons précédent et suivant pour naviguer manuellement, ou les indicateurs numérotés pour aller directement à une image.
+					</div>
 
-                    <!-- ✅ Indicateurs accessibles -->
-                    <div class="carousel-indicators" role="tablist" aria-label="Sélectionner une photo d'évènement">
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" role="tab" aria-controls="carousel-item-0" aria-label="Photo 1 : Stand GNUT 06 à Nice fête sa rentrée"></button>
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" role="tab" aria-controls="carousel-item-1" aria-label="Photo 2 : Stand GNUT 06 à la journée des aidants"></button>
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" role="tab" aria-controls="carousel-item-2" aria-label="Photo 3 : Équipe GNUT 06 lors de la journée des aidants"></button>
+					<!-- ✅ Indicateurs accessibles -->
+					<div class="carousel-indicators" role="tablist" aria-label="Sélectionner une photo d'évènement">
+						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" role="tab" aria-controls="carousel-item-0" aria-label="Photo 1 : Stand GNUT 06 à Nice fête sa rentrée"></button>
+						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" role="tab" aria-controls="carousel-item-1" aria-label="Photo 2 : Stand GNUT 06 à la journée des aidants"></button>
+						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" role="tab" aria-controls="carousel-item-2" aria-label="Photo 3 : Équipe GNUT 06 lors de la journée des aidants"></button>
 						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" role="tab" aria-controls="carousel-item-3" aria-label="Photo 4 : Séance de réalité virtuelle organisée pour les membres d'APF France handicap avec l'association Gnut 06."></button>
 						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" role="tab" aria-controls="carousel-item-4" aria-label="Photo 5 : Atelier de réalité virtuelle pour les aidants familiaux, illustrant les nouvelles méthodes d'accompagnement numérique présentées à Nice."></button>
 						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="5" role="tab" aria-controls="carousel-item-5" aria-label="Photo 6 : Atelier de réalité virtuelle collective pour les membres de l'association LSCA, illustrant les activités de loisirs et d'innovation proposées."></button>
 						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="6" role="tab" aria-controls="carousel-item-6" aria-label="Photo 7 : Démonstration individuelle de réalité virtuelle à l'association LSCA, mettant en avant l'interaction entre l'utilisateur et le retour écran."></button>
-                    </div>
+					</div>
 
-                    <div class="carousel-inner" role="listbox" aria-describedby="carousel-instructions">
+					<div class="carousel-inner" role="listbox" aria-describedby="carousel-instructions">
 						<div class="carousel-item active" role="group" aria-roledescription="slide" aria-label="Photo 1 sur 7" id="carousel-item-0">
 							<img src="{{ asset('images/webp/IMG_0216.webp') }}" class="d-block w-100 img-fluid rounded-4" alt="Photo du stand de GNUT 06 lors de l'évènement 'Nice fête sa rentrée' avec des visiteurs découvrant nos technologies" role="img">
 						</div>
@@ -325,20 +338,20 @@
 						<div class="carousel-item" role="group" aria-roledescription="slide" aria-label="Photo 7 sur 7" id="carousel-item-6">
 							<img src="{{ asset('images/webp/LSCA_mars2025-02.webp') }}" class="d-block w-100 img-fluid rounded-4" alt="Une personne vue de profil en veste violette utilise un casque de réalité virtuelle et des manettes de contrôle face à un mur orange, un écran diffusant des images de nature virtuelle en arrière-plan." role="img">
 						</div>
-                    </div>
+					</div>
 
-                    <!-- ✅ Contrôles accessibles -->
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev" aria-label="Voir la photo précédente">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Précédent</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next" aria-label="Voir la photo suivante">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Suivant</span>
-                    </button>
-                </div>
-            </div>
-        </section>
+					<!-- ✅ Contrôles accessibles -->
+					<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev" aria-label="Voir la photo précédente">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Précédent</span>
+					</button>
+					<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next" aria-label="Voir la photo suivante">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Suivant</span>
+					</button>
+				</div>
+			</div>
+		</section>
 
 		<!-- ✅ Comment aider - accessible -->
 		<section class="bg-main w-100 py-5" role="region" aria-labelledby="help-title">
@@ -371,9 +384,11 @@
 						</article>
 					</div>
 				</article>
-				<figure class="col-md-6 text-center">
-					<img src="{{ asset('images/webp/donner-adherer.webp') }}" class="img-fluid rounded-4" alt="Illustration montrant des personnes soutenant ensemble l'association GNUT 06" role="img">
+				<div class="col-md-6 text-center">
+				<figure class="rounded-4 filtre-gnut06">
+					<img src="{{ asset('images/webp/apf_251112_002.webp') }}" class="img-fluid" alt="Illustration montrant des personnes soutenant ensemble l'association GNUT 06" role="img">
 				</figure>
+				</div>
 			</div>
 		</section>
 
@@ -390,8 +405,8 @@
 					<h2 id="team-title" class="text-center">Notre Équipe Tech</h2>
 					<p class="text text-center">
 						Voici quelques-uns de nos bénévoles talentueux qui ont joué un rôle clé dans la conception,
-																		                    le développement et la communication de nos projets web.
-																		                    Comme eux, venez contribuer à une cause engageante et épanouissante.
+																																				                    le développement et la communication de nos projets web.
+																																				                    Comme eux, venez contribuer à une cause engageante et épanouissante.
 					</p>
 					<a href="{{ path('app_adhesion') }}" class="btn-outline-gradient mb-5 m-auto" role="button" aria-label="Adhérer pour rejoindre notre équipe bénévole">
 						J'adhère
