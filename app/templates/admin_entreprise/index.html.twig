@@ -5,6 +5,14 @@
 {% block body %}
 <h1 class="mb-4">Liste des entreprises partenaires</h1>
 
+<style>
+    .carousel-img {
+        max-width: 120px;
+        max-height: 100px;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+</style>
 <div class="d-flex align-items-center justify-content-around mb-4">
     <input type="text" id="search-input" class="form-control" placeholder="Rechercher une entreprise..." style="max-width: 300px;">
     <a href="{{ path('entreprise_new') }}" class="btn btn-success ms-3" style="color: white">
@@ -29,7 +37,7 @@
             <tr>
                 <td>
                     {% if entreprise.logo %}
-                        <img src="{{ asset('uploads/logo_entreprises/' ~ entreprise.logo) }}" alt="Logo" style="max-height: 50px; border-radius: 50%">
+                        <img src="{{ vich_uploader_asset(entreprise, 'logoFile') | imagine_filter('logo_thumbnail') }}" alt="Logo" class="carousel-img" style="border-radius: 50%">
                     {% else %}
                         Pas de logo
                     {% endif %}

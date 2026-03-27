@@ -16,9 +16,11 @@
         "knplabs/knp-paginator-bundle": "^6.8",
         "knpuniversity/oauth2-client-bundle": "*",
         "league/oauth2-google": "*",
+        "liip/imagine-bundle": "^2.15",
         "mailjet/mailjet-apiv3-php": "^1.6",
         "phpdocumentor/reflection-docblock": "^5.4",
         "phpstan/phpdoc-parser": "^1.29",
+        "stof/doctrine-extensions-bundle": "^1.13",
         "symfony/apache-pack": "*",
         "symfony/asset": "7.1.*",
         "symfony/asset-mapper": "7.1.*",
@@ -46,6 +48,7 @@
         "symfony/string": "7.1.*",
         "symfony/translation": "7.1.*",
         "symfony/twig-bundle": "7.1.*",
+        "symfony/uid": "7.1.*",
         "symfony/ux-turbo": "^2.17",
         "symfony/validator": "7.1.*",
         "symfony/web-link": "7.1.*",
@@ -56,7 +59,8 @@
         "thenetworg/oauth2-azure": "^2.2",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/intl-extra": "^3.10",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "vich/uploader-bundle": "^2.9"
     },
     "config": {
         "allow-plugins": {
