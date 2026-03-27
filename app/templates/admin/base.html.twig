@@ -50,11 +50,15 @@
                 var loader = document.getElementById('loader');
 
                 function showLoader() {
-                    loader.style.display = 'block';
+                    if (loader) {
+                        loader.style.display = 'block';
+                    }
                 }
 
                 function hideLoader() {
-                    loader.style.display = 'none';
+                    if (loader) {
+                        loader.style.display = 'none';
+                    }
                 }
 
                 // Show loader on page load

@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -24,10 +24,13 @@ class EntrepriseType extends AbstractType
                     'placeholder' => 'Ex: Gnut06'
                 ]
             ])
-            ->add('logo', FileType::class, [
+            ->add('logoFile', VichImageType::class, [
                 'label' => 'Logo de l\'entreprise',
-                'mapped' => false, // si tu ne stockes pas directement le fichier dans l'entité
                 'required' => false,
+                'allow_delete' => false,
+                'download_uri' => false,
+                'image_uri' => true,
+                'asset_helper' => true,
                 'attr' => [
                     'class' => 'form-control'
                 ]
