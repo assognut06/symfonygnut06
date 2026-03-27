@@ -27,7 +27,7 @@
 						<source src="{{ asset('videos/Mondes_virtuels,_liens_reels.mp4') }}" type="video/mp4">
 						Votre navigateur ne supporte pas la vidéo.
 					</video>
-					<div class="mt-2 d-flex justify-content-center gap-2">
+					<div class="mt-2 d-flex justify-content-center gap-2 btn-aidants">
 						<a href="{{ asset('videos/Mondes_virtuels,_liens_reels.mp4') }}" download class="btn btn-sm btn-outline-light" aria-label="Télécharger la vidéo">Télécharger la vidéo</a>
 						<button id="toggle-video-sound" type="button" class="btn btn-sm btn-success" aria-pressed="false">Activer le son</button>
 					</div>
@@ -77,7 +77,7 @@
 						<source src="{{ asset('audios/Realite_Virtuelle_et_Aidants__L_Inclusion_Sociale_entre_Tech_et_Soutien_Essentiel.m4a') }}" type="audio/mp4">
 						Votre navigateur ne supporte pas la lecture audio.
 					</audio>
-					<div class="mt-2 small d-flex gap-2">
+					<div class="mt-2 small d-flex gap-2 btn-aidants">
 						<a href="{{ asset('audios/Realite_Virtuelle_et_Aidants__L_Inclusion_Sociale_entre_Tech_et_Soutien_Essentiel.m4a') }}" download class="btn btn-sm btn-outline-light">Télécharger l'audio</a>
 						<button id="toggle-audio" type="button" class="btn btn-sm btn-success">Play / Pause</button>
 					</div>
@@ -88,14 +88,14 @@
 			</p>
 
 			<div class="text-center mt-4">
-				<a href="https://calendly.com/gnut-gnut06/journee-nationale-des-aidants?back=1&month=2025-10" target="_blank" class="btn btn-primary btn-lg">Réservez votre place</a>
+				<a href="https://calendly.com/gnut-gnut06/journee-nationale-des-aidants?back=1&month=2025-10" target="_blank" class="btn btn-primary btn-lg btn-aidants">Réservez votre place</a>
 			</div>
 		</div>
 		<div class="mt-4 text-center">
 			<div class="card card-body bg-transparent border-0">
 				<h3 class="card-title text-light">Vous voulez aider ?</h3>
 				<p class="card-text text-light">Participez en tant que bénévole lors de la Journée Nationale des Aidants.</p>
-				<a href="{{ path('app_benevole_jna') }}" class="btn btn-primary btn-lg" role="button" aria-label="Devenir bénévole à la JNA">Je veux être bénévole</a>
+				<a href="{{ path('app_benevole_jna') }}" class="btn btn-primary btn-lg btn-aidants" role="button" aria-label="Devenir bénévole à la JNA">Je veux être bénévole</a>
 			</div>
 		</div>
 	</div>
