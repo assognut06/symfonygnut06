@@ -4,6 +4,11 @@
     {{ app.request.query.get('organizationName')|url_decode }} - Événements
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/pages/asso_recommander/events.css') }}">
+{% endblock %}
+
 {% block body %}
     <div class="container pt-0 text">
         <div class="mx-3">
@@ -36,8 +41,7 @@
                     <div class="row align-items-start mx-auto" role="list" aria-label="Liste des services et événements">
                         {% for item in data_forms %}
                             <div class="col d-flex justify-content-around my-3" role="listitem">
-                                <article class="card shadow-lg" 
-                                         style="width: 21rem;" 
+                                <article class="card shadow-lg card-events" 
                                          aria-labelledby="card-title-{{ loop.index }}"
                                          tabindex="0">
                                     
@@ -150,7 +154,7 @@
                                                                 allowtransparency="true" 
                                                                 scrolling="auto" 
                                                                 src="{{ item.widgetFullUrl }}" 
-                                                                style="width: 100%; border: none;" 
+                                                                class="w-100 border-0"
                                                                 title="Formulaire {{ item.title }}"
                                                                 aria-label="Formulaire interactif pour {{ item.title }}"
                                                                 onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget-{{ loop.index }}'); haWidgetElement.height = dataHeight + 'px'; } )"></iframe>
