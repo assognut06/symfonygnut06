@@ -1,0 +1,49 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Documentation
+README.md
+CHANGELOG.md
+*.md
+
+# Tests
+tests/
+phpunit.xml.dist
+
+# Node modules and build artifacts
+node_modules/
+npm-debug.log
+yarn-error.log
+.npm
+
+# Symfony cache and logs
+var/cache/*
+var/log/*
+var/sessions/*
+
+# Build artifacts
+public/build/*
+public/bundles/*
+
+# Composer vendor (we'll install fresh)
+# vendor/
+
+# Environment files (should be set via docker-compose)
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PHPStorm
+.phpunit.result.cache
