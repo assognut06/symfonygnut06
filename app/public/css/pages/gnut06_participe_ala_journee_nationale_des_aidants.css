@@ -71,6 +71,10 @@ p {
   line-height: normal;
 }
 
+.btn-aidants {
+  font-family: 'Segoe UI', sans-serif;
+}
+
 .btn-primary {
   border-radius: 5px;
   background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
@@ -90,6 +94,23 @@ p {
 .btn-primary:hover {
   background: #0b5ed7;
 } */
+
+/* Correction hover sur le background qui foncionne (avec effet dégradé qui bouge au hover)
+.btn-primary  {
+  border-radius: 5px;
+  background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+  background-size: 200% 100%;
+  background-position: center;
+  transition: background-position 0.4s ease;
+}
+
+.btn-primary:hover {
+  background-position: right;
+  box-shadow: 0 0 5px #0b5ed7;
+}
+*/
+
+
 
 
 .btn-success {
