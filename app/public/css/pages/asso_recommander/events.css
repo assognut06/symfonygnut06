@@ -1,0 +1,13 @@
+  /* Styles de la page "Événements", */
+  /* Fichier Twig: asso_recommander/events.html.twig */
+  /* URL: /assos/recommandees/events/{organizationSlug}/{formTypes}/{page}? 
+  Exemple: /assos/recommandees/events/association-1/Event/1 */
+  /* Auteur : Simon Fanny */
+  /* Date : 2026-03-27 */
+
+  /*==========================================*/
+
+  .card-events {
+    width: 21rem !important;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa) !important;
+  }
