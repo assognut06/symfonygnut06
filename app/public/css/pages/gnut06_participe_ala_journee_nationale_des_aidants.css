@@ -79,6 +79,19 @@ p {
 .btn-primary:hover {
   background-color: #0b5ed7;
 }
+
+/* Correction hover sur le background qui foncionne
+/* .btn-primary {
+  border-radius: 5px;
+  background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+  transition: background 0.5s ease-in-out;
+}
+
+.btn-primary:hover {
+  background: #0b5ed7;
+} */
+
+
 .btn-success {
   border-radius: 5px;
   background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
