@@ -6,6 +6,10 @@ use App\Repository\EntrepriseRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\EntrepriseTihMessage;
+
 
 #[ORM\Entity(repositoryClass: EntrepriseRepository::class)]
 #[Vich\Uploadable]
@@ -36,6 +40,14 @@ class Entreprise
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $telephone = null;
+
+    #[ORM\OneToMany(mappedBy: 'entreprise', targetEntity: EntrepriseTihMessage::class, cascade: ['persist', 'remove'])]
+    private Collection $messages;
+
+    public function __construct()
+    {
+        $this->messages = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -124,6 +136,31 @@ class Entreprise
     public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
+
+        return $this;
+    }
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(EntrepriseTihMessage $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages[] = $message;
+            $message->setEntreprise($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(EntrepriseTihMessage $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            if ($message->getEntreprise() === $this) {
+                $message->setEntreprise(null);
+            }
+        }
 
         return $this;
     }
