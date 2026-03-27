@@ -75,6 +75,8 @@ p {
   font-family: 'Segoe UI', sans-serif;
 }
 
+
+/* hover ne fonctionne pas sur le bouton primary*/
 .btn-primary {
   border-radius: 5px;
   background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
@@ -84,7 +86,8 @@ p {
   background-color: #0b5ed7;
 }
 
-/* Correction hover sur le background qui foncionne
+
+/* Correction hover 
 /* .btn-primary {
   border-radius: 5px;
   background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
@@ -95,7 +98,8 @@ p {
   background: #0b5ed7;
 } */
 
-/* Correction hover sur le background qui foncionne (avec effet dégradé qui bouge au hover)
+
+/* Correction hover (avec effet dégradé qui se déplace à gauche au hover)
 .btn-primary  {
   border-radius: 5px;
   background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
