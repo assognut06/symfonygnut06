@@ -1,0 +1,132 @@
+/* Styles de la page "GNUT 06 participe à la Journée Nationale des Aidants",
+/* Fichier Twig: gnut06_participe_ala_journee_nationale_des_aidants/index.html.twig */ 
+/* URL: /gnut_06/participe_ala_journee_nationale_des_aidants */
+/* Auteur : Simon Fanny */
+/* Date : 2026-03-27 */
+
+/*==========================================*/
+
+body {
+  background: var(--Color-Background, linear-gradient(180deg, #010208 16%, #010206 21%, #040008 25%, #010101 30%, #010101 34%, #010101 36%, #010101 100%));
+}
+h1 {
+  font-family: Orbitron;
+  font-size: clamp(24px, 5vw, 40px); /* Responsive font size */
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(20px, 4vw, 32px); /* Responsive font size */
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(18px, 3vw, 24px); /* Responsive font size */
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+p {
+  color: #FFF;
+  font-family: Poppins;
+  font-size: clamp(16px, 2.5vw, 20px); /* Responsive font size */
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.6; /* Relative line height */
+}
+.slogan {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(20px, 4vw, 32px); /* Responsive font size */
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  background: var(--2, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.icon-feature {
+  font-size: 2.5rem;
+  color: #fff;
+  background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-radius: 15px;
+}
+
+.card-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(18px, 3vw, 24px); /* Responsive font size */
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.btn-primary {
+  border-radius: 5px;
+  background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+}
+.btn-success {
+  border-radius: 5px;
+  background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+}
+.badge {
+  background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
+}
+
+/* Responsive video container */
+.video-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.video-container video {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+/* Responsive buttons */
+@media (max-width: 768px) {
+  .btn-lg {
+      font-size: 1rem;
+      padding: 0.75rem 1.5rem;
+  }
+  
+  .d-flex.gap-2 {
+      flex-direction: column;
+      gap: 0.5rem !important;
+  }
+  
+  .d-flex.gap-2 .btn {
+      width: 100%;
+  }
+}
+
+/* Responsive spacing */
+@media (max-width: 576px) {
+  .container {
+      padding-left: 15px;
+      padding-right: 15px;
+  }
+  
+  .col-md-8.offset-md-2 {
+      padding-left: 0;
+      padding-right: 0;
+  }
+}
