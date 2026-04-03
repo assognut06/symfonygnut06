@@ -3,92 +3,12 @@
 {% block title %}GNUT 06 participe à Nice Fête sa Rentrée
 {% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ asset('css/pages/nice_fete_sa_rentree.css') }}">
+{% endblock %}
+
 {% block body %}
-	<style>
-		body {
-			background: var(--Color-Background, linear-gradient(180deg, #010208 16%, #010206 21%, #040008 25%, #010101 30%, #010101 34%, #010101 36%, #010101 100%));
-		}
-		h1 {
-			font-family: Orbitron;
-			font-size: 72px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-		}
-
-		h2 {
-			font-family: 'Orbitron', sans-serif;
-			font-size: 32px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-		}
-		h3 {
-			font-family: 'Orbitron', sans-serif;
-			font-size: 24px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-		}
-		p {
-			color: #FFF;
-
-			/* Lead/Text Regular */
-			font-family: Poppins;
-			font-size: 20px;
-			font-style: normal;
-			font-weight: 400;
-			line-height: 36px; /* 180% */
-		}
-		.slogan {
-			font-family: 'Orbitron', sans-serif;
-			font-size: 32px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-			background: var(--2, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%));
-			-webkit-background-clip: text;
-			background-clip: text;
-			-webkit-text-fill-color: transparent;
-		}
-
-		.icon-feature {
-			font-size: 2.5rem;
-			color: #fff;
-			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
-		}
-
-		.card {
-			background-color: rgba(255, 255, 255, 0.05);
-			border: none;
-			border-radius: 15px;
-		}
-
-		.card-title {
-			font-family: 'Orbitron', sans-serif;
-			font-size: 24px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-		}
-
-		.btn-primary {
-			border-radius: 5px;
-			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
-		}
-
-		.btn-primary:hover {
-			background-color: #0b5ed7;
-		}
-		.btn-success {
-			border-radius: 5px;
-			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
-		}
-		.badge {
-
-			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
-		}
-	</style>
 	<div class="text-center mb-4">
 		<img src="{{ asset('images/webp/NiceFeteSaRentree.webp') }}" alt="GNUT 06 participe à Nice Fête sa Rentrée" class="img-fluid rounded">
 	</div>
