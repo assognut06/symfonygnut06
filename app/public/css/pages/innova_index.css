@@ -1,0 +1,16 @@
+  /* Styles de la page "Découvrez la puissance de l'IA pour votre image de marque", */
+  /* Fichier Twig: innova/index.html.twig 
+  /* URL: /boutique/innova
+  /* Auteur : Simon Fanny 
+  /* Date : 2026-04-03 */
+
+  /*==========================================*/
+
+.innova-container p, ul, li {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.iframe-innova {
+  height: 1000px;
+} 
+
