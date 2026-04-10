@@ -1,0 +1,12 @@
+  /* Styles de la page "Admin - Footer", */
+  /* Fichier Twig: admin/_partials/footer.html.twig 
+  /* URL: /admin
+  /* Auteur : Simon Fanny 
+  /* Date : 2026-04-10 */
+
+  /*==========================================*/
+
+  /* Espace en bas du contenu pour éviter qu'il soit masqué par le footer fixe */
+  main {
+    padding-bottom: 80px;
+  }
