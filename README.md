@@ -28,15 +28,32 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 
 ## Installation
 
-1. **Clonez le dépôt**
+1. **Ajouter l'authentification ssh au dépot**
 
    ```bash
-   git clone https://github.com/username/gnut06.git
-   cd gnut06
+   ssh-keygen
+   cat <chemin>/<nom_du_fichier_créé_par_keygen(voir_sortie_console)>.pub
    ```
-2. **Allumage du projet**
+   copier la sortie console de cat dans les paramètres du projet git avec le navigateur
+2. **Clonez le dépôt**
+
    ```bash
+   git clone git@github.com:assognut06/symfonygnut06.git
+   cd symfonygnut06
+   ```
+3. **Résolution de conflit**
+   La solution inclus un container mysql utilisant le port 3306
+   Vérifiez que le poste de dev n'aie pas déjà un serveur monopolisant se port
+   ```bash
+   netstat -pnltu | grep -w 3306
+   ```
+   La sortie console doit être vide, sinon:
+   - désinstallez le serveur concurrent
+   - changez le port dans le fichier docker-compose.yaml en remplaçant tous les 3306 par un autre port libre (déconseillé car il y a un risque d'archiver le changement)
+4. **Allumage du projet**
+   ```bash
+   sudo groupmod -U <username> docker
    docker compose up --build
    ```
-
+e
    
