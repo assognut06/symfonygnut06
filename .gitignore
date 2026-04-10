@@ -10,6 +10,7 @@
 /app/node_modules/
 /app/public/build/
 
+
 # SSL Certificates (sécurité)
 /app/ssl/
 *.key
@@ -26,6 +27,9 @@
 # OS
 .DS_Store
 Thumbs.db
+
+#Wetransfer
+wetransfer*
 
 # Logs
 *.log
