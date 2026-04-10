@@ -89,3 +89,26 @@
 
     background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
   }
+
+  /* Effet gradient texte (h1 hero + h3 audio) */
+  .nice-fete-rentree-gradient-text {
+    background: var(--2, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Conteneur video : largeur max */
+  .nice-fete-rentree-video-wrapper {
+    max-width: 900px;
+  }
+
+  /* Style du player video */
+  .nice-fete-rentree-video {
+    max-width: 900px;
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 12px;
+  }
