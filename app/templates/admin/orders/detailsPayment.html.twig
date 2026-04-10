@@ -40,13 +40,13 @@
             </div>
             {% if data_forms.payer.company is defined and data_forms.payer.address is defined %}
                 <div class="col">
-                    <iframe width="100%" height="450" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}
+                    <iframe width="100%" height="450" class="border-0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}
                     &q={{ data_forms.payer.company|replace({' ': '+'})|e }},{{ data_forms.payer.address|replace({' ': '+'})|e ~ "+" ~ data_forms.payer.zipCode|e ~ "+" ~ data_forms.payer.city|replace({' ': '+'})|e }},{{ data_forms.payer.country|e }}">
                     </iframe>
                 </div>
             {% elseif data_forms.payer.address is defined %}
                 <div class="col">
-                    <iframe width="100%" height="450" style="border:0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}
+                    <iframe width="100%" height="450" class="border-0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key={{ googleMapsApiKey }}
                     &q={{ data_forms.payer.lastName|replace({' ': '+'})|e }}+{{ data_forms.payer.firstName|replace({' ': '+'})|e }},{{ data_forms.payer.address|replace({' ': '+'})|e ~ "+" ~ data_forms.payer.zipCode|e ~ "+" ~ data_forms.payer.city|replace({' ': '+'})|e }},{{ data_forms.payer.country|e }}">
                     </iframe>
                 </div>
