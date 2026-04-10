@@ -2,15 +2,20 @@
 
 {% block title %}Merci pour vos Dons !{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ asset('css/pages/don_casque_list.css') }}">
+{% endblock %}
+
 {% block body %}
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-10">
 
                 <!-- Bloc de remerciement stylisé -->
-                <div class="p-4 mb-5 text-center" style="background-color: #f0f8ff; border-radius: 12px;">
-                    <h2 class="mb-3" style="color: #007bff !important;">🙏 Merci pour votre générosité !</h2>
-                    <p style="font-size: 1.1rem; color: #333;">
+                <div class="p-4 mb-5 text-center don-casque-list-merci-box">
+                    <h2 class="mb-3 don-casque-list-merci-title">🙏 Merci pour votre générosité !</h2>
+                    <p class="don-casque-list-merci-text">
                         Grâce à vous, plusieurs personnes pourront bénéficier d'une meilleure sécurité. 
                         Chaque casque donné est un pas vers un monde plus solidaire.
                     </p>
