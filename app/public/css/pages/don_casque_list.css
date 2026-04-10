@@ -1,0 +1,24 @@
+  /* Styles de la page "Liste des casques que j'ai donnés", */
+  /* Fichier Twig: don_casque/list.html.twig 
+  /* URL: /gnut_06/don_casque/list-dons
+  /* Auteur : Simon Fanny 
+  /* Date : 2026-04-10 */
+
+  /*==========================================*/
+
+  /* Bloc de remerciement */
+  .don-casque-list-merci-box {
+    background-color: #f0f8ff;
+    border-radius: 12px;
+  }
+
+  /* Titre du bloc remerciement — !important conservé pour surcharger d'éventuels styles globaux sur h2 */
+  .don-casque-list-merci-title {
+    color: #007bff !important;
+  }
+
+  /* Texte du bloc remerciement */
+  .don-casque-list-merci-text {
+    font-size: 1.1rem;
+    color: #333;
+  }
