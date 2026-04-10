@@ -1,0 +1,17 @@
+  /* Styles de la page "Dossier de presse", */
+  /* Fichier Twig: presse/index.html.twig 
+  /* URL: /gnut_06/presse
+  /* Auteur : Simon Fanny 
+  /* Date : 2026-04-10 */
+
+  /*==========================================*/
+
+
+  .presse-container {
+    font-family: 'Segoe UI', sans-serif;}
+
+
+  /* Hover du bouton gradient : !important nécessaire pour surcharger .text-dark de Bootstrap */
+  .btn-outline-gradient:hover {
+    color: white !important;
+  }

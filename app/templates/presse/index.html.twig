@@ -3,14 +3,14 @@
 {% block title %}Dossier de presse - Gnut 06
 {% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ asset('css/pages/presse.css') }}">
+{% endblock %}
+
 {% block body %}
-	<style>
-		.btn-outline-gradient:hover {
-			color: white !important;
-		}
-	</style>
 	<div class="container-fluid text-light pt-5 pb-3" role="contentinfo">
-		<div class="container">
+		<div class="container presse-container">
 			<h1 class="text-center mb-5 fw-bold gradient-text">Dossier de presse</h1>
 			<div class="accordion my-5" id="accordionAdherent">
 				<div class="accordion-item">
@@ -80,7 +80,7 @@
 						</button>
 					</h2>
 					<div id="collapseThree" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-						<div class="accordion-body text-center"></style>
+						<div class="accordion-body text-center">
 						<h2 class="fw-bold gradient-text">Quand la technologie ouvre de nouveaux horizons</h2>
 						<p>Mercredi 12 novembre, au Centre d’Accueil de Jour Méditerranée à Nice, plusieurs participants en situation de handicap ont voyagé… sans bouger. Grâce à l’association Gnut 06, elles ont découvert la réalité virtuelle et ses promesses d’évasion. New-York, Paris, Disneyland, parfois un casque suffit pour franchir les frontières du handicap.</p>
 						<p>Derrière les casques et les rires, c'est un autre regard sur le handicap qui se dessine. Plus qu'un loisir, la réalité virtuelle devient un moyen d'accès au monde, une parenthèse qui réveille la curiosité et redonne confiance.</p>
