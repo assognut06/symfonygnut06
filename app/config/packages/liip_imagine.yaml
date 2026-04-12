@@ -1,4 +1,8 @@
 liip_imagine:
+    # Configuration pour éviter la dépréciation du FilterExtension
+    twig:
+        mode: lazy
+    
     resolvers:
         default:
             web_path: ~
