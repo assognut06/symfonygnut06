@@ -77,6 +77,38 @@ body {
     text-decoration: none;
 }
 
+/* Style pour les boutons formulaire don */
+.btn.btn-neon {
+    display: inline-flex;
+    padding: 6px 12px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    border-radius: 6px;
+    color: #fff;
+    background-color: #7F29FF;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    border: none;
+}
+
+.btn.btn-outline-gradient {
+    position: relative;
+    display: inline-block;
+    color: white;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    z-index: 1;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+/* Style pour les boutons formulaire don end */
+
 .btn-asso {
 
     display: inline-flex;
@@ -120,6 +152,7 @@ body {
     padding: 1px;
     transition: opacity 0.3s ease;
 }
+
 
 /* Soulignement blanc pour le lien "En savoir plus" */
 .icon-link.text {

@@ -40,41 +40,21 @@
             outline: 3px solid #F86CF8;
         }
 
-        /* ✅ CORRECTION - Container iframe pleine largeur SANS ASCENSEUR */
+        /* ✅ CORRECTION - Container iframe pleine largeur AVEC ASCENSEUR */
         .iframe-container {
             margin: 0 !important;
             padding: 1rem !important;
-            overflow: hidden !important;
+            overflow: auto !important;
             -webkit-overflow-scrolling: touch !important;
         }
 
-        /* ✅ Forcer la suppression des barres de défilement sur le container */
-        .iframe-container::-webkit-scrollbar {
-            display: none !important;
-        }
-
-        .iframe-container {
-            -ms-overflow-style: none !important;
-            scrollbar-width: none !important;
-        }
-
-        /* ✅ CORRECTION - Iframe sans ascenseur */
+        /* ✅ CORRECTION - Iframe avec ascenseur */
         iframe {
             border: 2px solid rgba(255, 255, 255, 0.3) !important;
             border-radius: 0.375rem !important;
             min-height: 600px !important;
             max-width: 100% !important;
-            overflow: hidden !important;
-        }
-
-        /* ✅ Forcer la suppression des barres de défilement sur l'iframe */
-        iframe::-webkit-scrollbar {
-            display: none !important;
-        }
-
-        iframe {
-            -ms-overflow-style: none !important;
-            scrollbar-width: none !important;
+            overflow: auto !important;
         }
 
         /* ✅ CORRECTION - Liste accessible */
@@ -104,13 +84,13 @@
 
             .iframe-container {
                 padding: 0.5rem !important;
-                overflow: hidden !important;
+                overflow: auto !important;
             }
 
             iframe {
                 min-height: 500px !important;
                 border-radius: 0 !important;
-                overflow: hidden !important;
+                overflow: auto !important;
             }
 
             img {
@@ -172,7 +152,7 @@
                         <h1 id="adhesion-title" class="mb-4">Rejoignez GNUT 06 !</h1>
                     </header>
                     <p class="text">
-                        En devenant membre de <strong>GNUT 06</strong>, vous contribuez à une société plus inclusive grâce aux technologies.
+                        En devenant membre de <strong>GNUT 06, Groupement Numérique d’Utilité Territoriale des Alpes‑Maritimes (06)</strong>, vous contribuez à une société plus inclusive grâce aux technologies.
                         En échange, vous bénéficiez de nombreux avantages :
                     </p>
 
@@ -251,10 +231,10 @@
                 </header>
             </div>
 
-            <!-- ✅ CORRECTION - Iframe en pleine largeur sans container et sans ascenseur -->
+            <!-- ✅ CORRECTION - Iframe en pleine largeur sans container et aavec ascenseur -->
             <div class="w-100">
                 <!-- ✅ CORRECTION - Iframe accessible avec fallback -->
-                <div class="iframe-container" style="position: relative; background: rgba(255, 255, 255, 0.1); padding: 1rem; overflow: hidden;">
+                <div class="iframe-container" style="position: relative; background: white; padding: 1rem; overflow: auto;">
 
                     <!-- Message de fallback si iframe ne charge pas -->
                     <noscript>
@@ -272,17 +252,17 @@
                         </div>
                     </noscript>
 
-                    <!-- ✅ CORRECTION - Iframe sans ascenseur avec attributs d'accessibilité complets -->
+                    <!-- ✅ CORRECTION - Iframe avec ascenseur avec attributs d'accessibilité complets -->
                     <iframe id="haWidget" 
                             title="Formulaire d'adhésion HelloAsso pour rejoindre l'association GNUT 06 et soutenir l'inclusion des personnes handicapées par la technologie"
                             allowtransparency="true" 
                             src="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-gnut-06/widget" 
-                            style="width: 100%; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 0.375rem; overflow: hidden;" 
+                            style="width: 100%; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 0.375rem;" 
                             loading="lazy" 
                             aria-label="Formulaire d'adhésion sécurisé HelloAsso" 
                             aria-describedby="iframe-help" 
                             tabindex="0" 
-                            scrolling="no"
+                            scrolling="yes"
                             onload="window.addEventListener('message', function(e) {
                                 if (e.origin !== 'https://www.helloasso.com') return;
                                 const dataHeight = e.data.height;
@@ -300,12 +280,12 @@
 
                     <!-- ✅ CORRECTION - Lien alternatif en cas de problème -->
                     <div class="text-center mt-3">
-                        <p class="text small">
+                        <p class="small text-dark">
                             Problème avec le formulaire ?
                             <a href="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-gnut-06" 
                                target="_blank" 
                                rel="noopener noreferrer" 
-                               class="text-white" 
+                               class="text-dark" 
                                aria-label="Ouvrir le formulaire d'adhésion HelloAsso dans un nouvel onglet - lien alternatif">
                                 Ouvrir dans un nouvel onglet
                                 <span class="visually-hidden">(lien alternatif)</span>

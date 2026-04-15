@@ -8,6 +8,7 @@
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /public/videos/
+/public/media/
 /var/
 /vendor/
 /node_modules/

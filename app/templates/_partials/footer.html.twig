@@ -60,7 +60,7 @@
 
 			<!-- Bloc logo & adresse -->
 			<div class="col-12 col-md-3 mb-4 text-start" aria-labelledby="footer-logo">
-				<h1 id="footer-logo" class="logo_footer">GNUT 06</h1>
+				<h1 id="footer-logo" class="logo_footer" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Groupement Numérique d’Utilité Territoriale des Alpes‑Maritimes (06)">GNUT 06</h1>
 				<address class="mb-0">
 					<p class="text mb-0">
 						9 Rue du Pont-Vieux
@@ -80,10 +80,16 @@
 						<a href="{{ path('app_a_propos') }}">Qui sommes-nous</a>
 					</li>
 					<li>
+						<a href="{{ path('app_presse') }}">Presse</a>
+					</li>
+					<li>
 						<a href="{{ path('app_contact') }}">Nous contacter</a>
 					</li>
 					<li>
 						<a href="{{ path('app_don') }}">Nous soutenir</a>
+					</li>
+					<li>
+						<a href="{{ path('donateur_formulaire') }}">Nous faire un don de casques VR</a>
 					</li>
 					<li>
 						<a href="{{ path('app_metavers') }}#section-faq">FAQ</a>
@@ -142,6 +148,9 @@
 					<li>
 						<a href="{{ path('app_digital_consulting') }}">Digital consulting</a>
 					</li>
+					<li>
+						<a href="https://compta.gnut06.org">Gnut 06 Comptabilité</a>
+					</li>
 				</ul>
 			</nav>
 
@@ -149,13 +158,13 @@
 			<div class="col-12 col-md-3 mb-4 " aria-labelledby="footer-social">
 				<h3 id="footer-social" class="title_footer">Suivez-nous</h3>
 				<div class="d-flex justify-content-center justify-content-md-start gap-3 mb-3" role="navigation" aria-label="Réseaux sociaux">
-					<a href="https://www.linkedin.com/in/gerald-col/" class="social_footer_link" aria-label="LinkedIn GNUT06" target="_blank" rel="noopener">
+					<a href="https://www.linkedin.com/company/gnut-06/" class="social_footer_link" aria-label="LinkedIn GNUT06" target="_blank" rel="noopener">
 						<img src="{{ asset('images/webp/linkedin-white.svg') }}" alt="LinkedIn de notre Président Gérald Col">
 					</a>
-					<a href="https://x.com/gerald_col" class="social_footer_link" aria-label="Twitter/X GNUT06" target="_blank" rel="noopener">
-						<img src="{{ asset('images/webp/twitter-x.svg') }}" alt="Twitter/X de notre Président Gérald Col">
-					</a>
-					<a href="https://www.instagram.com/gnut06/" class="social_footer_link" aria-label="Instagram GNUT06" target="_blank" rel="noopener">
+					{# <a href="https://x.com/Gnut_06" class="social_footer_link" aria-label="Twitter/X GNUT06" target="_blank" rel="noopener">
+											<img src="{{ asset('images/webp/twitter-x.svg') }}" alt="Twitter/X de notre Président Gérald Col">
+										</a> #}
+					<a href="https://www.instagram.com/gnut.06/" class="social_footer_link" aria-label="Instagram GNUT06" target="_blank" rel="noopener">
 						<img src="{{ asset('images/webp/instagram.svg') }}" alt="Instagram de GNUT06">
 					</a>
 					<a href="https://www.facebook.com/profile.php?id=61552595323696&locale=fr_FR" class="social_footer_link" aria-label="Facebook GNUT06" target="_blank" rel="noopener">
@@ -165,7 +174,7 @@
 						<img src="{{ asset('images/webp/youtube.svg') }}" alt="YouTube de GNUT06">
 					</a>
 				</div>
-				<p class="small mb-0">2025 © GNUT 06 Tout droit réservé.</p>
+				<p class="small mb-0">2026 © GNUT 06 Tout droit réservé.</p>
 			</div>
 		</div>
 
@@ -173,7 +182,7 @@
 		<div class="text-start text-xl-center mt-4">
 			<p class="text mb-0">
 				Conçu et développé avec 💙 par la
-				<span style="color:#F86CF8;">GNUT Team</span>.
+				<span style="color:#F86CF8;">GNUT 06 Team</span>.
 				<a href="{{ path('app_mention_legales') }}" class="mentions-legales-link" rel="noopener">Mentions légales</a>
 			</p>
 		</div>

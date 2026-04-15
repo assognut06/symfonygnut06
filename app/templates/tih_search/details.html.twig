@@ -1,0 +1,203 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ tih.fullName }} - Profil TIH{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('tih_search') }}
+{% endblock %}
+
+{% block body %}
+<main class="bg-main min-vh-100 py-5">
+    <div class="container">
+        {# Back button #}
+        <div class="mb-4">
+            <a href="{{ path('app_tih_search') }}" class="btn btn-outline-light">
+                <i class="bi bi-arrow-left me-2"></i>Retour à la recherche
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {# Profile Card - Left Column #}
+            <div class="col-lg-4">
+                <div class="card bg-dark border-secondary h-100 sticky-top" style="top: 1rem;">
+                    {# Profile Photo #}
+                    {% if tih.photo %}
+                        <img src="{{ asset('uploads/tih/' ~ tih.photo) }}" 
+                             class="card-img-top" 
+                             alt="Photo de profil de {{ tih.fullName }}"
+                             style="max-height: 400px; object-fit: cover;">
+                    {% else %}
+                        <img src="{{ asset('images/user_profil.jpg') }}" 
+                             class="card-img-top" 
+                             alt="Photo de profil par défaut"
+                             style="max-height: 400px; object-fit: cover;">
+                    {% endif %}
+                    
+                    <div class="card-body text-center">
+                        <h1 class="h3 text-white mb-3">{{ tih.fullName }}</h1>
+                        
+                        {% if tih.city or tih.postalCode %}
+                            <p class="tih-location mb-3">
+                                <i class="bi bi-geo-alt-fill me-1"></i>
+                                {{ tih.postalCode }} {{ tih.city }}
+                            </p>
+                        {% endif %}
+
+                        {# Availability Badge #}
+                        {% if tih.availability %}
+                            {% set availabilityClass = tih.availability|lower == 'disponible' ? 'disponible' : (tih.availability|lower == 'occupé' ? 'occupe' : 'partiellement') %}
+                            <span class="availability-badge availability-{{ availabilityClass }} mb-3 d-inline-block">
+                                {{ tih.availability }}
+                            </span>
+                        {% endif %}
+
+                        {# Rate #}
+                        {% if tih.rate %}
+                            <div class="alert alert-info mb-3">
+                                <h4 class="mb-0">
+                                    <i class="bi bi-currency-euro me-1"></i>
+                                    {{ tih.rate }}€ <small class="text-muted">/ {{ tih.rateType }}</small>
+                                </h4>
+                            </div>
+                        {% endif %}
+
+                        {# Contact Button #}
+                        <a href="{{ path('app_tih_contact', {'id': tih.id}) }}" class="btn btn-success w-100 mb-2">
+                            <i class="bi bi-envelope me-2"></i>Contacter ce profil
+                        </a>
+
+                        {# Download Links #}
+                        <div class="d-grid gap-2">
+                            {% if tih.cv %}
+                                <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank" class="btn btn-outline-light btn-sm">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i> Télécharger le CV
+                                </a>
+                            {% endif %}
+                            {% if tih.attestationTih %}
+                                <a href="{{ asset('uploads/tihattest/' ~ tih.attestationTih) }}" target="_blank" class="btn btn-outline-light btn-sm">
+                                    <i class="bi bi-file-earmark-check me-1"></i> Attestation TIH
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Details - Right Column #}
+            <div class="col-lg-8">
+                {# Competences Section #}
+                {% if tih.competences is not empty %}
+                <div class="card bg-dark border-secondary mb-4">
+                    <div class="card-body">
+                        <h2 class="h4 text-white mb-3">
+                            <i class="bi bi-briefcase me-2"></i>Compétences
+                        </h2>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for competence in tih.competences %}
+                                <span class="competence-badge">{{ competence }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {# Contact Information - Hidden for privacy #}
+                {# <div class="card bg-dark border-secondary mb-4">
+                    <div class="card-body">
+                        <h2 class="h4 text-white mb-3">
+                            <i class="bi bi-person-lines-fill me-2"></i>Informations de contact
+                        </h2>
+                        <div class="row g-3">
+                            {% if tih.professionalEmail %}
+                            <div class="col-md-6">
+                                <div class="p-3 bg-secondary bg-opacity-25 rounded">
+                                    <div class="text-white-50 small mb-1">Email professionnel</div>
+                                    <a href="mailto:{{ tih.professionalEmail }}" class="text-white text-decoration-none">
+                                        <i class="bi bi-envelope me-2"></i>{{ tih.professionalEmail }}
+                                    </a>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if tih.phone %}
+                            <div class="col-md-6">
+                                <div class="p-3 bg-secondary bg-opacity-25 rounded">
+                                    <div class="text-white-50 small mb-1">Téléphone</div>
+                                    <a href="tel:{{ tih.phone }}" class="text-white text-decoration-none">
+                                        <i class="bi bi-telephone me-2"></i>{{ tih.phone }}
+                                    </a>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if tih.fullAddress %}
+                            <div class="col-12">
+                                <div class="p-3 bg-secondary bg-opacity-25 rounded">
+                                    <div class="text-white-50 small mb-1">Adresse</div>
+                                    <div class="text-white">
+                                        <i class="bi bi-geo-alt me-2"></i>{{ tih.fullAddress }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div> #}
+
+                {# Professional Information #}
+                <div class="card bg-dark border-secondary mb-4">
+                    <div class="card-body">
+                        <h2 class="h4 text-white mb-3">
+                            <i class="bi bi-building me-2"></i>Informations professionnelles
+                        </h2>
+                        <div class="row g-3">
+                            {% if tih.siret %}
+                            <div class="col-md-6">
+                                <div class="p-3 bg-secondary bg-opacity-25 rounded">
+                                    <div class="text-white-50 small mb-1">Numéro SIRET</div>
+                                    <div class="text-white">
+                                        <i class="bi bi-file-text me-2"></i>{{ tih.siret }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if tih.availabilityDate %}
+                            <div class="col-md-6">
+                                <div class="p-3 bg-secondary bg-opacity-25 rounded">
+                                    <div class="text-white-50 small mb-1">Disponible à partir du</div>
+                                    <div class="text-white">
+                                        <i class="bi bi-calendar-event me-2"></i>{{ tih.availabilityDate|date('d/m/Y') }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if tih.title %}
+                            <div class="col-md-6">
+                                <div class="p-3 bg-secondary bg-opacity-25 rounded">
+                                    <div class="text-white-50 small mb-1">Civilité</div>
+                                    <div class="text-white">{{ tih.title }}</div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {# Call to Action #}
+                <div class="card bg-gradient text-white border-0">
+                    <div class="card-body text-center py-4">
+                        <h3 class="h4 mb-3">Intéressé par ce profil ?</h3>
+                        <p class="mb-3">Contactez {{ tih.firstName }} dès maintenant pour discuter de votre projet</p>
+                        <a href="{{ path('app_tih_contact', {'id': tih.id}) }}" class="btn btn-light btn-lg">
+                            <i class="bi bi-envelope me-2"></i>Envoyer un message
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
