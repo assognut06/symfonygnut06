@@ -1,6 +1,10 @@
 <?php
 namespace App\Controller;
 
+use App\Application\Command\RegisterUserCommand;
+use App\Application\DTO\RegisterUserDTO;
+use App\Domain\ValueObject\UserType;
+use App\Entity\Tih;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Message\Notification;
@@ -37,14 +41,11 @@ class RegistrationController extends AbstractController
         RecaptchaVerifier $recaptchaVerifier,
         EmailService $emailService
     ): Response {
-        $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $dto = new RegisterUserDTO();
+        $form = $this->createForm(RegistrationFormType::class, $dto);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $recaptchaToken = $request->request->get('g-recaptcha-response');
-            $ip = $request->getClientIp();
-
             if (!$recaptchaVerifier->verify($request)) {
                 $this->addFlash('danger', 'La vérification reCAPTCHA a échoué. Veuillez réessayer.');
                 return $this->render('registration/register.html.twig', [
@@ -53,9 +54,22 @@ class RegistrationController extends AbstractController
                 ]);
             }
 
-            $user->setPassword(
-                $userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData())
+            // Create command from DTO with proper value object
+            $command = new RegisterUserCommand(
+                email: $dto->email,
+                plainPassword: $dto->plainPassword,
+                userType: $dto->isTih ? UserType::tih() : UserType::regular()
             );
+
+            $user = new User();
+            $user->setEmail($dto->email);
+            $user->setPassword(
+                $userPasswordHasher->hashPassword($user, $dto->plainPassword)
+            );
+
+            if($dto->isTih === true) {
+                $user->setTih(new Tih());
+            }
             $entityManager->persist($user);
             $entityManager->flush();
 

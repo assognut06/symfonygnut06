@@ -245,14 +245,14 @@
                     </header>
 
                     <!-- ✅ CORRECTION - Carte contenant le formulaire accessible -->
-                    <section class="card p-4 shadow" 
+                    <section class="card p-4 shadow"
                              aria-labelledby="register-subtitle"
                              role="group">
 
                         <!-- ✅ CORRECTION - Gestion des erreurs améliorée -->
                         {% if form_errors(registrationForm) %}
-                            <div class="alert alert-danger mb-4" 
-                                 role="alert" 
+                            <div class="alert alert-danger mb-4"
+                                 role="alert"
                                  aria-live="assertive"
                                  aria-atomic="true"
                                  tabindex="0">
@@ -308,13 +308,13 @@
 
                             <!-- ✅ CORRECTION - Champ mot de passe amélioré -->
                             <div class="mb-3">
-                                {{ form_label(registrationForm.plainPassword.first, 'Mot de passe', {
+                                {{ form_label(registrationForm.plainPassword, 'Mot de passe', {
                                     'label_attr': {
                                         'class': 'form-label'
                                     }
                                 }) }}
                                 <span class="text-danger" aria-hidden="true">*</span>
-                                {{ form_widget(registrationForm.plainPassword.first, {
+                                {{ form_widget(registrationForm.plainPassword, {
                                     'attr': {
                                         'class': 'form-control',
                                         'aria-required': 'true',
@@ -330,22 +330,22 @@
                                 <div id="password-error" class="invalid-feedback" role="alert">
                                     Le mot de passe doit contenir au moins 8 caractères.
                                 </div>
-                                {% if form_errors(registrationForm.plainPassword.first) %}
+                                {% if form_errors(registrationForm.plainPassword) %}
                                     <div class="text-danger small mt-1" role="alert">
-                                        {{ form_errors(registrationForm.plainPassword.first) }}
+                                        {{ form_errors(registrationForm.plainPassword) }}
                                     </div>
                                 {% endif %}
                             </div>
 
                             <!-- ✅ CORRECTION - Confirmation mot de passe améliorée -->
                             <div class="mb-3">
-                                {{ form_label(registrationForm.plainPassword.second, 'Confirmez le mot de passe', {
+                                {{ form_label(registrationForm.confirmPassword, 'Confirmez le mot de passe', {
                                     'label_attr': {
                                         'class': 'form-label'
                                     }
                                 }) }}
                                 <span class="text-danger" aria-hidden="true">*</span>
-                                {{ form_widget(registrationForm.plainPassword.second, {
+                                {{ form_widget(registrationForm.confirmPassword, {
                                     'attr': {
                                         'class': 'form-control',
                                         'aria-required': 'true',
@@ -360,9 +360,9 @@
                                 <div id="password-confirm-error" class="invalid-feedback" role="alert">
                                     Les mots de passe ne correspondent pas.
                                 </div>
-                                {% if form_errors(registrationForm.plainPassword.second) %}
+                                {% if form_errors(registrationForm.confirmPassword) %}
                                     <div class="text-danger small mt-1" role="alert">
-                                        {{ form_errors(registrationForm.plainPassword.second) }}
+                                        {{ form_errors(registrationForm.confirmPassword) }}
                                     </div>
                                 {% endif %}
                             </div>
@@ -379,8 +379,8 @@
                                 <label class="form-check-label" for="{{ registrationForm.agreeTerms.vars.id }}">
                                     <span class="text-danger" aria-hidden="true">*</span>
                                     Je suis en accord avec
-                                    <a href="#" 
-                                       data-bs-toggle="modal" 
+                                    <a href="#"
+                                       data-bs-toggle="modal"
                                        data-bs-target="#valuesModal"
                                        aria-label="Ouvrir la fenêtre modale des valeurs de GNUT 06">
                                         les valeurs de GNUT 06
@@ -398,12 +398,18 @@
                                     </div>
                                 {% endif %}
                             </div>
+                            <div class="mb-4 form-check">
+                                {{ form_widget(registrationForm.isTih, {'attr': {'class': 'form-check-input'}}) }}
+                                <label class="form-check-label" for="{{ registrationForm.isTih.vars.id }}">
+                                    Je m'inscris en tant que Travailleur Indépendant Handicapé (TIH)
+                                </label>
+                            </div>
                         </fieldset>
 
                         <!-- ✅ CORRECTION - reCAPTCHA accessible -->
-                        <input type="hidden" 
-                               id="g-recaptcha-response" 
-                               name="g-recaptcha-response" 
+                        <input type="hidden"
+                               id="g-recaptcha-response"
+                               name="g-recaptcha-response"
                                aria-hidden="true"
                                aria-label="Token de sécurité reCAPTCHA">
 
@@ -424,11 +430,11 @@
                     </section>
 
                     <!-- ✅ CORRECTION - Connexions alternatives améliorées -->
-                    <section id="alt-register" 
-                             class="text-center mt-4 pb-5" 
+                    <section id="alt-register"
+                             class="text-center mt-4 pb-5"
                              aria-labelledby="alt-register-title"
                              role="group">
-                        
+
                         <h3 id="alt-register-title" class="h5 mb-3 text-white">
                             Ou connectez-vous avec :
                         </h3>
@@ -450,7 +456,7 @@
                                 Se connecter avec Microsoft
                             </a>
                         </div>
-                        
+
                         <p class="oauth-info small mt-3 text-white">
                             Connexion sécurisée via OAuth 2.0
                         </p>
@@ -473,7 +479,7 @@
                 function validateEmail(input) {
                     const isValid = input.validity.valid && input.value.includes('@');
                     input.setAttribute('aria-invalid', !isValid);
-                    
+
                     if (!isValid && input.value) {
                         input.classList.add('is-invalid');
                         input.classList.remove('is-valid');
@@ -481,14 +487,14 @@
                         input.classList.add('is-valid');
                         input.classList.remove('is-invalid');
                     }
-                    
+
                     return isValid;
                 }
 
                 function validatePassword(input) {
                     const isValid = input.value.length >= 8;
                     input.setAttribute('aria-invalid', !isValid);
-                    
+
                     if (!isValid && input.value) {
                         input.classList.add('is-invalid');
                         input.classList.remove('is-valid');
@@ -496,14 +502,14 @@
                         input.classList.add('is-valid');
                         input.classList.remove('is-invalid');
                     }
-                    
+
                     return isValid;
                 }
 
                 function validatePasswordConfirm(input) {
                     const isValid = input.value === passwordInput.value && input.value.length > 0;
                     input.setAttribute('aria-invalid', !isValid);
-                    
+
                     if (!isValid && input.value) {
                         input.classList.add('is-invalid');
                         input.classList.remove('is-valid');
@@ -511,14 +517,14 @@
                         input.classList.add('is-valid');
                         input.classList.remove('is-invalid');
                     }
-                    
+
                     return isValid;
                 }
 
                 function validateTerms(input) {
                     const isValid = input.checked;
                     input.setAttribute('aria-invalid', !isValid);
-                    
+
                     return isValid;
                 }
 
@@ -555,19 +561,19 @@
                 if (form) {
                     form.addEventListener('submit', function(event) {
                         event.preventDefault();
-                        
+
                         const isEmailValid = emailInput ? validateEmail(emailInput) : true;
                         const isPasswordValid = passwordInput ? validatePassword(passwordInput) : true;
                         const isPasswordConfirmValid = passwordConfirmInput ? validatePasswordConfirm(passwordConfirmInput) : true;
                         const isTermsValid = termsCheckbox ? validateTerms(termsCheckbox) : true;
-                        
+
                         if (isEmailValid && isPasswordValid && isPasswordConfirmValid && isTermsValid) {
                             // Indication de chargement
                             const submitBtn = form.querySelector('button[type="submit"]');
                             const originalText = submitBtn.innerHTML;
                             submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2" aria-hidden="true"></i>Création du compte...';
                             submitBtn.disabled = true;
-                            
+
                             // Soumettre le formulaire
                             setTimeout(() => {
                                 form.submit();
@@ -583,14 +589,14 @@
                             } else if (!isTermsValid && termsCheckbox) {
                                 termsCheckbox.focus();
                             }
-                            
+
                             // Annonce pour lecteurs d'écran
                             const errorAnnouncement = document.createElement('div');
                             errorAnnouncement.className = 'visually-hidden';
                             errorAnnouncement.setAttribute('aria-live', 'assertive');
                             errorAnnouncement.textContent = 'Veuillez corriger les erreurs dans le formulaire';
                             document.body.appendChild(errorAnnouncement);
-                            
+
                             setTimeout(() => {
                                 if (document.body.contains(errorAnnouncement)) {
                                     document.body.removeChild(errorAnnouncement);

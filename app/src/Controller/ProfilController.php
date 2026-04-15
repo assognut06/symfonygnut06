@@ -10,19 +10,27 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use App\Service\HelloAssoAuthService;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\HelloAssoApiService; // Service dédié pour les appels API HelloAsso
+use App\Entity\Payers;
+use App\Form\ProfileType;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/profil')]
 class ProfilController extends AbstractController
 {
 
     private $helloAssoApiService;
+    private $entityManager;
 
-    public function __construct(HelloAssoApiService $helloAssoApiService)
+    public function __construct(
+        HelloAssoApiService $helloAssoApiService, 
+        EntityManagerInterface $entityManager
+    )
     {
         $this->helloAssoApiService = $helloAssoApiService;
+        $this->entityManager = $entityManager;
     }
 
-    #[Route('', name: 'app_profil')]
+    #[Route('', name: 'app_profil', methods: ['GET', 'POST'])]
     public function index(Request $request): Response
     {
         // Assurez-vous que l'utilisateur est connecté
@@ -31,18 +39,44 @@ class ProfilController extends AbstractController
         // Récupérer l'utilisateur connecté
         $user = $this->getUser();
         $userEmail = urlencode($user->getUserIdentifier());
+
+        // Find or create Payers entity
+        $payer = $this->entityManager->getRepository(Payers::class)
+            ->findOneBy(['email' => $user->getUserIdentifier()]);
+
+        if (!$payer) {
+            $payer = new Payers();
+            $payer->setEmail($user->getUserIdentifier());
+            $payer->setCreatedAt(new \DateTimeImmutable());
+        }
+
+        // Create and handle form
+        $form = $this->createForm(ProfileType::class, $payer);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $payer->setUpdatedAt(new \DateTime());
+            $this->entityManager->persist($payer);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Vos informations ont été mises à jour avec succès !');
+            
+            return $this->redirectToRoute('app_profil');
+        }
+
         $page = $request->query->get('page', 1);
         $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO']  . "/items?userSearchKey=" . $userEmail . "&pageIndex=" . $page . "&pageSize=4&withDetails=false&sortOrder=Desc&sortField=Date&itemStates=Processed&withCount=true";
 
         $data_items = $this->helloAssoApiService->makeApiCall($url);
-        // dump($user);
+        
         $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
-        // exit;
+        
         // Renvoyer à la vue Twig, en passant l'utilisateur comme variable
         return $this->render('profil/index.html.twig', [
             'user' => $user,
             'data_items' => $data_items,
             'googleMapsApiKey' => $googleMapsApiKey,
+            'profileForm' => $form->createView(),
         ]);
     }
 

@@ -59,7 +59,11 @@
 									<strong class="text-primary">Soit
 										{{ i }}
 										billets sur
-										{{ data_forms.pagination.totalCount }}
+										{% if data_forms is defined and data_forms.pagination is defined %}
+											{{ data_forms.pagination.totalCount }}
+										{% else %}
+											0
+										{% endif %}
 										pour un Total</strong>
 									:
 									{{ formattedPrice(total_payment) }}</td>

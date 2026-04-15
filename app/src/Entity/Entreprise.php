@@ -4,8 +4,15 @@ namespace App\Entity;
 
 use App\Repository\EntrepriseRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Attribute as Vich;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\EntrepriseTihMessage;
+
 
 #[ORM\Entity(repositoryClass: EntrepriseRepository::class)]
+#[Vich\Uploadable]
 class Entreprise
 {
     #[ORM\Id]
@@ -16,8 +23,14 @@ class Entreprise
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
+    #[Vich\UploadableField(mapping: 'entreprise_logo', fileNameProperty: 'logo')]
+    private ?File $logoFile = null;
+
     #[ORM\Column(length: 255)]
     private ?string $logo = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 200)]
     private ?string $url = null;
@@ -27,6 +40,14 @@ class Entreprise
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $telephone = null;
+
+    #[ORM\OneToMany(mappedBy: 'entreprise', targetEntity: EntrepriseTihMessage::class, cascade: ['persist', 'remove'])]
+    private Collection $messages;
+
+    public function __construct()
+    {
+        $this->messages = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -50,9 +71,35 @@ class Entreprise
         return $this->logo;
     }
 
-    public function setLogo(string $logo): static
+    public function setLogo(?string $logo): static
     {
         $this->logo = $logo;
+
+        return $this;
+    }
+
+    public function setLogoFile(?File $logoFile = null): void
+    {
+        $this->logoFile = $logoFile;
+
+        if (null !== $logoFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getLogoFile(): ?File
+    {
+        return $this->logoFile;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -89,6 +136,31 @@ class Entreprise
     public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
+
+        return $this;
+    }
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(EntrepriseTihMessage $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages[] = $message;
+            $message->setEntreprise($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(EntrepriseTihMessage $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            if ($message->getEntreprise() === $this) {
+                $message->setEntreprise(null);
+            }
+        }
 
         return $this;
     }

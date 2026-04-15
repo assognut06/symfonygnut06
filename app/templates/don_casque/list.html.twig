@@ -9,7 +9,7 @@
 
                 <!-- Bloc de remerciement stylisé -->
                 <div class="p-4 mb-5 text-center" style="background-color: #f0f8ff; border-radius: 12px;">
-                    <h2 class="mb-3" style="color: #007bff;">🙏 Merci pour votre générosité !</h2>
+                    <h2 class="mb-3" style="color: #007bff !important;">🙏 Merci pour votre générosité !</h2>
                     <p style="font-size: 1.1rem; color: #333;">
                         Grâce à vous, plusieurs personnes pourront bénéficier d'une meilleure sécurité. 
                         Chaque casque donné est un pas vers un monde plus solidaire.
@@ -29,7 +29,7 @@
                     </div>
                 {% else %}
                     <!-- Liste des dons -->
-                    <div class="accordion" id="donAccordion">
+                    <div class="accordion mb-5" id="donAccordion">
                         {% for don in dons %}
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="heading{{ don.id }}">

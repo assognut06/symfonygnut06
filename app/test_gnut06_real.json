@@ -1,0 +1,59 @@
+{
+  "eventType": "Form",
+  "data": {
+    "organizationLogo": "https://cdn.helloasso.com/img/logos/croppedimage-0a34d1c7b3734e34b677a415e6f7fcb2.png",
+    "organizationName": "Gnut 06",
+    "organizationSlug": "gnut-06",
+    "formSlug": "seance-de-realite-virtuelle-lsca-du-21-11-2025",
+    "formType": "Event",
+    "title": "Seance de realite virtuelle LSCA du 21/11/2025",
+    "description": "L'association Gnut 06, basee a Nice, oeuvre pour l'inclusion des personnes en situation de handicap par le biais de technologies innovantes comme la realite virtuelle et augmentee. Elle propose des experiences immersives pour favoriser l'integration sociale et l'epanouissement de ses membres, offrant des visites et des stages d'initiation aux nouvelles technologies.",
+    "state": "Draft",
+    "currency": "EUR",
+    "url": "https://www.helloasso.com/associations/gnut-06/evenements/seance-de-realite-virtuelle-lsca-du-21-11-2025",
+    "startDate": "2025-10-10T15:00:00+02:00",
+    "endDate": "2025-10-10T17:00:59+02:00",
+    "activityType": "Atelier",
+    "activityTypeId": 2,
+    "placeCity": "Nice",
+    "placeZipCode": "06300",
+    "placeCountry": "FRA",
+    "placeAddress": "1 Rue Albert Voisin",
+    "bannerPublicUrl": "https://cdn.helloasso.com/img/photos/evenements/croppedimage-1d6e17c72d194476b7599e2645c3a917.png",
+    "widgetButtonUrl": "https://www.helloasso.com/associations/gnut-06/evenements/seance-de-realite-virtuelle-lsca-du-21-11-2025/widget-bouton",
+    "widgetFullUrl": "https://www.helloasso.com/associations/gnut-06/evenements/seance-de-realite-virtuelle-lsca-du-21-11-2025/widget",
+    "tiers": [
+      {
+        "id": 18958123,
+        "label": "Decouvrir l'association Gnut 06",
+        "description": "L'association Gnut 06 favorise l'inclusion via la realite virtuelle, offrant aux handicapes des experiences immersives pour leur epanouissement et integration sociale.",
+        "tierType": "Registration",
+        "price": 0.00,
+        "vatRate": 0.00,
+        "paymentFrequency": "Single",
+        "isEligibleTaxReceipt": false,
+        "isFavorite": false
+      },
+      {
+        "id": 18958124,
+        "label": "Immersion a la VR Gratuite pour personne en situation d'handicap",
+        "description": "L'association Gnut 06 offre une immersion gratuite en realite virtuelle pour les personnes en situation de handicap, favorisant l'inclusion et l'epanouissement par la technologie.",
+        "tierType": "Registration",
+        "price": 0.00,
+        "vatRate": 0.00,
+        "paymentFrequency": "Single",
+        "isEligibleTaxReceipt": false,
+        "isFavorite": false,
+        "customFields": [
+          {
+            "id": 6719202,
+            "label": "Age",
+            "type": "text",
+            "isRequired": true,
+            "values": []
+          }
+        ]
+      }
+    ]
+  }
+}

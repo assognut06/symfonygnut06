@@ -4,6 +4,9 @@ framework:
         dsn: '%env(MAILER_DSN)%'
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
+    
+    # Configuration des headers de sécurité
+    http_method_override: false
 
     # Note that the session will be started ONLY if you read or write from it.
     #session: true

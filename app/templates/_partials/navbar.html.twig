@@ -68,25 +68,25 @@
 </style>
 
 <header class="sticky-top">
-    <nav class="navbar navbar-expand-xl navbar-dark bg-navbar" 
-         role="navigation" 
+    <nav class="navbar navbar-expand-xl navbar-dark bg-navbar"
+         role="navigation"
          aria-label="Navigation principale du site GNUT 06">
         <div class="container-fluid">
-            
+
             <!-- ✅ Logo accessible -->
-            <a class="navbar-brand logoNavbar" 
-               href="{{ path('app_home') }}" 
+            <a class="navbar-brand logoNavbar"
+               href="{{ path('app_home') }}"
                aria-label="Retour à l'accueil de GNUT 06">
-                <span role="img" aria-label="Logo GNUT 06">GNUT 06</span>
+                <span role="img" aria-label="Logo GNUT 06" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Groupement Numérique d’Utilité Territoriale des Alpes‑Maritimes (06)">GNUT 06</span>
             </a>
 
             <!-- ✅ Burger menu accessible -->
-            <button class="navbar-toggler" 
-                    type="button" 
+            <button class="navbar-toggler"
+                    type="button"
                     data-bs-toggle="collapse"
-                    data-bs-target="#navbarNavDropdown" 
+                    data-bs-target="#navbarNavDropdown"
                     aria-controls="navbarNavDropdown"
-                    aria-expanded="false" 
+                    aria-expanded="false"
                     aria-label="Ouvrir le menu de navigation principal">
                 <span class="navbar-toggler-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Menu</span>
@@ -94,14 +94,14 @@
 
             <!-- ✅ Menu principal -->
             <div class="collapse navbar-collapse fs-5" id="navbarNavDropdown">
-                <ul class="navbar-nav ms-auto mb-2 mb-xl-0 text-navbar w-100 justify-content-xl-evenly" 
+                <ul class="navbar-nav ms-auto mb-2 mb-xl-0 text-navbar w-100 justify-content-xl-evenly"
                     role="menubar">
 
                     <li class="nav-item" role="none">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_a_propos' ? 'active' : '' }}"
                            href="{{ path('app_a_propos') }}"
                            role="menuitem"
-                           {% if app.request.attributes.get('_route') == 'app_a_propos' %} 
+                           {% if app.request.attributes.get('_route') == 'app_a_propos' %}
                                aria-current="page"
                                aria-label="Notre Mission - Page courante"
                            {% else %}
@@ -115,7 +115,7 @@
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}"
                            href="{{ path('app_billetteries') }}"
                            role="menuitem"
-                           {% if app.request.attributes.get('_route') == 'app_billetteries' %} 
+                           {% if app.request.attributes.get('_route') == 'app_billetteries' %}
                                aria-current="page"
                                aria-label="Réserver une activité - Page courante"
                            {% else %}
@@ -129,7 +129,7 @@
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_metavers' ? 'active' : '' }}"
                            href="{{ path('app_metavers') }}"
                            role="menuitem"
-                           {% if app.request.attributes.get('_route') == 'app_metavers' %} 
+                           {% if app.request.attributes.get('_route') == 'app_metavers' %}
                                aria-current="page"
                                aria-label="Salles 3D immersives - Page courante"
                            {% else %}
@@ -143,7 +143,7 @@
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_digital_consulting' ? 'active' : '' }}"
                            href="{{ path('app_digital_consulting') }}"
                            role="menuitem"
-                           {% if app.request.attributes.get('_route') == 'app_digital_consulting' %} 
+                           {% if app.request.attributes.get('_route') == 'app_digital_consulting' %}
                                aria-current="page"
                                aria-label="Digital Consulting - Page courante"
                            {% else %}
@@ -157,7 +157,7 @@
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_don' ? 'active' : '' }}"
                            href="{{ path('app_don') }}"
                            role="menuitem"
-                           {% if app.request.attributes.get('_route') == 'app_don' %} 
+                           {% if app.request.attributes.get('_route') == 'app_don' %}
                                aria-current="page"
                                aria-label="Nous Soutenir - Page courante"
                            {% else %}
@@ -179,21 +179,21 @@
                                aria-expanded="false"
                                aria-haspopup="true"
                                aria-label="Menu du profil utilisateur">
-                                <img src="{{ asset('../images/webp/person-circle.svg') }}" 
-                                     alt="Icône de profil utilisateur" 
-                                     width="20" 
+                                <img src="{{ asset('../images/webp/person-circle.svg') }}"
+                                     alt="Icône de profil utilisateur"
+                                     width="20"
                                      height="20"
                                      role="img">
                                 <span>Profil</span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end bg-navbar border-0" 
+                            <ul class="dropdown-menu dropdown-menu-end bg-navbar border-0"
                                 aria-labelledby="navbarProfilDropdown"
                                 role="menu">
                                 <li role="none">
-                                    <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'app_profil' ? 'active' : '' }}" 
+                                    <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'app_profil' ? 'active' : '' }}"
                                        href="{{ path('app_profil') }}"
                                        role="menuitem"
-                                       {% if app.request.attributes.get('_route') == 'app_profil' %} 
+                                       {% if app.request.attributes.get('_route') == 'app_profil' %}
                                            aria-current="page"
                                        {% endif %}>
                                         Tableau de bord
@@ -201,13 +201,25 @@
                                 </li>
                                 {% if is_granted('ROLE_ADMIN') %}
                                     <li role="none">
-                                        <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}" 
+                                        <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
                                            href="{{ path('admin_dashboard') }}"
                                            role="menuitem"
-                                           {% if app.request.attributes.get('_route') == 'admin_dashboard' %} 
+                                           {% if app.request.attributes.get('_route') == 'admin_dashboard' %}
                                                aria-current="page"
                                            {% endif %}>
                                             Administration
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if app.user and is_granted('ROLE_ENTREPRISE') %}
+                                    <li role="none">
+                                        <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'app_tih_search' ? 'active' : '' }}"
+                                           href="{{ path('app_tih_search') }}"
+                                           role="menuitem"
+                                                {% if app.request.attributes.get('_route') == 'app_tih_search' %}
+                                            aria-current="page"
+                                                {% endif %}>
+                                            Recherche de tih
                                         </a>
                                     </li>
                                 {% endif %}
@@ -215,7 +227,7 @@
                                     <hr class="dropdown-divider text-light" aria-hidden="true">
                                 </li>
                                 <li role="none">
-                                    <a class="dropdown-item text-light" 
+                                    <a class="dropdown-item text-light"
                                        href="{{ path('app_logout') }}"
                                        role="menuitem"
                                        aria-label="Se déconnecter du compte">
@@ -230,7 +242,7 @@
                             <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_profil' ? 'active' : '' }}"
                                href="{{ path('app_profil') }}"
                                role="menuitem"
-                               {% if app.request.attributes.get('_route') == 'app_profil' %} 
+                               {% if app.request.attributes.get('_route') == 'app_profil' %}
                                    aria-current="page"
                                    aria-label="Tableau de bord - Page courante"
                                {% else %}
@@ -245,7 +257,7 @@
                                 <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
                                    href="{{ path('admin_dashboard') }}"
                                    role="menuitem"
-                                   {% if app.request.attributes.get('_route') == 'admin_dashboard' %} 
+                                   {% if app.request.attributes.get('_route') == 'admin_dashboard' %}
                                        aria-current="page"
                                        aria-label="Administration - Page courante"
                                    {% else %}
@@ -257,7 +269,7 @@
                         {% endif %}
 
                         <li class="nav-item d-block d-xl-none" role="none">
-                            <a class="nav-link text-light" 
+                            <a class="nav-link text-light"
                                href="{{ path('app_logout') }}"
                                role="menuitem"
                                aria-label="Se déconnecter du compte">
@@ -270,7 +282,7 @@
                             <a href="{{ path('app_register') }}"
                                class="btn-outline-gradient btn-sm text-white {{ app.request.attributes.get('_route') == 'app_register' ? ' active' }}"
                                role="menuitem"
-                               {% if app.request.attributes.get('_route') == 'app_register' %} 
+                               {% if app.request.attributes.get('_route') == 'app_register' %}
                                    aria-current="page"
                                    aria-label="Inscription - Page courante"
                                {% else %}
@@ -281,7 +293,7 @@
                             <a href="{{ path('app_login') }}"
                                class="btn-neon btn-sm text-white {{ app.request.attributes.get('_route') == 'app_login' ? ' active' }}"
                                role="menuitem"
-                               {% if app.request.attributes.get('_route') == 'app_login' %} 
+                               {% if app.request.attributes.get('_route') == 'app_login' %}
                                    aria-current="page"
                                    aria-label="Connexion - Page courante"
                                {% else %}
