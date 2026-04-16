@@ -34,7 +34,14 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    ssh-keygen
    cat <chemin>/<nom_du_fichier_créé_par_keygen(voir_sortie_console)>.pub
    ```
-   copier la sortie console de cat dans les paramètres du projet git avec le navigateur
+   Copier la sortie console de cat
+   Ouvrir githb dans le navigateur
+   Cliquer Profil (Icône en haut à droite) -> Settings (Paramètres)
+   Cliquer "SSH and GPG keys"
+   Cliquer "New SSH key"
+   Saisir un nom de clé
+   Coller la sortie console de cat
+
 2. **Clonez le dépôt**
 
    ```bash
@@ -49,11 +56,48 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    ```
    La sortie console doit être vide, sinon:
    - désinstallez le serveur concurrent
-   - changez le port dans le fichier docker-compose.yaml en remplaçant tous les 3306 par un autre port libre (déconseillé car il y a un risque d'archiver le changement)
 4. **Allumage du projet**
    ```bash
    sudo groupmod -U <username> docker
-   docker compose up --build
+   docker compose up --build -d
+   ```
+5. **Initialisation de la base de données**
+   ```bash
+   docker exec -it symfony_asso php bin/console doctrine:migration:migrate
+   ```
+A ce niveau, le site devrait être accessible via le navigateur sur https://localhost
+Par contre, la base de donnée est vide
+
+## Importation des données (si nécessaire)
+
+1. **Demander les données nécessaires**
+   le répertoire uploads
+   le script sql de la base de prod
+
+2. **Importation des uploads**
+   Copier le répertoire uploads fourni dans app/public/uploads
+
+3. **Charger le sql**
+   Ouvrir PHPmyAdmin: http://localhost:8080
+   S'authentifier
+   Selectionner la base gnut06
+   Ouvrir l'onglet "Importer"
+   Parcourir pour choisir le fichier .sql ou .sql.gz
+   Décocher "Activer la vérification des clés étrangères"
+   Cliquer sur importer
+
+4. **Vérifier**
+   Ouvrir le site applicatif
+   La liste "Nos alliés dans nos actions" doit contenir des logos défilant
+
+## Arrêt
+   ```bash
+   docker compose stop
+   ```
+
+## Démarrage normal
+   ```bash
+   docker compose up -d
    ```
 e
    
