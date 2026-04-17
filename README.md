@@ -56,11 +56,18 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    ```
    La sortie console doit être vide, sinon:
    - désinstallez le serveur concurrent
-4. **Allumage du projet**
+4. **Intégration du projet**
    ```bash
    sudo groupmod -U <username> docker
    docker compose up --build -d
    ```
+   Certains éléments de configuration ne peuvent être faits qu'une fois que les images sont démarrées.
+     ```bash   
+   docker exec -it symfony_asso composer install --no-interaction
+   docker exec -it symfony_asso npm install
+   docker exec -it symfony_asso npm run build   
+   ```
+
 5. **Initialisation de la base de données**
    ```bash
    docker exec -it symfony_asso php bin/console doctrine:migration:migrate
