@@ -1,0 +1,20 @@
+  /* Styles de la page "Admin - Associations recommandées",
+  /* Fichier Twig: admin_asso_recommander/index.html.twig */
+  /* URL: /admin/asso/recommander/liste */
+  /* Ce fichier n'est pas rendu, c'est un fichier de démo oublié, Template utilisé : templates/admin/asso_recommander/index.html.twig */
+  /* Auteur : Simon Fanny */
+  /* Date : 2026-04-17 */
+
+  /*==========================================*/
+
+  .example-wrapper {
+    margin: 1em auto;
+    max-width: 800px;
+    width: 95%;
+    font: 18px/1.5 sans-serif;
+  }
+
+  .example-wrapper code {
+    background: #F5F5F5;
+    padding: 2px 6px;
+  }
