@@ -44,8 +44,8 @@
                 {% set modal_id = 'modal-tih-' ~ tih.id %}
                 <tr>
                   <td>{{ tih.id }}</td>
-                  <td>{{ user ? tih.nom : '—' }}</td>
-                  <td>{{ user ? tih.prenom : '—' }}</td>
+                  <td>{{ user ? tih.firstname : '—' }}</td>
+                  <td>{{ user ? tih.lastname : '—' }}</td>
                   <td>{{ user ? user.email : '—' }}</td>
                   <td>
                     {% if user %}
