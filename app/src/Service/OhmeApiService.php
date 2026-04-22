@@ -12,7 +12,7 @@ class OhmeApiService
 
     public function __construct(string $slugAsso, string $secretOhme)
     {
-        $this->client = new Client();;
+        $this->client = new Client();
         $this->slugAsso = $slugAsso;
         $this->secretOhme = $secretOhme;
     }
@@ -20,7 +20,7 @@ class OhmeApiService
     public function getContacts(array $params, string $object, string $method = 'GET')
     {
         $urlBaseApi = 'https://api-ohme.oneheart.fr/api/v1/';
-        $url = $urlBaseApi . $object . '?' . http_build_query($params);
+        $url = $urlBaseApi.$object.'?'.http_build_query($params);
 
         $headers = [
             'client-name' => $this->slugAsso,

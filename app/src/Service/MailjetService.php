@@ -20,9 +20,10 @@ class MailjetService
     {
         $mj = new Client($this->apiKey, $this->apiSecret, true, ['version' => 'v3.1']);
         $body = [
-            'Messages' => [$message]
+            'Messages' => [$message],
         ];
         $response = $mj->post(Resources::$Email, ['body' => $body]);
+
         return $response->success() ? $response->getData() : null;
     }
 }

@@ -9,7 +9,6 @@ use App\Entity\Tih;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -36,10 +35,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Assert\PasswordStrength([
+    #[PasswordStrength([
         'minScore' => PasswordStrength::STRENGTH_MEDIUM, // Very strong password required
-        'message' => 'Votre mot de passe est trop facile à deviner. La politique de sécurité de Gnut 06 exige l\'utilisation d\'un mot de passe plus complexe.'
-        
+        'message' => 'Votre mot de passe est trop facile à deviner. La politique de sécurité de Gnut 06 exige l\'utilisation d\'un mot de passe plus complexe.',
     ])]
     private ?string $password = null;
 
@@ -83,6 +81,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->id;
     }
+
     /**
      * A visual identifier that represents this user.
      *
@@ -92,6 +91,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->email;
     }
+
     /**
      * A visual identifier that represents this user.
      *
@@ -178,10 +178,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->profile_picture;
     }
-    
+
     public function setProfilePicture(?string $profile_picture): self
     {
         $this->profile_picture = $profile_picture;
+
         return $this;
     }
 
@@ -193,6 +194,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGoogleId(?string $googleId): static
     {
         $this->googleId = $googleId;
+
         return $this;
     }
 
@@ -204,6 +206,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAzureId(?string $azureId): static
     {
         $this->azureId = $azureId;
+
         return $this;
     }
 

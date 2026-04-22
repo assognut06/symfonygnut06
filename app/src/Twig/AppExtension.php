@@ -1,14 +1,16 @@
 <?php
+
 // src/Twig/AppExtension.php
+
 namespace App\Twig;
 
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use App\Service\HelloAssoApiService;
 use App\Service\DataFilterAndPaginator;
+use App\Service\HelloAssoApiService;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Finder\Finder;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension
 {
@@ -22,6 +24,7 @@ class AppExtension extends AbstractExtension
         $this->helloAssoApiService = $helloAssoApiService;
         $this->dataFilterAndPaginator = $dataFilterAndPaginator;
     }
+
     public function getFilters()
     {
         return [
@@ -48,16 +51,16 @@ class AppExtension extends AbstractExtension
 
         // Remplacer la virgule par l'euro et ajuster pour le format voulu
         // Ici, on prend la partie entière, on ajoute '€' et on append les deux derniers chiffres
-        $formattedPrice = substr($formattedPrice, 0, -3) . '€' . substr($formattedPrice, -2);
+        $formattedPrice = substr($formattedPrice, 0, -3).'€'.substr($formattedPrice, -2);
+
         return $formattedPrice;
     }
-
 
     public function randomImage($directory)
     {
         // Utiliser le répertoire racine du projet pour construire le chemin absolu
         $projectDir = $this->parameterBag->get('kernel.project_dir');
-        $absolutePath = $projectDir . '/public' . $directory;
+        $absolutePath = $projectDir.'/public'.$directory;
 
         $finder = new Finder();
         try {
@@ -71,7 +74,8 @@ class AppExtension extends AbstractExtension
         $files = iterator_to_array($finder);
         if (count($files) > 0) {
             $randomFile = $files[array_rand($files)];
-            return $directory . $randomFile->getRelativePathname();
+
+            return $directory.$randomFile->getRelativePathname();
         }
 
         return null; // ou retourner un chemin d'image par défaut
@@ -90,9 +94,9 @@ class AppExtension extends AbstractExtension
             }
 
             // ✅ Filtrage sécurisé selon le type de formulaire
-            if ($formTypes === 'Event') {
+            if ('Event' === $formTypes) {
                 $filteredData = $this->dataFilterAndPaginator->filterAndSortData($data_forms['data']);
-            } elseif ($formTypes === 'Membership' || $formTypes === 'CrowdFunding') {
+            } elseif ('Membership' === $formTypes || 'CrowdFunding' === $formTypes) {
                 $filteredData = $this->dataFilterAndPaginator->filterMemberShipSortData($data_forms['data']);
             } else {
                 // ✅ Pour les autres types, on fait un filtrage sécurisé

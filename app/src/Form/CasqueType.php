@@ -6,9 +6,9 @@ use App\Entity\Casque;
 use App\Entity\Marque;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class CasqueType extends AbstractType
 {
@@ -20,18 +20,18 @@ class CasqueType extends AbstractType
                 'choice_label' => 'nom',
                 'label' => false,
                 'attr' => ['placeholder' => 'Modèle',
-                           'class' => 'form-select'],
+                    'class' => 'form-select'],
             ])
             ->add('etat', ChoiceType::class, [
                 'choices' => [
                     'Neuf' => 'Neuf',
                     'Occasion (Bon état)' => 'Occasion (Bon état)',
                     'Occasion (Moyen état)' => 'Occasion (Moyen état)',
-                    'Cassé' => 'Cassé'
+                    'Cassé' => 'Cassé',
                 ],
                 'label' => false,
                 'attr' => ['placeholder' => 'Etat',
-                               'class' => 'form-select mt-3'],
+                    'class' => 'form-select mt-3'],
             ]);
     }
 

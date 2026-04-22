@@ -3,14 +3,20 @@
 namespace App\Security;
 
 use App\Entity\User; // Assurez-vous que le chemin vers votre entité User est correct
+use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use League\OAuth2\Client\Provider\GoogleUser;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -18,16 +24,8 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
-use App\Service\EmailService;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Routing\Annotation\Route;
-use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
-class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationEntrypointInterface
+class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
     private ClientRegistry $clientRegistry;
     private EntityManagerInterface $entityManager;
@@ -37,7 +35,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     private LoggerInterface $logger;
     private Security $security;
     private SessionInterface $session;
-  
+
     public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, EmailService $emailService, LoggerInterface $logger, Security $security, RequestStack $requestStack)
     {
         $this->clientRegistry = $clientRegistry;
@@ -48,7 +46,6 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         $this->logger = $logger;
         $this->security = $security;
         $this->session = $requestStack->getSession();
-       
     }
 
     /**
@@ -57,7 +54,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
      */
     public function supports(Request $request): ?bool
     {
-        return $request->attributes->get('_route') === 'connect_google_check';
+        return 'connect_google_check' === $request->attributes->get('_route');
     }
 
     /**
@@ -94,6 +91,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                     $existingUser->setGoogleId($googleId);
                     $this->entityManager->persist($existingUser);
                     $this->entityManager->flush();
+
                     return $existingUser;
                 }
 
@@ -101,7 +99,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 $newUser = new User();
                 $newUser->setEmail($email);
                 $newUser->setGoogleId($googleId);
-                
+
                 // Le mot de passe n'est pas nécessaire pour une connexion sociale,
                 // mais notre entité User en requiert un. On lui assigne donc
                 // une longue chaîne de caractères aléatoire et sécurisée.
@@ -110,7 +108,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                     bin2hex(random_bytes(32))
                 );
                 $newUser->setPassword($hashedPassword);
-                
+
                 // Vous pouvez définir d'autres propriétés ici
                 // Par exemple, si vous avez une propriété `fullName` :
                 // $newUser->setFullName($googleUser->getName());
@@ -121,23 +119,23 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 $this->entityManager->flush();
 
                 if ($newUser) {
-            // Si l'utilisateur n'est pas encore vérifié, on envoie l'email de confirmation
-             try {
-                $this->emailService->sendConfirmationEmail($newUser);
-               // $this->addFlash('success', 'Un email de confirmation a été envoyé. Veuillez consulter votre boîte mail.');
-            } catch (\Exception $e) {
-                $this->logger->error('Erreur envoi email de confirmation', ['exception' => $e]);
-               // $this->addFlash('danger', 'Problème lors de l\'envoi du mail. Veuillez réessayer.');
-            }
-           // return $this->redirectToRoute('app_profil');
-            return $this->security->login($newUser, 'form_login', 'main');; // Retourne l'utilisateur connecté.
-        }
-        else{
-          //  $this->addFlash('danger', "Erreur lors de l'authentification Google. Veuillez réessayer ou contacter l'administrateur.");
-           // return $this->redirectToRoute('app_login');
-        }
+                    // Si l'utilisateur n'est pas encore vérifié, on envoie l'email de confirmation
+                    try {
+                        $this->emailService->sendConfirmationEmail($newUser);
+                        // $this->addFlash('success', 'Un email de confirmation a été envoyé. Veuillez consulter votre boîte mail.');
+                    } catch (\Exception $e) {
+                        $this->logger->error('Erreur envoi email de confirmation', ['exception' => $e]);
+                        // $this->addFlash('danger', 'Problème lors de l\'envoi du mail. Veuillez réessayer.');
+                    }
 
-              //  return $this->redirectToRoute('app_profil');
+                    // return $this->redirectToRoute('app_profil');
+                    return $this->security->login($newUser, 'form_login', 'main'); // Retourne l'utilisateur connecté.
+                } else {
+                    //  $this->addFlash('danger', "Erreur lors de l'authentification Google. Veuillez réessayer ou contacter l'administrateur.");
+                    // return $this->redirectToRoute('app_login');
+                }
+
+                //  return $this->redirectToRoute('app_profil');
             })
         );
     }
@@ -162,13 +160,14 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         $message = strtr($exception->getMessageKey(), $exception->getMessageData());
 
         // Vous pouvez rediriger vers la page de connexion avec un message d'erreur
-       // $request->getSession()-> $this->addFlash('danger', $message);
-        
+        // $request->getSession()-> $this->addFlash('danger', $message);
+
         return new RedirectResponse(
             $this->router->generate('app_profil')
         );
     }
-     public function __toString(): string
+
+    public function __toString(): string
     {
         return self::class;
     }

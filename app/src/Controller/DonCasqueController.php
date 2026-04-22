@@ -2,18 +2,18 @@
 
 namespace App\Controller;
 
-use App\Entity\Don;
 use App\Entity\Casque;
+use App\Entity\Don;
 use App\Entity\Donateur;
 use App\Form\DonCasqueType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DonCasqueController extends AbstractController
 {
@@ -21,7 +21,7 @@ class DonCasqueController extends AbstractController
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
-        MailerInterface $mailer
+        MailerInterface $mailer,
     ): Response {
         $session = $request->getSession();
 
@@ -29,15 +29,15 @@ class DonCasqueController extends AbstractController
         $donateurId = $session->get('selected_donateur_id');
 
         if (!$donateurId) {
-              return $this->render('don_casque/new.html.twig', [
-                  'donateur' => false
-              ]);
+            return $this->render('don_casque/new.html.twig', [
+                'donateur' => false,
+            ]);
         }
 
         $donateur = $entityManager->getRepository(Donateur::class)->find($donateurId);
 
         if (!$donateur) {
-            throw $this->createNotFoundException('Le donateur avec l\'ID ' . $donateurId . ' n\'existe pas.');
+            throw $this->createNotFoundException('Le donateur avec l\'ID '.$donateurId.' n\'existe pas.');
         }
 
         // Récupérer l'email du donateur depuis la base de données
@@ -58,12 +58,11 @@ class DonCasqueController extends AbstractController
                 ->setDateCreation($now)
                 ->setDateMiseAJour(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
 
-                if ($don->getModeLivraison()->getNom() === 'Expédition'){
-                    $don->setStatut('En attente de bordereau');
-                }
-                elseif ($don->getModeLivraison()->getNom() === 'Dépôt'){
-                    $don->setStatut('En attente de dépôt');
-                }
+            if ('Expédition' === $don->getModeLivraison()->getNom()) {
+                $don->setStatut('En attente de bordereau');
+            } elseif ('Dépôt' === $don->getModeLivraison()->getNom()) {
+                $don->setStatut('En attente de dépôt');
+            }
 
             // Définir les dates pour chaque casque
             foreach ($don->getCasques() as $casque) {
@@ -93,17 +92,16 @@ class DonCasqueController extends AbstractController
 
                 $this->addFlash('success', 'Votre don a été enregistré avec succès. Un email de confirmation vous a été envoyé.');
             } catch (\Exception $e) {
-                $this->addFlash('danger', 'Une erreur est survenue lors de l\'envoi des emails.' .$e);
+                $this->addFlash('danger', 'Une erreur est survenue lors de l\'envoi des emails.'.$e);
             }
 
-
-                try {
+            try {
                 // Email à Gnut 06
                 $emailGnut = (new TemplatedEmail())
                     ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
-                    ->to('doncasque@gnut06.org') //Mail du sécuritariat
+                    ->to('doncasque@gnut06.org') // Mail du sécuritariat
                     ->from(new Address('don.casque@gnut06.org', 'Don Casque'))
-                    ->to('gnut@gnut06.org') //Mail du sécuritariat
+                    ->to('gnut@gnut06.org') // Mail du sécuritariat
                     ->subject('Nouveau don reçu')
                     ->htmlTemplate('don_casque/email_gnut_notification.html.twig')
                     ->context([
@@ -115,7 +113,7 @@ class DonCasqueController extends AbstractController
 
                 $this->addFlash('success', 'Un email a été envoyé à Gnut 06 également.');
             } catch (\Exception $e) {
-                $this->addFlash('danger', 'Une erreur est survenue lors de l\'envoi des emails.' .$e);
+                $this->addFlash('danger', 'Une erreur est survenue lors de l\'envoi des emails.'.$e);
             }
 
             // Redirection vers une autre route sans ID dans l'URL
@@ -144,7 +142,7 @@ class DonCasqueController extends AbstractController
         $donateur = $entityManager->getRepository(Donateur::class)->find($donateurId);
 
         if (!$donateur) {
-            throw $this->createNotFoundException('Le donateur avec l\'ID ' . $donateurId . ' n\'existe pas.');
+            throw $this->createNotFoundException('Le donateur avec l\'ID '.$donateurId.' n\'existe pas.');
         }
 
         // Récupérer tous les dons du donateur

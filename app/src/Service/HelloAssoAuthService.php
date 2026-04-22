@@ -1,8 +1,9 @@
 <?php
+
 namespace App\Service;
 
-use Symfony\Component\HttpFoundation\RequestStack;
 use GuzzleHttp\Client;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class HelloAssoAuthService
 {
@@ -47,7 +48,7 @@ class HelloAssoAuthService
             $dataToken = json_decode($response->getBody(), true);
 
             $session->set('bearer_token', $dataToken['access_token']);
-            $session->set('expiration_token', (new \DateTime())->modify('+' . $dataToken['expires_in'] . ' seconds'));
+            $session->set('expiration_token', (new \DateTime())->modify('+'.$dataToken['expires_in'].' seconds'));
             if (isset($dataToken['refresh_token'])) {
                 $session->set('refresh_token', $dataToken['refresh_token']);
                 // Assuming the refresh token expires in 14 days

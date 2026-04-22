@@ -16,11 +16,10 @@ class CasqueRepository extends ServiceEntityRepository
         parent::__construct($registry, Casque::class);
     }
 
-
     public function TrouveCasquesParDon($don)
     {
         return $this->createQueryBuilder('c')
-             ->where('c.don = :don') 
+             ->where('c.don = :don')
              ->setParameter('don', $don) // Injecter l'entité Don
              ->orderBy('c.id', 'DESC') // Tri par ID
              ->getQuery();

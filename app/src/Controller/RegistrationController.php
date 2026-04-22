@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Application\Command\RegisterUserCommand;
@@ -9,8 +10,8 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Message\Notification;
 use App\Repository\UserRepository;
-use App\Service\RecaptchaVerifier;
 use App\Service\EmailService;
+use App\Service\RecaptchaVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,9 +29,10 @@ class RegistrationController extends AbstractController
     public function __construct(
         private LoggerInterface $logger,
         private MessageBusInterface $bus,
-        private string $appEnv ,
+        private string $appEnv,
         private string $recaptchaSecret,
-    ) {}
+    ) {
+    }
 
     #[Route('/register', name: 'app_register')]
     public function register(
@@ -39,7 +41,7 @@ class RegistrationController extends AbstractController
         Security $security,
         EntityManagerInterface $entityManager,
         RecaptchaVerifier $recaptchaVerifier,
-        EmailService $emailService
+        EmailService $emailService,
     ): Response {
         $dto = new RegisterUserDTO();
         $form = $this->createForm(RegistrationFormType::class, $dto);
@@ -48,9 +50,10 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if (!$recaptchaVerifier->verify($request)) {
                 $this->addFlash('danger', 'La vérification reCAPTCHA a échoué. Veuillez réessayer.');
+
                 return $this->render('registration/register.html.twig', [
                     'registrationForm' => $form,
-                    'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
+                    'site_key' => $_ENV['NOCAPTCHA_SITEKEY'],
                 ]);
             }
 
@@ -73,7 +76,7 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->bus->dispatch(new Notification("L'inscription a été effectuée: " . $user->getUserIdentifier()));
+            $this->bus->dispatch(new Notification("L'inscription a été effectuée: ".$user->getUserIdentifier()));
 
             try {
                 $emailService->sendConfirmationEmail($user);
@@ -88,7 +91,7 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
-            'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
+            'site_key' => $_ENV['NOCAPTCHA_SITEKEY'],
         ]);
     }
 
@@ -105,6 +108,7 @@ class RegistrationController extends AbstractController
 
         if (!$user) {
             $this->addFlash('info', 'Utilisateur déjà connecté. Vérifiez vos emails pour confirmer.');
+
             return $this->redirectToRoute('app_home');
         }
 
@@ -112,10 +116,12 @@ class RegistrationController extends AbstractController
             $emailService->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $e) {
             $this->addFlash('verify_email_error', $translator->trans($e->getReason(), [], 'VerifyEmailBundle'));
+
             return $this->redirectToRoute('app_home');
         }
 
         $this->addFlash('success', 'Votre adresse e-mail a été vérifiée.');
+
         return $this->redirectToRoute('app_home');
     }
 
@@ -130,11 +136,13 @@ class RegistrationController extends AbstractController
         $user = $userRepository->find($id);
         if (!$user) {
             $this->addFlash('info', 'Utilisateur non trouvé ou déjà vérifié.');
+
             return $this->redirectToRoute('app_home');
         }
 
         $emailService->sendConfirmationEmail($user);
         $this->addFlash('info', 'Un nouvel email de confirmation a été envoyé.');
+
         return $this->redirectToRoute('app_home');
     }
 }

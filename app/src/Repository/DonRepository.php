@@ -25,15 +25,13 @@ class DonRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    
+
     public function TrouveDonsParDonateur($donateur)
     {
         return $this->createQueryBuilder('d')
-            ->where('d.donateur = :donateur') 
+            ->where('d.donateur = :donateur')
             ->setParameter('donateur', $donateur)
-            ->orderBy('d.date_creation', 'DESC') 
+            ->orderBy('d.date_creation', 'DESC')
             ->getQuery();
     }
-
-
 }

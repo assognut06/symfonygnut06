@@ -21,19 +21,19 @@ class MailjetController extends AbstractController
     {
         $message = [
             'From' => [
-                'Email' => "gnut@gnut06.org",
-                'Name' => "Gérald COL"
+                'Email' => 'gnut@gnut06.org',
+                'Name' => 'Gérald COL',
             ],
             'To' => [
                 [
-                    'Email' => "gnut@gnut06.org",
-                    'Name' => "Gérald COL"
-                ]
+                    'Email' => 'gnut@gnut06.org',
+                    'Name' => 'Gérald COL',
+                ],
             ],
-            'Subject' => "Greetings from Mailjet.",
-            'TextPart' => "My first Mailjet email",
+            'Subject' => 'Greetings from Mailjet.',
+            'TextPart' => 'My first Mailjet email',
             'HTMLPart' => "<h3>Dear passenger 1, welcome to <a href='https://www.mailjet.com/'>Mailjet</a>!</h3><br />May the delivery force be with you!",
-            'CustomID' => "AppGettingStartedTest"
+            'CustomID' => 'AppGettingStartedTest',
         ];
 
         $response = $this->mailjetService->sendEmail($message);

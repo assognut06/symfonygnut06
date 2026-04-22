@@ -6,10 +6,10 @@ use App\Entity\User;
 use App\Form\ProfilePictureType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class UserController extends AbstractController
@@ -18,7 +18,7 @@ class UserController extends AbstractController
     public function editProfilePicture(
         Request $request,
         EntityManagerInterface $entityManager,
-        SluggerInterface $slugger
+        SluggerInterface $slugger,
     ): Response {
         // Récupérer l'utilisateur connecté
         /** @var User $user */
@@ -35,7 +35,7 @@ class UserController extends AbstractController
             if ($photoFile) {
                 // Supprimer l'ancienne photo si elle existe
                 if ($user->getProfilePicture()) {
-                    $oldPhotoPath = $this->getParameter('photos_directory') . '/' . $user->getProfilePicture();
+                    $oldPhotoPath = $this->getParameter('photos_directory').'/'.$user->getProfilePicture();
                     if (file_exists($oldPhotoPath)) {
                         unlink($oldPhotoPath);
                     }
@@ -44,7 +44,7 @@ class UserController extends AbstractController
                 // Générer un nouveau nom pour la photo
                 $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $photoFile->guessExtension();
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$photoFile->guessExtension();
 
                 try {
                     // Déplacer le fichier vers le dossier de destination
@@ -85,7 +85,7 @@ class UserController extends AbstractController
         // Vérifier si l'utilisateur a une photo de profil
         if ($user->getProfilePicture()) {
             // Supprimer le fichier physique
-            $photoPath = $this->getParameter('photos_directory') . '/' . $user->getProfilePicture();
+            $photoPath = $this->getParameter('photos_directory').'/'.$user->getProfilePicture();
             if (file_exists($photoPath)) {
                 unlink($photoPath);
             }

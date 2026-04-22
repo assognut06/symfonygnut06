@@ -1,5 +1,7 @@
 <?php
+
 // src/Service/RecaptchaVerifier.php
+
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -12,11 +14,12 @@ class RecaptchaVerifier
         private string $secretKey,
         private string $appEnv,
         private string $recaptchaSecret,
-    ) {}
+    ) {
+    }
 
     public function verify(Request $request): bool
     {
-        if ($this->appEnv === 'dev') {
+        if ('dev' === $this->appEnv) {
             return true;
         }
 
@@ -30,12 +33,12 @@ class RecaptchaVerifier
             'body' => [
                 'secret' => $this->recaptchaSecret,
                 'response' => $recaptchaResponse,
-                'remoteip' => $request->getClientIp()
-            ]
+                'remoteip' => $request->getClientIp(),
+            ],
         ]);
 
         $data = json_decode($response->getContent(), true);
 
-        return isset($data['success']) && $data['success'] === true;
+        return isset($data['success']) && true === $data['success'];
     }
 }
