@@ -44,7 +44,7 @@ mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
 # Configure and install extensions
 RUN docker-php-ext-configure intl
-RUN docker-php-ext-install pdo pdo_mysql mysqli opcache intl zip calendar dom mbstring xsl && a2enmod rewrite
+RUN docker-php-ext-install curl pdo pdo_mysql mysqli opcache intl zip calendar dom mbstring xsl && a2enmod rewrite
 RUN pecl install apcu && docker-php-ext-enable apcu
 
 # Use the mlocati installer for additional extensions
@@ -93,11 +93,10 @@ RUN chmod +x /var/www/app/
 COPY . /var/www/app
 
 # Ensure the composer.json file exists
-RUN composer install
-
+RUN composer install --no-scripts
+# RUN composer install
 EXPOSE 8000
-
 # CMD ["symfony", "serve","--no-tls"]
 
 CMD ["apache2-foreground"]
-# ENTRYPOINT ["/bin/bash", "/var/www/app/run.sh"]
+#ENTRYPOINT ["/bin/bash", "/var/www/app/run.sh"]
