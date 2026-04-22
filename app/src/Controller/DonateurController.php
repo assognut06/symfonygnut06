@@ -93,7 +93,7 @@ class DonateurController extends AbstractController
         return $this->render('donateur/form_donateur.html.twig', [
             'form_physique' => $formPhysique->createView(),
             'form_societe' => $formSociete->createView(),
-            'site_key' => $this->nocaptchaSiteKey
+            'site_key' => $this->nocaptchaSiteKey,
         ]);
     }
 

@@ -1,16 +1,14 @@
 <?php
 
-
 // src/Controller/AdminController.php
 
 namespace App\Controller;
 
+use App\Service\HelloAssoApiService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use App\Service\HelloAssoApiService; // Service dédié pour les appels API HelloAsso
+use Symfony\Component\Routing\Annotation\Route; // Service dédié pour les appels API HelloAsso
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-
 
 #[Route('/admin')]
 #[IsGranted('ROLE_ADMIN')]
@@ -66,10 +64,7 @@ class AdminController extends AbstractController
     {
         $url = $this->buildDetailsUrl($donnees, $id);
 
-        $data_forms = $this->normalizeDetailsResponse(
-            $this->helloAssoApiService->makeApiCall($url)
-        );
-
+        $data_forms = $this->helloAssoApiService->makeApiCall($url);
 
         if ('orders' === $donnees) {
             return $this->render('admin/orders/detailsOrder.html.twig', [

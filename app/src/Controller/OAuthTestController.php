@@ -63,7 +63,7 @@ class OAuthTestController extends AbstractController
                 'openid',
                 'profile',
                 'email',
-            ], []);
+            ]);
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erreur Azure: '.$e->getMessage());
 
@@ -109,7 +109,7 @@ class OAuthTestController extends AbstractController
         try {
             $client = $clientRegistry->getClient('google');
 
-            return $client->redirect([],[]);
+            return $client->redirect();
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erreur Google: '.$e->getMessage());
 
