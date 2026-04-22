@@ -33,3 +33,7 @@ wetransfer*
 
 # Logs
 *.log
+
+#script de demarrage
+start-project.sh
+
