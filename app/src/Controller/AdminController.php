@@ -1,5 +1,6 @@
 <?php
 
+
 // src/Controller/AdminController.php
 
 namespace App\Controller;
@@ -48,7 +49,6 @@ class AdminController extends AbstractController
     public function api(string $donnees, string $page, string $formType, string $formSlug, string $tierTypes): Response
     {
         $url = $this->buildApiUrl($donnees, $page, $formType, $formSlug, $tierTypes);
-
 
         $data_forms = $this->normalizeApiResponse(
             $this->helloAssoApiService->makeApiCall($url),
