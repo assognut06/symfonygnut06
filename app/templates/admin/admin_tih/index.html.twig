@@ -94,7 +94,7 @@
                           </div>
                           <div class="col-md-6">
                             <p><strong>SIRET :</strong> {{ tih.siret ?: '—' }}</p>
-                            <p><strong>Disponibilité :</strong> {{ tih.disponibilite ?: '—' }}</p>
+                            <p><strong>Disponibilité :</strong> {{ tih.availabilityDate ?: '—' }}</p>
                             <p><strong>Compétences :</strong>
                               {% if tih.competences|length > 0 %}
                                 {{ tih.competences|join(', ') }}
