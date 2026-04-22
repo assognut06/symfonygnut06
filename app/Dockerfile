@@ -92,6 +92,8 @@ RUN chmod -R 755 /var/www/app
 RUN chmod +x /var/www/app/
 COPY . /var/www/app
 
+RUN addgroup --gid 1000 user && usermod -aG user www-data
+
 # Ensure the composer.json file exists
 RUN composer install --no-scripts
 # RUN composer install
