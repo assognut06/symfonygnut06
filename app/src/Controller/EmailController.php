@@ -1,4 +1,5 @@
 <?php
+
 // src/Controller/EmailController.php
 
 namespace App\Controller;
@@ -24,6 +25,6 @@ class EmailController extends AbstractController
         var_dump($email);
         $mailer->send($email);
 
-        return new Response("success", 200);
+        return new Response('success', 200);
     }
 }

@@ -1,17 +1,18 @@
 <?php
+
 // src/Controller/ContactController.php
 
 namespace App\Controller;
 
+use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use GuzzleHttp\Client;
 
 class ContactController extends AbstractController
 {
@@ -50,13 +51,13 @@ class ContactController extends AbstractController
                 'form_params' => [
                     'secret' => $_ENV['NOCAPTCHA_SECRET'],
                     'response' => $recaptchaResponse,
-                    'remoteip' => $request->getClientIp()
-                ]
+                    'remoteip' => $request->getClientIp(),
+                ],
             ]);
 
             $responseData = json_decode($response->getBody());
-            
-            if ($_ENV['APP_ENV'] === 'dev') {
+
+            if ('dev' === $_ENV['APP_ENV']) {
                 $responseData->score = 0.9;
                 $responseData->success = true;
             }
@@ -66,30 +67,30 @@ class ContactController extends AbstractController
             }
 
             if (empty($errors)) {
-                 // Construire le message
-                 $body = "Prénom : $firstName\nNom : $lastName\nEmail : $email\nTéléphone : $tel\nType de projet : $projectType\nMessage : $message";
+                // Construire le message
+                $body = "Prénom : $firstName\nNom : $lastName\nEmail : $email\nTéléphone : $tel\nType de projet : $projectType\nMessage : $message";
 
-                 // Créer l'email
-                 $emailMessage = (new Email())
-                     ->from($email)
-                     ->to('gnut@gnut06.org')
-                     ->subject('Message du site Gnut06.org')
-                     ->text($body);
- 
-                 // Envoyer l'email
-                 try {
-                     $mailer->send($emailMessage);
-                     $messageEnvoye = true;
-                 } catch (\Exception $e) {
-                     $errors[] = "L'envoi de l'email a échoué. Veuillez réessayer plus tard.";
-                 }
+                // Créer l'email
+                $emailMessage = (new Email())
+                    ->from($email)
+                    ->to('gnut@gnut06.org')
+                    ->subject('Message du site Gnut06.org')
+                    ->text($body);
+
+                // Envoyer l'email
+                try {
+                    $mailer->send($emailMessage);
+                    $messageEnvoye = true;
+                } catch (\Exception $e) {
+                    $errors[] = "L'envoi de l'email a échoué. Veuillez réessayer plus tard.";
+                }
             }
         }
 
         return $this->render('contact/index.html.twig', [
             'message_envoye' => $messageEnvoye,
             'errors' => $errors,
-            'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
+            'site_key' => $_ENV['NOCAPTCHA_SITEKEY'],
         ]);
     }
 }

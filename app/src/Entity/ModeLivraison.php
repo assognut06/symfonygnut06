@@ -3,8 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ModeLivraisonRepository;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ModeLivraisonRepository::class)]
 class ModeLivraison
@@ -39,6 +39,7 @@ class ModeLivraison
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -50,6 +51,7 @@ class ModeLivraison
     public function setCout(float $cout): static
     {
         $this->cout = $cout;
+
         return $this;
     }
 
@@ -61,6 +63,7 @@ class ModeLivraison
     public function setDateCreation(\DateTimeImmutable $date_creation): static
     {
         $this->date_creation = $date_creation;
+
         return $this;
     }
 
@@ -72,6 +75,7 @@ class ModeLivraison
     public function setDateMiseAJour(\DateTimeInterface $date_mise_a_jour): static
     {
         $this->date_mise_a_jour = $date_mise_a_jour;
+
         return $this;
     }
 }

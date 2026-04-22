@@ -4,13 +4,13 @@ namespace App\Form;
 
 use App\Entity\Entreprise;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
-use Vich\UploaderBundle\Form\Type\VichImageType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class EntrepriseType extends AbstractType
 {
@@ -21,8 +21,8 @@ class EntrepriseType extends AbstractType
                 'label' => 'Nom de l\'entreprise',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Ex: Gnut06'
-                ]
+                    'placeholder' => 'Ex: Gnut06',
+                ],
             ])
             ->add('logoFile', VichImageType::class, [
                 'label' => 'Logo de l\'entreprise',
@@ -32,31 +32,31 @@ class EntrepriseType extends AbstractType
                 'image_uri' => true,
                 'asset_helper' => true,
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('url', UrlType::class, [
                 'label' => 'Site web',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'https://www.exemple.com'
-                ]
+                    'placeholder' => 'https://www.exemple.com',
+                ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'contact@exemple.com'
-                ]
+                    'placeholder' => 'contact@exemple.com',
+                ],
             ])
             ->add('telephone', TelType::class, [
                 'label' => 'Numéro de téléphone',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '+33 0 00 00 00 00'
-                ]
+                    'placeholder' => '+33 0 00 00 00 00',
+                ],
             ]);
     }
 

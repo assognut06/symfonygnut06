@@ -3,18 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\DonateurRepository;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Entity\Societe;
-use App\Entity\PersonnePhysique;
-use App\Entity\Don;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DonateurRepository::class)]
-#[ORM\InheritanceType("JOINED")]
-#[ORM\DiscriminatorColumn(name: "type_donateur", type: "string")]
-#[ORM\DiscriminatorMap(["societe" => Societe::class, "personne_physique" => PersonnePhysique::class])] 
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'type_donateur', type: 'string')]
+#[ORM\DiscriminatorMap(['societe' => Societe::class, 'personne_physique' => PersonnePhysique::class])]
 abstract class Donateur
 {
     #[ORM\Id]
@@ -79,6 +76,7 @@ abstract class Donateur
     public function setCivilite(string $civilite): static
     {
         $this->civilite = $civilite;
+
         return $this;
     }
 
@@ -90,6 +88,7 @@ abstract class Donateur
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -101,6 +100,7 @@ abstract class Donateur
     public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
+
         return $this;
     }
 
@@ -112,6 +112,7 @@ abstract class Donateur
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -123,6 +124,7 @@ abstract class Donateur
     public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
+
         return $this;
     }
 
@@ -134,6 +136,7 @@ abstract class Donateur
     public function setAdresse1(string $adresse_1): static
     {
         $this->adresse_1 = $adresse_1;
+
         return $this;
     }
 
@@ -145,6 +148,7 @@ abstract class Donateur
     public function setAdresse2(string $adresse_2): static
     {
         $this->adresse_2 = $adresse_2;
+
         return $this;
     }
 
@@ -156,6 +160,7 @@ abstract class Donateur
     public function setCodePostal(string $code_postal): static
     {
         $this->code_postal = $code_postal;
+
         return $this;
     }
 
@@ -167,6 +172,7 @@ abstract class Donateur
     public function setVille(string $ville): static
     {
         $this->ville = $ville;
+
         return $this;
     }
 
@@ -178,6 +184,7 @@ abstract class Donateur
     public function setPays(string $pays): static
     {
         $this->pays = $pays;
+
         return $this;
     }
 
@@ -234,10 +241,9 @@ abstract class Donateur
     public function getTypeDonateur(): string
     {
         return match (true) {
-            $this instanceof \App\Entity\Societe => 'societe',
-            $this instanceof \App\Entity\PersonnePhysique => 'personne_physique',
+            $this instanceof Societe => 'societe',
+            $this instanceof PersonnePhysique => 'personne_physique',
             default => 'inconnu',
         };
     }
-    
 }

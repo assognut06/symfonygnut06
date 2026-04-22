@@ -3,15 +3,15 @@
 namespace App\Form;
 
 use App\Entity\Societe;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use App\Form\EventListener\PremiereLettreMajuscule;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class SocieteType extends AbstractType
 {
@@ -19,10 +19,10 @@ class SocieteType extends AbstractType
     {
         $builder
             ->add('nom_societe', TextType::class, [
-                'attr' => ['placeholder' => 'Nom de la société*', 'class' => 'form-control']
+                'attr' => ['placeholder' => 'Nom de la société*', 'class' => 'form-control'],
             ])
             ->add('siren', TextType::class, [
-                'attr' => ['placeholder' => 'Numéro SIREN*', 'class' => 'form-control']
+                'attr' => ['placeholder' => 'Numéro SIREN*', 'class' => 'form-control'],
             ])
             ->add('civilite', ChoiceType::class, [
                 'choices' => [
@@ -30,13 +30,13 @@ class SocieteType extends AbstractType
                     'Mme' => 'Mme',
                 ],
                 'placeholder' => 'Civilité*',
-                'attr' => ['class' => 'form-select']
+                'attr' => ['class' => 'form-select'],
             ])
             ->add('nom', TextType::class, [
-                'attr' => ['placeholder' => 'Nom*', 'class' => 'form-control']
+                'attr' => ['placeholder' => 'Nom*', 'class' => 'form-control'],
             ])
             ->add('prenom', TextType::class, [
-                'attr' => ['placeholder' => 'Prénom*', 'class' => 'form-control']
+                'attr' => ['placeholder' => 'Prénom*', 'class' => 'form-control'],
             ])
             ->add('email', EmailType::class, [
                 'attr' => ['placeholder' => 'Email*', 'class' => 'form-control'],
@@ -46,7 +46,7 @@ class SocieteType extends AbstractType
                     ]),
                     new Assert\NotBlank([
                         'message' => 'L\'email ne peut pas être vide.',
-                    ])
+                    ]),
                 ],
             ])
             ->add('telephone', TextType::class, [
@@ -58,31 +58,29 @@ class SocieteType extends AbstractType
                     new Assert\Regex([
                         'pattern' => '/^(\+33|0)[1-9](?:[\s\.]?\d{2}){4}$/',
                         'message' => 'Veuillez entrer un numéro de téléphone valide.',
-                    ])
+                    ]),
                 ],
             ])
             ->add('adresse_1', TextType::class, [
-                'attr' => ['placeholder' => 'Adresse ligne 1*', 'class' => 'form-control']
+                'attr' => ['placeholder' => 'Adresse ligne 1*', 'class' => 'form-control'],
             ])
             ->add('adresse_2', TextType::class, [
                 'required' => false,
-                'attr' => ['placeholder' => 'Adresse ligne 2 (optionnelle)', 'class' => 'form-control']
+                'attr' => ['placeholder' => 'Adresse ligne 2 (optionnelle)', 'class' => 'form-control'],
             ])
             ->add('code_postal', TextType::class, [
-                'attr' => ['placeholder' => 'Code postal*', 'class' => 'form-control']
+                'attr' => ['placeholder' => 'Code postal*', 'class' => 'form-control'],
             ])
             ->add('ville', TextType::class, [
-                'attr' => ['placeholder' => 'Ville*', 'class' => 'form-control']
+                'attr' => ['placeholder' => 'Ville*', 'class' => 'form-control'],
             ])
             ->add('pays', HiddenType::class, [
-                        'data' => 'France',
-                        'mapped' => true, 
+                'data' => 'France',
+                'mapped' => true,
             ]);
 
-        
-            $builder->addEventSubscriber(new PremiereLettreMajuscule());
+        $builder->addEventSubscriber(new PremiereLettreMajuscule());
     }
-    
 
     public function configureOptions(OptionsResolver $resolver): void
     {

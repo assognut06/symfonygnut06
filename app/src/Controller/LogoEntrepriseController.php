@@ -1,6 +1,7 @@
 <?php
 
 // src/Controller/FooterController.php
+
 namespace App\Controller;
 
 use App\Repository\EntrepriseRepository;
@@ -16,7 +17,7 @@ class LogoEntrepriseController extends AbstractController
         $entreprises = $entrepriseRepository->findAll();
 
         return $this->render('_partials/logos_entreprises.html.twig', [
-            'entreprises' => $entreprises
+            'entreprises' => $entreprises,
         ]);
     }
 }

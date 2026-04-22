@@ -25,10 +25,11 @@ class GoogleUserProvider implements OAuthUserProviderInterface, UserProviderInte
         if (!$user) {
             $user = new User();
             $user->setEmail($email);
-            $user->setRoles(["ROLE_USER"]);
+            $user->setRoles(['ROLE_USER']);
             $this->em->persist($user);
             $this->em->flush();
         }
+
         return $user;
     }
 

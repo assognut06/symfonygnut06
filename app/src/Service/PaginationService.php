@@ -23,6 +23,7 @@ class PaginationService
     public function setLimit(int $limit): self
     {
         $this->limit = $limit;
+
         return $this;
     }
 
@@ -35,7 +36,7 @@ class PaginationService
         $pages = ceil($total / $this->limit);
         $cities = [];
 
-        if ($entityClass === \App\Entity\AssoRecommander::class) {
+        if (\App\Entity\AssoRecommander::class === $entityClass) {
             $cities = $this->assoRecommanderRepository->findDistinctCities();
         }
 
@@ -57,7 +58,7 @@ class PaginationService
         $pages = ceil($total / $this->limit);
         $cities = [];
 
-        if ($entityClass === \App\Entity\AssoRecommander::class) {
+        if (\App\Entity\AssoRecommander::class === $entityClass) {
             $cities = $this->assoRecommanderRepository->findDistinctCities();
         }
 
@@ -76,7 +77,7 @@ class PaginationService
         $data = [];
         $total = 0;
 
-        if ($entityClass === \App\Entity\AssoRecommander::class) {
+        if (\App\Entity\AssoRecommander::class === $entityClass) {
             $data = $this->assoRecommanderRepository->findSearch($search);
             $total = count($data);
         }

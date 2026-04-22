@@ -3,9 +3,8 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProfilePictureType extends AbstractType
@@ -18,7 +17,6 @@ class ProfilePictureType extends AbstractType
                 'mapped' => false, // ne lie pas directement ce champ à une propriété de l'entité
                 'required' => false,
             ]);
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void

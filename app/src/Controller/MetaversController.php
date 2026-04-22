@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
+use App\Service\ApiFrameVrService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Service\ApiFrameVrService;
 
 #[Route('/metavers')]
 class MetaversController extends AbstractController
@@ -32,5 +32,4 @@ class MetaversController extends AbstractController
 
         return $this->json($data);
     }
-
 }

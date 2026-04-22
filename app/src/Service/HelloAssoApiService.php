@@ -1,5 +1,7 @@
 <?php
+
 // Service HelloAssoApiService
+
 namespace App\Service;
 
 use GuzzleHttp\Client;
@@ -18,13 +20,14 @@ class HelloAssoApiService
     public function makeApiCall(string $url, array $headers = [], string $method = 'GET')
     {
         $bearerToken = $this->helloAssoAuthService->getToken();
-        $authorization = "Bearer " . $bearerToken;
+        $authorization = 'Bearer '.$bearerToken;
         $headers['authorization'] = $authorization;
         try {
             $response = $this->client->request($method, $url, [
                 'accept' => 'application/json',
-                'headers' => $headers,  
+                'headers' => $headers,
             ]);
+
             return json_decode($response->getBody(), true);
         } catch (\Exception $e) {
             // Gérer l'exception ou la logger
