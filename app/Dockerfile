@@ -44,12 +44,11 @@ RUN wget https://get.symfony.com/cli/installer -O - | bash && \
 mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
 # Configure and install extensions
-RUN docker-php-ext-configure intl
-
+RUN docker-php-ext-configure intl && \
 # Configure GD with WebP support
-RUN docker-php-ext-configure gd --with-webp --with-jpeg
-RUN docker-php-ext-install curl pdo pdo_mysql mysqli gd opcache intl zip calendar dom mbstring xsl && a2enmod rewrite
-RUN pecl install apcu && docker-php-ext-enable apcu
+docker-php-ext-configure gd --with-webp --with-jpeg && \
+docker-php-ext-install curl pdo pdo_mysql mysqli gd opcache intl zip calendar dom mbstring xsl && a2enmod rewrite && \
+pecl install apcu && docker-php-ext-enable apcu
 
 # Use the mlocati installer for additional extensions
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -61,9 +60,10 @@ RUN pecl install xdebug \
 
 
 # Install Node.js and npm
-RUN npm install -g n
-RUN n 20.17.0  # Install a compatible version of Node.js
-RUN npm install -g npm@11.2.0
+RUN npm install -g n && \
+n 20.17.0  && \
+# Install a compatible version of Node.js
+npm install -g npm@11.2.0
 #RUN npm install npm@latest -g && \
 #npm install n -g && \
 #n latest
@@ -75,8 +75,8 @@ RUN mkdir -p /etc/apache2/ssl && \
     -keyout /etc/apache2/ssl/apache.key \
     -out /etc/apache2/ssl/apache.crt \
     -subj "/C=FR/ST=PACA/L=Nice/O=GNUT06/OU=Association/CN=localhost" \
-    -addext "subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1"
-RUN a2enmod ssl headers
+    -addext "subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1" && \
+    a2enmod ssl headers
 COPY ./config/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
 RUN a2ensite default-ssl
 
@@ -84,10 +84,9 @@ RUN a2ensite default-ssl
 COPY ./config/xdebug.ini /etc/php/8.2/apache2/conf.d/30-xdebug.ini
 COPY ./config/xdebug.ini /etc/php/8.2/cli/conf.d/30-xdebug.ini
 
-RUN chown -R root:root /var/www/app
-
-RUN chmod -R 755 /var/www/app
-RUN chmod +x /var/www/app/
+RUN chown -R root:root /var/www/app && \
+chmod -R 755 /var/www/app && \
+chmod +x /var/www/app/
 COPY . /var/www/app
 
 RUN addgroup --gid 1000 user && usermod -aG user www-data
