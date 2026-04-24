@@ -4,6 +4,7 @@ WORKDIR /var/www/app
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 RUN apt-get update \
 && apt-get install -qq -y --no-install-recommends \
 cron \
@@ -24,7 +25,12 @@ libcurl4-openssl-dev \
 libgd-dev \
 libwebp-dev \
 libssl-dev \
-libkrb5-dev
+libkrb5-dev \
+openssl \
+nodejs \
+curl \
+ca-certificates
+
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
 echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen && \
 locale-gen
@@ -53,11 +59,6 @@ install-php-extensions amqp
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
-RUN apt-get update && apt-get install -y \
-    curl \
-    ca-certificates
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
-RUN apt-get update && apt-get install -y nodejs
 
 # Install Node.js and npm
 RUN npm install -g n
@@ -69,7 +70,6 @@ RUN npm install -g npm@11.2.0
 
 # SSL : Génération du certificat et configuration Apache
 EXPOSE 443
-RUN apt-get update && apt-get install -y openssl
 RUN mkdir -p /etc/apache2/ssl && \
     openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
     -keyout /etc/apache2/ssl/apache.key \
