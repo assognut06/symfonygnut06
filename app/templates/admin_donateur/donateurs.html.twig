@@ -10,21 +10,21 @@
   <div class="col-12 d-flex flex-column align-items-center">
     
     <!-- Boutons de filtrage -->
-    <div class="d-flex justify-content-center gap-2 mb-3" style="width: 400px;">
+    <div class="d-flex justify-content-center gap-2 mb-3 w-50">
       <button class="btn btn-outline-primary filter-btn active" data-filter="all">Tous</button>
       <button class="btn btn-outline-societe filter-btn" data-filter="societe">Société</button>
       <button class="btn btn-outline-physique filter-btn" data-filter="personne_physique">Personne physique</button>
     </div>
 
     <!-- Barre de recherche -->
-    <div style="width: 370px;">
+    <div class="w-25">
       <input type="text" id="search-input" class="form-control" placeholder="Rechercher un donateur...">
     </div>
     
   </div>
 </div>
 
-    <div style="width: 98%; margin: auto;">
+    <div class="container-fluid px-4">
     <table class="table table-3d" id="donateurs-table">
         <thead class="table-dark text-center">
             <tr>
@@ -79,7 +79,7 @@
                                 <i class="bi bi-eye"></i>
                             </a> 
                         
-                            <form method="post" action="{{ path('admin_donateur_delete', {'id': donateur.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce donateur ?');" style="display:inline;">
+                            <form method="post" action="{{ path('admin_donateur_delete', {'id': donateur.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce donateur ?');" class="d-inline>
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete_donateur_' ~ donateur.id) }}">
                                 <button class="btn btn-outline-danger btn-sm" title="Supprimer">
                                     <i class="bi bi-trash"></i>
