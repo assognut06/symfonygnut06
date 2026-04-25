@@ -1,0 +1,17 @@
+  /* Styles de la page "Admin - Liste des bénévoles",
+  /* Fichier Twig: admin_benevole/index.html.twig */
+  /* URL: /admin/benevole/
+  /* Auteur : Simon Fanny */
+  /* Date : 2026-04-25 */
+
+  /*==========================================*/
+
+  /* Style de zone la recherche */
+  .benevole-search-input {
+    max-width: 300px;
+  }
+  
+  /* Style de la modale qui s'ouvre lorsqu'on clique sur le CV */
+.cv-modal-body {
+  height: 80vh;
+}
