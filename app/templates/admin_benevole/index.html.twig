@@ -2,17 +2,22 @@
 
 {% block title %}Liste des bénévoles{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ asset('css/pages/admin_benevole_index.css') }}">
+{% endblock %}
+
 {% block body %}
 <h1 class="mb-4">Liste des bénévoles</h1>
 
 <div class="d-flex align-items-center justify-content-around mb-4">
-    <input type="text" id="search-input" class="form-control" placeholder="Rechercher un bénévole..." style="max-width: 300px;">
-    <a href="{{ path('benevole_new') }}" class="btn btn-success ms-3" style="color: white">
+    <input type="text" id="search-input" class="form-control benevole-search-input" placeholder="Rechercher un bénévole...">
+    <a href="{{ path('benevole_new') }}" class="btn btn-success ms-3 text-white">
         + Ajouter un bénévole
     </a>
 </div>
 
-<div style="width: 98%; margin: auto;">
+<div class="container-fluid px-4">
 <table class="table table-3d">
     <thead class="table-dark text-center">
         <tr>
@@ -136,8 +141,8 @@
         <h5 class="modal-title" id="cvModalLabel">CV du bénévole</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
-      <div class="modal-body" style="height: 80vh;">
-        <iframe id="cvIframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+      <div class="modal-body cv-modal-body">
+        <iframe id="cvIframe" src="" class="w-100 h-100 border-0"></iframe>
       </div>
     </div>
   </div>
