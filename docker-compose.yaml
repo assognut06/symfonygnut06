@@ -10,19 +10,22 @@ services:
       MYSQL_DATABASE: gnut06
     ports:
       - "3306:3306"
+    
     volumes:
       - ./mysql:/var/lib/mysql
  
   
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
+    image: phpmyadmin:fpm-alpine
     container_name: phpmyadmin_gnut
     restart: always
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
     ports:
-      - "8080:80"
+      - "9000:9000"
+    volumes:
+        - phpmyadmin:/var/www/html
     depends_on:
       - mysql
 
@@ -45,14 +48,18 @@ services:
       DATABASE_URL: "mysql://root:root@mysql:3306/gnut06?serverVersion=5.7&charset=utf8mb4"
     volumes:
       - ./app:/var/www/app
+      - phpmyadmin:/var/www/html
     ports:
+      - "8080:8080"
       - "8000:80"
       - "443:443"
       - "9003:9003"
     depends_on:
       - mysql
+      - phpmyadmin
 
 
 
 volumes:
   mysql:
+  phpmyadmin:

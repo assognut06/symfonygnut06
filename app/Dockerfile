@@ -78,7 +78,7 @@ RUN mkdir -p /etc/apache2/ssl && \
     -addext "subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1" && \
     a2enmod ssl headers
 COPY ./config/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
-RUN a2ensite default-ssl
+RUN a2ensite default-ssl && a2enmod proxy proxy_http proxy_fcgi && a2enmod rewrite
 
 # Configuration de Xdebug
 COPY ./config/xdebug.ini /etc/php/8.2/apache2/conf.d/30-xdebug.ini
@@ -90,11 +90,13 @@ chmod +x /var/www/app/
 COPY . /var/www/app
 
 RUN addgroup --gid 1000 user && usermod -aG user www-data
+RUN echo "Listen 8080" >> /etc/apache2/ports.conf
 
 # Ensure the composer.json file exists
 RUN composer install --no-scripts
 # RUN composer install
 EXPOSE 8000
+EXPOSE 8080
 # CMD ["symfony", "serve","--no-tls"]
 
 CMD ["apache2-foreground"]
