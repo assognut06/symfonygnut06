@@ -83,18 +83,18 @@
                       <div class="modal-body">
                         <div class="row">
                           <div class="col-md-6">
-                            <p><strong>Civilité :</strong> {{ tih.civilite ?: '—' }}</p>
-                            <p><strong>Nom :</strong> {{ tih.nom ?: '—' }}</p>
-                            <p><strong>Prénom :</strong> {{ tih.prenom ?: '—' }}</p>
-                            <p><strong>Email pro :</strong> {{ tih.emailPro ?: '—' }}</p>
-                            <p><strong>Téléphone :</strong> {{ tih.telephone ?: '—' }}</p>
-                            <p><strong>Adresse :</strong> {{ tih.adresse ?: '—' }}</p>
-                            <p><strong>Code postal :</strong> {{ tih.codePostal ?: '—' }}</p>
-                            <p><strong>Ville :</strong> {{ tih.ville ?: '—' }}</p>
+                            <p><strong>Civilité :</strong> {{ tih.title ?: '—' }}</p>
+                            <p><strong>Nom :</strong> {{ tih.lastName ?: '—' }}</p>
+                            <p><strong>Prénom :</strong> {{ tih.firstName ?: '—' }}</p>
+                            <p><strong>Email pro :</strong> {{ tih.professionalEmail ?: '—' }}</p>
+                            <p><strong>Téléphone :</strong> {{ tih.phone ?: '—' }}</p>
+                            <p><strong>Adresse :</strong> {{ tih.address ?: '—' }}</p>
+                            <p><strong>Code postal :</strong> {{ tih.postalCode ?: '—' }}</p>
+                            <p><strong>Ville :</strong> {{ tih.city ?: '—' }}</p>
                           </div>
                           <div class="col-md-6">
                             <p><strong>SIRET :</strong> {{ tih.siret ?: '—' }}</p>
-                            <p><strong>Disponibilité :</strong> {{ tih.disponibilite ?: '—' }}</p>
+                            <p><strong>Disponibilité :</strong> {{ tih.availabilityDate|date('d/m/Y') ?: '—' }}</p>
                             <p><strong>Compétences :</strong>
                               {% if tih.competences|length > 0 %}
                                 {{ tih.competences|join(', ') }}
