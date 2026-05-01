@@ -32,7 +32,7 @@ Pour que le déploiement automatique fonctionne, vous devez configurer les secre
 
 #### `DEV_PORT` (optionnel)
 - **Description** : Port SSH du serveur (défaut : 22)
-- **Exemple** : `22` ou `2222`
+- **Exemple** : `22`
 
 #### `GITHUB_TOKEN`
 - **Description** : Token GitHub pour accéder au repository lors du git pull
