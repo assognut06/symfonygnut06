@@ -89,6 +89,7 @@ jobs:
             
             # Vider le cache Symfony
             echo "🧹 Clearing Symfony cache..."
+            sudo chown -R www-data:www-data /var/www/html/gnut06_dev/app/var
             sudo -u www-data php bin/console cache:clear --env=prod --no-debug
             
             # Réchauffer le cache
