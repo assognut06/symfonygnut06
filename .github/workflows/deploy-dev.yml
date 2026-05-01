@@ -1,0 +1,66 @@
+name: Deploy to Development Server
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - closed
+
+jobs:
+  deploy:
+    name: Deploy to Dev Server
+    runs-on: ubuntu-latest
+    
+    # Ne déployer que si la PR est mergée
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USERNAME }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          port: ${{ secrets.DEV_PORT || 22 }}
+          script: |
+            set -e
+            echo "🚀 Starting deployment to development server..."
+            
+            # Aller dans le répertoire du projet
+            cd /var/www/html/gnut06_dev
+            echo "📁 Current directory: $(pwd)"
+            
+            # Récupérer les dernières modifications
+            echo "📥 Pulling latest changes..."
+            git pull origin develop
+
+            # Aller dans le dossier app
+            cd app
+            echo "📁 Switched to app directory: $(pwd)"
+            
+            # Installer/mettre à jour les dépendances PHP
+            echo "📦 Installing/updating PHP dependencies..."
+            composer install --no-dev --optimize-autoloader
+            
+            # Exécuter les migrations
+            echo "🗄️ Running database migrations..."
+            php bin/console doctrine:migrations:migrate --no-interaction
+            
+            # Installer/mettre à jour les dépendances Node.js
+            echo "📦 Installing/updating Node.js dependencies..."
+            npm install --production
+            
+            # Générer les assets
+            echo "🎨 Building assets..."
+            npm run build
+            
+            # Vider le cache Symfony
+            echo "🧹 Clearing Symfony cache..."
+            sudo -u www-data php bin/console cache:clear --env=prod
+            
+            # Réchauffer le cache
+            echo "🔥 Warming up cache..."
+            sudo -u www-data php bin/console cache:warmup --env=prod
+            
+            echo "✅ Deployment completed successfully!"
