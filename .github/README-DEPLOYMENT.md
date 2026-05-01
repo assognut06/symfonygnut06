@@ -52,11 +52,11 @@ Le déploiement se déclenche automatiquement :
 2. 📁 Navigation vers `/var/www/html/gnut06_dev`
 3. 📥 `git pull` des dernières modifications
 4. 📁 Navigation vers le sous-dossier `app`
-5. 📦 `composer install --no-dev --no-scripts` (dépendances PHP production)
+5. 📦 `composer install --no-dev` (dépendances PHP production)
 6. 🔄 Optimisation de l'autoloader pour la production
 7. 🗄️ Migrations de base de données (env: prod)
-8. 📦 `npm install --production` (dépendances Node.js)
-9. 🎨 `npm run build` (compilation des assets)
+8. 📦 `npm install` (toutes les dépendances Node.js, y compris dev pour Encore)
+9. 🎨 `npm run build` (compilation des assets via Webpack Encore)
 10. 🧹 Vidage du cache Symfony (env: prod)
 11. 🔥 Réchauffement du cache (env: prod)
 
