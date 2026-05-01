@@ -34,6 +34,14 @@ Pour que le déploiement automatique fonctionne, vous devez configurer les secre
 - **Description** : Port SSH du serveur (défaut : 22)
 - **Exemple** : `22` ou `2222`
 
+#### `GITHUB_TOKEN`
+- **Description** : Token GitHub pour accéder au repository lors du git pull
+- **Comment générer** : 
+  1. GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+  2. Générer un token avec la permission `repo`
+  3. Copier le token généré
+- **Important** : Ce token permet l'authentification pour le `git pull` sur le serveur
+
 ## Workflow de déploiement
 
 Le déploiement se déclenche automatiquement :
@@ -60,6 +68,39 @@ Assurez-vous que votre serveur de développement dispose de :
 - ✅ Accès SSH configuré
 - ✅ Permissions appropriées pour l'utilisateur de déploiement
 - ✅ Le projet déjà cloné dans `/var/www/html/gnut06_dev`
+- ✅ **Accès GitHub configuré** (voir section Configuration GitHub)
+
+## Configuration GitHub pour le déploiement
+
+### Option 1 : Token GitHub (Recommandé)
+```bash
+# Sur le serveur, configurer Git avec un token
+git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+# Ou directement dans le projet
+cd /var/www/html/gnut06_dev
+git remote set-url origin https://${GITHUB_TOKEN}@github.com/votre-username/votre-repo.git
+```
+
+**Secret GitHub à ajouter :**
+- `GITHUB_TOKEN` : Token avec permissions `repo` (Settings → Developer settings → Personal access tokens)
+
+### Option 2 : Clé SSH de déploiement
+```bash
+# Générer une clé SSH spécifique pour le déploiement
+ssh-keygen -t rsa -b 4096 -C "deploy-gnut06-server" -f ~/.ssh/github_deploy
+
+# Ajouter la clé publique comme "Deploy Key" dans GitHub
+# (Settings → Deploy keys → Add deploy key)
+cat ~/.ssh/github_deploy.pub
+
+# Configurer SSH pour utiliser cette clé
+echo "Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/github_deploy
+  IdentitiesOnly yes" >> ~/.ssh/config
+```
 
 ## Sécurité
 
