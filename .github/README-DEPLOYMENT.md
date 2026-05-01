@@ -115,3 +115,4 @@ echo "Host github.com
 - 🔒 Utiliser exclusivement les secrets GitHub
 - 🔒 Configurer des permissions minimales pour l'utilisateur de déploiement
 - 🔒 Considérer l'utilisation d'un agent SSH pour plus de sécurité
+- 🔒 Terminé
