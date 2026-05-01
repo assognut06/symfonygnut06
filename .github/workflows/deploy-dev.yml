@@ -24,8 +24,6 @@ jobs:
           key: ${{ secrets.DEV_SSH_KEY }}
           port: ${{ secrets.DEV_PORT || 22 }}
           envs: GITHUB_TOKEN
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           script: |
             set -e
             echo "🚀 Starting deployment to development server..."
@@ -77,3 +75,5 @@ jobs:
             sudo -u www-data php bin/console cache:warmup --env=prod
             
             echo "✅ Deployment completed successfully!"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
