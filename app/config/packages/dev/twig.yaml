@@ -1,0 +1,4 @@
+twig:
+    debug: true
+    auto_reload: true
+    cache: false
