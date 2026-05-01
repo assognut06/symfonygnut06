@@ -72,6 +72,12 @@ Assurez-vous que votre serveur de développement dispose de :
 
 ## Configuration GitHub pour le déploiement
 
+### Reconfiguration automatique (Utilisée dans notre workflow)
+Le workflow reconfigure automatiquement l'URL du repository pour utiliser HTTPS avec le token :
+```bash
+git remote set-url origin "https://${GITHUB_TOKEN}@github.com/OWNER/REPO.git"
+```
+
 ### Option 1 : Token GitHub (Recommandé)
 ```bash
 # Sur le serveur, configurer Git avec un token
