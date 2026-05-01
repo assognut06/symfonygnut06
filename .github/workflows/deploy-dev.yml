@@ -39,7 +39,24 @@ jobs:
             # Configurer Git avec le token pour l'authentification
             if [ ! -z "$GITHUB_TOKEN" ]; then
               echo "🔑 Configuring Git with GitHub token..."
-              git config url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+              
+              # Récupérer l'URL actuelle et la convertir en HTTPS
+              CURRENT_URL=$(git remote get-url origin)
+              echo "📍 Current remote URL: $CURRENT_URL"
+              
+              if [[ $CURRENT_URL == git@github.com:* ]]; then
+                # Convertir SSH vers HTTPS
+                HTTPS_URL=$(echo $CURRENT_URL | sed 's/git@github.com:/https:\/\/'"${GITHUB_TOKEN}"'@github.com\//')
+                echo "🔄 Converting SSH URL to HTTPS..."
+                git remote set-url origin "$HTTPS_URL"
+              elif [[ $CURRENT_URL == https://github.com/* ]]; then
+                # Ajouter le token à l'URL HTTPS existante
+                HTTPS_URL=$(echo $CURRENT_URL | sed 's/https:\/\/github.com\//https:\/\/'"${GITHUB_TOKEN}"'@github.com\//')
+                echo "🔄 Adding token to HTTPS URL..."
+                git remote set-url origin "$HTTPS_URL"
+              fi
+              
+              echo "✅ Remote URL configured for token authentication"
             fi
             
             # Récupérer les dernières modifications
