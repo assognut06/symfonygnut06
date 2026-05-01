@@ -81,7 +81,7 @@ jobs:
             
             # Installer/mettre à jour les dépendances Node.js
             echo "📦 Installing/updating Node.js dependencies..."
-            npm install --production
+            npm install
             
             # Générer les assets
             echo "🎨 Building assets..."
