@@ -23,6 +23,9 @@ jobs:
           username: ${{ secrets.DEV_USERNAME }}
           key: ${{ secrets.DEV_SSH_KEY }}
           port: ${{ secrets.DEV_PORT || 22 }}
+          envs: GITHUB_TOKEN
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           script: |
             set -e
             echo "🚀 Starting deployment to development server..."
@@ -30,6 +33,16 @@ jobs:
             # Aller dans le répertoire du projet
             cd /var/www/html/gnut06_dev
             echo "📁 Current directory: $(pwd)"
+            
+            # Configurer l'accès GitHub
+            echo "🔑 Setting up GitHub access..."
+            ssh-keyscan -H github.com >> ~/.ssh/known_hosts || true
+            
+            # Configurer Git avec le token pour l'authentification
+            if [ ! -z "$GITHUB_TOKEN" ]; then
+              echo "🔑 Configuring Git with GitHub token..."
+              git config url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+            fi
             
             # Récupérer les dernières modifications
             echo "📥 Pulling latest changes..."
