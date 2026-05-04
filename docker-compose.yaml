@@ -42,6 +42,10 @@ services:
   symfony:
     build:
       context: ./app
+      dockerfile: Dockerfile
+      args:
+        - USER_UID=82
+        - USER_GID=82
     container_name: symfony_asso
     restart: always
     environment:
