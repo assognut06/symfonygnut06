@@ -2,6 +2,13 @@ FROM php:8.2-apache
 
 WORKDIR /var/www/app
 
+
+# Args to pass host UID/GID (default to 33 if not provided)
+ARG USER_UID=33
+ARG USER_GID=33
+
+
+
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
@@ -30,6 +37,14 @@ openssl \
 nodejs \
 curl \
 ca-certificates
+
+
+# Modify www-data group to use host GID
+RUN groupmod -g ${USER_GID} www-data
+ 
+# Modify www-data user to use host UID and GID
+RUN usermod -u ${USER_UID} -g ${USER_GID} www-data
+
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
 echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen && \
