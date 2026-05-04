@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.2-fpm-alpine
 
 WORKDIR /var/www/app
 
@@ -9,24 +9,27 @@ ARG USER_GID=33
 
 
 
-RUN apt-get update \
-&& apt-get install -qq -y --no-install-recommends \
-cron \
-wget \
+RUN apk update \
+&& apk add -U --no-cache \
 nano \
+wget \
+bash \
 git \
-libicu-dev \
+make \
+icu-dev \
 g++ \
 libpng-dev \
 libxml2-dev \
 libzip-dev \
-libonig-dev \
+oniguruma-dev \
 libxslt-dev \
-libcurl4-openssl-dev \
-libgd-dev \
+curl-dev \
+gd-dev \
 libwebp-dev \
-libssl-dev \
-libkrb5-dev \
+krb5-dev \
+shadow \
+autoconf \
+linux-headers \
 curl
 
 # Modify www-data group to use host GID
@@ -38,7 +41,7 @@ RUN usermod -u ${USER_UID} -g ${USER_GID} www-data
 
 
 # install curl and git
-RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
+RUN curl -sS -k https://getcomposer.org/installer | php -- --disable-tls && \
 mv composer.phar /usr/local/bin/composer
 
 # Install Symfony CLI
