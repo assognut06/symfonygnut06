@@ -52,6 +52,8 @@ services:
       DATABASE_URL: "mysql://root:root@mysql:3306/gnut06?serverVersion=5.7&charset=utf8mb4"
     volumes:
       - ./app:/var/www/app
+    ports:
+      - "9003:9003"
     expose:
       - 9000
     depends_on:
@@ -67,7 +69,6 @@ services:
       - "8080:8080"
       - "8000:80"
       - "443:443"
-      - "9003:9003"
     volumes:
       - ./app:/var/www/app
       - phpmyadmin:/var/www/html
