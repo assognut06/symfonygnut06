@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.2-fpm
 
 WORKDIR /var/www/app
 
@@ -9,17 +9,11 @@ ARG USER_GID=33
 
 
 
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 RUN apt-get update \
 && apt-get install -qq -y --no-install-recommends \
 cron \
 wget \
 nano \
-locales \
-coreutils \
-apt-utils \
 git \
 libicu-dev \
 g++ \
@@ -33,11 +27,7 @@ libgd-dev \
 libwebp-dev \
 libssl-dev \
 libkrb5-dev \
-openssl \
-nodejs \
-curl \
-ca-certificates
-
+curl
 
 # Modify www-data group to use host GID
 RUN groupmod -g ${USER_GID} www-data
@@ -46,9 +36,6 @@ RUN groupmod -g ${USER_GID} www-data
 RUN usermod -u ${USER_UID} -g ${USER_GID} www-data
 
 
-RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
-echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen && \
-locale-gen
 
 # install curl and git
 RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
@@ -62,7 +49,7 @@ mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 RUN docker-php-ext-configure intl && \
 # Configure GD with WebP support
 docker-php-ext-configure gd --with-webp --with-jpeg && \
-docker-php-ext-install curl pdo pdo_mysql mysqli gd opcache intl zip calendar dom mbstring xsl && a2enmod rewrite && \
+docker-php-ext-install curl pdo pdo_mysql mysqli gd opcache intl zip calendar dom mbstring xsl && \
 pecl install apcu && docker-php-ext-enable apcu
 
 # Use the mlocati installer for additional extensions
@@ -72,28 +59,6 @@ install-php-extensions amqp
 
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
-
-
-# Install Node.js and npm
-RUN npm install -g n && \
-n 20.17.0  && \
-# Install a compatible version of Node.js
-npm install -g npm@11.2.0
-#RUN npm install npm@latest -g && \
-#npm install n -g && \
-#n latest
-
-# SSL : Génération du certificat et configuration Apache
-EXPOSE 443
-RUN mkdir -p /etc/apache2/ssl && \
-    openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
-    -keyout /etc/apache2/ssl/apache.key \
-    -out /etc/apache2/ssl/apache.crt \
-    -subj "/C=FR/ST=PACA/L=Nice/O=GNUT06/OU=Association/CN=localhost" \
-    -addext "subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1" && \
-    a2enmod ssl headers
-COPY ./config/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
-RUN a2ensite default-ssl && a2enmod proxy proxy_http proxy_fcgi && a2enmod rewrite
 
 # Configuration de Xdebug
 COPY ./config/xdebug.ini /etc/php/8.2/apache2/conf.d/30-xdebug.ini
@@ -105,14 +70,6 @@ chmod +x /var/www/app/
 COPY . /var/www/app
 
 RUN addgroup --gid 1000 user && usermod -aG user www-data
-RUN echo "Listen 8080" >> /etc/apache2/ports.conf
 
 # Ensure the composer.json file exists
 RUN composer install --no-scripts
-# RUN composer install
-EXPOSE 8000
-EXPOSE 8080
-# CMD ["symfony", "serve","--no-tls"]
-
-CMD ["apache2-foreground"]
-#ENTRYPOINT ["/bin/bash", "/var/www/app/run.sh"]

@@ -52,16 +52,25 @@ services:
       DATABASE_URL: "mysql://root:root@mysql:3306/gnut06?serverVersion=5.7&charset=utf8mb4"
     volumes:
       - ./app:/var/www/app
-      - phpmyadmin:/var/www/html
+    expose:
+      - 9000
+    depends_on:
+      - mysql
+
+  apache:
+    build:
+      context: ./app
+      dockerfile: apache.Dockerfile
+    container_name: apache_gnut
+    restart: always
     ports:
       - "8080:8080"
       - "8000:80"
       - "443:443"
       - "9003:9003"
-    depends_on:
-      - mysql
-      - phpmyadmin
-
+    volumes:
+      - ./app:/var/www/app
+      - phpmyadmin:/var/www/html
 
 
 volumes:
