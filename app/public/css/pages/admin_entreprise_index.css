@@ -1,0 +1,29 @@
+  /* Styles de la page "Admin - Liste des entreprises partenaires",
+  /* Fichier Twig: admin_entreprise/index.html.twig */
+  /* URL: /admin/entreprises/
+  /* Auteur : Simon Fanny */
+  /* Date : 2026-05-06 */
+
+  /*==========================================*/
+
+  /* Style de zone la recherche */
+  .entreprise-search-input {
+    max-width: 300px;
+  }
+
+  /* Style de la zone de la table */
+  .entreprise-table-container {
+    width: 80%;
+    margin: auto;
+  }
+
+  /* Style de l'image du logo */
+  .entreprise-logo-image {
+    max-height: 50px;
+    border-radius: 50%;
+  }
+
+  /* Style du bouton de modification */
+  .entreprise-btn-modifier, .entreprise-btn-supprimer {
+    width: 100px;
+  }
