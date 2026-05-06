@@ -52,10 +52,10 @@ services:
       DATABASE_URL: "mysql://root:root@mysql:3306/gnut06?serverVersion=5.7&charset=utf8mb4"
     volumes:
       - ./app:/var/www/app
-    ports:
-      - "9003:9003"
     expose:
       - 9000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - mysql
 
