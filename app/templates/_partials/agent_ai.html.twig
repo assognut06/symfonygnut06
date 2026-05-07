@@ -1,6 +1,6 @@
 <!-- Image flottante cliquable -->
 <img src="{{ asset('images/agent_ai2.png') }}" alt="Aide IA"
-     id="openChat"
+     id="openChat" class="open-chat-img-btn"
      class="shadow-lg position-fixed bottom-0 end-0 m-4 floating-icon">
 
 
@@ -8,7 +8,7 @@
 <div class="card chat-box position-fixed bottom-0 end-0 m-3 d-none shadow-lg rounded-4" id="chatBox">
 <div class="card-header text-white d-flex justify-content-between align-items-center rounded-top-4 px-4 py-3">
     <span class="fw-semibold fs-5">Agent IA</span>
-    <button class="btn btn-sm btn-light rounded-circle d-flex align-items-center justify-content-center" id="closeChat" aria-label="Fermer">
+    <button class="btn btn-sm btn-light rounded-circle d-flex align-items-center justify-content-center close-chat-btn" id="closeChat" aria-label="Fermer">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
