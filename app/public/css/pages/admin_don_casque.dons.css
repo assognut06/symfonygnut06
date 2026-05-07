@@ -1,0 +1,13 @@
+  /* Styles de la page "Admin - Liste des dons",
+  /* Fichier Twig: admin_don_casque/dons.html.twig */
+  /* URL: /admin/dons
+  /* Auteur : Simon Fanny */
+  /* Date : 2026-04-25 */
+
+  /*==========================================*/
+
+ /* Bouton d'édition du partenaire logistique */
+   
+  .edit-logistique-btn {
+    background-color:rgb(0, 153, 255);
+  }
