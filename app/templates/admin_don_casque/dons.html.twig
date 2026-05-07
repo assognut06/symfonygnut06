@@ -1,5 +1,11 @@
 {% extends 'admin/base.html.twig' %}
 {% block title %}Liste des dons{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/pages/admin_don_casque.dons.css') }}">
+{% endblock %}
+
 {% block body %}
 <div class="container-fluid py-4 mx-auto w-100">
     <h1 class="mb-4 text-center">Liste des dons</h1>
@@ -16,7 +22,7 @@
     <table class="table table-striped align-middle text-center w-100 table-3d">
         <thead class="table-dark">
             <tr>
-                <th>Date de création</th>
+                <th >Date de création</th>
                 <th>Donateur</th>
                 <th>Message</th>
                 <th>Mode de livraison</th>
@@ -54,8 +60,7 @@
                                         </option>
                                     {% endfor %}
                                 </select>
-                                <button class="btn btn-sm btn-primary edit-logistique-btn border-0"
-                                        style="background-color:rgb(0, 153, 255)">
+                                <button class="btn btn-sm btn-primary edit-logistique-btn border-0 ">
                                     <i class="bi bi-pencil"></i>
                                 </button>
                             </div>
