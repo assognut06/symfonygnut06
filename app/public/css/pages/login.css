@@ -23,7 +23,7 @@
         line-height: 1.6 !important;
     }
 
-    #connexion-subtitle {
+    .login-connexion-subtitle {
         color: #ffffff !important;
         font-weight: 500 !important;
     }
