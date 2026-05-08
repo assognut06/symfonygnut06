@@ -19,6 +19,20 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
 
     steps:
+      - name: Notify Teams - Deployment started
+        shell: bash
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${TEAMS_WEBHOOK_URL:-}" ]; then
+            echo "TEAMS_WEBHOOK_URL is not set, skipping Teams early start notification."
+            exit 0
+          fi
+
+          curl -sS -H "Content-Type: application/json" -d "{\"text\":\"🚀 Deploy PROD started - repo ${{ github.repository }} - run #${{ github.run_number }}\"}" "$TEAMS_WEBHOOK_URL"
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -30,16 +44,20 @@ jobs:
         run: |
           set -euo pipefail
 
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git fetch --tags --force
 
-          LAST_TAG=$(git tag -l 'prod-v*' | sed -n 's/^prod-v\([0-9][0-9]*\)$/\1/p' | sort -n | tail -1)
-          if [ -z "${LAST_TAG:-}" ]; then
-            NEXT_NUMBER=1
+          YYMM=$(date +%y%m)
+          LAST_INCREMENT=$(git tag -l "0.${YYMM}.*" | sed -n "s/^0\\.${YYMM}\\.\\([0-9][0-9]*\\)$/\\1/p" | sort -n | tail -1)
+          if [ -z "${LAST_INCREMENT:-}" ]; then
+            NEXT_INCREMENT=1
           else
-            NEXT_NUMBER=$((LAST_TAG + 1))
+            NEXT_INCREMENT=$((LAST_INCREMENT + 1))
           fi
 
-          NEW_TAG="prod-v${NEXT_NUMBER}"
+          NEW_TAG="0.${YYMM}.${NEXT_INCREMENT}"
           TARGET_SHA="${{ github.event.pull_request.merge_commit_sha }}"
 
           if [ -z "$TARGET_SHA" ]; then
@@ -53,7 +71,7 @@ jobs:
 
           echo "tag_name=$NEW_TAG" >> "$GITHUB_OUTPUT"
 
-      - name: Notify Teams - Deployment started
+      - name: Notify Teams - Tag created
         shell: bash
         env:
           TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
