@@ -102,6 +102,10 @@ jobs:
             cd /var/www/gnut06_prod
             echo "📁 Current directory: $(pwd)"
 
+            # Fix permissions on entire project directory
+            echo "🔧 Fixing project directory permissions..."
+            sudo -n chown -R $(whoami):$(whoami) /var/www/gnut06_prod || true
+
             # Éviter l'erreur "detected dubious ownership" sur ce dépôt
             git config --global --add safe.directory /var/www/gnut06_prod
 
@@ -116,10 +120,6 @@ jobs:
               echo "📍 Current remote URL: $CURRENT_URL"
               echo "✅ Will use temporary authenticated git config (no remote rewrite)"
             fi
-
-            # Fix permissions on git directory
-            echo "🔧 Fixing git directory permissions..."
-            sudo -n chown -R $(whoami):$(whoami) /var/www/gnut06_prod/.git || true
 
             # Récupérer les dernières modifications
             echo "📥 Pulling latest changes..."
