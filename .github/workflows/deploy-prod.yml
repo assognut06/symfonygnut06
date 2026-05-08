@@ -120,14 +120,14 @@ jobs:
             # Récupérer les dernières modifications
             echo "📥 Pulling latest changes..."
             if [ ! -z "$GITHUB_TOKEN" ]; then
-              git \
+              sudo git \
                 -c "url.https://${GITHUB_TOKEN}@github.com/.insteadOf=git@github.com:" \
                 -c "url.https://${GITHUB_TOKEN}@github.com/.insteadOf=https://github.com/" \
                 fetch origin --tags
             else
-              git fetch origin --tags
+              sudo git fetch origin --tags
             fi
-            git checkout "$RELEASE_TAG"
+            sudo git checkout "$RELEASE_TAG"
             echo "🏷️ Deploying tag: $RELEASE_TAG"
 
             # Aller dans le dossier app
