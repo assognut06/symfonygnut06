@@ -102,6 +102,9 @@ jobs:
             cd /var/www/gnut06_prod
             echo "📁 Current directory: $(pwd)"
 
+            # Éviter l'erreur "detected dubious ownership" sur ce dépôt
+            git config --global --add safe.directory /var/www/gnut06_prod
+
             # Configurer l'accès GitHub
             echo "🔑 Setting up GitHub access..."
             ssh-keyscan -H github.com >> ~/.ssh/known_hosts || true
