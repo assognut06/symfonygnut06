@@ -117,17 +117,21 @@ jobs:
               echo "✅ Will use temporary authenticated git config (no remote rewrite)"
             fi
 
+            # Fix permissions on git directory
+            echo "🔧 Fixing git directory permissions..."
+            sudo -n chown -R $(whoami):$(whoami) /var/www/gnut06_prod/.git || true
+
             # Récupérer les dernières modifications
             echo "📥 Pulling latest changes..."
             if [ ! -z "$GITHUB_TOKEN" ]; then
-              sudo git \
+              git \
                 -c "url.https://${GITHUB_TOKEN}@github.com/.insteadOf=git@github.com:" \
                 -c "url.https://${GITHUB_TOKEN}@github.com/.insteadOf=https://github.com/" \
                 fetch origin --tags
             else
-              sudo git fetch origin --tags
+              git fetch origin --tags
             fi
-            sudo git checkout "$RELEASE_TAG"
+            git checkout "$RELEASE_TAG"
             echo "🏷️ Deploying tag: $RELEASE_TAG"
 
             # Aller dans le dossier app
