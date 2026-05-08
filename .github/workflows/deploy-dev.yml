@@ -1,0 +1,101 @@
+name: Deploy to Development Server
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - closed
+
+jobs:
+  deploy:
+    name: Deploy to Dev Server
+    runs-on: ubuntu-latest
+    
+    # Ne déployer que si la PR est mergée
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USERNAME }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          port: ${{ secrets.DEV_PORT || 22 }}
+          envs: GITHUB_TOKEN
+          script: |
+            set -e
+            echo "🚀 Starting deployment to development server..."
+            
+            # Aller dans le répertoire du projet
+            cd /var/www/html/gnut06_dev
+            echo "📁 Current directory: $(pwd)"
+            
+            # Configurer l'accès GitHub
+            echo "🔑 Setting up GitHub access..."
+            ssh-keyscan -H github.com >> ~/.ssh/known_hosts || true
+            
+            # Configurer Git avec le token pour l'authentification
+            if [ ! -z "$GITHUB_TOKEN" ]; then
+              echo "🔑 Configuring Git with GitHub token..."
+              
+              # Récupérer l'URL actuelle et la convertir en HTTPS
+              CURRENT_URL=$(git remote get-url origin)
+              echo "📍 Current remote URL: $CURRENT_URL"
+              
+              if [[ $CURRENT_URL == git@github.com:* ]]; then
+                # Convertir SSH vers HTTPS
+                HTTPS_URL=$(echo $CURRENT_URL | sed 's/git@github.com:/https:\/\/'"${GITHUB_TOKEN}"'@github.com\//')
+                echo "🔄 Converting SSH URL to HTTPS..."
+                git remote set-url origin "$HTTPS_URL"
+              elif [[ $CURRENT_URL == https://github.com/* ]]; then
+                # Ajouter le token à l'URL HTTPS existante
+                HTTPS_URL=$(echo $CURRENT_URL | sed 's/https:\/\/github.com\//https:\/\/'"${GITHUB_TOKEN}"'@github.com\//')
+                echo "🔄 Adding token to HTTPS URL..."
+                git remote set-url origin "$HTTPS_URL"
+              fi
+              
+              echo "✅ Remote URL configured for token authentication"
+            fi
+            
+            # Récupérer les dernières modifications
+            echo "📥 Pulling latest changes..."
+            git pull origin develop
+
+            # Aller dans le dossier app
+            cd app
+            echo "📁 Switched to app directory: $(pwd)"
+            
+            # Installer/mettre à jour les dépendances PHP
+            echo "📦 Installing/updating PHP dependencies..."
+            composer install --no-dev --optimize-autoloader
+            
+            # Régénérer l'autoloader après suppression des packages dev
+            echo "🔄 Optimizing autoloader for production..."
+            composer dump-autoload --optimize --classmap-authoritative
+            
+            # Exécuter les migrations
+            echo "🗄️ Running database migrations..."
+            php bin/console doctrine:migrations:migrate --no-interaction --env=prod
+            
+            # Installer/mettre à jour les dépendances Node.js
+            echo "📦 Installing/updating Node.js dependencies..."
+            npm install
+            
+            # Générer les assets
+            echo "🎨 Building assets..."
+            npm run build
+            
+            # Vider le cache Symfony
+            echo "🧹 Clearing Symfony cache..."
+            sudo chown -R www-data:www-data /var/www/html/gnut06_dev/app/var
+            sudo -u www-data php bin/console cache:clear --env=prod --no-debug
+            
+            # Réchauffer le cache
+            echo "🔥 Warming up cache..."
+            sudo -u www-data php bin/console cache:warmup --env=prod --no-debug
+            
+            echo "✅ Deployment completed successfully!"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
