@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   mysql:
@@ -13,8 +13,7 @@ services:
       - "3306:3306"
     volumes:
       - ./mysql:/var/lib/mysql
- 
-  
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     platform: linux/amd64
@@ -27,8 +26,12 @@ services:
       - "8080:80"
     depends_on:
       - mysql
-    entrypoint: ["bash", "-c", "rm -f /usr/local/etc/php/conf.d/*opcache* && /docker-entrypoint.sh apache2-foreground"]
-
+    entrypoint:
+      [
+        "bash",
+        "-c",
+        "rm -f /usr/local/etc/php/conf.d/*opcache* && /docker-entrypoint.sh apache2-foreground",
+      ]
 
   maildev:
     image: maildev/maildev
@@ -54,8 +57,6 @@ services:
       - "9003:9003"
     depends_on:
       - mysql
-
-
 
 volumes:
   mysql:
