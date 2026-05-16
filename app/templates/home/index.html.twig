@@ -104,6 +104,21 @@
 
 		/* ✅ Responsive pour mobile */
 		@media(max-width: 768px) {
+			/* Empêche tout débordement horizontal des sections pleine largeur */
+			.bg-main {
+				overflow-x: clip;
+			}
+
+			/* Le titre hero contenait des segments non-coupables sur petits écrans */
+			#hero-title,
+			#hero-title + h2 {
+				font-size: clamp(1.8rem, 8vw, 2.2rem) !important;
+				line-height: 1.2 !important;
+				overflow-wrap: anywhere;
+				word-break: break-word;
+				hyphens: auto;
+			}
+
 			.carousel-indicators {
 				bottom: -50px !important;
 			}
@@ -111,6 +126,11 @@
 			.carousel-control-prev,
 			.carousel-control-next {
 				width: 40px !important;
+			}
+
+			/* Evite que le badge "New" déborde en dehors du viewport sur mobile */
+			.position-absolute.top-0.start-100.badge {
+				display: none;
 			}
 		}
 
@@ -171,8 +191,9 @@
 
 		<!-- ✅ Section Hero accessible -->
 		<section class="bg-main w-100 py-5" role="region" aria-labelledby="hero-title">
-			<div class="container row align-items-center gx-5 m-auto">
-				<div  class="col-md-6 text-center order-1 order-md-2">
+			<div class="container">
+				<div class="row align-items-center gx-5">
+				<div class="col-md-6 text-center order-1 order-md-2">
 				<figure class="rounded-4 filtre-gnut06">
 					<img src="{{ asset('images/webp/apf_251112_001.webp') }}" class="img-fluid" alt="Personne utilisant une technologie immersive GNUT 06 pour l'inclusion numérique" role="img">
 				</figure>
@@ -189,12 +210,14 @@
 						Découvrez GNUT 06
 					</a>
 				</header>
+				</div>
 			</div>
 		</section>
 
 		<!-- ✅ Expérience immersive accessible -->
 		<section class="bg-main w-100 py-5" role="region" aria-labelledby="immersive-title">
-			<div class="container row align-items-center gx-5 m-auto">
+			<div class="container">
+				<div class="row align-items-center gx-5">
 				<figure class="col-md-6 text-center mb-4 mb-md-0 order-2 order-md-1 mt-3 mt-md-0">
 					<img src="{{ asset('images/webp/immersion-group.webp') }}" class="img-fluid" alt="Groupe de personnes de différents âges vivant une expérience immersive en réalité virtuelle ensemble" role="img">
 				</figure>
@@ -219,6 +242,7 @@
 						</a>
 					</nav>
 				</article>
+				</div>
 			</div>
 		</section>
 
@@ -355,7 +379,8 @@
 
 		<!-- ✅ Comment aider - accessible -->
 		<section class="bg-main w-100 py-5" role="region" aria-labelledby="help-title">
-			<div class="container row align-items-center text-white gx-5 m-auto">
+			<div class="container">
+				<div class="row align-items-center text-white gx-5">
 				<article class="col-md-6 mb-4 mb-md-0">
 					<h2 id="help-title" class="text-start">Comment vous pouvez nous aider</h2>
 					<p class="text">
@@ -388,6 +413,7 @@
 				<figure class="rounded-4 filtre-gnut06">
 					<img src="{{ asset('images/webp/apf_251112_002.webp') }}" class="img-fluid" alt="Illustration montrant des personnes soutenant ensemble l'association GNUT 06" role="img">
 				</figure>
+				</div>
 				</div>
 			</div>
 		</section>
