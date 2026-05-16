@@ -114,6 +114,24 @@ docker compose stop
 docker compose up -d
 ```
 
+## Tests
+
+# All tests
+
+docker exec symfony_asso php vendor/bin/phpunit
+
+# Unit tests only (fast, no DB)
+
+docker exec symfony_asso php vendor/bin/phpunit --testsuite=Unit
+
+# Functional tests only
+
+docker exec symfony_asso php vendor/bin/phpunit --testsuite=Functional
+
+# Specific test file
+
+docker exec symfony_asso php vendor/bin/phpunit tests/Functional/SecurityHeadersTest.php
+
 ## Trouble shoot
 
 Sur Mac, il peut y avoir une erreur avec l'extension opcache.so
