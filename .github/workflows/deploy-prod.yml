@@ -31,8 +31,8 @@ jobs:
             exit 0
           fi
 
-          MESSAGE="Deploy PROD started - repo ${{ github.repository }} - run #${{ github.run_number }}"
-          PAYLOAD=$(printf '{"text":"%s","message":"%s","event":"deploy_started","repository":"%s","run_number":"%s"}' "$MESSAGE" "$MESSAGE" "${{ github.repository }}" "${{ github.run_number }}")
+          MESSAGE="🚀 Deploy PROD started - repo ${{ github.repository }} - run #${{ github.run_number }}"
+          PAYLOAD=$(printf '{"type":"AdaptiveCard","$schema":"http://adaptivecards.io/schemas/adaptive-card.json","version":"1.4","body":[{"type":"TextBlock","text":"%s","wrap":true,"size":"Large","weight":"Bolder"}]}' "$MESSAGE")
 
           HTTP_CODE=$(curl -sS -o /tmp/notify_start_response.txt -w "%{http_code}" -H "Content-Type: application/json" -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL" || true)
           echo "Notify start HTTP status: ${HTTP_CODE}"
@@ -92,8 +92,8 @@ jobs:
             exit 0
           fi
 
-          MESSAGE="Deploy PROD started - tag ${RELEASE_TAG} - repo ${{ github.repository }} - run #${{ github.run_number }}"
-          PAYLOAD=$(printf '{"text":"%s","message":"%s","event":"tag_created","repository":"%s","run_number":"%s","tag":"%s"}' "$MESSAGE" "$MESSAGE" "${{ github.repository }}" "${{ github.run_number }}" "${RELEASE_TAG}")
+          MESSAGE="🏷️ Deploy PROD started - tag ${RELEASE_TAG} - repo ${{ github.repository }} - run #${{ github.run_number }}"
+          PAYLOAD=$(printf '{"type":"AdaptiveCard","$schema":"http://adaptivecards.io/schemas/adaptive-card.json","version":"1.4","body":[{"type":"TextBlock","text":"%s","wrap":true,"size":"Large","weight":"Bolder"}]}' "$MESSAGE")
 
           HTTP_CODE=$(curl -sS -o /tmp/notify_tag_response.txt -w "%{http_code}" -H "Content-Type: application/json" -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL" || true)
           echo "Notify tag HTTP status: ${HTTP_CODE}"
@@ -210,7 +210,7 @@ jobs:
           fi
 
           MESSAGE="${STATUS_ICON} Deploy PROD finished - status ${JOB_STATUS} - tag ${RELEASE_TAG} - repo ${{ github.repository }} - run #${{ github.run_number }}"
-          PAYLOAD=$(printf '{"text":"%s","message":"%s","event":"deploy_finished","repository":"%s","run_number":"%s","tag":"%s","status":"%s"}' "$MESSAGE" "$MESSAGE" "${{ github.repository }}" "${{ github.run_number }}" "${RELEASE_TAG}" "${JOB_STATUS}")
+          PAYLOAD=$(printf '{"type":"AdaptiveCard","$schema":"http://adaptivecards.io/schemas/adaptive-card.json","version":"1.4","body":[{"type":"TextBlock","text":"%s","wrap":true,"size":"Large","weight":"Bolder"}]}' "$MESSAGE")
 
           HTTP_CODE=$(curl -sS -o /tmp/notify_end_response.txt -w "%{http_code}" -H "Content-Type: application/json" -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL" || true)
           echo "Notify finished HTTP status: ${HTTP_CODE}"
