@@ -1,118 +1,99 @@
-# GitHub Actions - Configuration du Déploiement
+# GitHub Actions - Configuration du Deploiement Production
 
-## Secrets à configurer dans GitHub
+## Secrets a configurer dans GitHub
 
-Pour que le déploiement automatique fonctionne, vous devez configurer les secrets suivants dans votre repository GitHub :
+Pour que le deploiement automatique en production fonctionne, configurez les secrets suivants dans le repository GitHub.
 
-### Comment ajouter les secrets :
-1. Allez dans **Settings** → **Secrets and variables** → **Actions**
+### Comment ajouter les secrets
+1. Allez dans **Settings** -> **Secrets and variables** -> **Actions**
 2. Cliquez sur **New repository secret**
 3. Ajoutez chaque secret avec son nom et sa valeur
 
-### Secrets requis :
+## Secrets utilises par le workflow
 
-#### `DEV_HOST`
-- **Description** : Adresse IP ou nom de domaine de votre serveur de développement
-- **Exemple** : `192.168.1.100` ou `dev.gnut06.com`
+### `DEV_HOST`
+- **Description** : Adresse IP ou nom de domaine du serveur de production
+- **Exemple** : `prod.gnut06.com`
 
-#### `DEV_USERNAME`
-- **Description** : Nom d'utilisateur pour se connecter au serveur via SSH
-- **Exemple** : `deploy` ou `ubuntu` ou `root`
+### `DEV_USERNAME`
+- **Description** : Utilisateur SSH du serveur de production
+- **Exemple** : `deploy` ou `ubuntu`
 
-#### `DEV_SSH_KEY`
-- **Description** : Clé privée SSH pour se connecter au serveur (format PEM)
-- **Comment générer** :
-  ```bash
-  # Sur votre machine locale
-  ssh-keygen -t rsa -b 4096 -C "deploy-gnut06"
-  # Copier le contenu de la clé privée (~/.ssh/id_rsa)
-  cat ~/.ssh/id_rsa
-  ```
-- **Important** : Ajoutez la clé publique (`~/.ssh/id_rsa.pub`) dans `~/.ssh/authorized_keys` sur votre serveur
+### `DEV_SSH_KEY`
+- **Description** : Cle privee SSH (format PEM) pour la connexion depuis GitHub Actions
+- **Important** : Ajouter la cle publique correspondante dans `~/.ssh/authorized_keys` sur le serveur
 
-#### `DEV_PORT` (optionnel)
-- **Description** : Port SSH du serveur (défaut : 22)
-- **Exemple** : `22`
+### `DEV_PORT` (optionnel)
+- **Description** : Port SSH du serveur
+- **Defaut** : `22`
 
-#### `GITHUB_TOKEN`
-- **Description** : Token GitHub pour accéder au repository lors du git pull
-- **Comment générer** : 
-  1. GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
-  2. Générer un token avec la permission `repo`
-  3. Copier le token généré
-- **Important** : Ce token permet l'authentification pour le `git pull` sur le serveur
+### `GITHUB_TOKEN`
+- **Description** : Token GitHub utilise pour authentifier `git fetch` sur le serveur
+- **Important** : Le token doit avoir les permissions necessaires sur le repository
 
-## Workflow de déploiement
+### `TEAMS_WEBHOOK_URL` (optionnel mais recommande)
+- **Description** : URL de webhook Teams pour les notifications de debut, creation de tag et fin de deploiement
 
-Le déploiement se déclenche automatiquement :
-- ✅ À chaque merge de pull request vers `develop`
+## Declenchement du deploiement production
 
-### Étapes du déploiement :
-1. 🔐 Connexion SSH au serveur de développement
-2. 📁 Navigation vers `/var/www/html/gnut06_dev`
-3. 📥 `git pull` des dernières modifications
-4. 📁 Navigation vers le sous-dossier `app`
-5. 📦 `composer install --no-dev` (dépendances PHP production)
-6. 🔄 Optimisation de l'autoloader pour la production
-7. 🗄️ Migrations de base de données (env: prod)
-8. 📦 `npm install` (toutes les dépendances Node.js, y compris dev pour Encore)
-9. 🎨 `npm run build` (compilation des assets via Webpack Encore)
-10. 🧹 Vidage du cache Symfony (env: prod)
-11. 🔥 Réchauffement du cache (env: prod)
+Le workflow se declenche automatiquement :
+- Quand une pull request vers `main` est fermee **et mergee**
 
-## Prérequis sur le serveur
+Condition appliquee dans le job :
+- `github.event.pull_request.merged == true`
 
-Assurez-vous que votre serveur de développement dispose de :
-- ✅ Git installé et configuré
-- ✅ PHP 8.2+ avec Composer
-- ✅ Node.js avec npm
-- ✅ Accès SSH configuré
-- ✅ Permissions appropriées pour l'utilisateur de déploiement
-- ✅ Le projet déjà cloné dans `/var/www/html/gnut06_dev`
-- ✅ **Accès GitHub configuré** (voir section Configuration GitHub)
+## Etapes executees
 
-## Configuration GitHub pour le déploiement
+1. Notification Teams de debut (si webhook configure)
+2. Checkout du repository
+3. Creation d'un tag de release incrementale au format `0.YYMM.N`
+4. Push du tag vers `origin`
+5. Notification Teams de creation du tag
+6. Connexion SSH au serveur de production
+7. Positionnement dans `/var/www/gnut06_prod`
+8. Configuration `safe.directory` pour Git
+9. `git fetch origin --tags` (avec auth via token si disponible)
+10. `git checkout $RELEASE_TAG`
+11. Positionnement dans `/var/www/gnut06_prod/app`
+12. `composer install --no-dev --optimize-autoloader`
+13. `composer dump-autoload --optimize --classmap-authoritative`
+14. `php bin/console doctrine:migrations:migrate --no-interaction --env=prod`
+15. `npm install`
+16. `npm run build`
+17. `php bin/console cache:clear --env=prod --no-debug`
+18. `php bin/console cache:warmup --env=prod --no-debug`
+19. Notification Teams de fin (toujours executee) avec statut du job
 
-### Reconfiguration automatique (Utilisée dans notre workflow)
-Le workflow reconfigure automatiquement l'URL du repository pour utiliser HTTPS avec le token :
+## Repertoire cible sur le serveur
+
+- Projet : `/var/www/gnut06_prod`
+- Application Symfony : `/var/www/gnut06_prod/app`
+
+## Prerequis serveur production
+
+- Git installe
+- PHP 8.2+ et Composer
+- Node.js et npm
+- Acces SSH fonctionnel
+- Permissions suffisantes pour l'utilisateur de deploiement
+- Projet deja clone dans `/var/www/gnut06_prod`
+
+## Notes importantes sur l'authentification GitHub
+
+Le workflow n'ecrase pas l'URL du remote. Il utilise une configuration Git temporaire pendant le `fetch` :
+
 ```bash
-git remote set-url origin "https://${GITHUB_TOKEN}@github.com/OWNER/REPO.git"
+git \
+  -c "url.https://${GITHUB_TOKEN}@github.com/.insteadOf=git@github.com:" \
+  -c "url.https://${GITHUB_TOKEN}@github.com/.insteadOf=https://github.com/" \
+  fetch origin --tags
 ```
 
-### Option 1 : Token GitHub (Recommandé)
-```bash
-# Sur le serveur, configurer Git avec un token
-git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+Cela evite de persister un token dans la configuration du depot sur le serveur.
 
-# Ou directement dans le projet
-cd /var/www/html/gnut06_dev
-git remote set-url origin https://${GITHUB_TOKEN}@github.com/votre-username/votre-repo.git
-```
+## Securite
 
-**Secret GitHub à ajouter :**
-- `GITHUB_TOKEN` : Token avec permissions `repo` (Settings → Developer settings → Personal access tokens)
-
-### Option 2 : Clé SSH de déploiement
-```bash
-# Générer une clé SSH spécifique pour le déploiement
-ssh-keygen -t rsa -b 4096 -C "deploy-gnut06-server" -f ~/.ssh/github_deploy
-
-# Ajouter la clé publique comme "Deploy Key" dans GitHub
-# (Settings → Deploy keys → Add deploy key)
-cat ~/.ssh/github_deploy.pub
-
-# Configurer SSH pour utiliser cette clé
-echo "Host github.com
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/github_deploy
-  IdentitiesOnly yes" >> ~/.ssh/config
-```
-
-## Sécurité
-
-- 🔒 Ne jamais committer de clés privées dans le code
-- 🔒 Utiliser exclusivement les secrets GitHub
-- 🔒 Configurer des permissions minimales pour l'utilisateur de déploiement
-- 🔒 Considérer l'utilisation d'un agent SSH pour plus de sécurité
-- 🔒 Terminé
+- Ne jamais committer de cles privees
+- Utiliser uniquement les secrets GitHub Actions
+- Limiter les permissions du compte SSH de deploiement
+- Faire une rotation reguliere des cles et tokens
