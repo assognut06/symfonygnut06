@@ -31,7 +31,15 @@ jobs:
             exit 0
           fi
 
-          curl -sS -H "Content-Type: application/json" -d "{\"text\":\"🚀 Deploy PROD started - repo ${{ github.repository }} - run #${{ github.run_number }}\"}" "$TEAMS_WEBHOOK_URL"
+          MESSAGE="🚀 Deploy PROD started - repo ${{ github.repository }} - run #${{ github.run_number }}"
+          PAYLOAD=$(printf '{"type":"AdaptiveCard","$schema":"http://adaptivecards.io/schemas/adaptive-card.json","version":"1.4","body":[{"type":"TextBlock","text":"%s","wrap":true,"size":"Large","weight":"Bolder"}]}' "$MESSAGE")
+
+          HTTP_CODE=$(curl -sS -o /tmp/notify_start_response.txt -w "%{http_code}" -H "Content-Type: application/json" -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL" || true)
+          echo "Notify start HTTP status: ${HTTP_CODE}"
+          if [[ ! "$HTTP_CODE" =~ ^[0-9]{3}$ ]] || [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "Notify start failed. Response body:"
+            cat /tmp/notify_start_response.txt || true
+          fi
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -84,7 +92,15 @@ jobs:
             exit 0
           fi
 
-          curl -sS -H "Content-Type: application/json" -d "{\"text\":\"🚀 Deploy PROD started - tag ${RELEASE_TAG} - repo ${{ github.repository }} - run #${{ github.run_number }}\"}" "$TEAMS_WEBHOOK_URL"
+          MESSAGE="🏷️ Deploy PROD started - tag ${RELEASE_TAG} - repo ${{ github.repository }} - run #${{ github.run_number }}"
+          PAYLOAD=$(printf '{"type":"AdaptiveCard","$schema":"http://adaptivecards.io/schemas/adaptive-card.json","version":"1.4","body":[{"type":"TextBlock","text":"%s","wrap":true,"size":"Large","weight":"Bolder"}]}' "$MESSAGE")
+
+          HTTP_CODE=$(curl -sS -o /tmp/notify_tag_response.txt -w "%{http_code}" -H "Content-Type: application/json" -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL" || true)
+          echo "Notify tag HTTP status: ${HTTP_CODE}"
+          if [[ ! "$HTTP_CODE" =~ ^[0-9]{3}$ ]] || [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "Notify tag failed. Response body:"
+            cat /tmp/notify_tag_response.txt || true
+          fi
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
@@ -193,4 +209,12 @@ jobs:
             STATUS_ICON="❌"
           fi
 
-          curl -sS -H "Content-Type: application/json" -d "{\"text\":\"${STATUS_ICON} Deploy PROD finished - status ${JOB_STATUS} - tag ${RELEASE_TAG} - repo ${{ github.repository }} - run #${{ github.run_number }}\"}" "$TEAMS_WEBHOOK_URL"
+          MESSAGE="${STATUS_ICON} Deploy PROD finished - status ${JOB_STATUS} - tag ${RELEASE_TAG} - repo ${{ github.repository }} - run #${{ github.run_number }}"
+          PAYLOAD=$(printf '{"type":"AdaptiveCard","$schema":"http://adaptivecards.io/schemas/adaptive-card.json","version":"1.4","body":[{"type":"TextBlock","text":"%s","wrap":true,"size":"Large","weight":"Bolder"}]}' "$MESSAGE")
+
+          HTTP_CODE=$(curl -sS -o /tmp/notify_end_response.txt -w "%{http_code}" -H "Content-Type: application/json" -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL" || true)
+          echo "Notify finished HTTP status: ${HTTP_CODE}"
+          if [[ ! "$HTTP_CODE" =~ ^[0-9]{3}$ ]] || [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "Notify finished failed. Response body:"
+            cat /tmp/notify_end_response.txt || true
+          fi
