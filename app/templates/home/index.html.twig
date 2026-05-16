@@ -104,6 +104,21 @@
 
 		/* ✅ Responsive pour mobile */
 		@media(max-width: 768px) {
+			/* Empêche tout débordement horizontal des sections pleine largeur */
+			.bg-main {
+				overflow-x: clip;
+			}
+
+			/* Le titre hero contenait des segments non-coupables sur petits écrans */
+			#hero-title,
+			#hero-title + h2 {
+				font-size: clamp(1.8rem, 8vw, 2.2rem) !important;
+				line-height: 1.2 !important;
+				overflow-wrap: anywhere;
+				word-break: break-word;
+				hyphens: auto;
+			}
+
 			.carousel-indicators {
 				bottom: -50px !important;
 			}
