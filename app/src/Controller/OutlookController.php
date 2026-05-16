@@ -16,10 +16,21 @@ class OutlookController extends AbstractController
     #[Route('/connect/outlook', name: 'connect_outlook_start')]
     public function connectAction(ClientRegistry $clientRegistry): RedirectResponse
     {
+        $azureClientId = $_ENV['AZURE_CLIENT_ID']
+            ?? $_SERVER['AZURE_CLIENT_ID']
+            ?? getenv('AZURE_CLIENT_ID')
+            ?? '';
+
+        if (trim((string) $azureClientId) === '') {
+            $this->addFlash('error', 'Configuration Microsoft OAuth incomplète: AZURE_CLIENT_ID est vide.');
+
+            return $this->redirectToRoute('app_login');
+        }
+
         // 'azure' est le nom de notre client configuré dans knpu_oauth2_client.yaml
         return $clientRegistry
             ->getClient('azure')
-            ->redirect();
+            ->redirect([], []);
     }
 
     /**

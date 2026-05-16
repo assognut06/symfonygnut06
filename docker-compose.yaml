@@ -41,6 +41,8 @@ services:
       context: ./app
     container_name: symfony_asso
     restart: always
+    env_file:
+      - ./app/.env.test
     environment:
       DATABASE_URL: "mysql://root:root@mysql:3306/gnut06?serverVersion=5.7&charset=utf8mb4"
     volumes:
