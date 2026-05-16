@@ -1,0 +1,10 @@
+services:
+    App\Service\HelloAssoApiService:
+        class: App\Tests\Stub\HelloAssoApiServiceStub
+
+    App\Service\HelloAssoAuthService:
+        class: App\Service\HelloAssoAuthService
+        arguments:
+            - '@request_stack'
+            - 'test_client_id'
+            - 'test_client_secret'
