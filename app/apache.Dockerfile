@@ -50,6 +50,8 @@ RUN a2ensite default-ssl && a2enmod proxy proxy_http proxy_fcgi && a2enmod rewri
 
 RUN echo "Listen 8080" >> /etc/apache2/ports.conf
 
+RUN rm -rf /var/www/html && ln -s /var/www2/html /var/www/html
+
 EXPOSE 8000
 EXPOSE 8080
 # CMD ["symfony", "serve","--no-tls"]
