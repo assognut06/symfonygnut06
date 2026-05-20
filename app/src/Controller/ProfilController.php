@@ -20,14 +20,20 @@ class ProfilController extends AbstractController
 
     private $helloAssoApiService;
     private $entityManager;
+    private string $slugAsso;
+    private string $googleMapsApiKey;
 
     public function __construct(
         HelloAssoApiService $helloAssoApiService, 
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        string $slugAsso,
+        string $googleMapsApiKey
     )
     {
         $this->helloAssoApiService = $helloAssoApiService;
         $this->entityManager = $entityManager;
+        $this->slugAsso = $slugAsso;
+        $this->googleMapsApiKey = $googleMapsApiKey;
     }
 
     #[Route('', name: 'app_profil', methods: ['GET', 'POST'])]
@@ -65,17 +71,15 @@ class ProfilController extends AbstractController
         }
 
         $page = $request->query->get('page', 1);
-        $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO']  . "/items?userSearchKey=" . $userEmail . "&pageIndex=" . $page . "&pageSize=4&withDetails=false&sortOrder=Desc&sortField=Date&itemStates=Processed&withCount=true";
+        $url = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}/items?userSearchKey=" . $userEmail . "&pageIndex=" . $page . "&pageSize=4&withDetails=false&sortOrder=Desc&sortField=Date&itemStates=Processed&withCount=true";
 
         $data_items = $this->helloAssoApiService->makeApiCall($url);
-        
-        $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
         
         // Renvoyer à la vue Twig, en passant l'utilisateur comme variable
         return $this->render('profil/index.html.twig', [
             'user' => $user,
             'data_items' => $data_items,
-            'googleMapsApiKey' => $googleMapsApiKey,
+            'googleMapsApiKey' => $this->googleMapsApiKey,
             'profileForm' => $form->createView(),
         ]);
     }
@@ -92,29 +96,27 @@ class ProfilController extends AbstractController
         // Utilisation de la fonction pour construire l'URL
         if ($donnees === 'orders' || $donnees === 'payments') {
             $base = $donnees === 'orders' ? "items" : "payments";
-            $url = self::buildHelloAssoUrl($base, $userEmail, $page, $donnees);
+            $url = $this->buildHelloAssoUrl($base, $userEmail, $page, $donnees);
         }
 
         $data_items = $this->helloAssoApiService->makeApiCall($url);
         // dump($user);
-        $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
         // exit;
         // Renvoyer à la vue Twig, en passant l'utilisateur comme variable
         return $this->render('profil/index.html.twig', [
             'user' => $user,
             'data_items' => $data_items,
-            'googleMapsApiKey' => $googleMapsApiKey,
+            'googleMapsApiKey' => $this->googleMapsApiKey,
         ]);
     }
 
     // Fonction pour construire l'URL de base
-    private static function buildHelloAssoUrl($base, $userEmail, $page, $type)
+    private function buildHelloAssoUrl($base, $userEmail, $page, $type)
     {
-        $slugAsso = $_ENV['SLUGASSO'];
         $pageSize = 4;
         $sortOrder = "Desc";
         $sortField = "Date";
-        $url = "https://api.helloasso.com/v5/organizations/$slugAsso/$base?userSearchKey=$userEmail&pageIndex=$page&pageSize=$pageSize&withDetails=false&sortOrder=$sortOrder&sortField=$sortField&withCount=true";
+        $url = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}/$base?userSearchKey=$userEmail&pageIndex=$page&pageSize=$pageSize&withDetails=false&sortOrder=$sortOrder&sortField=$sortField&withCount=true";
     
         if ($type === 'orders') {
             $url .= "&itemStates=Processed";
