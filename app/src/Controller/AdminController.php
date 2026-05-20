@@ -12,15 +12,23 @@ class AdminController extends AbstractController
 {
 
     private $helloAssoApiService;
+    private string $slugAsso;
+    private string $googleMapsApiKey;
 
-    public function __construct(HelloAssoApiService $helloAssoApiService)
+    public function __construct(
+        HelloAssoApiService $helloAssoApiService,
+        string $slugAsso,
+        string $googleMapsApiKey
+    )
     {
         $this->helloAssoApiService = $helloAssoApiService;
+        $this->slugAsso = $slugAsso;
+        $this->googleMapsApiKey = $googleMapsApiKey;
     }
     #[Route('', name: 'admin_dashboard')]
     public function dashboard()
     {
-        $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO'];
+        $url = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}";
         
         $data = $this->helloAssoApiService->makeApiCall($url);
 
@@ -56,19 +64,17 @@ class AdminController extends AbstractController
             $this->helloAssoApiService->makeApiCall($url)
         );
 
-        $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
-
         if($donnees === 'orders') {
             return $this->render('admin/orders/detailsOrder.html.twig', [
                 'data_forms' => $data_forms,
-                'googleMapsApiKey' => $googleMapsApiKey,
+                'googleMapsApiKey' => $this->googleMapsApiKey,
                 'loading' => false,
             ]);
         }
         if($donnees === 'payments') {
             return $this->render('admin/orders/detailsPayment.html.twig', [
                 'data_forms' => $data_forms,
-                'googleMapsApiKey' => $googleMapsApiKey,
+                'googleMapsApiKey' => $this->googleMapsApiKey,
                 'loading' => false,
             ]);
         }
@@ -76,7 +82,7 @@ class AdminController extends AbstractController
     }
 
     private function buildApiUrl(string $donnees, string $page, string $formType, string $formSlug, string $tierTypes): string {
-        $baseUrl = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO'];
+        $baseUrl = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}";
     
         switch ($donnees) {
             case 'orders':

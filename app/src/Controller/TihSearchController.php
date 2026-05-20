@@ -27,7 +27,8 @@ class TihSearchController extends AbstractController
     public function __construct(
         private QueryBus $queryBus,
         private CommandBus $commandBus,
-        private GeocodeService $geocodeService
+        private GeocodeService $geocodeService,
+        private string $googleMapsApiKey,
     ) {}
 
     #[Route('/tih_search', name: 'app_tih_search', methods: ['GET'])]
@@ -118,6 +119,7 @@ class TihSearchController extends AbstractController
             'totalItems' => $totalItems,
             'itemsPerPage' => self::ITEMS_PER_PAGE,
             'cityCoordinates' => $cityCoordinates,
+            'googleMapsApiKey' => $this->googleMapsApiKey,
         ]);
     }
 

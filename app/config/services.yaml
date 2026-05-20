@@ -6,17 +6,21 @@
 parameters:
     helloasso.api_client_id: '%env(APICLIENTID)%'
     helloasso.api_client_secret: '%env(APICLIENTSECRET)%'
+    app.slug_asso: '%env(SLUGASSO)%'
+    app.google_maps_api_key: '%env(GNUT06MAPAPI)%'
     mailjet.api_key: '%env(APIMAILJET)%'
     mailjet.api_secret: '%env(APIMAILJETSECRET)%'
     ohme.api_key: '%env(SECRETOHME)%'
-    app.email.from: 'gnut@gnut06.org'
     app.email.admin: 'gnut@gnut06.org'
+    app.email.from: '%env(default:app.email.admin:SMTP_EMAIL)%'
     parameters:
     photos_directory: '%kernel.project_dir%/public/uploads/profilePictures'
     bordereau_directory: '%kernel.project_dir%/public/uploads/bordereau'
     nocaptcha.secret: '%env(NOCAPTCHA_SECRET)%'
     nocaptcha.sitekey: '%env(NOCAPTCHA_SITEKEY)%'
     app.env: '%env(APP_ENV)%'
+    oauth.azure_client_id: '%env(default::AZURE_CLIENT_ID)%'
+    oauth.google_client_id: '%env(default::GOOGLE_CLIENT_ID)%'
     cv_tih_directory: '%kernel.project_dir%/public/uploads/tihcv'
     attestation_tih_directory: '%kernel.project_dir%/public/uploads/tihattest'
     helloasso.webhook.default_allowed_ips: '51.138.206.200'
@@ -41,6 +45,16 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $appEnv: '%app.env%'
+            $slugAsso: '%app.slug_asso%'
+            $googleMapsApiKey: '%app.google_maps_api_key%'
+            $nocaptchaSecret: '%nocaptcha.secret%'
+            $nocaptchaSiteKey: '%nocaptcha.sitekey%'
+            $fromEmail: '%app.email.from%'
+            $adminEmail: '%app.email.admin%'
+            $azureClientId: '%oauth.azure_client_id%'
+            $googleClientId: '%oauth.google_client_id%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -83,7 +97,7 @@ services:
             $clientId: '%env(APICLIENTID)%'
             $clientSecret: '%env(APICLIENTSECRET)%'
             $urlToken: 'https://api.helloasso.com/oauth2/token'
-            $slugAsso: '%env(SLUGASSO)%'
+            $slugAsso: '%app.slug_asso%'
 
     App\Service\HelloAssoAuthService:
         class: App\Service\HelloAssoAuthService
@@ -116,7 +130,7 @@ services:
 
     App\Service\OhmeApiService:
         arguments:
-            $slugAsso: '%env(SLUGASSO)%'
+            $slugAsso: '%app.slug_asso%'
             $secretOhme: '%env(SECRETOHME)%'
 
     App\Service\ApiFrameVrService:
@@ -147,7 +161,7 @@ services:
 
     App\Service\GeocodeService:
         arguments:
-            $googleMapsApiKey: '%env(GNUT06MAPAPI)%'
+            $googleMapsApiKey: '%app.google_maps_api_key%'
 
     App\Controller\RegistrationController:
         arguments:
