@@ -15,6 +15,14 @@ use GuzzleHttp\Client;
 
 class ContactController extends AbstractController
 {
+    public function __construct(
+        private string $nocaptchaSecret,
+        private string $nocaptchaSiteKey,
+        private string $appEnv,
+        private string $fromEmail,
+        private string $adminEmail,
+    ) {}
+
     #[Route('/contact', name: 'app_contact')]
     public function contact(Request $request, ValidatorInterface $validator, MailerInterface $mailer): Response
     {
@@ -48,7 +56,7 @@ class ContactController extends AbstractController
             $client = new Client();
             $response = $client->request('POST', 'https://www.google.com/recaptcha/api/siteverify', [
                 'form_params' => [
-                    'secret' => $_ENV['NOCAPTCHA_SECRET'],
+                    'secret' => $this->nocaptchaSecret,
                     'response' => $recaptchaResponse,
                     'remoteip' => $request->getClientIp()
                 ]
@@ -56,7 +64,7 @@ class ContactController extends AbstractController
 
             $responseData = json_decode($response->getBody());
             
-            if ($_ENV['APP_ENV'] === 'dev') {
+            if ($this->appEnv === 'dev') {
                 $responseData->score = 0.9;
                 $responseData->success = true;
             }
@@ -71,8 +79,9 @@ class ContactController extends AbstractController
 
                  // Créer l'email
                  $emailMessage = (new Email())
-                     ->from($email)
-                     ->to('gnut@gnut06.org')
+                     ->from($this->fromEmail)
+                     ->replyTo($email)
+                     ->to($this->adminEmail)
                      ->subject('Message du site Gnut06.org')
                      ->text($body);
  
@@ -89,7 +98,7 @@ class ContactController extends AbstractController
         return $this->render('contact/index.html.twig', [
             'message_envoye' => $messageEnvoye,
             'errors' => $errors,
-            'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
+            'site_key' => $this->nocaptchaSiteKey
         ]);
     }
 }

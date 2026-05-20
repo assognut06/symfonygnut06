@@ -16,7 +16,12 @@ use GuzzleHttp\Client;
 
 class DonateurController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $entityManager) {}
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private string $nocaptchaSecret,
+        private string $nocaptchaSiteKey,
+        private string $appEnv,
+    ) {}
 
     #[Route('/donateur/formulaire', name: 'donateur_formulaire')]
     public function afficherFormulaires(Request $request, SessionInterface $session): Response
@@ -84,7 +89,7 @@ class DonateurController extends AbstractController
         return $this->render('donateur/form_donateur.html.twig', [
             'form_physique' => $formPhysique->createView(),
             'form_societe' => $formSociete->createView(),
-            'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
+            'site_key' => $this->nocaptchaSiteKey
         ]);
     }
 
@@ -100,7 +105,7 @@ class DonateurController extends AbstractController
         $client = new Client();
         $response = $client->request('POST', 'https://www.google.com/recaptcha/api/siteverify', [
             'form_params' => [
-                'secret' => $_ENV['NOCAPTCHA_SECRET'],
+                'secret' => $this->nocaptchaSecret,
                 'response' => $recaptchaResponse,
                 'remoteip' => $request->getClientIp()
             ]
@@ -108,7 +113,7 @@ class DonateurController extends AbstractController
 
         $responseData = json_decode($response->getBody());
 
-        if ($_ENV['APP_ENV'] === 'dev') {
+        if ($this->appEnv === 'dev') {
             $responseData->score = 0.9;
             $responseData->success = true;
         }
