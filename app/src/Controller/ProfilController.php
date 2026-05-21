@@ -70,7 +70,7 @@ class ProfilController extends AbstractController
             return $this->redirectToRoute('app_profil');
         }
 
-        $page = $request->query->get('page', 1);
+        $page = max(1, $request->query->getInt('page', 1));
         $url = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}/items?userSearchKey=" . $userEmail . "&pageIndex=" . $page . "&pageSize=4&withDetails=false&sortOrder=Desc&sortField=Date&itemStates=Processed&withCount=true";
 
         $data_items = $this->helloAssoApiService->makeApiCall($url);
@@ -84,8 +84,14 @@ class ProfilController extends AbstractController
         ]);
     }
 
-    #[Route('/{donnees}/{page}', name: 'app_profil_page', defaults: ['page' => 1])]
-    public function page(string $page, string $donnees): Response
+    #[Route(
+        '/{donnees}/{page}',
+        name: 'app_profil_page',
+        requirements: ['donnees' => 'orders|payments', 'page' => '\d+'],
+        defaults: ['page' => 1],
+        methods: ['GET']
+    )]
+    public function page(int $page, string $donnees): Response
     {
         // Assurez-vous que l'utilisateur est connecté
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -93,11 +99,8 @@ class ProfilController extends AbstractController
         // Récupérer l'utilisateur connecté
         $user = $this->getUser();
         $userEmail = urlencode($user->getUserIdentifier());
-        // Utilisation de la fonction pour construire l'URL
-        if ($donnees === 'orders' || $donnees === 'payments') {
-            $base = $donnees === 'orders' ? "items" : "payments";
-            $url = $this->buildHelloAssoUrl($base, $userEmail, $page, $donnees);
-        }
+        $base = $donnees === 'orders' ? "items" : "payments";
+        $url = $this->buildHelloAssoUrl($base, $userEmail, $page, $donnees);
 
         $data_items = $this->helloAssoApiService->makeApiCall($url);
         // dump($user);
@@ -111,7 +114,7 @@ class ProfilController extends AbstractController
     }
 
     // Fonction pour construire l'URL de base
-    private function buildHelloAssoUrl($base, $userEmail, $page, $type)
+    private function buildHelloAssoUrl(string $base, string $userEmail, int $page, string $type): string
     {
         $pageSize = 4;
         $sortOrder = "Desc";

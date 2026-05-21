@@ -172,7 +172,7 @@ class TihSearchController extends AbstractController
         }
 
         return $this->render('tih_search/contact.html.twig', [
-            'form' => $form,
+            'form' => $form->createView(),
             'tih' => $tihViewModel,
         ]);
     }

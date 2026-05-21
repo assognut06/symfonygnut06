@@ -315,6 +315,7 @@ legend {
                 {% endif %}
 
                 <div class="m-auto col-12 col-lg-7">
+                    {% set selected_project_type = form.project_type.vars.value|default('') %}
                     <form class="row g-4 mb-5 needs-validation"
                           method="POST"
                           action="{{ path('app_contact') }}"
@@ -337,14 +338,20 @@ legend {
                             <input type="text"
                                    id="first_name"
                                    name="first_name"
-                                   class="form-control"
+                                   class="form-control{{ not form.first_name.vars.valid ? ' is-invalid' : '' }}"
                                    placeholder="Votre prénom"
+                                   value="{{ form.first_name.vars.value|default('')|e('html_attr') }}"
+                                   maxlength="80"
                                    required
                                    autocomplete="given-name"
                                    aria-required="true"
                                    aria-describedby="first_name_error">
                             <div id="first_name_error" class="invalid-feedback">
-                                Veuillez entrer votre prénom.
+                                {% for error in form.first_name.vars.errors %}
+                                    {{ error.message }}{% if not loop.last %}<br>{% endif %}
+                                {% else %}
+                                    Veuillez entrer votre prénom.
+                                {% endfor %}
                             </div>
                         </div>
 
@@ -356,14 +363,20 @@ legend {
                             <input type="text"
                                    id="last_name"
                                    name="last_name"
-                                   class="form-control"
+                                   class="form-control{{ not form.last_name.vars.valid ? ' is-invalid' : '' }}"
                                    placeholder="Votre nom"
+                                   value="{{ form.last_name.vars.value|default('')|e('html_attr') }}"
+                                   maxlength="80"
                                    required
                                    autocomplete="family-name"
                                    aria-required="true"
                                    aria-describedby="last_name_error">
                             <div id="last_name_error" class="invalid-feedback">
-                                Veuillez entrer votre nom.
+                                {% for error in form.last_name.vars.errors %}
+                                    {{ error.message }}{% if not loop.last %}<br>{% endif %}
+                                {% else %}
+                                    Veuillez entrer votre nom.
+                                {% endfor %}
                             </div>
                         </div>
 
@@ -375,8 +388,10 @@ legend {
                             <input type="email"
                                    id="email"
                                    name="email"
-                                   class="form-control"
+                                   class="form-control{{ not form.email.vars.valid ? ' is-invalid' : '' }}"
                                    placeholder="votre@email.com"
+                                   value="{{ form.email.vars.value|default('')|e('html_attr') }}"
+                                   maxlength="180"
                                    required
                                    autocomplete="email"
                                    aria-required="true"
@@ -385,30 +400,38 @@ legend {
                                 Exemple : contact@exemple.fr
                             </div>
                             <div id="email_error" class="invalid-feedback">
-                                Veuillez entrer une adresse email valide.
+                                {% for error in form.email.vars.errors %}
+                                    {{ error.message }}{% if not loop.last %}<br>{% endif %}
+                                {% else %}
+                                    Veuillez entrer une adresse email valide.
+                                {% endfor %}
                             </div>
                         </div>
 
                         <!-- Téléphone -->
                         <div class="col-lg-6">
                             <label for="tel" class="form-label text">
-                                Téléphone <span class="text-danger" aria-label="obligatoire">*</span>
+                                Téléphone
                             </label>
                             <input type="tel"
                                    id="tel"
                                    name="tel"
-                                   class="form-control"
+                                   class="form-control{{ not form.tel.vars.valid ? ' is-invalid' : '' }}"
                                    placeholder="+33 6 12 34 56 78"
-                                   required
+                                   value="{{ form.tel.vars.value|default('')|e('html_attr') }}"
+                                   maxlength="30"
                                    autocomplete="tel"
-                                   pattern="^(\+?\d{1,3}[- ]?)?\d{9,12}$"
-                                   aria-required="true"
+                                   pattern="^\+?[0-9 .()\/-]{6,30}$"
                                    aria-describedby="tel_error tel_help">
                             <div id="tel_help" class="form-text text">
-                                Format français : +33 6 12 34 56 78
+                                Optionnel. Exemple : +33 6 12 34 56 78
                             </div>
                             <div id="tel_error" class="invalid-feedback">
-                                Veuillez entrer un numéro de téléphone valide.
+                                {% for error in form.tel.vars.errors %}
+                                    {{ error.message }}{% if not loop.last %}<br>{% endif %}
+                                {% else %}
+                                    Veuillez entrer un numéro de téléphone valide.
+                                {% endfor %}
                             </div>
                         </div>
 
@@ -428,8 +451,9 @@ legend {
                                            id="projet-site" 
                                            name="project_type" 
                                            value="site_web" 
-                                           class="form-check-input me-3 mt-1" 
+                                           class="form-check-input me-3 mt-1{{ not form.project_type.vars.valid ? ' is-invalid' : '' }}" 
                                            required
+                                           {{ selected_project_type == 'site_web' ? 'checked' : '' }}
                                            aria-describedby="projet-site-desc">
                                     <div class="flex-grow-1">
                                         <label for="projet-site" class="form-check-label text d-block mb-1">
@@ -446,7 +470,8 @@ legend {
                                            id="projet-app" 
                                            name="project_type" 
                                            value="application" 
-                                           class="form-check-input me-3 mt-1"
+                                           class="form-check-input me-3 mt-1{{ not form.project_type.vars.valid ? ' is-invalid' : '' }}"
+                                           {{ selected_project_type == 'application' ? 'checked' : '' }}
                                            aria-describedby="projet-app-desc">
                                     <div class="flex-grow-1">
                                         <label for="projet-app" class="form-check-label text d-block mb-1">
@@ -463,7 +488,8 @@ legend {
                                            id="projet-3d" 
                                            name="project_type" 
                                            value="salle_3d" 
-                                           class="form-check-input me-3 mt-1"
+                                           class="form-check-input me-3 mt-1{{ not form.project_type.vars.valid ? ' is-invalid' : '' }}"
+                                           {{ selected_project_type == 'salle_3d' ? 'checked' : '' }}
                                            aria-describedby="projet-3d-desc">
                                     <div class="flex-grow-1">
                                         <label for="projet-3d" class="form-check-label text d-block mb-1">
@@ -480,7 +506,8 @@ legend {
                                            id="projet-grand" 
                                            name="project_type" 
                                            value="grand_projet" 
-                                           class="form-check-input me-3 mt-1"
+                                           class="form-check-input me-3 mt-1{{ not form.project_type.vars.valid ? ' is-invalid' : '' }}"
+                                           {{ selected_project_type == 'grand_projet' ? 'checked' : '' }}
                                            aria-describedby="projet-grand-desc">
                                     <div class="flex-grow-1">
                                         <label for="projet-grand" class="form-check-label text d-block mb-1">
@@ -498,7 +525,8 @@ legend {
                                            id="projet-autre" 
                                            name="project_type" 
                                            value="autre_question" 
-                                           class="form-check-input me-3 mt-1"
+                                           class="form-check-input me-3 mt-1{{ not form.project_type.vars.valid ? ' is-invalid' : '' }}"
+                                           {{ selected_project_type == 'autre_question' ? 'checked' : '' }}
                                            aria-describedby="projet-autre-desc">
                                     <div class="flex-grow-1">
                                         <label for="projet-autre" class="form-check-label text d-block mb-1">
@@ -511,7 +539,11 @@ legend {
                                 </div>
                             </div>
                             <div id="project_type_error" class="invalid-feedback d-block">
-                                Veuillez sélectionner un type de projet.
+                                {% for error in form.project_type.vars.errors %}
+                                    {{ error.message }}{% if not loop.last %}<br>{% endif %}
+                                {% else %}
+                                    Veuillez sélectionner un type de projet.
+                                {% endfor %}
                             </div>
                         </fieldset>
 
@@ -523,20 +555,28 @@ legend {
                             <textarea id="message"
                                       name="message"
                                       rows="5"
-                                      class="form-control"
+                                      class="form-control{{ not form.message.vars.valid ? ' is-invalid' : '' }}"
                                       placeholder="Décrivez votre projet, vos besoins, votre budget..."
+                                      maxlength="3000"
                                       required
                                       aria-required="true"
-                                      aria-describedby="message_error message_help"></textarea>
+                                      aria-describedby="message_error message_help">{{ form.message.vars.value|default('') }}</textarea>
                             <div id="message_help" class="form-text text">
                                 Minimum 10 caractères. Décrivez votre projet en détail.
                             </div>
                             <div id="message_error" class="invalid-feedback">
-                                Veuillez entrer un message d'au moins 10 caractères.
+                                {% for error in form.message.vars.errors %}
+                                    {{ error.message }}{% if not loop.last %}<br>{% endif %}
+                                {% else %}
+                                    Veuillez entrer un message d'au moins 10 caractères.
+                                {% endfor %}
                             </div>
                         </div>
 
                         <!-- Captcha caché -->
+                        {% if form._token is defined %}
+                            {{ form_widget(form._token) }}
+                        {% endif %}
                         <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
 
                         <!-- ✅ CORRECTION - Infos sur les champs obligatoires -->
@@ -566,14 +606,19 @@ legend {
         </section>
 
         <!-- Recaptcha -->
-        <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+        {% if site_key is not empty %}
+            <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+            <script>
+                if (window.grecaptcha) {
+                    grecaptcha.ready(function() {
+                        grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
+                            document.getElementById('g-recaptcha-response').value = token;
+                        });
+                    });
+                }
+            </script>
+        {% endif %}
         <script>
-            grecaptcha.ready(function() {
-                grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
-                    document.getElementById('g-recaptcha-response').value = token;
-                });
-            });
-
             (() => {
                 'use strict';
 

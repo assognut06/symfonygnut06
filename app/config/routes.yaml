@@ -4,11 +4,6 @@ controllers:
         namespace: App\Controller
     type: attribute
 
-# config/routes.yaml
-send_email:
-    path: /email
-    controller: App\Controller\EmailController::sendEmail
-
 # Route pour démarrer le processus de connexion avec Google
 connect_google_start:
     path: /connect/google
