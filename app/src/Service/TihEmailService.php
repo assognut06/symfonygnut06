@@ -45,11 +45,11 @@ class TihEmailService
         $email = (new Email())
             ->from($this->fromEmail)
             ->to($professionalEmail)
-            ->cc($this->adminEmail)
+            ->bcc($this->adminEmail)
             ->replyTo($contactData->email)
             ->subject($contactData->subject)
             ->html($htmlContent)
-            ->embedFromPath($this->logoPath, 'eye-image');
+            ->embedFromPath($this->logoPath, 'logo-new');
 
         try {
             $this->mailer->send($email);

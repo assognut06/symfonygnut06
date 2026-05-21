@@ -88,7 +88,7 @@ services:
         arguments:
             $fromEmail: '%app.email.from%'
             $adminEmail: '%app.email.admin%'
-            $logoPath: '%kernel.project_dir%/public/images/logo_trans-min_300.png'
+            $logoPath: '%kernel.project_dir%/public/images/LogoNew.png'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
