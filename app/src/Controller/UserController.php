@@ -35,11 +35,15 @@ class UserController extends AbstractController
             $photoFile = $form->get('photo')->getData();
 
             if ($photoFile) {
-                // Supprimer l'ancienne photo si elle existe
+                // Supprimer l'ancienne photo si elle existe, sans faire tomber la requete en cas d'erreur de droits
                 if ($user->getProfilePicture()) {
                     $oldPhotoPath = $this->getParameter('photos_directory') . '/' . $user->getProfilePicture();
                     if (file_exists($oldPhotoPath)) {
-                        unlink($oldPhotoPath);
+                        try {
+                            unlink($oldPhotoPath);
+                        } catch (\Throwable $e) {
+                            $this->addFlash('warning', 'Ancienne photo non supprimée (droits insuffisants sur le serveur).');
+                        }
                     }
                 }
 
@@ -86,18 +90,22 @@ class UserController extends AbstractController
 
         // Vérifier si l'utilisateur a une photo de profil
         if ($user->getProfilePicture()) {
-            // Supprimer le fichier physique
-            $photoPath = $this->getParameter('photos_directory') . '/' . $user->getProfilePicture();
-            if (file_exists($photoPath)) {
-                unlink($photoPath);
+            try {
+                // Supprimer le fichier physique
+                $photoPath = $this->getParameter('photos_directory') . '/' . $user->getProfilePicture();
+                if (file_exists($photoPath)) {
+                    unlink($photoPath);
+                }
+
+                // Supprimer la référence en base de données
+                $user->setProfilePicture(null);
+                $entityManager->flush();
+
+                // Ajouter un message flash
+                $this->addFlash('success', 'Votre photo de profil a été supprimée.');
+            } catch (\Throwable $e) {
+                $this->addFlash('danger', 'Impossible de supprimer la photo pour le moment (droits fichiers serveur).');
             }
-
-            // Supprimer la référence en base de données
-            $user->setProfilePicture(null);
-            $entityManager->flush();
-
-            // Ajouter un message flash
-            $this->addFlash('success', 'Votre photo de profil a été supprimée.');
         } else {
             $this->addFlash('warning', 'Aucune photo de profil à supprimer.');
         }
