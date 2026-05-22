@@ -35,37 +35,41 @@ class UserController extends AbstractController
             $photoFile = $form->get('photo')->getData();
 
             if ($photoFile) {
-                // Supprimer l'ancienne photo si elle existe, sans faire tomber la requete en cas d'erreur de droits
-                if ($user->getProfilePicture()) {
-                    $oldPhotoPath = $this->getParameter('photos_directory') . '/' . $user->getProfilePicture();
-                    if (file_exists($oldPhotoPath)) {
-                        try {
-                            unlink($oldPhotoPath);
-                        } catch (\Throwable $e) {
-                            $this->addFlash('warning', 'Ancienne photo non supprimée (droits insuffisants sur le serveur).');
-                        }
-                    }
-                }
-
-                // Générer un nouveau nom pour la photo
-                $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $photoFile->guessExtension();
-
                 try {
+                    $photosDirectory = (string) $this->getParameter('photos_directory');
+                    $this->ensureDirectoryIsReady($photosDirectory);
+
+                    // Générer un nouveau nom pour la photo
+                    $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = (string) $slugger->slug($originalFilename ?: 'photo');
+                    $extension = $photoFile->guessExtension() ?: $photoFile->getClientOriginalExtension() ?: 'bin';
+                    $newFilename = $safeFilename . '-' . uniqid('', true) . '.' . $extension;
+
                     // Déplacer le fichier vers le dossier de destination
                     $photoFile->move(
-                        $this->getParameter('photos_directory'),
+                        $photosDirectory,
                         $newFilename
                     );
+
+                    $oldPhotoPath = null;
+                    if ($user->getProfilePicture()) {
+                        $oldPhotoPath = $photosDirectory . '/' . $user->getProfilePicture();
+                    }
 
                     // Mémoriser le nom du fichier en BDD
                     $user->setProfilePicture($newFilename);
                     $entityManager->flush();
 
+                    // Supprime l'ancienne photo uniquement après mise à jour réussie
+                    if ($oldPhotoPath && file_exists($oldPhotoPath)) {
+                        @unlink($oldPhotoPath);
+                    }
+
                     // Message flash de succès
                     $this->addFlash('success', 'Votre photo de profil a bien été mise à jour.');
-                } catch (FileException $e) {
+                } catch (\Throwable $e) {
+                    error_log(sprintf('Erreur upload photo profil (user_id=%s): %s', (string) $user->getId(), $e->getMessage()));
+
                     // Message flash en cas d'erreur
                     $this->addFlash('danger', 'Une erreur est survenue lors de l\'upload de votre photo. Veuillez réessayer.');
                 }
@@ -90,21 +94,25 @@ class UserController extends AbstractController
 
         // Vérifier si l'utilisateur a une photo de profil
         if ($user->getProfilePicture()) {
-            try {
-                // Supprimer le fichier physique
-                $photoPath = $this->getParameter('photos_directory') . '/' . $user->getProfilePicture();
-                if (file_exists($photoPath)) {
-                    unlink($photoPath);
-                }
+            $photoFilename = $user->getProfilePicture();
+            $photoPath = $this->getParameter('photos_directory') . '/' . $photoFilename;
 
+            try {
                 // Supprimer la référence en base de données
                 $user->setProfilePicture(null);
                 $entityManager->flush();
 
-                // Ajouter un message flash
-                $this->addFlash('success', 'Votre photo de profil a été supprimée.');
             } catch (\Throwable $e) {
                 $this->addFlash('danger', 'Impossible de supprimer la photo pour le moment (droits fichiers serveur).');
+
+                return $this->redirectToRoute('app_profil');
+            }
+
+            // Suppression physique best-effort: on n'annule pas la suppression logique si le fichier est verrouille.
+            if (file_exists($photoPath) && !@unlink($photoPath)) {
+                $this->addFlash('warning', 'Photo retirée du profil, mais fichier non supprimé sur le serveur.');
+            } else {
+                $this->addFlash('success', 'Votre photo de profil a été supprimée.');
             }
         } else {
             $this->addFlash('warning', 'Aucune photo de profil à supprimer.');
@@ -112,5 +120,16 @@ class UserController extends AbstractController
 
         // Rediriger vers la page de profil
         return $this->redirectToRoute('app_profil');
+    }
+
+    private function ensureDirectoryIsReady(string $directory): void
+    {
+        if (!is_dir($directory) && !mkdir($directory, 0775, true) && !is_dir($directory)) {
+            throw new FileException(sprintf('Impossible de creer le dossier %s', $directory));
+        }
+
+        if (!is_writable($directory)) {
+            throw new FileException(sprintf('Le dossier %s n\'est pas accessible en ecriture', $directory));
+        }
     }
 }
