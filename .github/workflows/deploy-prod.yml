@@ -183,7 +183,7 @@ jobs:
             echo "🔥 Warming up cache..."
             sudo -u www-data php bin/console cache:warmup --env=prod --no-debug
 
-            echo "✅ Deployment completed successfully!"
+            echo "✅ Deployment completed successfully !"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_TAG: ${{ steps.tag.outputs.tag_name }}
