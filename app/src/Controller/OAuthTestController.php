@@ -6,8 +6,10 @@ use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/oauth-test')]
+#[IsGranted('ROLE_ADMIN')]
 class OAuthTestController extends AbstractController
 {
     public function __construct(

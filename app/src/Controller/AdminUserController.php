@@ -3,26 +3,53 @@
 namespace App\Controller;
 
 use App\Entity\ResetPasswordRequest;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use App\Service\PaginationService;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class AdminUserController extends AbstractController
 {
+    private const PAGE_SIZE = 12;
+
     #[Route('/admin/user/{page}', name: 'app_admin_user', defaults: ['page' => 1])]
-    public function index(PaginationService $paginationService, int $page = 1): Response
+    public function index(Request $request, EntityManagerInterface $entityManager, int $page = 1): Response
     {
-        $pagination = $paginationService->getPaginatedData(User::class, $page);
+        $query = trim((string) $request->query->get('q', ''));
+        $page = max(1, $page);
+
+        $qb = $entityManager->getRepository(User::class)->createQueryBuilder('u')
+            ->orderBy('u.id', 'DESC');
+
+        if ($query !== '') {
+            $qb->andWhere('LOWER(u.email) LIKE :query')
+                ->setParameter('query', '%'.mb_strtolower($query).'%');
+        }
+
+        $total = (int) (clone $qb)
+            ->select('COUNT(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $pages = max(1, (int) ceil($total / self::PAGE_SIZE));
+        $page = min($page, $pages);
+
+        $users = $qb
+            ->setFirstResult(($page - 1) * self::PAGE_SIZE)
+            ->setMaxResults(self::PAGE_SIZE)
+            ->getQuery()
+            ->getResult();
 
         return $this->render('admin/admin_user/index.html.twig', [
-            'users' => $pagination['data'],
-            'total' => $pagination['total'],
-            'pages' => $pagination['pages'],
-            'page' => $pagination['current_page'],
+            'users' => $users,
+            'total' => $total,
+            'pages' => $pages,
+            'page' => $page,
+            'query' => $query,
         ]);
     }
 

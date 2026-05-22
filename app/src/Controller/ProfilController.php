@@ -13,8 +13,10 @@ use App\Service\HelloAssoApiService; // Service dédié pour les appels API Hell
 use App\Entity\Payers;
 use App\Form\ProfileType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/profil')]
+#[IsGranted('ROLE_USER')]
 class ProfilController extends AbstractController
 {
 
