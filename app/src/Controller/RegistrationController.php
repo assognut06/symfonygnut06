@@ -30,6 +30,7 @@ class RegistrationController extends AbstractController
         private MessageBusInterface $bus,
         private string $appEnv ,
         private string $recaptchaSecret,
+        private string $nocaptchaSiteKey,
     ) {}
 
     #[Route('/register', name: 'app_register')]
@@ -50,7 +51,7 @@ class RegistrationController extends AbstractController
                 $this->addFlash('danger', 'La vérification reCAPTCHA a échoué. Veuillez réessayer.');
                 return $this->render('registration/register.html.twig', [
                     'registrationForm' => $form,
-                    'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
+                    'site_key' => $this->nocaptchaSiteKey
                 ]);
             }
 
@@ -88,7 +89,7 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
-            'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
+            'site_key' => $this->nocaptchaSiteKey
         ]);
     }
 
@@ -127,14 +128,34 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_register');
         }
 
-        $user = $userRepository->find($id);
+        $currentUser = $this->getUser();
+        if (!$currentUser instanceof User || $currentUser->getId() !== (int) $id) {
+            $this->addFlash('danger', 'Impossible de renvoyer un email de confirmation pour un autre compte.');
+
+            return $this->redirectToRoute('app_profil');
+        }
+
+        $user = $userRepository->find($currentUser->getId());
         if (!$user) {
             $this->addFlash('info', 'Utilisateur non trouvé ou déjà vérifié.');
             return $this->redirectToRoute('app_home');
         }
 
-        $emailService->sendConfirmationEmail($user);
-        $this->addFlash('info', 'Un nouvel email de confirmation a été envoyé.');
+        try {
+            $emailService->sendConfirmationEmail($user);
+            $this->addFlash('info', sprintf(
+                'Un nouvel email de confirmation a été envoyé à %s.',
+                $user->getEmail()
+            ));
+        } catch (\Exception $e) {
+            $this->logger->error('Erreur renvoi email de confirmation', [
+                'user_id' => $user->getId(),
+                'email' => $user->getEmail(),
+                'exception' => $e,
+            ]);
+            $this->addFlash('danger', 'Problème lors de l\'envoi du mail de confirmation. Veuillez réessayer.');
+        }
+
         return $this->redirectToRoute('app_home');
     }
 }

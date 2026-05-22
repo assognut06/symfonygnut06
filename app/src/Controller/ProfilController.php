@@ -13,21 +13,29 @@ use App\Service\HelloAssoApiService; // Service dédié pour les appels API Hell
 use App\Entity\Payers;
 use App\Form\ProfileType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/profil')]
+#[IsGranted('ROLE_USER')]
 class ProfilController extends AbstractController
 {
 
     private $helloAssoApiService;
     private $entityManager;
+    private string $slugAsso;
+    private string $googleMapsApiKey;
 
     public function __construct(
         HelloAssoApiService $helloAssoApiService, 
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        string $slugAsso,
+        string $googleMapsApiKey
     )
     {
         $this->helloAssoApiService = $helloAssoApiService;
         $this->entityManager = $entityManager;
+        $this->slugAsso = $slugAsso;
+        $this->googleMapsApiKey = $googleMapsApiKey;
     }
 
     #[Route('', name: 'app_profil', methods: ['GET', 'POST'])]
@@ -64,24 +72,28 @@ class ProfilController extends AbstractController
             return $this->redirectToRoute('app_profil');
         }
 
-        $page = $request->query->get('page', 1);
-        $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO']  . "/items?userSearchKey=" . $userEmail . "&pageIndex=" . $page . "&pageSize=4&withDetails=false&sortOrder=Desc&sortField=Date&itemStates=Processed&withCount=true";
+        $page = max(1, $request->query->getInt('page', 1));
+        $url = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}/items?userSearchKey=" . $userEmail . "&pageIndex=" . $page . "&pageSize=4&withDetails=false&sortOrder=Desc&sortField=Date&itemStates=Processed&withCount=true";
 
         $data_items = $this->helloAssoApiService->makeApiCall($url);
-        
-        $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
         
         // Renvoyer à la vue Twig, en passant l'utilisateur comme variable
         return $this->render('profil/index.html.twig', [
             'user' => $user,
             'data_items' => $data_items,
-            'googleMapsApiKey' => $googleMapsApiKey,
+            'googleMapsApiKey' => $this->googleMapsApiKey,
             'profileForm' => $form->createView(),
         ]);
     }
 
-    #[Route('/{donnees}/{page}', name: 'app_profil_page', defaults: ['page' => 1])]
-    public function page(string $page, string $donnees): Response
+    #[Route(
+        '/{donnees}/{page}',
+        name: 'app_profil_page',
+        requirements: ['donnees' => 'orders|payments', 'page' => '\d+'],
+        defaults: ['page' => 1],
+        methods: ['GET']
+    )]
+    public function page(int $page, string $donnees): Response
     {
         // Assurez-vous que l'utilisateur est connecté
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -89,32 +101,27 @@ class ProfilController extends AbstractController
         // Récupérer l'utilisateur connecté
         $user = $this->getUser();
         $userEmail = urlencode($user->getUserIdentifier());
-        // Utilisation de la fonction pour construire l'URL
-        if ($donnees === 'orders' || $donnees === 'payments') {
-            $base = $donnees === 'orders' ? "items" : "payments";
-            $url = self::buildHelloAssoUrl($base, $userEmail, $page, $donnees);
-        }
+        $base = $donnees === 'orders' ? "items" : "payments";
+        $url = $this->buildHelloAssoUrl($base, $userEmail, $page, $donnees);
 
         $data_items = $this->helloAssoApiService->makeApiCall($url);
         // dump($user);
-        $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
         // exit;
         // Renvoyer à la vue Twig, en passant l'utilisateur comme variable
         return $this->render('profil/index.html.twig', [
             'user' => $user,
             'data_items' => $data_items,
-            'googleMapsApiKey' => $googleMapsApiKey,
+            'googleMapsApiKey' => $this->googleMapsApiKey,
         ]);
     }
 
     // Fonction pour construire l'URL de base
-    private static function buildHelloAssoUrl($base, $userEmail, $page, $type)
+    private function buildHelloAssoUrl(string $base, string $userEmail, int $page, string $type): string
     {
-        $slugAsso = $_ENV['SLUGASSO'];
         $pageSize = 4;
         $sortOrder = "Desc";
         $sortField = "Date";
-        $url = "https://api.helloasso.com/v5/organizations/$slugAsso/$base?userSearchKey=$userEmail&pageIndex=$page&pageSize=$pageSize&withDetails=false&sortOrder=$sortOrder&sortField=$sortField&withCount=true";
+        $url = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}/$base?userSearchKey=$userEmail&pageIndex=$page&pageSize=$pageSize&withDetails=false&sortOrder=$sortOrder&sortField=$sortField&withCount=true";
     
         if ($type === 'orders') {
             $url .= "&itemStates=Processed";
