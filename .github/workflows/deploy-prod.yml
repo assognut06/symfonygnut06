@@ -174,9 +174,20 @@ jobs:
             echo "🎨 Building assets..."
             npm run build
 
+            # Préparer les dossiers écrits par Symfony et Apache/PHP
+            echo "🔧 Preparing writable directories..."
+            sudo mkdir -p /var/www/gnut06_prod/app/var/cache \
+              /var/www/gnut06_prod/app/var/log \
+              /var/www/gnut06_prod/app/public/uploads/profilePictures
+            sudo chown -R www-data:www-data \
+              /var/www/gnut06_prod/app/var \
+              /var/www/gnut06_prod/app/public/uploads
+            sudo chmod -R ug+rwX \
+              /var/www/gnut06_prod/app/var \
+              /var/www/gnut06_prod/app/public/uploads
+
             # Vider le cache Symfony
             echo "🧹 Clearing Symfony cache..."
-            sudo chown -R www-data:www-data /var/www/gnut06_prod/app/var
             sudo -u www-data php bin/console cache:clear --env=prod --no-debug
 
             # Réchauffer le cache
