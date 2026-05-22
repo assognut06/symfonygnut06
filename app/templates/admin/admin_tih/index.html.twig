@@ -15,11 +15,17 @@
       <div class="alert alert-danger shadow-sm">{{ message }}</div>
     {% endfor %}
 
+    {% set queryParams = query|default('') is empty ? {} : {'q': query} %}
     <form method="get" action="{{ path('app_admin_tih', { page: 1 }) }}" class="mb-3">
-      <input type="text" class="form-control table-live-filter"
-       data-target="#tih-table" data-cols="2,3,4"
-       placeholder="Filtrer par nom, prénom ou email…" autocomplete="off">
-
+      <div class="input-group">
+        <input type="text" name="q" class="form-control"
+          value="{{ query|default('') }}"
+          placeholder="Rechercher par nom, prénom ou email…" autocomplete="off">
+        <button class="btn btn-primary" type="submit">Rechercher</button>
+        {% if query|default('') is not empty %}
+          <a class="btn btn-outline-secondary" href="{{ path('app_admin_tih') }}">Réinitialiser</a>
+        {% endif %}
+      </div>
     </form>
 
     <div class="row align-items-start mx-auto">
@@ -170,7 +176,7 @@
           <ul class="pagination">
             {% if page > 1 %}
               <li class="page-item">
-                <a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': page - 1, 'q': query}) }}">
+                <a class="page-link" href="{{ path('app_admin_tih', {'page': page - 1}|merge(queryParams)) }}">
                   <span aria-hidden="true">&laquo;</span>
                 </a>
               </li>
@@ -178,13 +184,13 @@
 
             {% for p in 1..pages %}
               <li class="page-item{% if page == p %} active{% endif %}">
-                <a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': p, 'q': query}) }}">{{ p }}</a>
+                <a class="page-link" href="{{ path('app_admin_tih', {'page': p}|merge(queryParams)) }}">{{ p }}</a>
               </li>
             {% endfor %}
 
             {% if page < pages %}
               <li class="page-item">
-                <a class="page-link" href="{{ path(app.request.attributes.get('_route'), {'page': page + 1, 'q': query}) }}">
+                <a class="page-link" href="{{ path('app_admin_tih', {'page': page + 1}|merge(queryParams)) }}">
                   <span aria-hidden="true">&raquo;</span>
                 </a>
               </li>
