@@ -1,21 +1,107 @@
-name: Deploy to Development Server
+name: Deploy to Production Server
 
 on:
   pull_request:
     branches:
-      - develop
+      - main
     types:
       - closed
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
-    name: Deploy to Dev Server
+    name: Deploy to Prod Server
     runs-on: ubuntu-latest
-    
+
     # Ne déployer que si la PR est mergée
     if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
-    
+
     steps:
+      - name: Notify Teams - Deployment started
+        shell: bash
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${TEAMS_WEBHOOK_URL:-}" ]; then
+            echo "TEAMS_WEBHOOK_URL is not set, skipping Teams early start notification."
+            exit 0
+          fi
+
+          MESSAGE="🚀 Deploy PROD started - repo ${{ github.repository }} - run #${{ github.run_number }}"
+          PAYLOAD=$(printf '{"type":"AdaptiveCard","$schema":"http://adaptivecards.io/schemas/adaptive-card.json","version":"1.4","body":[{"type":"TextBlock","text":"%s","wrap":true,"size":"Large","weight":"Bolder"}]}' "$MESSAGE")
+
+          HTTP_CODE=$(curl -sS -o /tmp/notify_start_response.txt -w "%{http_code}" -H "Content-Type: application/json" -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL" || true)
+          echo "Notify start HTTP status: ${HTTP_CODE}"
+          if [[ ! "$HTTP_CODE" =~ ^[0-9]{3}$ ]] || [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "Notify start failed. Response body:"
+            cat /tmp/notify_start_response.txt || true
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create incremental production tag
+        id: tag
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch --tags --force
+
+          YYMM=$(date +%y%m)
+          LAST_INCREMENT=$(git tag -l "0.${YYMM}.*" | sed -n "s/^0\\.${YYMM}\\.\\([0-9][0-9]*\\)$/\\1/p" | sort -n | tail -1)
+          if [ -z "${LAST_INCREMENT:-}" ]; then
+            NEXT_INCREMENT=1
+          else
+            NEXT_INCREMENT=$((LAST_INCREMENT + 1))
+          fi
+
+          NEW_TAG="0.${YYMM}.${NEXT_INCREMENT}"
+          TARGET_SHA="${{ github.event.pull_request.merge_commit_sha }}"
+
+          if [ -z "$TARGET_SHA" ]; then
+            echo "merge_commit_sha is empty, fallback to github.sha"
+            TARGET_SHA="${{ github.sha }}"
+          fi
+
+          echo "Creating tag ${NEW_TAG} on commit ${TARGET_SHA}"
+          git tag -a "$NEW_TAG" "$TARGET_SHA" -m "Production release ${NEW_TAG}"
+          git push origin "$NEW_TAG"
+
+          echo "tag_name=$NEW_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Notify Teams - Tag created
+        shell: bash
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          RELEASE_TAG: ${{ steps.tag.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${TEAMS_WEBHOOK_URL:-}" ]; then
+            echo "TEAMS_WEBHOOK_URL is not set, skipping Teams start notification."
+            exit 0
+          fi
+
+          MESSAGE="🏷️ Deploy PROD started - tag ${RELEASE_TAG} - repo ${{ github.repository }} - run #${{ github.run_number }}"
+          PAYLOAD=$(printf '{"type":"AdaptiveCard","$schema":"http://adaptivecards.io/schemas/adaptive-card.json","version":"1.4","body":[{"type":"TextBlock","text":"%s","wrap":true,"size":"Large","weight":"Bolder"}]}' "$MESSAGE")
+
+          HTTP_CODE=$(curl -sS -o /tmp/notify_tag_response.txt -w "%{http_code}" -H "Content-Type: application/json" -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL" || true)
+          echo "Notify tag HTTP status: ${HTTP_CODE}"
+          if [[ ! "$HTTP_CODE" =~ ^[0-9]{3}$ ]] || [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "Notify tag failed. Response body:"
+            cat /tmp/notify_tag_response.txt || true
+          fi
+
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -23,93 +109,112 @@ jobs:
           username: ${{ secrets.DEV_USERNAME }}
           key: ${{ secrets.DEV_SSH_KEY }}
           port: ${{ secrets.DEV_PORT || 22 }}
-          envs: GITHUB_TOKEN
+          envs: GITHUB_TOKEN,RELEASE_TAG
           script: |
             set -e
-            echo "🚀 Starting deployment to development server..."
-            
+            echo "🚀 Starting deployment to production server..."
+
             # Aller dans le répertoire du projet
-            cd /var/www/html/gnut06_dev
+            cd /var/www/gnut06_prod
             echo "📁 Current directory: $(pwd)"
-            
+
+            # Fix permissions on entire project directory
+            echo "🔧 Fixing project directory permissions..."
+            sudo -n chown -R $(whoami):$(whoami) /var/www/gnut06_prod || true
+
+            # Éviter l'erreur "detected dubious ownership" sur ce dépôt
+            git config --global --add safe.directory /var/www/gnut06_prod
+
             # Configurer l'accès GitHub
             echo "🔑 Setting up GitHub access..."
             ssh-keyscan -H github.com >> ~/.ssh/known_hosts || true
-            
+
             # Configurer Git avec le token pour l'authentification
             if [ ! -z "$GITHUB_TOKEN" ]; then
               echo "🔑 Configuring Git with GitHub token..."
-              
-              # Récupérer l'URL actuelle et la convertir en HTTPS
               CURRENT_URL=$(git remote get-url origin)
               echo "📍 Current remote URL: $CURRENT_URL"
-              
-              if [[ $CURRENT_URL == git@github.com:* ]]; then
-                # Convertir SSH vers HTTPS
-                HTTPS_URL=$(echo $CURRENT_URL | sed 's/git@github.com:/https:\/\/'"${GITHUB_TOKEN}"'@github.com\//')
-                echo "🔄 Converting SSH URL to HTTPS..."
-                git remote set-url origin "$HTTPS_URL"
-              elif [[ $CURRENT_URL == https://github.com/* ]]; then
-                # Ajouter le token à l'URL HTTPS existante
-                HTTPS_URL=$(echo $CURRENT_URL | sed 's/https:\/\/github.com\//https:\/\/'"${GITHUB_TOKEN}"'@github.com\//')
-                echo "🔄 Adding token to HTTPS URL..."
-                git remote set-url origin "$HTTPS_URL"
-              fi
-              
-              echo "✅ Remote URL configured for token authentication"
+              echo "✅ Will use temporary authenticated git config (no remote rewrite)"
             fi
-            
+
             # Récupérer les dernières modifications
             echo "📥 Pulling latest changes..."
-            git pull origin develop
+            if [ ! -z "$GITHUB_TOKEN" ]; then
+              git \
+                -c "url.https://${GITHUB_TOKEN}@github.com/.insteadOf=git@github.com:" \
+                -c "url.https://${GITHUB_TOKEN}@github.com/.insteadOf=https://github.com/" \
+                fetch origin --tags
+            else
+              git fetch origin --tags
+            fi
+            git checkout "$RELEASE_TAG"
+            echo "🏷️ Deploying tag: $RELEASE_TAG"
 
             # Aller dans le dossier app
             cd app
             echo "📁 Switched to app directory: $(pwd)"
-            
+
             # Installer/mettre à jour les dépendances PHP
             echo "📦 Installing/updating PHP dependencies..."
             composer install --no-dev --optimize-autoloader
-            
+
             # Régénérer l'autoloader après suppression des packages dev
             echo "🔄 Optimizing autoloader for production..."
             composer dump-autoload --optimize --classmap-authoritative
-            
+
             # Exécuter les migrations
             echo "🗄️ Running database migrations..."
             php bin/console doctrine:migrations:migrate --no-interaction --env=prod
-            
+
             # Installer/mettre à jour les dépendances Node.js
             echo "📦 Installing/updating Node.js dependencies..."
             npm install
-            
+
             # Générer les assets
             echo "🎨 Building assets..."
             npm run build
-            
+
             # Vider le cache Symfony
             echo "🧹 Clearing Symfony cache..."
-            if sudo -n true 2>/dev/null; then
-              sudo -n chown -R www-data:www-data /var/www/html/gnut06_dev/app/var
-              sudo -n chown -R www-data:www-data public/uploads
-              sudo -n chmod -R 775 public/uploads
-              sudo -n chown -R www-data:www-data public/media
-              sudo -n chmod -R 775 public/media
-              sudo -n -u www-data php bin/console cache:clear --env=prod --no-debug
-            else
-              echo "⚠️ sudo sans mot de passe indisponible, exécution cache:clear sans sudo"
-              php bin/console cache:clear --env=prod --no-debug
-            fi
-            
+            sudo chown -R www-data:www-data /var/www/gnut06_prod/app/var
+            sudo -u www-data php bin/console cache:clear --env=prod --no-debug
+
             # Réchauffer le cache
             echo "🔥 Warming up cache..."
-            if sudo -n true 2>/dev/null; then
-              sudo -n -u www-data php bin/console cache:warmup --env=prod --no-debug
-            else
-              echo "⚠️ sudo sans mot de passe indisponible, exécution cache:warmup sans sudo"
-              php bin/console cache:warmup --env=prod --no-debug
-            fi
-            
+            sudo -u www-data php bin/console cache:warmup --env=prod --no-debug
+
             echo "✅ Deployment completed successfully!"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ steps.tag.outputs.tag_name }}
+
+      - name: Notify Teams - Deployment finished
+        if: always()
+        shell: bash
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          RELEASE_TAG: ${{ steps.tag.outputs.tag_name }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${TEAMS_WEBHOOK_URL:-}" ]; then
+            echo "TEAMS_WEBHOOK_URL is not set, skipping Teams end notification."
+            exit 0
+          fi
+
+          if [ "$JOB_STATUS" = "success" ]; then
+            STATUS_ICON="✅"
+          else
+            STATUS_ICON="❌"
+          fi
+
+          MESSAGE="${STATUS_ICON} Deploy PROD finished - status ${JOB_STATUS} - tag ${RELEASE_TAG} - repo ${{ github.repository }} - run #${{ github.run_number }}"
+          PAYLOAD=$(printf '{"type":"AdaptiveCard","$schema":"http://adaptivecards.io/schemas/adaptive-card.json","version":"1.4","body":[{"type":"TextBlock","text":"%s","wrap":true,"size":"Large","weight":"Bolder"}]}' "$MESSAGE")
+
+          HTTP_CODE=$(curl -sS -o /tmp/notify_end_response.txt -w "%{http_code}" -H "Content-Type: application/json" -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL" || true)
+          echo "Notify finished HTTP status: ${HTTP_CODE}"
+          if [[ ! "$HTTP_CODE" =~ ^[0-9]{3}$ ]] || [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "Notify finished failed. Response body:"
+            cat /tmp/notify_end_response.txt || true
+          fi
