@@ -39,10 +39,13 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/assos/crud, roles: ROLE_ADMIN }
+        - { path: ^/oauth-test, roles: ROLE_ADMIN }
         - { path: ^/connect/outlook, roles: PUBLIC_ACCESS }
         - { path: ^/connect/google, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/profil, roles: ROLE_USER }
         - { path: ^/espace-tih, roles: ROLE_USER }
 
@@ -58,3 +61,16 @@ when@test:
                 cost: 4 # Lowest possible value for bcrypt
                 time_cost: 3 # Lowest possible value for argon
                 memory_cost: 10 # Lowest possible value for argon
+        providers:
+            test_user_provider:
+                memory:
+                    users:
+                        user@example.test:
+                            password: null
+                            roles: ['ROLE_USER']
+                        admin@example.test:
+                            password: null
+                            roles: ['ROLE_ADMIN']
+        firewalls:
+            main:
+                provider: test_user_provider

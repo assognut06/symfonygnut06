@@ -4,12 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Tih;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class AdminTihController extends AbstractController
 {
     private const PAGE_SIZE = 10;
@@ -26,24 +27,30 @@ class AdminTihController extends AbstractController
         if ($q !== '') {
             $needle = '%'.mb_strtolower($q).'%';
 
-            // Recherche sur email (utilisateur), nom et prénom (entité TIH)
+            // Recherche sur toute la table TIH et sur l'email du compte utilisateur lie.
             $qb->andWhere('LOWER(u.email) LIKE :q 
-                           OR LOWER(COALESCE(t.nom, \'\')) LIKE :q
-                           OR LOWER(COALESCE(t.prenom, \'\')) LIKE :q')
+                           OR LOWER(COALESCE(t.professionalEmail, \'\')) LIKE :q
+                           OR LOWER(COALESCE(t.lastName, \'\')) LIKE :q
+                           OR LOWER(COALESCE(t.firstName, \'\')) LIKE :q')
                ->setParameter('q', $needle);
         }
 
-        $query = $qb
+        $total = (int) (clone $qb)
+            ->select('COUNT(t.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $pages = max(1, (int) ceil($total / self::PAGE_SIZE));
+        $page = min($page, $pages);
+
+        $tihs = $qb
             ->setFirstResult(($page - 1) * self::PAGE_SIZE)
             ->setMaxResults(self::PAGE_SIZE)
-            ->getQuery();
-
-        $paginator = new Paginator($query, true);
-        $total = count($paginator);
-        $pages = (int) ceil($total / self::PAGE_SIZE);
+            ->getQuery()
+            ->getResult();
 
         return $this->render('admin/admin_tih/index.html.twig', [
-            'tihs'      => iterator_to_array($paginator),
+            'tihs'      => $tihs,
             'page'      => $page,
             'pages'     => $pages,
             'total'     => $total,
