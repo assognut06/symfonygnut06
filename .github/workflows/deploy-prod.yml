@@ -176,16 +176,26 @@ jobs:
 
             # Vider le cache Symfony
             echo "🧹 Clearing Symfony cache..."
-            sudo chown -R www-data:www-data /var/www/gnut06_prod/app/var
-            sudo chown -R www-data:www-data public/uploads
-            sudo chmod -R 775 public/uploads
-            sudo chown -R www-data:www-data public/media
-            sudo chmod -R 775 public/media
-            sudo -u www-data php bin/console cache:clear --env=prod --no-debug
+            if sudo -n true 2>/dev/null; then
+              sudo -n chown -R www-data:www-data /var/www/gnut06_prod/app/var
+              sudo -n chown -R www-data:www-data public/uploads
+              sudo -n chmod -R 775 public/uploads
+              sudo -n chown -R www-data:www-data public/media
+              sudo -n chmod -R 775 public/media
+              sudo -n -u www-data php bin/console cache:clear --env=prod --no-debug
+            else
+              echo "⚠️ sudo sans mot de passe indisponible, exécution cache:clear sans sudo"
+              php bin/console cache:clear --env=prod --no-debug
+            fi
 
             # Réchauffer le cache
             echo "🔥 Warming up cache..."
-            sudo -u www-data php bin/console cache:warmup --env=prod --no-debug
+            if sudo -n true 2>/dev/null; then
+              sudo -n -u www-data php bin/console cache:warmup --env=prod --no-debug
+            else
+              echo "⚠️ sudo sans mot de passe indisponible, exécution cache:warmup sans sudo"
+              php bin/console cache:warmup --env=prod --no-debug
+            fi
 
             echo "✅ Deployment completed successfully!"
         env:
