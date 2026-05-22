@@ -100,4 +100,16 @@ abstract class WebTestCase extends BaseWebTestCase
         $location = $this->client->getResponse()->headers->get('Location');
         $this->assertStringContainsString('login', $location);
     }
+
+    protected function getAdminTihCsrfToken(string $action, int $tihId): string
+    {
+        $this->client->request('GET', '/admin/tih');
+        $crawler = $this->client->getCrawler();
+
+        $selector = $action === 'refuse'
+            ? sprintf('#refuse-form-%d input[name="_token"]', $tihId)
+            : sprintf('form[action*="/admin/tih/%s/%d"] input[name="_token"]', $action, $tihId);
+
+        return $crawler->filter($selector)->attr('value');
+    }
 }

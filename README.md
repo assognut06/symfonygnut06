@@ -132,6 +132,42 @@ docker exec symfony_asso php vendor/bin/phpunit --testsuite=Functional
 
 docker exec symfony_asso php vendor/bin/phpunit tests/Functional/SecurityHeadersTest.php
 
+# How to run coverage
+
+<!--
+From the app/ directory (or inside the symfony_asso container, where the app root is usually /var/www/html or similar):
+
+Text summary in the terminal:
+
+docker exec symfony_asso php vendor/bin/phpunit --coverage-text
+HTML report (easiest to browse):
+
+docker exec symfony_asso php vendor/bin/phpunit --coverage-html var/coverage
+Then open app/var/coverage/index.html in a browser (or the equivalent path inside the container)
+ -->
+
+Run coverage now (no rebuild)
+Enable coverage for that command only:
+
+docker exec symfony_asso php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-text
+
+HTML report:
+
+docker exec symfony_asso php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-html var/coverage
+
+TO DO : Permanent fix (rebuild image)
+In app/Dockerfile, copy the ini into the path PHP actually reads, for example:
+
+COPY ./config/xdebug.ini /usr/local/etc/php/conf.d/99-xdebug.ini
+In app/config/xdebug.ini, include coverage, e.g.:
+
+xdebug.mode=debug,coverage
+Then rebuild and restart:
+
+docker compose build symfony
+docker compose up -d symfony
+After rebuild, php -i | grep xdebug.mode should show debug,coverage (or at least coverage).
+
 ## Trouble shoot
 
 Sur Mac, il peut y avoir une erreur avec l'extension opcache.so
