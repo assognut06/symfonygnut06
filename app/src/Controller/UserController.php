@@ -6,17 +6,18 @@ use App\Entity\User;
 use App\Form\ProfilePictureType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[IsGranted('ROLE_USER')]
 class UserController extends AbstractController
 {
-    #[Route('/profile/edit-picture', name: 'edit_profile_picture')]
+    #[Route('/profile/edit-picture', name: 'edit_profile_picture', methods: ['GET', 'POST'])]
     public function editProfilePicture(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -34,7 +35,7 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $photoFile = $form->get('photo')->getData();
 
-            if ($photoFile) {
+            if ($photoFile instanceof UploadedFile) {
                 try {
                     $photosDirectory = (string) $this->getParameter('photos_directory');
                     $this->ensureDirectoryIsReady($photosDirectory);
@@ -79,18 +80,28 @@ class UserController extends AbstractController
             return $this->redirectToRoute('app_profil');
         }
 
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('danger', 'La photo choisie n\'est pas valide. Vérifiez le format et la taille du fichier.');
+        }
+
         // Afficher le formulaire
         return $this->render('profil/edit_picture.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/profile/delete-picture', name: 'delete_profile_picture')]
-    public function deleteProfilePicture(EntityManagerInterface $entityManager): Response
+    #[Route('/profile/delete-picture', name: 'delete_profile_picture', methods: ['POST'])]
+    public function deleteProfilePicture(Request $request, EntityManagerInterface $entityManager): Response
     {
         // Récupérer l'utilisateur connecté
         /** @var User $user */
         $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid('delete_profile_picture' . $user->getId(), (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', 'La suppression de la photo a expiré. Veuillez réessayer.');
+
+            return $this->redirectToRoute('app_profil');
+        }
 
         // Vérifier si l'utilisateur a une photo de profil
         if ($user->getProfilePicture()) {
