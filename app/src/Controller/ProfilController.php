@@ -11,7 +11,9 @@ use App\Service\HelloAssoAuthService;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\HelloAssoApiService; // Service dédié pour les appels API HelloAsso
 use App\Entity\Payers;
+use App\Entity\User;
 use App\Form\ProfileType;
+use App\Repository\PayersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -45,27 +47,27 @@ class ProfilController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         // Récupérer l'utilisateur connecté
+        /** @var User $user */
         $user = $this->getUser();
         $userEmail = urlencode($user->getUserIdentifier());
 
-        // Find or create Payers entity
-        $payer = $this->entityManager->getRepository(Payers::class)
-            ->findOneBy(['email' => $user->getUserIdentifier()]);
-
-        if (!$payer) {
-            $payer = new Payers();
-            $payer->setEmail($user->getUserIdentifier());
-            $payer->setCreatedAt(new \DateTimeImmutable());
-        }
+        $payer = $this->getOrCreatePayer($user);
 
         // Create and handle form
         $form = $this->createForm(ProfileType::class, $payer);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $payer->setUpdatedAt(new \DateTime());
-            $this->entityManager->persist($payer);
-            $this->entityManager->flush();
+            try {
+                $payer->setUpdatedAt(new \DateTime());
+                $this->entityManager->persist($payer);
+                $this->entityManager->flush();
+            } catch (\Throwable $e) {
+                error_log(sprintf('Erreur mise a jour profil (user_id=%s): %s', (string) $user->getId(), $e->getMessage()));
+                $this->addFlash('danger', 'Une erreur est survenue lors de l\'enregistrement de vos informations. Veuillez réessayer.');
+
+                return $this->redirectToRoute('app_profil');
+            }
 
             $this->addFlash('success', 'Vos informations ont été mises à jour avec succès !');
             
@@ -75,7 +77,7 @@ class ProfilController extends AbstractController
         $page = max(1, $request->query->getInt('page', 1));
         $url = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}/items?userSearchKey=" . $userEmail . "&pageIndex=" . $page . "&pageSize=4&withDetails=false&sortOrder=Desc&sortField=Date&itemStates=Processed&withCount=true";
 
-        $data_items = $this->helloAssoApiService->makeApiCall($url);
+        $data_items = $this->makeSafeHelloAssoCall($url);
         
         // Renvoyer à la vue Twig, en passant l'utilisateur comme variable
         return $this->render('profil/index.html.twig', [
@@ -99,12 +101,13 @@ class ProfilController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         // Récupérer l'utilisateur connecté
+        /** @var User $user */
         $user = $this->getUser();
         $userEmail = urlencode($user->getUserIdentifier());
         $base = $donnees === 'orders' ? "items" : "payments";
         $url = $this->buildHelloAssoUrl($base, $userEmail, $page, $donnees);
 
-        $data_items = $this->helloAssoApiService->makeApiCall($url);
+        $data_items = $this->makeSafeHelloAssoCall($url);
         // dump($user);
         // exit;
         // Renvoyer à la vue Twig, en passant l'utilisateur comme variable
@@ -130,5 +133,35 @@ class ProfilController extends AbstractController
         }
     
         return $url;
+    }
+
+    private function getOrCreatePayer(User $user): Payers
+    {
+        /** @var PayersRepository $repository */
+        $repository = $this->entityManager->getRepository(Payers::class);
+        $payer = $repository->findOneBy(['email' => $user->getUserIdentifier()]);
+
+        if ($payer instanceof Payers) {
+            return $payer;
+        }
+
+        $payer = new Payers();
+        $payer->setEmail($user->getUserIdentifier());
+        $payer->setCreatedAt(new \DateTimeImmutable());
+
+        return $payer;
+    }
+
+    private function makeSafeHelloAssoCall(string $url): array
+    {
+        try {
+            $data = $this->helloAssoApiService->makeApiCall($url);
+        } catch (\Throwable $e) {
+            error_log(sprintf('Erreur appel HelloAsso profil: %s', $e->getMessage()));
+
+            return ['data' => []];
+        }
+
+        return is_array($data) ? $data : ['data' => []];
     }
 }
