@@ -1,0 +1,346 @@
+{# Image flottante cliquable #}
+<button
+    id="openChat"
+    type="button"
+    class="shadow-lg position-fixed bottom-0 end-0 m-4 floating-icon chatbot-open-button"
+    aria-label="Ouvrir l'assistant IA handicap"
+>
+    <img
+        src="{{ asset('images/IA_new.png') }}"
+        alt=""
+        class="chatbot-open-image"
+        aria-hidden="true"
+    >
+</button>
+
+{# Bulle de chat moderne #}
+<section
+    class="card chat-box position-fixed bottom-0 end-0 m-3 d-none shadow-lg rounded-4"
+    id="chatBox"
+    aria-label="Agent IA handicap"
+>
+    <div
+        class="card-header text-white d-flex justify-content-between align-items-center rounded-top-4 px-4 py-3"
+        style="background-image: linear-gradient(135deg, #4a90e2, rgb(140, 0, 255));"
+    >
+        <span class="fw-semibold fs-5">Agent IA</span>
+
+        <button
+            class="btn btn-sm btn-light rounded-circle d-flex align-items-center justify-content-center"
+            id="closeChat"
+            type="button"
+            style="width: 28px; height: 28px;"
+            aria-label="Fermer le chatbot"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="chat-messages p-3" id="chatMessages" aria-live="polite">
+        <div class="chat-message bot mb-2 p-2 rounded-3">
+            Bonjour, je suis l’Agent IA de gnut06.org. Je peux vous aider sur les démarches handicap, la MDPH, l’AAH, la RQTH, l’accessibilité, l’emploi ou le transport.
+        </div>
+    </div>
+
+    <div class="px-3 pb-2">
+        <div class="small text-muted mb-2">Questions rapides :</div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-sm btn-outline-primary quick-question" data-question="Comment faire un dossier MDPH ?">
+                MDPH
+            </button>
+
+            <button type="button" class="btn btn-sm btn-outline-primary quick-question" data-question="Qu'est-ce que l'AAH ?">
+                AAH
+            </button>
+
+            <button type="button" class="btn btn-sm btn-outline-primary quick-question" data-question="Comment demander une RQTH ?">
+                RQTH
+            </button>
+
+            <button type="button" class="btn btn-sm btn-outline-primary quick-question" data-question="Qui contacter en cas d'urgence ?">
+                Urgence
+            </button>
+        </div>
+    </div>
+
+    <form
+        id="chatForm"
+        class="card-footer bg-white border-0 p-3"
+        data-chat-url="{{ path('chatbot_ask') }}"
+        data-csrf-token="{{ csrf_token('chatbot_ask') }}"
+    >
+        <label for="chatInput" class="visually-hidden">Votre message</label>
+
+        <div class="input-group">
+            <textarea
+                id="chatInput"
+                class="form-control"
+                rows="1"
+                maxlength="1500"
+                placeholder="Écrivez votre question..."
+                aria-label="Écrivez votre question"
+            ></textarea>
+
+            <button class="btn btn-primary" type="submit" id="sendChat">
+                Envoyer
+            </button>
+        </div>
+
+        <div class="small text-muted mt-2">
+            L’Agent IA donne une aide informative. En cas d’urgence, appelez le 112.
+        </div>
+    </form>
+</section>
+
+<style>
+    .chatbot-open-button {
+        width: 90px;
+        height: 90px;
+        z-index: 1050;
+        border-radius: 40%;
+        cursor: pointer;
+        border: 1px solid #90cff6;
+        background-color: #ffffff;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .chatbot-open-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 40%;
+        display: block;
+    }
+
+    .chat-box {
+        width: min(370px, calc(100vw - 2rem));
+        height: min(610px, calc(100vh - 2rem));
+        z-index: 1051;
+        background: #ffffff;
+        border: 1px solid #90cff6;
+        overflow: hidden;
+    }
+
+    .chat-messages {
+        height: 350px;
+        overflow-y: auto;
+        background: #f8fbff;
+    }
+
+    .chat-message {
+        max-width: 88%;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 0.95rem;
+        line-height: 1.35;
+    }
+
+    .chat-message.bot {
+        margin-right: auto;
+        background: #ffffff;
+        border: 1px solid #e3edf8;
+    }
+
+    .chat-message.user {
+        margin-left: auto;
+        background: #e7f1ff;
+        border: 1px solid #cfe2ff;
+    }
+
+    .chat-message.typing {
+        opacity: 0.75;
+        font-style: italic;
+    }
+
+    @keyframes float {
+        0%   { transform: translateY(0); }
+        50%  { transform: translateY(-6px); }
+        100% { transform: translateY(0); }
+    }
+
+    .floating-icon {
+        animation: float 2.5s ease-in-out infinite;
+        transition: transform 0.3s ease;
+    }
+
+    .floating-icon:hover {
+        transform: scale(1.1);
+        animation-play-state: paused;
+    }
+
+    @keyframes shakeX {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+        20%, 40%, 60%, 80% { transform: translateX(4px); }
+    }
+
+    .floating-icon.vibrate {
+        animation: shakeX 0.6s ease-in-out;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .floating-icon,
+        .floating-icon.vibrate {
+            animation: none !important;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .chat-box {
+            width: calc(100vw - 1rem);
+            height: calc(100vh - 1rem);
+            margin: 0.5rem !important;
+        }
+
+        .chat-messages {
+            height: calc(100vh - 260px);
+        }
+
+        .chatbot-open-button {
+            width: 76px;
+            height: 76px;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const openBtn = document.getElementById('openChat');
+        const chatBox = document.getElementById('chatBox');
+        const closeBtn = document.getElementById('closeChat');
+        const form = document.getElementById('chatForm');
+        const input = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendChat');
+        const messages = document.getElementById('chatMessages');
+        const quickButtons = document.querySelectorAll('.quick-question');
+
+        let history = [];
+
+        function openChat() {
+            chatBox.classList.remove('d-none');
+            openBtn.classList.add('d-none');
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function closeChat() {
+            chatBox.classList.add('d-none');
+            openBtn.classList.remove('d-none');
+            openBtn.focus();
+        }
+
+        function addMessage(role, text) {
+            const message = document.createElement('div');
+            message.classList.add('chat-message', role === 'user' ? 'user' : 'bot', 'mb-2', 'p-2', 'rounded-3');
+            message.textContent = text;
+
+            messages.appendChild(message);
+            messages.scrollTop = messages.scrollHeight;
+
+            return message;
+        }
+
+        openBtn.addEventListener('click', openChat);
+        closeBtn.addEventListener('click', closeChat);
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !chatBox.classList.contains('d-none')) {
+                closeChat();
+            }
+        });
+
+        quickButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                input.value = button.dataset.question;
+                form.requestSubmit();
+            });
+        });
+
+        input.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                form.requestSubmit();
+            }
+        });
+
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const message = input.value.trim();
+
+            if (!message || sendBtn.disabled) {
+                return;
+            }
+
+            const previousHistory = history.slice(-8);
+
+            addMessage('user', message);
+            history.push({
+                role: 'user',
+                content: message
+            });
+
+            input.value = '';
+            sendBtn.disabled = true;
+
+            const loadingMessage = addMessage('bot', 'Je cherche une réponse...');
+            loadingMessage.classList.add('typing');
+
+            try {
+                const response = await fetch(form.dataset.chatUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': form.dataset.csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        history: previousHistory
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Erreur serveur');
+                }
+
+                loadingMessage.remove();
+
+                const reply = data.reply || 'Je suis désolé, je n’ai pas trouvé de réponse.';
+                addMessage('bot', reply);
+
+                history.push({
+                    role: 'assistant',
+                    content: reply
+                });
+
+                history = history.slice(-10);
+            } catch (error) {
+                loadingMessage.classList.remove('typing');
+                loadingMessage.textContent = 'Désolé, le chatbot est momentanément indisponible. Vous pouvez réessayer dans quelques instants.';
+            } finally {
+                sendBtn.disabled = false;
+                input.focus();
+            }
+        });
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (!prefersReducedMotion) {
+            setInterval(function () {
+                if (openBtn.classList.contains('d-none')) {
+                    return;
+                }
+
+                openBtn.classList.add('vibrate');
+
+                setTimeout(function () {
+                    openBtn.classList.remove('vibrate');
+                }, 700);
+            }, 10000);
+        }
+    });
+</script>
