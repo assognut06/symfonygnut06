@@ -51,7 +51,7 @@ jobs:
           username: ${{ secrets.DEV_USERNAME }}
           key: ${{ secrets.DEV_SSH_KEY }}
           port: ${{ secrets.DEV_PORT || 22 }}
-          envs: GITHUB_TOKEN,DEPLOY_BRANCH
+          envs: GITHUB_TOKEN,DEPLOY_BRANCH,SUDO_PASSWORD
           script: |
             set -euo pipefail
 
@@ -61,14 +61,40 @@ jobs:
             export APP_ENV="$APPENV"
             export APP_DEBUG="${APP_DEBUG:-0}"
 
+            run_sudo() {
+              if [ "$(id -u)" -eq 0 ]; then
+                "$@"
+              elif sudo -n true 2>/dev/null; then
+                sudo "$@"
+              elif [ -n "${SUDO_PASSWORD:-}" ]; then
+                printf '%s\n' "$SUDO_PASSWORD" | sudo -S -p '' "$@"
+              else
+                echo "❌ Sudo requires a password. Configure passwordless sudo for $(whoami) or add DEV_SUDO_PASSWORD in GitHub secrets."
+                exit 1
+              fi
+            }
+
+            run_as_www_data() {
+              if [ "$(id -u)" -eq 0 ]; then
+                sudo -u www-data "$@"
+              elif sudo -n true 2>/dev/null; then
+                sudo -u www-data "$@"
+              elif [ -n "${SUDO_PASSWORD:-}" ]; then
+                printf '%s\n' "$SUDO_PASSWORD" | sudo -S -p '' -u www-data "$@"
+              else
+                echo "❌ Sudo requires a password. Configure passwordless sudo for $(whoami) or add DEV_SUDO_PASSWORD in GitHub secrets."
+                exit 1
+              fi
+            }
+
             ensure_symfony_writable_dirs() {
-              sudo mkdir -p "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads/profilePictures" "${APP_DIR}/public/media"
-              sudo chown -R "$(whoami):www-data" "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
-              sudo chmod -R u+rwX,g+rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log"
-              sudo chmod -R u+rwX,g+rwX "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
-              sudo find "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media" -type d -exec chmod g+s {} +
+              run_sudo mkdir -p "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads/profilePictures" "${APP_DIR}/public/media"
+              run_sudo chown -R "$(whoami):www-data" "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
+              run_sudo chmod -R u+rwX,g+rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log"
+              run_sudo chmod -R u+rwX,g+rwX "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
+              run_sudo find "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media" -type d -exec chmod g+s {} +
               if command -v setfacl >/dev/null 2>&1; then
-                sudo setfacl -R -m u:www-data:rwX -m d:u:www-data:rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/media"
+                run_sudo setfacl -R -m u:www-data:rwX -m d:u:www-data:rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/media"
               fi
             }
 
@@ -80,7 +106,7 @@ jobs:
 
             # Fix permissions on entire project directory
             echo "🔧 Fixing project directory permissions..."
-            sudo -n chown -R "$(whoami):$(whoami)" "$PROJECT_DIR" || true
+            run_sudo chown -R "$(whoami):$(whoami)" "$PROJECT_DIR"
             ensure_symfony_writable_dirs
 
             # Éviter l'erreur "detected dubious ownership" sur ce dépôt
@@ -142,11 +168,11 @@ jobs:
 
             # Vider le cache Symfony
             echo "🧹 Clearing Symfony cache..."
-            sudo -u www-data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php bin/console cache:clear --env="$APPENV"
+            run_as_www_data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php bin/console cache:clear --env="$APPENV"
 
             # Réchauffer le cache
             echo "🔥 Warming up cache..."
-            sudo -u www-data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php bin/console cache:warmup --env="$APPENV"
+            run_as_www_data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php bin/console cache:warmup --env="$APPENV"
 
             # Garantir que www-data conserve les droits après recréation du cache/log.
             ensure_symfony_writable_dirs
@@ -155,6 +181,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEPLOY_BRANCH: develop
+          SUDO_PASSWORD: ${{ secrets.DEV_SUDO_PASSWORD }}
 
       - name: Notify Teams - Deployment finished
         if: always()
