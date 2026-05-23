@@ -61,6 +61,10 @@ jobs:
             export APP_ENV="$APPENV"
             export APP_DEBUG="${APP_DEBUG:-0}"
 
+            has_sudo() {
+              [ "$(id -u)" -eq 0 ] || sudo -n true 2>/dev/null || [ -n "${SUDO_PASSWORD:-}" ]
+            }
+
             run_sudo() {
               if [ "$(id -u)" -eq 0 ]; then
                 "$@"
@@ -82,19 +86,34 @@ jobs:
               elif [ -n "${SUDO_PASSWORD:-}" ]; then
                 printf '%s\n' "$SUDO_PASSWORD" | sudo -S -p '' -u www-data "$@"
               else
-                echo "❌ Sudo requires a password. Configure passwordless sudo for $(whoami) or add DEV_SUDO_PASSWORD in GitHub secrets."
-                exit 1
+                echo "⚠️ Sudo unavailable; running command as $(whoami) instead of www-data."
+                "$@"
               fi
             }
 
             ensure_symfony_writable_dirs() {
-              run_sudo mkdir -p "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads/profilePictures" "${APP_DIR}/public/media"
-              run_sudo chown -R "$(whoami):www-data" "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
-              run_sudo chmod -R u+rwX,g+rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log"
-              run_sudo chmod -R u+rwX,g+rwX "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
-              run_sudo find "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media" -type d -exec chmod g+s {} +
-              if command -v setfacl >/dev/null 2>&1; then
-                run_sudo setfacl -R -m u:www-data:rwX -m d:u:www-data:rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/media"
+              WRITABLE_DIRS="${APP_DIR}/var/cache ${APP_DIR}/var/log ${APP_DIR}/public/uploads ${APP_DIR}/public/media"
+
+              if has_sudo; then
+                run_sudo mkdir -p "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads/profilePictures" "${APP_DIR}/public/media"
+                run_sudo chown -R "$(whoami):www-data" "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
+                run_sudo chmod -R u+rwX,g+rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log"
+                run_sudo chmod -R u+rwX,g+rwX "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
+                run_sudo find "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media" -type d -exec chmod g+s {} +
+                if command -v setfacl >/dev/null 2>&1; then
+                  run_sudo setfacl -R -m u:www-data:rwX -m d:u:www-data:rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
+                fi
+              else
+                echo "⚠️ Sudo unavailable; applying writable permissions as $(whoami)."
+                mkdir -p "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads/profilePictures" "${APP_DIR}/public/media"
+                chmod -R u+rwX,g+rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
+                find "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media" -type d -exec chmod g+s {} +
+                if command -v setfacl >/dev/null 2>&1 && setfacl -R -m u:www-data:rwX -m d:u:www-data:rwX ${WRITABLE_DIRS}; then
+                  echo "✅ ACL permissions granted to www-data."
+                else
+                  echo "⚠️ Unable to set ACL for www-data without sudo; using other rwX on Symfony writable directories."
+                  chmod -R o+rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
+                fi
               fi
             }
 
@@ -106,7 +125,11 @@ jobs:
 
             # Fix permissions on entire project directory
             echo "🔧 Fixing project directory permissions..."
-            run_sudo chown -R "$(whoami):$(whoami)" "$PROJECT_DIR"
+            if has_sudo; then
+              run_sudo chown -R "$(whoami):$(whoami)" "$PROJECT_DIR"
+            else
+              echo "⚠️ Sudo unavailable; skipping project chown."
+            fi
             ensure_symfony_writable_dirs
 
             # Éviter l'erreur "detected dubious ownership" sur ce dépôt
@@ -181,7 +204,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEPLOY_BRANCH: develop
-          SUDO_PASSWORD: ${{ secrets.DEV_SUDO_PASSWORD }}
+          SUDO_PASSWORD: ${{ secrets.DEV_SUDO_PASSWORD || secrets.DEV_PASSWORD || secrets.SUDO_PASSWORD }}
 
       - name: Notify Teams - Deployment finished
         if: always()
