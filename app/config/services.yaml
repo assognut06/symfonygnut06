@@ -11,6 +11,8 @@ parameters:
     mailjet.api_key: '%env(APIMAILJET)%'
     mailjet.api_secret: '%env(APIMAILJETSECRET)%'
     ohme.api_key: '%env(SECRETOHME)%'
+    openai.api_key: '%env(OPENAI_API_KEY)%'
+    openai.model: '%env(OPENAI_MODEL)%'
     app.email.admin: 'gnut@gnut06.org'
     app.email.from: '%env(default:app.email.admin:SMTP_EMAIL)%'
     parameters:
@@ -156,6 +158,11 @@ services:
             $webhookRateLimitMaxRequests: '%helloasso.webhook.rate_limit_max_requests%'
             $webhookRateLimitWindowSeconds: '%helloasso.webhook.rate_limit_window_seconds%'
             $webhookMaxPayloadBytes: '%helloasso.webhook.max_payload_bytes%'
+
+    App\Controller\ChatbotController:
+        arguments:
+            $openAiApiKey: '%openai.api_key%'
+            $openAiModel: '%openai.model%'
 
     App\Service\EmailService: ~
 
