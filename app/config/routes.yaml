@@ -8,7 +8,6 @@ controllers:
 send_email:
     path: /email
     controller: App\Controller\EmailController::sendEmail
-    condition: 'env("APP_ENV") in ["dev", "test"]'
 
 # Route pour démarrer le processus de connexion avec Google
 connect_google_start:
