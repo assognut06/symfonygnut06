@@ -51,18 +51,19 @@ jobs:
           username: ${{ secrets.DEV_USERNAME }}
           key: ${{ secrets.DEV_SSH_KEY }}
           port: ${{ secrets.DEV_PORT || 22 }}
-          envs: GITHUB_TOKEN,DEPLOY_BRANCH,SUDO_PASSWORD
+          envs: GITHUB_TOKEN,DEPLOY_BRANCH
           script: |
             set -euo pipefail
 
             PROJECT_DIR="/var/www/html/gnut06_dev"
             APP_DIR="${PROJECT_DIR}/app"
             APPENV=prod
+            REQUIRED_NPM_VERSION="11.2.0"
             export APP_ENV="$APPENV"
             export APP_DEBUG="${APP_DEBUG:-0}"
 
             has_sudo() {
-              [ "$(id -u)" -eq 0 ] || sudo -n true 2>/dev/null || [ -n "${SUDO_PASSWORD:-}" ]
+              [ "$(id -u)" -eq 0 ] || sudo -n true 2>/dev/null
             }
 
             run_sudo() {
@@ -70,10 +71,8 @@ jobs:
                 "$@"
               elif sudo -n true 2>/dev/null; then
                 sudo "$@"
-              elif [ -n "${SUDO_PASSWORD:-}" ]; then
-                printf '%s\n' "$SUDO_PASSWORD" | sudo -S -p '' "$@"
               else
-                echo "❌ Sudo requires a password. Configure passwordless sudo for $(whoami) or add DEV_SUDO_PASSWORD in GitHub secrets."
+                echo "❌ Sudo unavailable. Configure passwordless sudo for $(whoami) if this command must run as root."
                 exit 1
               fi
             }
@@ -83,11 +82,41 @@ jobs:
                 sudo -u www-data "$@"
               elif sudo -n true 2>/dev/null; then
                 sudo -u www-data "$@"
-              elif [ -n "${SUDO_PASSWORD:-}" ]; then
-                printf '%s\n' "$SUDO_PASSWORD" | sudo -S -p '' -u www-data "$@"
               else
                 echo "⚠️ Sudo unavailable; running command as $(whoami) instead of www-data."
                 "$@"
+              fi
+            }
+
+            version_at_least() {
+              [ "$(printf '%s\n%s\n' "$2" "$1" | sort -V | head -n 1)" = "$2" ]
+            }
+
+            ensure_npm_cli() {
+              CURRENT_NPM_VERSION="$(npm --version 2>/dev/null || true)"
+              if [ -z "$CURRENT_NPM_VERSION" ]; then
+                echo "❌ npm is not available on the server."
+                exit 1
+              fi
+
+              if version_at_least "$CURRENT_NPM_VERSION" "$REQUIRED_NPM_VERSION"; then
+                USE_NPX_NPM=0
+                echo "✅ Using npm ${CURRENT_NPM_VERSION}."
+              else
+                if ! command -v npx >/dev/null 2>&1; then
+                  echo "❌ npm ${CURRENT_NPM_VERSION} is below ${REQUIRED_NPM_VERSION}, and npx is not available."
+                  exit 1
+                fi
+                USE_NPX_NPM=1
+                echo "⬆️ Server npm ${CURRENT_NPM_VERSION} is below ${REQUIRED_NPM_VERSION}; using npm@${REQUIRED_NPM_VERSION} with npx."
+              fi
+            }
+
+            npm_exec() {
+              if [ "${USE_NPX_NPM:-0}" = "1" ]; then
+                npx -y -p "npm@${REQUIRED_NPM_VERSION}" npm "$@"
+              else
+                npm "$@"
               fi
             }
 
@@ -167,11 +196,11 @@ jobs:
 
             # Installer/mettre à jour les dépendances PHP
             echo "📦 Installing/updating PHP dependencies..."
-            composer install --optimize-autoloader
+            composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
 
             # Régénérer l'autoloader pour l'environnement Symfony
             echo "🔄 Optimizing autoloader for Symfony ${APPENV} environment..."
-            composer dump-autoload --optimize
+            composer dump-autoload --no-dev --optimize --classmap-authoritative
 
             # Exécuter les migrations
             echo "🗄️ Running database migrations..."
@@ -179,11 +208,12 @@ jobs:
 
             # Installer/mettre à jour les dépendances Node.js
             echo "📦 Installing/updating Node.js dependencies..."
-            npm install
+            ensure_npm_cli
+            npm_exec ci --include=dev
 
             # Générer les assets
             echo "🎨 Building assets..."
-            npm run build
+            npm_exec run build
 
             # Préparer les dossiers écrits par Symfony et Apache/PHP
             echo "🔧 Preparing writable directories..."
@@ -191,11 +221,11 @@ jobs:
 
             # Vider le cache Symfony
             echo "🧹 Clearing Symfony cache..."
-            run_as_www_data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php bin/console cache:clear --env="$APPENV"
+            run_as_www_data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php bin/console cache:clear --env="$APPENV" --no-debug
 
             # Réchauffer le cache
             echo "🔥 Warming up cache..."
-            run_as_www_data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php bin/console cache:warmup --env="$APPENV"
+            run_as_www_data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php bin/console cache:warmup --env="$APPENV" --no-debug
 
             # Garantir que www-data conserve les droits après recréation du cache/log.
             ensure_symfony_writable_dirs
@@ -204,7 +234,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEPLOY_BRANCH: develop
-          SUDO_PASSWORD: ${{ secrets.DEV_SUDO_PASSWORD || secrets.DEV_PASSWORD || secrets.SUDO_PASSWORD }}
 
       - name: Notify Teams - Deployment finished
         if: always()
