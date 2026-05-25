@@ -105,32 +105,129 @@ jobs:
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_USERNAME }}
-          key: ${{ secrets.DEV_SSH_KEY }}
-          port: ${{ secrets.DEV_PORT || 22 }}
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USERNAME }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          port: ${{ secrets.PROD_PORT || 22 }}
           envs: GITHUB_TOKEN,RELEASE_TAG
           script: |
-            set -e
+            set -euo pipefail
+
+            PROJECT_DIR="/var/www/gnut06_prod"
+            APP_DIR="${PROJECT_DIR}/app"
+            APPENV=prod
+            REQUIRED_NPM_VERSION="11.2.0"
+            export APP_ENV="$APPENV"
+            export APP_DEBUG="${APP_DEBUG:-0}"
+
+            has_sudo() {
+              [ "$(id -u)" -eq 0 ] || sudo -n true 2>/dev/null
+            }
+
+            run_sudo() {
+              if [ "$(id -u)" -eq 0 ]; then
+                "$@"
+              elif sudo -n true 2>/dev/null; then
+                sudo "$@"
+              else
+                echo "❌ Sudo unavailable. Configure passwordless sudo for $(whoami) if this command must run as root."
+                exit 1
+              fi
+            }
+
+            run_as_www_data() {
+              if [ "$(id -u)" -eq 0 ]; then
+                sudo -u www-data "$@"
+              elif sudo -n true 2>/dev/null; then
+                sudo -u www-data "$@"
+              else
+                echo "⚠️ Sudo unavailable; running command as $(whoami) instead of www-data."
+                "$@"
+              fi
+            }
+
+            version_at_least() {
+              [ "$(printf '%s\n%s\n' "$2" "$1" | sort -V | head -n 1)" = "$2" ]
+            }
+
+            ensure_npm_cli() {
+              CURRENT_NPM_VERSION="$(npm --version 2>/dev/null || true)"
+              if [ -z "$CURRENT_NPM_VERSION" ]; then
+                echo "❌ npm is not available on the server."
+                exit 1
+              fi
+
+              if version_at_least "$CURRENT_NPM_VERSION" "$REQUIRED_NPM_VERSION"; then
+                USE_NPX_NPM=0
+                echo "✅ Using npm ${CURRENT_NPM_VERSION}."
+              else
+                if ! command -v npx >/dev/null 2>&1; then
+                  echo "❌ npm ${CURRENT_NPM_VERSION} is below ${REQUIRED_NPM_VERSION}, and npx is not available."
+                  exit 1
+                fi
+                USE_NPX_NPM=1
+                echo "⬆️ Server npm ${CURRENT_NPM_VERSION} is below ${REQUIRED_NPM_VERSION}; using npm@${REQUIRED_NPM_VERSION} with npx."
+              fi
+            }
+
+            npm_exec() {
+              if [ "${USE_NPX_NPM:-0}" = "1" ]; then
+                npx -y -p "npm@${REQUIRED_NPM_VERSION}" npm "$@"
+              else
+                npm "$@"
+              fi
+            }
+
+            ensure_symfony_writable_dirs() {
+              WRITABLE_DIRS="${APP_DIR}/var/cache ${APP_DIR}/var/log ${APP_DIR}/public/uploads ${APP_DIR}/public/media"
+
+              if has_sudo; then
+                run_sudo mkdir -p "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads/profilePictures" "${APP_DIR}/public/media"
+                run_sudo chown -R "$(whoami):www-data" "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
+                run_sudo chmod -R u+rwX,g+rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log"
+                run_sudo chmod -R u+rwX,g+rwX "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
+                run_sudo find "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media" -type d -exec chmod g+s {} +
+                if command -v setfacl >/dev/null 2>&1; then
+                  run_sudo setfacl -R -m u:www-data:rwX -m d:u:www-data:rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
+                fi
+              else
+                echo "⚠️ Sudo unavailable; applying writable permissions as $(whoami)."
+                mkdir -p "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads/profilePictures" "${APP_DIR}/public/media"
+                chmod -R u+rwX,g+rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
+                find "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media" -type d -exec chmod g+s {} +
+                if command -v setfacl >/dev/null 2>&1 && setfacl -R -m u:www-data:rwX -m d:u:www-data:rwX ${WRITABLE_DIRS}; then
+                  echo "✅ ACL permissions granted to www-data."
+                else
+                  echo "⚠️ Unable to set ACL for www-data without sudo; using other rwX on Symfony writable directories."
+                  chmod -R o+rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
+                fi
+              fi
+            }
+
             echo "🚀 Starting deployment to production server..."
 
             # Aller dans le répertoire du projet
-            cd /var/www/gnut06_prod
+            cd "$PROJECT_DIR"
             echo "📁 Current directory: $(pwd)"
 
             # Fix permissions on entire project directory
             echo "🔧 Fixing project directory permissions..."
-            sudo -n chown -R $(whoami):$(whoami) /var/www/gnut06_prod || true
+            if has_sudo; then
+              run_sudo chown -R "$(whoami):$(whoami)" "$PROJECT_DIR"
+            else
+              echo "⚠️ Sudo unavailable; skipping project chown."
+            fi
+            ensure_symfony_writable_dirs
 
             # Éviter l'erreur "detected dubious ownership" sur ce dépôt
-            git config --global --add safe.directory /var/www/gnut06_prod
+            git config --global --add safe.directory "$PROJECT_DIR"
 
             # Configurer l'accès GitHub
             echo "🔑 Setting up GitHub access..."
             ssh-keyscan -H github.com >> ~/.ssh/known_hosts || true
 
             # Configurer Git avec le token pour l'authentification
-            if [ ! -z "$GITHUB_TOKEN" ]; then
+            if [ -n "${GITHUB_TOKEN:-}" ]; then
               echo "🔑 Configuring Git with GitHub token..."
               CURRENT_URL=$(git remote get-url origin)
               echo "📍 Current remote URL: $CURRENT_URL"
@@ -139,7 +236,7 @@ jobs:
 
             # Récupérer les dernières modifications
             echo "📥 Pulling latest changes..."
-            if [ ! -z "$GITHUB_TOKEN" ]; then
+            if [ -n "${GITHUB_TOKEN:-}" ]; then
               git \
                 -c "url.https://${GITHUB_TOKEN}@github.com/.insteadOf=git@github.com:" \
                 -c "url.https://${GITHUB_TOKEN}@github.com/.insteadOf=https://github.com/" \
@@ -151,48 +248,44 @@ jobs:
             echo "🏷️ Deploying tag: $RELEASE_TAG"
 
             # Aller dans le dossier app
-            cd app
+            cd "$APP_DIR"
             echo "📁 Switched to app directory: $(pwd)"
 
             # Installer/mettre à jour les dépendances PHP
             echo "📦 Installing/updating PHP dependencies..."
-            composer install --no-dev --optimize-autoloader
+            composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
 
             # Régénérer l'autoloader après suppression des packages dev
-            echo "🔄 Optimizing autoloader for production..."
-            composer dump-autoload --optimize --classmap-authoritative
+            echo "🔄 Optimizing autoloader for Symfony ${APPENV} environment..."
+            composer dump-autoload --no-dev --optimize --classmap-authoritative
 
             # Exécuter les migrations
             echo "🗄️ Running database migrations..."
-            php bin/console doctrine:migrations:migrate --no-interaction --env=prod
+            php bin/console doctrine:migrations:migrate --no-interaction --env="$APPENV"
 
             # Installer/mettre à jour les dépendances Node.js
             echo "📦 Installing/updating Node.js dependencies..."
-            npm install
+            ensure_npm_cli
+            npm_exec ci --include=dev
 
             # Générer les assets
             echo "🎨 Building assets..."
-            npm run build
+            npm_exec run build
 
             # Préparer les dossiers écrits par Symfony et Apache/PHP
             echo "🔧 Preparing writable directories..."
-            sudo mkdir -p /var/www/gnut06_prod/app/var/cache \
-              /var/www/gnut06_prod/app/var/log \
-              /var/www/gnut06_prod/app/public/uploads/profilePictures
-            sudo chown -R www-data:www-data \
-              /var/www/gnut06_prod/app/var \
-              /var/www/gnut06_prod/app/public/uploads
-            sudo chmod -R ug+rwX \
-              /var/www/gnut06_prod/app/var \
-              /var/www/gnut06_prod/app/public/uploads
+            ensure_symfony_writable_dirs
 
             # Vider le cache Symfony
             echo "🧹 Clearing Symfony cache..."
-            sudo -u www-data php bin/console cache:clear --env=prod --no-debug
+            run_as_www_data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php bin/console cache:clear --env="$APPENV" --no-debug
 
             # Réchauffer le cache
             echo "🔥 Warming up cache..."
-            sudo -u www-data php bin/console cache:warmup --env=prod --no-debug
+            run_as_www_data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php bin/console cache:warmup --env="$APPENV" --no-debug
+
+            # Garantir que www-data conserve les droits après recréation du cache/log.
+            ensure_symfony_writable_dirs
 
             echo "✅ Deployment completed successfully !"
         env:
