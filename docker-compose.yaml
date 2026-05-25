@@ -3,7 +3,6 @@ version: '3.9'
 
 volumes:
   mysql:
-  phpmyadmin:
 services:
   mysql:
     image: mysql:5.7
@@ -14,22 +13,19 @@ services:
       MYSQL_DATABASE: gnut06
     ports:
       - "3306:3306"
-    
     volumes:
       - ./mysql:/var/lib/mysql
  
   
   phpmyadmin:
-    image: phpmyadmin:fpm-alpine
+    image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin_gnut
     restart: always
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
     ports:
-      - "9180:9000"
-    volumes:
-        - phpmyadmin:/var/www/
+      - "8080:80"
     depends_on:
       - mysql
 
@@ -46,10 +42,6 @@ services:
   symfony:
     build:
       context: ./app
-      dockerfile: Dockerfile
-      args:
-        - USER_UID=82
-        - USER_GID=82
     container_name: symfony_asso
     restart: always
     environment:
@@ -57,25 +49,9 @@ services:
     volumes:
       - ./app:/var/www/app
     ports:
-      - "9181:9000"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      - mysql
-
-  apache:
-    build:
-      context: ./app
-      dockerfile: apache.Dockerfile
-    container_name: apache_gnut
-    restart: always
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-      - "8080:8080"
       - "8000:80"
       - "443:443"
-    volumes:
-      - ./app:/var/www/app
-      - phpmyadmin:/var/www2/
+      - "9003:9003"
+    depends_on:
+      - mysql
 

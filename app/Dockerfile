@@ -1,47 +1,42 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-apache
 
 WORKDIR /var/www/app
 
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Args to pass host UID/GID (default to 33 if not provided)
-ARG USER_UID=33
-ARG USER_GID=33
-
-
-
-RUN apk update \
-&& apk add -U --no-cache \
-nano \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+RUN apt-get update \
+&& apt-get install -qq -y --no-install-recommends \
+cron \
 wget \
-bash \
+nano \
+locales \
+coreutils \
+apt-utils \
 git \
-make \
-icu-dev \
+libicu-dev \
 g++ \
 libpng-dev \
 libxml2-dev \
 libzip-dev \
-oniguruma-dev \
+libonig-dev \
 libxslt-dev \
-curl-dev \
-gd-dev \
+libcurl4-openssl-dev \
+libgd-dev \
 libwebp-dev \
-krb5-dev \
-shadow \
-autoconf \
-linux-headers \
-curl
+libssl-dev \
+libkrb5-dev \
+openssl \
+nodejs \
+curl \
+ca-certificates
 
-# Modify www-data group to use host GID
-RUN groupmod -g ${USER_GID} www-data
- 
-# Modify www-data user to use host UID and GID
-RUN usermod -u ${USER_UID} -g ${USER_GID} www-data
-
-
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen && \
+locale-gen
 
 # install curl and git
-RUN curl -sS -k https://getcomposer.org/installer | php -- --disable-tls && \
+RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
 mv composer.phar /usr/local/bin/composer
 
 # Install Symfony CLI
@@ -52,7 +47,7 @@ mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 RUN docker-php-ext-configure intl && \
 # Configure GD with WebP support
 docker-php-ext-configure gd --with-webp --with-jpeg && \
-docker-php-ext-install curl pdo pdo_mysql mysqli gd opcache intl zip calendar dom mbstring xsl && \
+docker-php-ext-install curl pdo pdo_mysql mysqli gd opcache intl zip calendar dom mbstring xsl && a2enmod rewrite && \
 pecl install apcu && docker-php-ext-enable apcu
 
 # Use the mlocati installer for additional extensions
@@ -62,6 +57,28 @@ install-php-extensions amqp
 
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
+
+
+# Install Node.js and npm
+RUN npm install -g n && \
+n 20.17.0  && \
+# Install a compatible version of Node.js
+npm install -g npm@11.2.0
+#RUN npm install npm@latest -g && \
+#npm install n -g && \
+#n latest
+
+# SSL : Génération du certificat et configuration Apache
+EXPOSE 443
+RUN mkdir -p /etc/apache2/ssl && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
+    -keyout /etc/apache2/ssl/apache.key \
+    -out /etc/apache2/ssl/apache.crt \
+    -subj "/C=FR/ST=PACA/L=Nice/O=GNUT06/OU=Association/CN=localhost" \
+    -addext "subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1" && \
+    a2enmod ssl headers
+COPY ./config/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+RUN a2ensite default-ssl
 
 # Configuration de Xdebug
 COPY ./config/xdebug.ini /usr/local/etc/php/conf.d//xdebug.ini
@@ -75,3 +92,9 @@ RUN addgroup --gid 1000 user && usermod -aG user www-data
 
 # Ensure the composer.json file exists
 RUN composer install --no-scripts
+# RUN composer install
+EXPOSE 8000
+# CMD ["symfony", "serve","--no-tls"]
+
+CMD ["apache2-foreground"]
+#ENTRYPOINT ["/bin/bash", "/var/www/app/run.sh"]
