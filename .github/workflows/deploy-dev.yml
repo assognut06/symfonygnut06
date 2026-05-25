@@ -120,32 +120,6 @@ jobs:
               fi
             }
 
-            ensure_symfony_writable_dirs() {
-              WRITABLE_DIRS="${APP_DIR}/var/cache ${APP_DIR}/var/log ${APP_DIR}/public/uploads ${APP_DIR}/public/media"
-
-              if has_sudo; then
-                run_sudo mkdir -p "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads/profilePictures" "${APP_DIR}/public/media"
-                run_sudo chown -R "$(whoami):www-data" "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
-                run_sudo chmod -R u+rwX,g+rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log"
-                run_sudo chmod -R u+rwX,g+rwX "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
-                run_sudo find "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media" -type d -exec chmod g+s {} +
-                if command -v setfacl >/dev/null 2>&1; then
-                  run_sudo setfacl -R -m u:www-data:rwX -m d:u:www-data:rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
-                fi
-              else
-                echo "⚠️ Sudo unavailable; applying writable permissions as $(whoami)."
-                mkdir -p "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads/profilePictures" "${APP_DIR}/public/media"
-                chmod -R u+rwX,g+rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
-                find "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media" -type d -exec chmod g+s {} +
-                if command -v setfacl >/dev/null 2>&1 && setfacl -R -m u:www-data:rwX -m d:u:www-data:rwX ${WRITABLE_DIRS}; then
-                  echo "✅ ACL permissions granted to www-data."
-                else
-                  echo "⚠️ Unable to set ACL for www-data without sudo; using other rwX on Symfony writable directories."
-                  chmod -R o+rwX "${APP_DIR}/var/cache" "${APP_DIR}/var/log" "${APP_DIR}/public/uploads" "${APP_DIR}/public/media"
-                fi
-              fi
-            }
-
             echo "🚀 Starting deployment to development server..."
 
             # Aller dans le répertoire du projet
@@ -159,7 +133,6 @@ jobs:
             else
               echo "⚠️ Sudo unavailable; skipping project chown."
             fi
-            ensure_symfony_writable_dirs
 
             # Éviter l'erreur "detected dubious ownership" sur ce dépôt
             git config --global --add safe.directory "$PROJECT_DIR"
@@ -215,10 +188,6 @@ jobs:
             echo "🎨 Building assets..."
             npm_exec run build
 
-            # Préparer les dossiers écrits par Symfony et Apache/PHP
-            echo "🔧 Preparing writable directories..."
-            ensure_symfony_writable_dirs
-
             # Vider le cache Symfony
             echo "🧹 Clearing Symfony cache..."
             run_as_www_data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php bin/console cache:clear --env="$APPENV" --no-debug
@@ -226,9 +195,6 @@ jobs:
             # Réchauffer le cache
             echo "🔥 Warming up cache..."
             run_as_www_data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php bin/console cache:warmup --env="$APPENV" --no-debug
-
-            # Garantir que www-data conserve les droits après recréation du cache/log.
-            ensure_symfony_writable_dirs
 
             echo "✅ Deployment completed successfully!"
         env:
