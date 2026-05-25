@@ -27,7 +27,7 @@ services:
       PMA_HOST: mysql
       PMA_PORT: 3306
     ports:
-      - "9000:9000"
+      - "9180:9000"
     volumes:
         - phpmyadmin:/var/www/
     depends_on:
@@ -56,8 +56,8 @@ services:
       DATABASE_URL: "mysql://root:root@mysql:3306/gnut06?serverVersion=5.7&charset=utf8mb4"
     volumes:
       - ./app:/var/www/app
-    expose:
-      - 9000
+    ports:
+      - "9181:9000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -69,6 +69,8 @@ services:
       dockerfile: apache.Dockerfile
     container_name: apache_gnut
     restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "8080:8080"
       - "8000:80"
