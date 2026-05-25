@@ -15,8 +15,7 @@ final class ChatbotController extends AbstractController
         private readonly HttpClientInterface $httpClient,
         private readonly string $openAiApiKey,
         private readonly string $openAiModel,
-    ) {
-    }
+    ) {}
 
     #[Route('/api/chatbot/ask', name: 'chatbot_ask', methods: ['POST'])]
     public function ask(Request $request): JsonResponse
@@ -102,7 +101,7 @@ TXT;
                 ], 500);
             }
 
-            $reply = $this->extractOutputText($data);
+            $reply = $this->cleanBotReply($this->extractOutputText($data));
 
             if ($reply === '') {
                 $reply = "Je suis désolé, je n’ai pas réussi à générer une réponse. Vous pouvez reformuler votre question.";
@@ -176,5 +175,15 @@ TXT;
         }
 
         return trim(implode("\n", $texts));
+    }
+
+    private function cleanBotReply(string $text): string
+    {
+        $text = str_replace(['###', '##', '#'], '', $text);
+        $text = str_replace(['**', '__', '```'], '', $text);
+        $text = preg_replace('/^\s*[-*]\s+/m', '- ', $text);
+        $text = preg_replace("/\n{3,}/", "\n\n", $text);
+
+        return trim($text);
     }
 }
