@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,11 +13,7 @@ final class ChatbotController extends AbstractController
 {
     public function __construct(
         private readonly HttpClientInterface $httpClient,
-
-        #[Autowire('%env(OPENAI_API_KEY)%')]
         private readonly string $openAiApiKey,
-
-        #[Autowire('%env(OPENAI_MODEL)%')]
         private readonly string $openAiModel,
     ) {
     }
