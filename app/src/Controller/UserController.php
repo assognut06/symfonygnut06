@@ -44,7 +44,8 @@ class UserController extends AbstractController
                 // Générer un nouveau nom pour la photo
                 $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $photoFile->guessExtension();
+                $extension = strtolower($photoFile->getClientOriginalExtension() ?: 'jpg');
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $extension;
 
                 try {
                     // Déplacer le fichier vers le dossier de destination
