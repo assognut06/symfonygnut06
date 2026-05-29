@@ -124,6 +124,3 @@ services:
             $googleMapsApiKey: '%env(GNUT06MAPAPI)%'
 
     App\Controller\RegistrationController:
-        arguments:
-            $recaptchaSecret: '%nocaptcha.secret%'
-            $appEnv: '%app.env%'
