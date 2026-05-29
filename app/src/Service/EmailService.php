@@ -12,14 +12,15 @@ use Symfony\Component\Mime\Address;
 
 class EmailService
 {
-    public function __construct(private EmailVerifier $emailVerifier)
-    {
-    }
+    public function __construct(
+        private EmailVerifier $emailVerifier,
+        private string $fromEmail,
+    ) {}
 
     public function sendConfirmationEmail(User $user): void
     {
         $email = (new TemplatedEmail())
-            ->from(new Address('gnut@gnut06.org', 'Gnut 06'))
+            ->from(new Address($this->fromEmail, 'Gnut 06'))
             ->to($user->getEmail())
             ->subject('Veuillez confirmer votre adresse e-mail sur Gnut 06.')
             ->htmlTemplate('registration/confirmation_email.html.twig');

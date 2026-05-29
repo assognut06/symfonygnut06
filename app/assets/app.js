@@ -12,7 +12,11 @@ import 'bootstrap';
 import 'select2';
 import 'select2/dist/css/select2.min.css'; // ✅ CSS Select2
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { initCounters } from "./js/counters.js";
 
+$(function (){
+    initCounters()
+})
 
 // ✅ Tooltips Bootstrap
 document.addEventListener('DOMContentLoaded', function () {

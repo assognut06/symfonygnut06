@@ -6,19 +6,38 @@
 parameters:
     helloasso.api_client_id: '%env(APICLIENTID)%'
     helloasso.api_client_secret: '%env(APICLIENTSECRET)%'
+    app.slug_asso: '%env(SLUGASSO)%'
+    app.google_maps_api_key: '%env(GNUT06MAPAPI)%'
     mailjet.api_key: '%env(APIMAILJET)%'
     mailjet.api_secret: '%env(APIMAILJETSECRET)%'
     ohme.api_key: '%env(SECRETOHME)%'
-    app.email.from: 'gnut@gnut06.org'
+    openai.api_key: '%env(OPENAI_API_KEY)%'
+    openai.model: '%env(OPENAI_MODEL)%'
     app.email.admin: 'gnut@gnut06.org'
+    app.email.from: '%env(default:app.email.admin:SMTP_EMAIL)%'
     parameters:
     photos_directory: '%kernel.project_dir%/public/uploads/profilePictures'
     bordereau_directory: '%kernel.project_dir%/public/uploads/bordereau'
     nocaptcha.secret: '%env(NOCAPTCHA_SECRET)%'
     nocaptcha.sitekey: '%env(NOCAPTCHA_SITEKEY)%'
     app.env: '%env(APP_ENV)%'
+    oauth.azure_client_id: '%env(default::AZURE_CLIENT_ID)%'
+    oauth.google_client_id: '%env(default::GOOGLE_CLIENT_ID)%'
     cv_tih_directory: '%kernel.project_dir%/public/uploads/tihcv'
     attestation_tih_directory: '%kernel.project_dir%/public/uploads/tihattest'
+    helloasso.webhook.default_allowed_ips: '51.138.206.200'
+    helloasso.webhook.empty_secret: ''
+    helloasso.webhook.default_signature_header: 'X-HelloAsso-Signature'
+    helloasso.webhook.default_timestamp_header: 'X-HelloAsso-Timestamp'
+    helloasso.webhook.allowed_ips: '%env(default:helloasso.webhook.default_allowed_ips:HELLOASSO_WEBHOOK_ALLOWED_IPS)%'
+    helloasso.webhook.signature_secret: '%env(default:helloasso.webhook.empty_secret:HELLOASSO_WEBHOOK_SECRET)%'
+    helloasso.webhook.signature_header: '%env(default:helloasso.webhook.default_signature_header:HELLOASSO_WEBHOOK_SIGNATURE_HEADER)%'
+    helloasso.webhook.timestamp_header: '%env(default:helloasso.webhook.default_timestamp_header:HELLOASSO_WEBHOOK_TIMESTAMP_HEADER)%'
+    helloasso.webhook.replay_ttl_seconds: 86400
+    helloasso.webhook.timestamp_tolerance_seconds: 300
+    helloasso.webhook.rate_limit_max_requests: 60
+    helloasso.webhook.rate_limit_window_seconds: 60
+    helloasso.webhook.max_payload_bytes: 1048576
 
 
 services:
@@ -28,6 +47,16 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $appEnv: '%app.env%'
+            $slugAsso: '%app.slug_asso%'
+            $googleMapsApiKey: '%app.google_maps_api_key%'
+            $nocaptchaSecret: '%nocaptcha.secret%'
+            $nocaptchaSiteKey: '%nocaptcha.sitekey%'
+            $fromEmail: '%app.email.from%'
+            $adminEmail: '%app.email.admin%'
+            $azureClientId: '%oauth.azure_client_id%'
+            $googleClientId: '%oauth.google_client_id%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -61,7 +90,7 @@ services:
         arguments:
             $fromEmail: '%app.email.from%'
             $adminEmail: '%app.email.admin%'
-            $logoPath: '%kernel.project_dir%/public/images/logo_trans-min_300.png'
+            $logoPath: '%kernel.project_dir%/public/images/LogoNew.png'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -70,7 +99,7 @@ services:
             $clientId: '%env(APICLIENTID)%'
             $clientSecret: '%env(APICLIENTSECRET)%'
             $urlToken: 'https://api.helloasso.com/oauth2/token'
-            $slugAsso: '%env(SLUGASSO)%'
+            $slugAsso: '%app.slug_asso%'
 
     App\Service\HelloAssoAuthService:
         class: App\Service\HelloAssoAuthService
@@ -103,7 +132,7 @@ services:
 
     App\Service\OhmeApiService:
         arguments:
-            $slugAsso: '%env(SLUGASSO)%'
+            $slugAsso: '%app.slug_asso%'
             $secretOhme: '%env(SECRETOHME)%'
 
     App\Service\ApiFrameVrService:
@@ -117,10 +146,28 @@ services:
             $appEnv: '%app.env%'
             $recaptchaSecret: '%nocaptcha.secret%'
 
+    App\Controller\NotificationController:
+        arguments:
+            $cache: '@cache.app'
+            $webhookAllowedIps: '%helloasso.webhook.allowed_ips%'
+            $webhookSignatureSecret: '%helloasso.webhook.signature_secret%'
+            $webhookSignatureHeader: '%helloasso.webhook.signature_header%'
+            $webhookTimestampHeader: '%helloasso.webhook.timestamp_header%'
+            $webhookReplayTtlSeconds: '%helloasso.webhook.replay_ttl_seconds%'
+            $webhookTimestampToleranceSeconds: '%helloasso.webhook.timestamp_tolerance_seconds%'
+            $webhookRateLimitMaxRequests: '%helloasso.webhook.rate_limit_max_requests%'
+            $webhookRateLimitWindowSeconds: '%helloasso.webhook.rate_limit_window_seconds%'
+            $webhookMaxPayloadBytes: '%helloasso.webhook.max_payload_bytes%'
+
+    App\Controller\ChatbotController:
+        arguments:
+            $openAiApiKey: '%openai.api_key%'
+            $openAiModel: '%openai.model%'
+
     App\Service\EmailService: ~
 
     App\Service\GeocodeService:
         arguments:
-            $googleMapsApiKey: '%env(GNUT06MAPAPI)%'
+            $googleMapsApiKey: '%app.google_maps_api_key%'
 
     App\Controller\RegistrationController:

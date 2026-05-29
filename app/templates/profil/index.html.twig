@@ -137,13 +137,20 @@
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                     <span class="d-none d-sm-inline ms-1">Modifier</span>
                                                 </a>
-                                                <a href="{{ path('delete_profile_picture') }}"
-                                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer votre photo de profil ?')"
-                                                   class="btn btn-danger"
-                                                   aria-label="Supprimer la photo de profil">
+                                                <form method="post"
+                                                      action="{{ path('delete_profile_picture') }}"
+                                                      class="d-inline"
+                                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre photo de profil ?')">
+                                                    <input type="hidden"
+                                                           name="_token"
+                                                           value="{{ csrf_token('delete_profile_picture' ~ user.id) }}">
+                                                    <button type="submit"
+                                                            class="btn btn-danger"
+                                                            aria-label="Supprimer la photo de profil">
                                                     <i class="bi bi-trash" aria-hidden="true"></i>
                                                     <span class="d-none d-sm-inline ms-1">Supprimer</span>
-                                                </a>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     {% else %}

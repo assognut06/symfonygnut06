@@ -6,10 +6,17 @@ use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/oauth-test')]
+#[IsGranted('ROLE_ADMIN')]
 class OAuthTestController extends AbstractController
 {
+    public function __construct(
+        private ?string $azureClientId,
+        private ?string $googleClientId,
+    ) {}
+
     #[Route('/', name: 'oauth_test')]
     public function index(ClientRegistry $clientRegistry): Response
     {
@@ -38,8 +45,8 @@ class OAuthTestController extends AbstractController
             'azure_error' => $azureError,
             'google_status' => $googleStatus,
             'google_error' => $googleError,
-            'azure_client_id' => $_ENV['AZURE_CLIENT_ID'] ?? 'NON DÉFINI',
-            'google_client_id' => $_ENV['GOOGLE_CLIENT_ID'] ?? 'NON DÉFINI',
+            'azure_client_id' => $this->azureClientId ?? 'NON DÉFINI',
+            'google_client_id' => $this->googleClientId ?? 'NON DÉFINI',
         ]);
     }
 

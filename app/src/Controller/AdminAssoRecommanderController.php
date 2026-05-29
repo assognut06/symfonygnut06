@@ -12,8 +12,14 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\PaginationService;
+use App\Entity\AssoRecommander;
+use App\Repository\AssoRecommanderRepository;
+use App\Service\AssoRecommanderService;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
+#[IsGranted('ROLE_ADMIN')]
 class AdminAssoRecommanderController extends AbstractController
 {
     private AssoRecommanderService $assoRecommanderService;

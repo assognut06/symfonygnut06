@@ -16,11 +16,20 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/assos/recommandees')]
 class AssoRecommanderController extends AbstractController
 {
-    private HelloAssoApiService $helloAssoApiService;
+    private $assoRecommanderService;
+    private $assoRecommanderRepository;
+    private $helloAssoApiService;
+    private string $googleMapsApiKey;
 
-    public function __construct(HelloAssoApiService $helloAssoApiService)
+    function __construct(
+        AssoRecommanderService $assoRecommanderService,
+        AssoRecommanderRepository $assoRecommanderRepository,
+        HelloAssoApiService $helloAssoApiService,
+        string $googleMapsApiKey
+    )
     {
         $this->helloAssoApiService = $helloAssoApiService;
+        $this->googleMapsApiKey = $googleMapsApiKey;
     }
 
     #[Route('/liste/{page}', name: 'app_asso_recommander', defaults: ['page' => 1])]
@@ -101,7 +110,7 @@ class AssoRecommanderController extends AbstractController
 
         return $this->render('asso_recommander/detailsEvent.html.twig', [
             'data_actu' => $data_form,
-            'googleMapsApiKey' => $googleMapsApiKey,
+            'googleMapsApiKey' => $this->googleMapsApiKey,
         ]);
     }
 

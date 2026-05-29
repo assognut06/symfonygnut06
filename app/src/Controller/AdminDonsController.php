@@ -18,7 +18,11 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+
+#[IsGranted('ROLE_ADMIN')]
 class AdminDonsController extends AbstractController
 {
     #[Route('/admin/dons/{id}', name: 'admin_dons', requirements: ['id' => '\d*'], defaults: ['id' => null])]

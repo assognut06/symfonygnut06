@@ -29,8 +29,10 @@ class ResetPasswordController extends AbstractController
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
         private EntityManagerInterface $entityManager,
-    ) {
-    }
+        private string $nocaptchaSecret,
+        private string $nocaptchaSiteKey,
+        private string $appEnv,
+    ) {}
 
     /**
      * Display & process form to request a password reset.
@@ -117,7 +119,7 @@ class ResetPasswordController extends AbstractController
             $client = new Client();
             $response = $client->request('POST', 'https://www.google.com/recaptcha/api/siteverify', [
                 'form_params' => [
-                    'secret' => $_ENV['NOCAPTCHA_SECRET'],
+                    'secret' => $this->nocaptchaSecret,
                     'response' => $recaptchaResponse,
                     'remoteip' => $request->getClientIp(),
                 ],
@@ -125,7 +127,7 @@ class ResetPasswordController extends AbstractController
 
             $responseData = json_decode($response->getBody());
 
-            if ('dev' === $_ENV['APP_ENV']) {
+            if ('dev' === $this->appEnv) {
                 $responseData->score = 0.9;
                 $responseData->success = true;
             }
@@ -135,7 +137,7 @@ class ResetPasswordController extends AbstractController
 
                 return $this->render('reset_password/reset.html.twig', [
                     'resetForm' => $form,
-                    'site_key' => $_ENV['NOCAPTCHA_SITEKEY'],
+                    'site_key' => $this->nocaptchaSiteKey
                 ]);
             } else {
                 // Encode(hash) the plain password, and set it.
@@ -158,7 +160,7 @@ class ResetPasswordController extends AbstractController
 
         return $this->render('reset_password/reset.html.twig', [
             'resetForm' => $form,
-            'site_key' => $_ENV['NOCAPTCHA_SITEKEY'],
+            'site_key' => $this->nocaptchaSiteKey
         ]);
     }
 
