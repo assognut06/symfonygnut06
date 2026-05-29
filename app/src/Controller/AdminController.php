@@ -4,7 +4,6 @@
 
 namespace App\Controller;
 
-use App\Service\HelloAssoApiService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\HelloAssoApiService; // Service dédié pour les appels API HelloAsso
