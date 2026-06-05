@@ -19,13 +19,14 @@ class ProfilePictureType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Assert\File([
-                        'maxSize' => '10M',
+                        'maxSize' => '2M',
                         'mimeTypes' => [
                             'image/jpeg',
                             'image/png',
                             'image/webp',
                             'image/gif',
                         ],
+                        'extensions' => ['jpg', 'jpeg', 'png', 'webp', 'gif'],
                         'maxSizeMessage' => 'Votre photo est trop lourde ({{ size }} {{ suffix }}). La taille maximale est {{ limit }} {{ suffix }}.',
                         'mimeTypesMessage' => 'Veuillez choisir une image JPG, PNG, WebP ou GIF.',
                         'uploadIniSizeErrorMessage' => 'Votre photo depasse la taille autorisee par le serveur.',
