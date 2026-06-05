@@ -10,8 +10,10 @@ use App\Service\PaginationService;
 use App\Entity\AssoRecommander;
 use App\Repository\AssoRecommanderRepository;
 use App\Service\AssoRecommanderService;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
+#[IsGranted('ROLE_ADMIN')]
 class AdminAssoRecommanderController extends AbstractController
 {
     private $assoRecommanderService;

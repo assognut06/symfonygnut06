@@ -13,9 +13,11 @@ use Knp\Component\Pager\PaginatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\SocieteType;
 use App\Form\PersonnePhysiqueType;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 
+#[IsGranted('ROLE_ADMIN')]
 class AdminDonateurController extends AbstractController
 {
     //Recupérer tous les donateurs
