@@ -27,6 +27,9 @@
             <directory>tests/Functional</directory>
             <directory>tests/Controller</directory>
         </testsuite>
+        <testsuite name="Rules">
+            <directory>tests/Rules</directory>
+        </testsuite>
     </testsuites>
 
     <coverage processUncoveredFiles="true">
