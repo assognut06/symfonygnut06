@@ -48,7 +48,8 @@ services:
     ports:
       - "8000:80"
       - "443:443"
-      - "9003:9003"
+    extra_hosts:
+      - host.docker.internal:host-gateway
     depends_on:
       - mysql
 
