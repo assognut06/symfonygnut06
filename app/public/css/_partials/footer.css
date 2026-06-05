@@ -50,12 +50,6 @@
 		text-decoration-color: #F86CF8 !important;
 	}
 
-    /* Style pour le texte "GNUT Team" */
-
-   #gnutTeamText {
-        color: #F86CF8 !important;
-    }
-
 	/* ✅ Style alternatif pour tous les liens externes du footer */
 	footer a[target="_blank"] {
 		color: white !important;
