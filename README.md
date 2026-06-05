@@ -106,5 +106,12 @@ Par contre, la base de donnée est vide
    ```bash
    docker compose up -d
    ```
-e
-   
+
+## Tests
+
+
+# Custom PHPStan Rules
+   ```bash
+   docker exec symfony_asso php vendor/bin/phpunit --testsuite=Rules
+   ```
+
