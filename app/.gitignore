@@ -21,6 +21,7 @@
 /public/uploads/bordereau/*
 /public/audios/*
 /public/documents/*
+/public/uploads/*
 
 # laisser les dossiers vides utiles au projet
 !public/uploads/.gitkeep
