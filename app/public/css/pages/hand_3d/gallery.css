@@ -1,4 +1,5 @@
 /* Styles de la page "Galerie 3D", hand_3d/gallery.html.twig*/
+/* url : /Handi-3D/gallery */
 /* Auteur : Simon Fanny */
 /* Date : 2026-03-09 */
 
@@ -80,27 +81,25 @@
   background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
 }
 
-#prosthetic-image {
+.prosthetic-image {
   background: linear-gradient(45deg, #ff7675, #fd79a8);
 }
 
-#mechanical-image {
+.mechanical-image {
   background: linear-gradient(45deg, #00b894, #00cec9);
 }
   
-#advanced-image {
+.advanced-image {
   background: linear-gradient(45deg, #a29bfe, #6c5ce7);
 }
 
-#precision-image {
+.precision-image {
   background: linear-gradient(45deg, #fdcb6e, #e17055);
 }
 
-#pedagogical-image {
+.pedagogical-image {
   background: linear-gradient(45deg, #74b9ff, #0984e3);
 }
-
-
 
 .gallery-item-content {
   padding: 1.5rem;
