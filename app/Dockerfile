@@ -85,6 +85,7 @@ RUN a2ensite default-ssl
 # Configuration de Xdebug
 COPY ./config/xdebug.ini /etc/php/8.2/apache2/conf.d/30-xdebug.ini
 COPY ./config/xdebug.ini /etc/php/8.2/cli/conf.d/30-xdebug.ini
+COPY ./php.ini /usr/local/etc/php/conf.d/99-gnut06.ini
 
 RUN chown -R root:root /var/www/app
 

@@ -19,12 +19,19 @@ class AssoRecommanderController extends AbstractController
     private $assoRecommanderService;
     private $assoRecommanderRepository;
     private $helloAssoApiService;
+    private string $googleMapsApiKey;
 
-    function __construct(AssoRecommanderService $assoRecommanderService, AssoRecommanderRepository $assoRecommanderRepository, HelloAssoApiService $helloAssoApiService)
+    function __construct(
+        AssoRecommanderService $assoRecommanderService,
+        AssoRecommanderRepository $assoRecommanderRepository,
+        HelloAssoApiService $helloAssoApiService,
+        string $googleMapsApiKey
+    )
     {
         $this->assoRecommanderService = $assoRecommanderService;
         $this->assoRecommanderRepository = $assoRecommanderRepository;
         $this->helloAssoApiService = $helloAssoApiService;
+        $this->googleMapsApiKey = $googleMapsApiKey;
     }
 
     #[Route('/liste/{page}', name: 'app_asso_recommander', defaults: ['page' => 1])]
@@ -100,11 +107,10 @@ class AssoRecommanderController extends AbstractController
         $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms/{$formType}/{$formSlug}/public";
         $data_form = $this->helloAssoApiService->makeApiCall($url);
 // dd($url);
-        $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
 
         return $this->render('asso_recommander/detailsEvent.html.twig', [
             'data_actu' => $data_form,
-            'googleMapsApiKey' => $googleMapsApiKey,
+            'googleMapsApiKey' => $this->googleMapsApiKey,
         ]);
     }
 
