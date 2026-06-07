@@ -35,6 +35,7 @@ $defaults = [
     'GOOGLE_CLIENT_SECRET' => 'test',
     'AZURE_CLIENT_ID' => 'test',
     'AZURE_CLIENT_SECRET' => 'test',
+    'HELLOASSO_WEBHOOK_SECRET' => 'test-webhook-secret',
 ];
 
 foreach ($defaults as $name => $value) {

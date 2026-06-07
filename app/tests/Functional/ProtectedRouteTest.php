@@ -66,17 +66,28 @@ class ProtectedRouteTest extends WebTestCase
 
     public function testDeletePictureRedirectsAnonymous(): void
     {
-        $this->client->request('GET', '/profile/delete-picture');
+        $this->client->request('POST', '/profile/delete-picture');
 
-        $this->assertResponseRedirects();
+        $this->assertResponseRedirectsToLogin();
     }
 
     public function testDeletePictureWorksForLoggedInUser(): void
     {
-        $this->loginAsNewUser();
+        $user = $this->loginAsNewUser();
+        $user->setProfilePicture('test-photo.jpg');
+        $this->em->flush();
 
-        $this->client->request('GET', '/profile/delete-picture');
+        $this->client->request('GET', '/profil');
+        $this->assertResponseIsSuccessful();
 
-        $this->assertResponseRedirects();
+        $token = $this->client->getCrawler()
+            ->filter('form[action*="delete-picture"] input[name="_token"]')
+            ->attr('value');
+
+        $this->client->request('POST', '/profile/delete-picture', [
+            '_token' => $token,
+        ]);
+
+        $this->assertResponseRedirects('/profil');
     }
 }
