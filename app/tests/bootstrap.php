@@ -41,3 +41,4 @@ foreach ($defaults as $name => $value) {
     $_ENV[$name] = $_ENV[$name] ?? $_SERVER[$name] ?? $value;
     $_SERVER[$name] = $_SERVER[$name] ?? $_ENV[$name];
     putenv(sprintf('%s=%s', $name, $_ENV[$name]));
+}
