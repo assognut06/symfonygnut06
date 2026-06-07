@@ -28,8 +28,8 @@ class AdminTihController extends AbstractController
 
             // Recherche sur email (utilisateur), nom et prénom (entité TIH)
             $qb->andWhere('LOWER(u.email) LIKE :q 
-                           OR LOWER(COALESCE(t.nom, \'\')) LIKE :q
-                           OR LOWER(COALESCE(t.prenom, \'\')) LIKE :q')
+                           OR LOWER(COALESCE(t.lastName, \'\')) LIKE :q
+                           OR LOWER(COALESCE(t.firstName, \'\')) LIKE :q')
                ->setParameter('q', $needle);
         }
 
