@@ -1,19 +1,25 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Hello AdminUserController!
-{% endblock %}
+{% block title %}Utilisateurs{% endblock %}
 
 {% block body %}
 	<div class="container pt-0">
 		<div class="mx-4">
-			<h2 class="my-4 text-center">Les utilisateur de Gnut06.org</h2>
+			<h2 class="my-4 text-center">Les utilisateurs de Gnut06.org</h2>
 			<div class="border border-secondary mb-4 mx-5"></div>
+			{% set queryParams = query|default('') is empty ? {} : {'q': query} %}
 
-			<div class="mb-3">
-    			<input type="text" id="search-email" class="form-control table-live-filter"
-					data-target="#users-table" data-cols="2"
-					placeholder="Rechercher par email…">
-
+			<form class="mb-3" method="get" action="{{ path('app_admin_user') }}">
+				<div class="input-group">
+					<input type="text" id="search-email" name="q" class="form-control"
+						value="{{ query|default('') }}"
+						placeholder="Rechercher par email…">
+					<button class="btn btn-primary" type="submit">Rechercher</button>
+					{% if query|default('') is not empty %}
+						<a class="btn btn-outline-secondary" href="{{ path('app_admin_user') }}">Réinitialiser</a>
+					{% endif %}
+				</div>
+			</form>
 			<div class="row align-items-start mx-auto">
 				<div class="col-12">
 					<table id="users-table" class="table table-success table-striped">
@@ -22,13 +28,12 @@
 								<th scope="col">id</th>
 								<th scope="col">Email</th>
 								<th scope="col">Roles</th>
-								<th scope="col">Vérifiè</th>
+								<th scope="col">Vérifié</th>
 								<th scope="col">Actions</th>
 							</tr>
 						</thead>
 						<tbody>
-							{% set i = 0 %}
-							{% if users is defined %}
+							{% if users is not empty %}
 								{% for user in users %}
 									<tr>
 										<td>{{ user.id }}</td>
@@ -51,18 +56,17 @@
 											</form>
 										</td>
 									</tr>
-									</tr>
-									{% set i = i + 1 %}
 								{% endfor %}
 							{% else %}
-								No data available.
+								<tr>
+									<td colspan="5" class="text-center">Aucun utilisateur trouvé.</td>
+								</tr>
 							{% endif %}
 							<tr>
-								<td class="text-end" scope="row" colspan="10">
-									<strong class="text-primary">Soit
-										{{ i }}
-										Uilisateurs sur {{ total }}
-									</tr>
+								<td class="text-end" colspan="5">
+									<strong class="text-primary">
+										Soit {{ users|length }} utilisateur{{ users|length > 1 ? 's' : '' }} affiché{{ users|length > 1 ? 's' : '' }} sur {{ total }}
+									</strong>
 								</td>
 							</tr>
 						</tbody>
@@ -73,21 +77,21 @@
 						<ul class="pagination">
 							{% if page > 1 %}
 								<li class="page-item">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page - 1}) }}">
+									<a class="page-link" href="{{ path('app_admin_user', {'page': page - 1}|merge(queryParams)) }}">
 										<span aria-hidden="true">&laquo;</span>
 									</a>
 								</li>
 							{% endif %}
 
-							{% for page in 1..pages %}
-								<li class="page-item{% if app.request.attributes.get('page') == page %} active{% endif %}">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page}) }}">{{ page }}</a>
+							{% for p in 1..pages %}
+								<li class="page-item{% if page == p %} active{% endif %}">
+									<a class="page-link" href="{{ path('app_admin_user', {'page': p}|merge(queryParams)) }}">{{ p }}</a>
 								</li>
 							{% endfor %}
 
 							{% if page < pages %}
 								<li class="page-item">
-									<a class="page-link" href="{{ path(app.request.attributes.get('_route') ,{'page': page + 1}) }}">
+									<a class="page-link" href="{{ path('app_admin_user', {'page': page + 1}|merge(queryParams)) }}">
 										<span aria-hidden="true">&raquo;</span>
 									</a>
 								</li>

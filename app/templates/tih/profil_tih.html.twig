@@ -14,64 +14,97 @@
 {% if form is defined and form is not null %}
     <p class="text-center">Complétez ou modifiez votre profil TIH</p>
     <div class="container w-75 shadow p-4 rounded bg-white">
-        {{ form_start(form) }}
+        {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+        {{ form_errors(form) }}
+
+        <h3 class="h5 mb-3">Identité et contact</h3>
         <div class="row">
             <div class="col-md-6 mb-3">
-                {{ form_row(form.civilite, {'attr': {'class': 'form-select'}}) }}
+                {{ form_row(form.civilite) }}
             </div>
             <div class="col-md-6 mb-3">
-                {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.nom) }}
             </div>
             <div class="col-md-6 mb-3">
-                {{ form_row(form.prenom, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.prenom) }}
             </div>
             <div class="col-md-6 mb-3">
-                {{ form_row(form.emailPro, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.emailPro) }}
             </div>
             <div class="col-md-6 mb-3">
-                {{ form_row(form.telephone, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.telephone) }}
             </div>
             <div class="col-md-6 mb-3">
-                {{ form_row(form.adresse, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.adresse) }}
             </div>
             <div class="col-md-4 mb-3">
-                {{ form_row(form.codePostal, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.codePostal) }}
             </div>
             <div class="col-md-8 mb-3">
-                {{ form_row(form.ville, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.ville) }}
             </div>
             <div class="col-md-6 mb-3">
-                {{ form_row(form.region, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.region) }}
             </div>
             <div class="col-md-6 mb-3">
-                {{ form_row(form.departement, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.departement) }}
+            </div>
+
+            <div class="col-12">
+                <hr class="my-3">
+                <h3 class="h5 mb-3">Activité professionnelle</h3>
+            </div>
+
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.siret) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.disponibilite) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.dateDisponibilite) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.tarif) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(form.typeTarif) }}
             </div>
             <div class="col-md-12 mb-3">
-                {{ form_row(form.siret, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.competences) }}
             </div>
-            <div class="col-md-6 mb-3">
-                {{ form_row(form.disponibilite, {'attr': {'class': 'form-control'}}) }}
+
+            <div class="col-12">
+                <hr class="my-3">
+                <h3 class="h5 mb-3">Documents</h3>
             </div>
-            <div class="col-md-6 mb-3">
-                {{ form_row(form.dateDisponibilite, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <div class="col-md-6 mb-3">
-                {{ form_row(form.tarif, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <div class="col-md-6 mb-3">
-                {{ form_row(form.typeTarif, {'attr': {'class': 'form-select'}}) }}
+
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.photo) }}
+                {% if tih.photo %}
+                    <div class="form-text">
+                        Photo actuelle :
+                        <a href="{{ asset('uploads/tih/' ~ tih.photo) }}" target="_blank" rel="noopener">voir le fichier</a>
+                    </div>
+                {% endif %}
             </div>
             <div class="col-md-12 mb-3">
-                {{ form_row(form.photo, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.cv) }}
+                {% if tih.cv %}
+                    <div class="form-text">
+                        CV actuel :
+                        <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank" rel="noopener">voir le fichier</a>
+                    </div>
+                {% endif %}
             </div>
             <div class="col-md-12 mb-3">
-                {{ form_row(form.cv, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <div class="col-md-12 mb-3">
-                {{ form_row(form.competences, {'attr': {'id': 'tih_competences'}}) }}
-            </div>
-            <div class="col-md-12 mb-3">
-                {{ form_row(form.attestationTih, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.attestationTih) }}
+                {% if tih.attestationTih %}
+                    <div class="form-text">
+                        Attestation actuelle :
+                        <a href="{{ asset('uploads/tihattest/' ~ tih.attestationTih) }}" target="_blank" rel="noopener">voir le fichier</a>
+                    </div>
+                {% endif %}
 
                 <p class="mt-2">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#modalAttestations">

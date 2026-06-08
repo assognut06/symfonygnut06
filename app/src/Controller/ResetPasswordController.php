@@ -28,7 +28,10 @@ class ResetPasswordController extends AbstractController
 
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private string $nocaptchaSecret,
+        private string $nocaptchaSiteKey,
+        private string $appEnv,
     ) {}
 
     /**
@@ -117,7 +120,7 @@ class ResetPasswordController extends AbstractController
             $client = new Client();
             $response = $client->request('POST', 'https://www.google.com/recaptcha/api/siteverify', [
                 'form_params' => [
-                    'secret' => $_ENV['NOCAPTCHA_SECRET'],
+                    'secret' => $this->nocaptchaSecret,
                     'response' => $recaptchaResponse,
                     'remoteip' => $request->getClientIp()
                 ]
@@ -125,7 +128,7 @@ class ResetPasswordController extends AbstractController
 
             $responseData = json_decode($response->getBody());
 
-            if ($_ENV['APP_ENV'] === 'dev') {
+            if ($this->appEnv === 'dev') {
                 $responseData->score = 0.9;
                 $responseData->success = true;
             }
@@ -134,7 +137,7 @@ class ResetPasswordController extends AbstractController
                 $this->addFlash('danger', 'La vérification reCAPTCHA a échoué. Veuillez réessayer.');
                 return $this->render('reset_password/reset.html.twig', [
                     'resetForm' => $form,
-                    'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
+                    'site_key' => $this->nocaptchaSiteKey
                 ]);
             } else {
                 // Encode(hash) the plain password, and set it.
@@ -157,7 +160,7 @@ class ResetPasswordController extends AbstractController
 
         return $this->render('reset_password/reset.html.twig', [
             'resetForm' => $form,
-            'site_key' => $_ENV['NOCAPTCHA_SITEKEY']
+            'site_key' => $this->nocaptchaSiteKey
         ]);
     }
 

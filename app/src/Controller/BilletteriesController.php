@@ -14,18 +14,27 @@ class BilletteriesController extends AbstractController
 {
     private $helloAssoApiService;
     private $dataFilterAndPaginator;
+    private string $slugAsso;
+    private string $googleMapsApiKey;
 
-    public function __construct(HelloAssoApiService $helloAssoApiService, DataFilterAndPaginator $dataFilterAndPaginator)
+    public function __construct(
+        HelloAssoApiService $helloAssoApiService,
+        DataFilterAndPaginator $dataFilterAndPaginator,
+        string $slugAsso,
+        string $googleMapsApiKey
+    )
     {
         $this->helloAssoApiService = $helloAssoApiService;
         $this->dataFilterAndPaginator = $dataFilterAndPaginator;
+        $this->slugAsso = $slugAsso;
+        $this->googleMapsApiKey = $googleMapsApiKey;
     }
     
     #[Route('/{page}', name: 'app_billetteries', defaults: ['page' => 1])]
     public function index(int $page): Response
     {
 
-        $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO'] . "/forms?formTypes=Event&pageIndex=1&pageSize=100";
+        $url = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}/forms?formTypes=Event&pageIndex=1&pageSize=100";
         $data_forms = $this->helloAssoApiService->makeApiCall($url);
         $filteredData = $this->dataFilterAndPaginator->filterAndSortData($data_forms['data']);
         $paginationResult = $this->dataFilterAndPaginator->paginateData($filteredData, $page);
@@ -42,14 +51,12 @@ class BilletteriesController extends AbstractController
     #[Route('/{formType}/{slug}', name: 'app_billetteries_detail')]
     public function detail(string $formType, string $slug, Request $request): Response
     {
-        $url = "https://api.helloasso.com/v5/organizations/" . $_ENV['SLUGASSO']  . "/forms/" . $formType . "/" . $slug . "/public";
+        $url = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}/forms/" . $formType . "/" . $slug . "/public";
 
         $data_form = $this->helloAssoApiService->makeApiCall($url);
 
-        $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
-
         return $this->render('billetteries/detail.html.twig', [
-            'googleMapsApiKey' => $googleMapsApiKey,
+            'googleMapsApiKey' => $this->googleMapsApiKey,
             'data_actu' => $data_form,
             'controller_name' => 'Billetteries Gnut 06',
         ]);
