@@ -200,7 +200,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEPLOY_BRANCH: develop
-
+        
+      - name: PHPStan Quality Check
+        if: false # Désactivé pour le moment, à réactiver après correction des erreurs PHPStan
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_as_www_data env APP_ENV="$APPENV" APP_DEBUG="$APP_DEBUG" php vendor/bin/phpstan analyse --no-progress --error-format=github
       - name: Notify Teams - Deployment finished
         if: always()
         shell: bash
