@@ -2,7 +2,6 @@ version: '3.9'
 
 services:
   mysql:
-    platform: linux/amd64
     image: mysql:5.7
     container_name: mysql_gnut
     restart: always
@@ -17,7 +16,6 @@ services:
   
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
-    platform: linux/amd64
     container_name: phpmyadmin_gnut
     restart: always
     environment:
@@ -27,7 +25,6 @@ services:
       - "8080:80"
     depends_on:
       - mysql
-    entrypoint: ["bash", "-c", "rm -f /usr/local/etc/php/conf.d/*opcache* && /docker-entrypoint.sh apache2-foreground"]
 
 
   maildev:
