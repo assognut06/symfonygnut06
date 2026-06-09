@@ -159,9 +159,10 @@ jobs:
             else
               git fetch origin "$DEPLOY_BRANCH"
             fi
-            git checkout "$DEPLOY_BRANCH"
-            git pull --ff-only origin "$DEPLOY_BRANCH"
-            echo "🌿 Deploying branch: $DEPLOY_BRANCH"
+            echo "🔄 Aligning local checkout with origin/${DEPLOY_BRANCH}..."
+            git reset --hard "origin/${DEPLOY_BRANCH}"
+            git checkout -B "$DEPLOY_BRANCH" "origin/${DEPLOY_BRANCH}"
+            echo "🌿 Deploying branch: $DEPLOY_BRANCH at $(git rev-parse --short HEAD)"
 
             # Aller dans le dossier app
             cd "$APP_DIR"
