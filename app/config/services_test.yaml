@@ -1,4 +1,7 @@
 services:
+    App\Service\RecaptchaVerifier:
+        class: App\Tests\Stub\RecaptchaVerifierStub
+
     App\Service\HelloAssoApiService:
         class: App\Tests\Stub\HelloAssoApiServiceStub
 

@@ -15,7 +15,7 @@ class AuthenticationTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
-    public function testLoginWithValidCredentials(): void
+    public function testLoginWithValidCredentialsRedirectsToProfile(): void
     {
         $this->createUser('login@test.com', 'MyPassword1!');
 
@@ -27,6 +27,14 @@ class AuthenticationTest extends WebTestCase
         $this->client->submit($form);
 
         $this->assertResponseRedirects();
+        $location = $this->client->getResponse()->headers->get('Location');
+        $this->assertStringContainsString('profil', $location);
+
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        $this->client->request('GET', '/espace-tih');
+        $this->assertResponseIsSuccessful();
     }
 
     public function testLoginWithInvalidCredentials(): void

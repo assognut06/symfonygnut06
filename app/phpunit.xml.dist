@@ -25,6 +25,7 @@
         </testsuite>
         <testsuite name="Functional">
             <directory>tests/Functional</directory>
+            <directory>tests/Controller</directory>
         </testsuite>
     </testsuites>
 

@@ -2,8 +2,9 @@
 
 namespace App\Tests\Functional;
 
-use App\Entity\User;
+use App\Entity\Competence;
 use App\Entity\Tih;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
@@ -51,22 +52,94 @@ abstract class WebTestCase extends BaseWebTestCase
         string $email = 'tih@test.com',
         string $password = 'Tih1234!'
     ): User {
-        $user = $this->createUser($email, $password, ['ROLE_TIH']);
+        $this->createSearchableTih([
+            'email' => $email,
+            'password' => $password,
+            'firstName' => 'Jean',
+            'lastName' => 'Dupont',
+            'city' => 'Nice',
+            'region' => 'PACA',
+            'validated' => true,
+        ]);
+
+        return $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
+    }
+
+    /**
+     * @param array{
+     *     email?: string,
+     *     password?: string,
+     *     firstName?: string,
+     *     lastName?: string,
+     *     city?: string,
+     *     region?: string,
+     *     departement?: string,
+     *     rate?: string,
+     *     rateType?: string,
+     *     validated?: bool,
+     *     competences?: Competence[],
+     * } $options
+     */
+    protected function createSearchableTih(array $options = []): Tih
+    {
+        $email = $options['email'] ?? sprintf('tih-%s@test.com', uniqid());
+
+        $user = $this->createUser(
+            $email,
+            $options['password'] ?? 'Tih1234!',
+            ['ROLE_TIH'],
+        );
 
         $tih = new Tih();
         $tih->setUser($user);
-        $tih->setFirstName('Jean');
-        $tih->setLastName('Dupont');
-        $tih->setCity('Nice');
-        $tih->setRegion('PACA');
-        $tih->setIsValidate(true);
+        $tih->setFirstName($options['firstName'] ?? 'Jean');
+        $tih->setLastName($options['lastName'] ?? 'Dupont');
+        $tih->setCity($options['city'] ?? 'Nice');
+        $tih->setRegion($options['region'] ?? 'PACA');
+        $tih->setDepartement($options['departement'] ?? null);
+        $tih->setRate($options['rate'] ?? null);
+        $tih->setRateType($options['rateType'] ?? null);
+        $tih->setIsValidate($options['validated'] ?? true);
+
+        foreach ($options['competences'] ?? [] as $competence) {
+            $tih->addCompetence($competence);
+        }
 
         $user->setTih($tih);
 
         $this->em->persist($tih);
         $this->em->flush();
 
-        return $user;
+        return $tih;
+    }
+
+    protected function createCompetence(string $name): Competence
+    {
+        $competence = new Competence();
+        $competence->setName($name);
+        $this->em->persist($competence);
+        $this->em->flush();
+
+        return $competence;
+    }
+
+    protected function assertTihGridContains(string $text): void
+    {
+        $this->assertSelectorTextContains('#tih-grid', $text);
+    }
+
+    protected function assertTihGridNotContains(string $text): void
+    {
+        $this->assertSelectorTextNotContains('#tih-grid', $text);
+    }
+
+    protected function assertTihResultCount(int $expected): void
+    {
+        $this->assertCount(
+            $expected,
+            $this->client->getCrawler()->filter('#tih-grid article[role="listitem"]'),
+            sprintf('Expected %d TIH profile(s) in search results.', $expected)
+        );
     }
 
     protected function loginAs(User $user): void

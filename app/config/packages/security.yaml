@@ -61,16 +61,3 @@ when@test:
                 cost: 4 # Lowest possible value for bcrypt
                 time_cost: 3 # Lowest possible value for argon
                 memory_cost: 10 # Lowest possible value for argon
-        providers:
-            test_user_provider:
-                memory:
-                    users:
-                        user@example.test:
-                            password: null
-                            roles: ['ROLE_USER']
-                        admin@example.test:
-                            password: null
-                            roles: ['ROLE_ADMIN']
-        firewalls:
-            main:
-                provider: test_user_provider

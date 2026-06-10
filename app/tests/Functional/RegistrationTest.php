@@ -3,101 +3,148 @@
 namespace App\Tests\Functional;
 
 use App\Entity\User;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
- * Tests the user registration flow.
+ * Scenario-based tests for user registration.
  */
 class RegistrationTest extends WebTestCase
 {
     public function testRegistrationPageLoads(): void
     {
-        $crawler = $this->client->request('GET', '/register');
+        $this->client->request('GET', '/register');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form[name="registration_form"]');
     }
 
-    public function testRegistrationFormContainsRequiredFields(): void
+    public function testSuccessfulRegistrationCreatesUserAndLogsIn(): void
     {
         $crawler = $this->client->request('GET', '/register');
+        $this->submitRegistrationForm($crawler, [
+            'email' => 'newuser@test.com',
+            'plainPassword' => 'V3ryStr0ngP@ss!',
+            'confirmPassword' => 'V3ryStr0ngP@ss!',
+            'agreeTerms' => true,
+        ]);
 
-        $this->assertSelectorExists('input[name="registration_form[email]"]');
-        $this->assertSelectorExists('input[name="registration_form[plainPassword]"]');
-        $this->assertSelectorExists('input[name="registration_form[confirmPassword]"]');
-        $this->assertSelectorExists('input[name="registration_form[agreeTerms]"]');
-    }
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
 
-    public function testRegistrationWithEmptyFormShowsErrors(): void
-    {
-        $crawler = $this->client->request('GET', '/register');
+        $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'newuser@test.com']);
+        $this->assertNotNull($user, 'User should be persisted after registration');
+        $this->assertContains('ROLE_USER', $user->getRoles());
 
-        $form = $crawler->filter('form[name="registration_form"]')->form();
-        $form['registration_form[email]'] = '';
-        $form['registration_form[plainPassword]'] = '';
-        $form['registration_form[confirmPassword]'] = '';
-
-        $this->client->submit($form);
-
-        $response = $this->client->getResponse();
+        $hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
         $this->assertTrue(
-            $response->getStatusCode() === 422 || $response->isSuccessful(),
-            'Empty form should show validation errors'
+            $hasher->isPasswordValid($user, 'V3ryStr0ngP@ss!'),
+            'Password should be hashed and verifiable'
         );
+
+        $this->client->request('GET', '/profil');
+        $this->assertResponseIsSuccessful();
     }
 
-    public function testRegistrationWithDuplicateEmail(): void
+    public function testRegistrationWithTihCheckboxCreatesLinkedProfile(): void
+    {
+        $crawler = $this->client->request('GET', '/register');
+        $this->submitRegistrationForm($crawler, [
+            'email' => 'tih-new@test.com',
+            'plainPassword' => 'V3ryStr0ngP@ss!',
+            'confirmPassword' => 'V3ryStr0ngP@ss!',
+            'agreeTerms' => true,
+            'isTih' => true,
+        ]);
+
+        $this->assertResponseRedirects();
+
+        $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'tih-new@test.com']);
+        $this->assertNotNull($user);
+        $this->assertNotNull($user->getTih(), 'TIH checkbox should create a linked Tih profile');
+        $this->assertFalse($user->getTih()->isValidate(), 'New TIH profile should start unvalidated');
+    }
+
+    public function testRegistrationWithEmptyFormShowsValidationErrors(): void
+    {
+        $crawler = $this->client->request('GET', '/register');
+        $this->submitRegistrationForm($crawler, [
+            'email' => '',
+            'plainPassword' => '',
+            'confirmPassword' => '',
+            'agreeTerms' => false,
+        ]);
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertSelectorTextContains('body', 'Veuillez entrer votre email');
+        $this->assertSame(0, $this->countUsers());
+    }
+
+    public function testRegistrationWithMismatchedPasswordsShowsError(): void
+    {
+        $crawler = $this->client->request('GET', '/register');
+        $this->submitRegistrationForm($crawler, [
+            'email' => 'mismatch@test.com',
+            'plainPassword' => 'V3ryStr0ngP@ss!',
+            'confirmPassword' => 'DifferentP@ssw0rd!',
+            'agreeTerms' => true,
+        ]);
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertSelectorTextContains('body', 'Les mots de passe doivent correspondre');
+        $this->assertNull($this->em->getRepository(User::class)->findOneBy(['email' => 'mismatch@test.com']));
+    }
+
+    public function testRegistrationWithDuplicateEmailDoesNotCreateSecondUser(): void
     {
         $this->createUser('existing@test.com', 'ExistingPass1!');
 
         $crawler = $this->client->request('GET', '/register');
+        $this->submitRegistrationForm($crawler, [
+            'email' => 'existing@test.com',
+            'plainPassword' => 'NewStr0ngP@ss!',
+            'confirmPassword' => 'NewStr0ngP@ss!',
+            'agreeTerms' => true,
+        ]);
 
-        $form = $crawler->filter('form[name="registration_form"]')->form();
-        $form['registration_form[email]'] = 'existing@test.com';
-        $form['registration_form[plainPassword]'] = 'NewStr0ngP@ss!';
-        $form['registration_form[confirmPassword]'] = 'NewStr0ngP@ss!';
-        $form['registration_form[agreeTerms]'] = true;
-
-        $this->client->submit($form);
-
-        $response = $this->client->getResponse();
-        $this->assertTrue(
-            $response->getStatusCode() === 422 || $response->isSuccessful(),
-            'Duplicate email should show validation errors'
+        $this->assertGreaterThanOrEqual(
+            400,
+            $this->client->getResponse()->getStatusCode(),
+            'Duplicate email must not complete registration successfully'
+        );
+        $this->assertSame(1, $this->countUsers());
+        $this->assertFalse(
+            $this->client->getResponse()->isRedirection(),
+            'Duplicate email must not redirect as if registration succeeded'
         );
     }
 
-    public function testRegistrationCreatesUser(): void
+    /**
+     * @param array{
+     *     email: string,
+     *     plainPassword: string,
+     *     confirmPassword: string,
+     *     agreeTerms: bool,
+     *     isTih?: bool,
+     * } $data
+     */
+    private function submitRegistrationForm($crawler, array $data): void
     {
-        $crawler = $this->client->request('GET', '/register');
-
         $form = $crawler->filter('form[name="registration_form"]')->form();
-        $form['registration_form[email]'] = 'newuser@test.com';
-        $form['registration_form[plainPassword]'] = 'V3ryStr0ngP@ss!';
-        $form['registration_form[confirmPassword]'] = 'V3ryStr0ngP@ss!';
-        $form['registration_form[agreeTerms]'] = true;
+        $form['registration_form[email]'] = $data['email'];
+        $form['registration_form[plainPassword]'] = $data['plainPassword'];
+        $form['registration_form[confirmPassword]'] = $data['confirmPassword'];
+        $form['registration_form[agreeTerms]'] = $data['agreeTerms'];
 
-        $this->client->submit($form);
-
-        $response = $this->client->getResponse();
-
-        $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'newuser@test.com']);
-        if ($user) {
-            $this->assertNotEquals('V3ryStr0ngP@ss!', $user->getPassword(), 'Password should be hashed');
+        if (!empty($data['isTih'])) {
+            $form['registration_form[isTih]']->tick();
         }
 
-        $this->assertTrue(
-            $response->isRedirection() || $response->isSuccessful() || $response->getStatusCode() === 422,
-            'Registration should redirect on success or show validation errors'
-        );
+        $this->client->submit($form);
     }
 
-    public function testRegistrationWithTihCheckbox(): void
+    private function countUsers(): int
     {
-        $crawler = $this->client->request('GET', '/register');
-
-        $this->assertSelectorExists(
-            'input[name="registration_form[isTih]"]',
-            'Registration form should have a TIH checkbox'
-        );
+        return count($this->em->getRepository(User::class)->findAll());
     }
 }
