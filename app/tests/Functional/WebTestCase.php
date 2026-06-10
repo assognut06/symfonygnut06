@@ -5,7 +5,6 @@ namespace App\Tests\Functional;
 use App\Entity\User;
 use App\Entity\Tih;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -19,11 +18,6 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         $this->client = static::createClient();
         $this->em = static::getContainer()->get(EntityManagerInterface::class);
-
-        $schemaTool = new SchemaTool($this->em);
-        $metadata = $this->em->getMetadataFactory()->getAllMetadata();
-        $schemaTool->dropSchema($metadata);
-        $schemaTool->createSchema($metadata);
     }
 
     protected function createUser(
