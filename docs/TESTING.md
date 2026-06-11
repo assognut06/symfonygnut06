@@ -6,11 +6,11 @@ This document describes how we prevent regressions and which tests to add next.
 
 GitHub Actions workflow: [`.github/workflows/tests.yml`](../.github/workflows/tests.yml)
 
-| Job | What it runs | When it fails |
-|-----|----------------|---------------|
-| **PHPUnit (Unit)** | Fast tests, no HTTP | Unit assertions fail |
-| **PHPUnit (Functional)** | HTTP + MySQL `gnut06_test` (transaction rollback per test) | Functional assertions fail |
-| **Coverage** | Full suite + Clover report | Thresholds in `app/scripts/check-coverage-threshold.php` |
+| Job                      | What it runs                                               | When it fails                                            |
+| ------------------------ | ---------------------------------------------------------- | -------------------------------------------------------- |
+| **PHPUnit (Unit)**       | Fast tests, no HTTP                                        | Unit assertions fail                                     |
+| **PHPUnit (Functional)** | HTTP + MySQL `gnut06_test` (transaction rollback per test) | Functional assertions fail                               |
+| **Coverage**             | Full suite + Clover report                                 | Thresholds in `app/scripts/check-coverage-threshold.php` |
 
 Triggers: every push and pull request to `develop`, `main`, or `master`.
 
@@ -29,11 +29,11 @@ Test env variables live in [`app/.env.test`](../app/.env.test).
 
 PHPUnit uses **`DATABASE_URL_TEST`** only (see `config/packages/doctrine.yaml` `when@test`). The dev database `gnut06` is never used for tests.
 
-| Environment | `DATABASE_URL` (app) | `DATABASE_URL_TEST` (PHPUnit) |
-|-------------|----------------------|-------------------------------|
-| Docker | `mysql://…/gnut06` | `mysql://…/gnut06_test` (set in `docker-compose.yaml`) |
-| CI | — | `gnut06_test` (GitHub Actions `env`) |
-| Host machine | `.env` | `.env.test` (`127.0.0.1`) |
+| Environment  | `DATABASE_URL` (app) | `DATABASE_URL_TEST` (PHPUnit)                          |
+| ------------ | -------------------- | ------------------------------------------------------ |
+| Docker       | `mysql://…/gnut06`   | `mysql://…/gnut06_test` (set in `docker-compose.yaml`) |
+| CI           | —                    | `gnut06_test` (GitHub Actions `env`)                   |
+| Host machine | `.env`               | `.env.test` (`127.0.0.1`)                              |
 
 **First-time setup (existing MySQL volume):** the init script in `docker/mysql/init/` runs only on a fresh MySQL container. Create the test DB once:
 
@@ -67,21 +67,21 @@ Reuse this pattern for other admin modules.
 
 Prefer **Given → When → Then** over bare `assertResponseIsSuccessful()`:
 
-| File | Pattern |
-|------|---------|
-| `TihSearchTest` | Seed profiles with `createSearchableTih()`, filter, assert grid content and count |
-| `RegistrationTest` | Submit form, assert DB state + redirect + session |
-| `AuthenticationTest` | Form login, assert redirect to `/profil` and protected route access |
-| `ContactFormTest` | Submit form, assert success or validation feedback (no external reCAPTCHA in test) |
-| `AdminUserTest` | List/search users, promote/demote/delete with CSRF from rendered admin page |
+| File                 | Pattern                                                                            |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| `TihSearchTest`      | Seed profiles with `createSearchableTih()`, filter, assert grid content and count  |
+| `RegistrationTest`   | Submit form, assert DB state + redirect + session                                  |
+| `AuthenticationTest` | Form login, assert redirect to `/profil` and protected route access                |
+| `ContactFormTest`    | Submit form, assert success or validation feedback (no external reCAPTCHA in test) |
+| `AdminUserTest`      | List/search users, promote/demote/delete with CSRF from rendered admin page        |
 
 ## Coverage gates (CI)
 
 Configured in [`app/scripts/check-coverage-threshold.php`](../app/scripts/check-coverage-threshold.php). Raise thresholds as tests are added.
 
-| File | Minimum line coverage |
-|------|------------------------|
-| `AdminTihController.php` | 100% |
+| File                      | Minimum line coverage                       |
+| ------------------------- | ------------------------------------------- |
+| `AdminTihController.php`  | 90%                                         |
 | `AdminUserController.php` | 40% (increase to 80% after `AdminUserTest`) |
 
 ## Next 5 test files (priority)
@@ -142,13 +142,13 @@ Extend beyond page-load tests:
 
 ## Later backlog (0% admin controllers)
 
-| Controller | Lines | Notes |
-|------------|-------|--------|
-| `AdminBenevoleController` | 85 | Volunteers admin |
-| `AdminDonateurController` | 32 | Donors list/delete |
-| `AdminEntrepriseController` | 30 | Companies |
-| `AdminPayersController` | 34 | Payers |
-| `AdminAssoRecommanderController` | 32 | Partner assos |
+| Controller                       | Lines | Notes              |
+| -------------------------------- | ----- | ------------------ |
+| `AdminBenevoleController`        | 85    | Volunteers admin   |
+| `AdminDonateurController`        | 32    | Donors list/delete |
+| `AdminEntrepriseController`      | 30    | Companies          |
+| `AdminPayersController`          | 34    | Payers             |
+| `AdminAssoRecommanderController` | 32    | Partner assos      |
 
 ## PR checklist
 
@@ -156,6 +156,5 @@ Use the [pull request template](../.github/pull_request_template.md) on every PR
 
 ## Optional next steps
 
-- Add `dama/doctrine-test-bundle` to speed up functional tests (transaction rollback)
 - Add 2–3 Playwright flows for login + admin TIH validate (client-side modals)
 - Raise `AdminUserController` threshold to 80% once `AdminUserTest` is merged

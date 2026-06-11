@@ -168,33 +168,64 @@ abstract class WebTestCase extends BaseWebTestCase
         $this->assertStringContainsString('login', $location);
     }
 
+    protected function extractCsrfTokenFromHtml(string $html, string $pattern): string
+    {
+        if (!preg_match($pattern, $html, $matches)) {
+            throw new \RuntimeException('Could not extract CSRF token from rendered admin page.');
+        }
+
+        return $matches[1];
+    }
+
     protected function getAdminTihCsrfToken(string $action, int $tihId): string
     {
         $this->client->request('GET', '/admin/tih');
-        $crawler = $this->client->getCrawler();
+        $html = $this->client->getResponse()->getContent();
 
-        $selector = $action === 'refuse'
-            ? sprintf('#refuse-form-%d input[name="_token"]', $tihId)
-            : sprintf('form[action*="/admin/tih/%s/%d"] input[name="_token"]', $action, $tihId);
+        $pattern = match ($action) {
+            'validate' => sprintf(
+                '#/admin/tih/validate/%d" method="post"[^>]*>\s*<input type="hidden" name="_token" value="([^"]+)"#s',
+                $tihId
+            ),
+            'refuse' => sprintf(
+                '#id="refuse-form-%d"[^>]*>\s*<input type="hidden" name="_token" value="([^"]+)"#s',
+                $tihId
+            ),
+            'delete' => sprintf(
+                '#/admin/tih/delete/%d" method="post"[^>]*>\s*<input type="hidden" name="_method" value="DELETE">\s*<input type="hidden" name="_token" value="([^"]+)"#s',
+                $tihId
+            ),
+            default => throw new \InvalidArgumentException(sprintf('Unknown TIH admin action "%s".', $action)),
+        };
 
-        return $crawler->filter($selector)->attr('value');
+        return $this->extractCsrfTokenFromHtml($html, $pattern);
     }
 
     protected function getAdminUserPromoteCsrfToken(int $userId): string
     {
         $this->client->request('GET', '/admin/user');
+        $html = $this->client->getResponse()->getContent();
 
-        return $this->client->getCrawler()
-            ->filter(sprintf('form[action*="/admin/user/promote/%d"] input[name="_token"]', $userId))
-            ->attr('value');
+        return $this->extractCsrfTokenFromHtml(
+            $html,
+            sprintf(
+                '#/admin/user/promote/%d" method="post"[^>]*>\s*<input type="hidden" name="_token" value="([^"]+)"#s',
+                $userId
+            )
+        );
     }
 
     protected function getAdminUserDeleteCsrfToken(int $userId): string
     {
         $this->client->request('GET', '/admin/user');
+        $html = $this->client->getResponse()->getContent();
 
-        return $this->client->getCrawler()
-            ->filter(sprintf('form[action*="/admin/user/delete/%d"] input[name="_token"]', $userId))
-            ->attr('value');
+        return $this->extractCsrfTokenFromHtml(
+            $html,
+            sprintf(
+                '#/admin/user/delete/%d" method="post"[^>]*>\s*<input type="hidden" name="_method" value="DELETE">\s*<input type="hidden" name="_token" value="([^"]+)"#s',
+                $userId
+            )
+        );
     }
 }
