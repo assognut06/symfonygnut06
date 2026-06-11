@@ -179,4 +179,22 @@ abstract class WebTestCase extends BaseWebTestCase
 
         return $crawler->filter($selector)->attr('value');
     }
+
+    protected function getAdminUserPromoteCsrfToken(int $userId): string
+    {
+        $this->client->request('GET', '/admin/user');
+
+        return $this->client->getCrawler()
+            ->filter(sprintf('form[action*="/admin/user/promote/%d"] input[name="_token"]', $userId))
+            ->attr('value');
+    }
+
+    protected function getAdminUserDeleteCsrfToken(int $userId): string
+    {
+        $this->client->request('GET', '/admin/user');
+
+        return $this->client->getCrawler()
+            ->filter(sprintf('form[action*="/admin/user/delete/%d"] input[name="_token"]', $userId))
+            ->attr('value');
+    }
 }

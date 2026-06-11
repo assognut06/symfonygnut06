@@ -70,49 +70,6 @@ class AdminAccessControlTest extends WebTestCase
         yield 'Donations' => ['/admin/dons'];
     }
 
-    public function testAdminUserPromoteRequiresCSRF(): void
-    {
-        $admin = $this->loginAsAdmin();
-        $target = $this->createUser('target@test.com');
-
-        $this->client->request('POST', '/admin/user/promote/' . $target->getId(), [
-            '_token' => 'invalid_token',
-        ]);
-
-        $response = $this->client->getResponse();
-        $this->assertTrue(
-            $response->getStatusCode() === 403 || $response->isRedirection(),
-            'Promote with invalid CSRF should be denied'
-        );
-
-        $this->em->refresh($target);
-        $this->assertNotContains(
-            'ROLE_ADMIN',
-            $target->getRoles(),
-            'User should not be promoted with invalid CSRF token'
-        );
-    }
-
-    public function testAdminUserDeleteRequiresCSRF(): void
-    {
-        $admin = $this->loginAsAdmin();
-        $target = $this->createUser('todelete@test.com');
-
-        $this->client->request('POST', '/admin/user/delete/' . $target->getId(), [
-            '_method' => 'DELETE',
-            '_token' => 'invalid_token',
-        ]);
-
-        $response = $this->client->getResponse();
-        $this->assertTrue(
-            $response->isRedirection() || $response->getStatusCode() === 403,
-            'Delete with invalid CSRF should fail'
-        );
-
-        $stillExists = $this->em->getRepository(\App\Entity\User::class)->find($target->getId());
-        $this->assertNotNull($stillExists, 'User should not be deleted with invalid CSRF token');
-    }
-
     public function testAdminTihValidateRequiresCSRF(): void
     {
         $admin = $this->loginAsAdmin();

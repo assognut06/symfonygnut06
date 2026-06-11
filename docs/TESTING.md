@@ -58,8 +58,22 @@ Prefer functional tests for anything that changes HTTP status, redirects, CSRF, 
 - `createUser()`, `createAdmin()`, `createTihUser()`
 - `loginAs()`, `loginAsAdmin()`
 - `getAdminTihCsrfToken()` — extract CSRF from rendered admin pages
+- `getAdminUserPromoteCsrfToken()` / `getAdminUserDeleteCsrfToken()`
+- `createSearchableTih()`, `createCompetence()` — seed data for search scenarios
 
 Reuse this pattern for other admin modules.
+
+### Scenario tests (model for the team)
+
+Prefer **Given → When → Then** over bare `assertResponseIsSuccessful()`:
+
+| File | Pattern |
+|------|---------|
+| `TihSearchTest` | Seed profiles with `createSearchableTih()`, filter, assert grid content and count |
+| `RegistrationTest` | Submit form, assert DB state + redirect + session |
+| `AuthenticationTest` | Form login, assert redirect to `/profil` and protected route access |
+| `ContactFormTest` | Submit form, assert success or validation feedback (no external reCAPTCHA in test) |
+| `AdminUserTest` | List/search users, promote/demote/delete with CSRF from rendered admin page |
 
 ## Coverage gates (CI)
 

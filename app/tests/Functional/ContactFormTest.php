@@ -3,7 +3,7 @@
 namespace App\Tests\Functional;
 
 /**
- * Tests the contact form page.
+ * Scenario-based tests for the public contact form.
  */
 class ContactFormTest extends WebTestCase
 {
@@ -12,54 +12,83 @@ class ContactFormTest extends WebTestCase
         $this->client->request('GET', '/contact');
 
         $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('#form-title');
+        $this->assertSelectorExists('form[action="/contact"]');
     }
 
-    public function testContactPageHasForm(): void
+    public function testSuccessfulContactSubmissionShowsSuccessMessage(): void
     {
         $crawler = $this->client->request('GET', '/contact');
+        $this->submitContactForm($crawler, $this->validContactPayload());
 
-        $this->assertSelectorExists('form');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('.alert.alert-success[role="alert"]', 'Votre message a bien été envoyé');
+        $this->assertSelectorNotExists('.alert.alert-danger[role="alert"]');
     }
 
-    public function testContactFormSubmitWithoutRecaptchaFails(): void
+    public function testContactFormWithEmptyFieldsShowsValidationErrors(): void
     {
-        $this->client->request('POST', '/contact', [
-            'first_name' => 'Jean',
-            'last_name' => 'Dupont',
-            'email' => 'jean@test.com',
-            'tel' => '0612345678',
-            'project_type' => 'VR',
-            'message' => 'Test message from functional test suite.',
+        $crawler = $this->client->request('GET', '/contact');
+        $this->submitContactForm($crawler, [
+            'first_name' => '',
+            'last_name' => '',
+            'email' => '',
+            'message' => '',
         ]);
 
-        $response = $this->client->getResponse();
-        $this->assertTrue(
-            $response->isSuccessful() || $response->getStatusCode() === 500,
-            sprintf(
-                'Contact form should return 200 (with reCAPTCHA error) or 500 (if reCAPTCHA API unreachable), got %d',
-                $response->getStatusCode()
-            )
-        );
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('.alert-danger', 'Veuillez renseigner votre prénom');
+        $this->assertSelectorTextContains('.alert-danger', 'Veuillez renseigner votre nom');
+        $this->assertSelectorTextContains('.alert-danger', 'Veuillez renseigner votre email');
+        $this->assertSelectorNotExists('.alert-success');
     }
 
-    public function testContactFormWithInvalidEmail(): void
+    public function testContactFormWithInvalidEmailShowsError(): void
     {
-        $this->client->request('POST', '/contact', [
+        $crawler = $this->client->request('GET', '/contact');
+        $payload = $this->validContactPayload();
+        $payload['email'] = 'not-an-email';
+        $this->submitContactForm($crawler, $payload);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('.alert-danger', "Cette adresse email n'est pas valide");
+        $this->assertSelectorNotExists('.alert-success');
+    }
+
+    public function testContactFormWithShortMessageShowsError(): void
+    {
+        $crawler = $this->client->request('GET', '/contact');
+        $payload = $this->validContactPayload();
+        $payload['message'] = 'trop cour';
+        $this->submitContactForm($crawler, $payload);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('.alert-danger', 'Le message doit contenir au moins');
+        $this->assertSelectorNotExists('.alert-success');
+    }
+
+    /**
+     * @param array<string, string> $data
+     */
+    private function submitContactForm($crawler, array $data): void
+    {
+        $token = $crawler->filter('input[name="_token"]')->attr('value');
+
+        $this->client->request('POST', '/contact', array_merge(['_token' => $token], $data));
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function validContactPayload(): array
+    {
+        return [
             'first_name' => 'Jean',
             'last_name' => 'Dupont',
-            'email' => 'not-an-email',
+            'email' => 'jean.dupont@test.com',
             'tel' => '0612345678',
-            'project_type' => 'VR',
-            'message' => 'Test message.',
-        ]);
-
-        $response = $this->client->getResponse();
-        $this->assertTrue(
-            $response->isSuccessful() || $response->getStatusCode() === 500,
-            sprintf(
-                'Contact form should return 200 or 500 (reCAPTCHA API), got %d',
-                $response->getStatusCode()
-            )
-        );
+            'project_type' => 'site_web',
+            'message' => 'Demande de devis pour notre association.',
+        ];
     }
 }
