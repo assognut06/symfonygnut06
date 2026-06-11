@@ -168,64 +168,107 @@ abstract class WebTestCase extends BaseWebTestCase
         $this->assertStringContainsString('login', $location);
     }
 
-    protected function extractCsrfTokenFromHtml(string $html, string $pattern): string
+    protected function extractCsrfTokenFromHtml(string $html, array $patterns): string
     {
-        if (!preg_match($pattern, $html, $matches)) {
-            throw new \RuntimeException('Could not extract CSRF token from rendered admin page.');
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $html, $matches)) {
+                return $matches[1];
+            }
         }
 
-        return $matches[1];
+        throw new \RuntimeException('Could not extract CSRF token from rendered admin page.');
+    }
+
+    protected function extractCsrfTokenFromPage(string $selector, string $html, array $htmlPatterns): string
+    {
+        $nodes = $this->client->getCrawler()->filter($selector);
+        if ($nodes->count() > 0) {
+            return $nodes->attr('value');
+        }
+
+        return $this->extractCsrfTokenFromHtml($html, $htmlPatterns);
     }
 
     protected function getAdminTihCsrfToken(string $action, int $tihId): string
     {
-        $this->client->request('GET', '/admin/tih');
+        $query = [];
+        $tih = $this->em->getRepository(Tih::class)->find($tihId);
+        $email = $tih?->getUser()?->getEmail();
+        if ($email !== null && $email !== '') {
+            $query['q'] = $email;
+        }
+
+        $this->client->request('GET', '/admin/tih', $query);
         $html = $this->client->getResponse()->getContent();
 
-        $pattern = match ($action) {
-            'validate' => sprintf(
-                '#/admin/tih/validate/%d" method="post"[^>]*>\s*<input type="hidden" name="_token" value="([^"]+)"#s',
-                $tihId
+        return match ($action) {
+            'validate' => $this->extractCsrfTokenFromPage(
+                sprintf('form[action$="/admin/tih/validate/%d"] input[name="_token"]', $tihId),
+                $html,
+                [
+                    sprintf('#/admin/tih/validate/%1$d.*?name="_token"\s+value="([^"]+)"#s', $tihId),
+                    sprintf('#/admin/tih/validate/%1$d.*?value="([^"]+)"\s+name="_token"#s', $tihId),
+                ]
             ),
-            'refuse' => sprintf(
-                '#id="refuse-form-%d"[^>]*>\s*<input type="hidden" name="_token" value="([^"]+)"#s',
-                $tihId
+            'refuse' => $this->extractCsrfTokenFromPage(
+                sprintf('#refuse-form-%d input[name="_token"]', $tihId),
+                $html,
+                [
+                    sprintf('#refuse-form-%1$d.*?name="_token"\s+value="([^"]+)"#s', $tihId),
+                    sprintf('#refuse-form-%1$d.*?value="([^"]+)"\s+name="_token"#s', $tihId),
+                ]
             ),
-            'delete' => sprintf(
-                '#/admin/tih/delete/%d" method="post"[^>]*>\s*<input type="hidden" name="_method" value="DELETE">\s*<input type="hidden" name="_token" value="([^"]+)"#s',
-                $tihId
+            'delete' => $this->extractCsrfTokenFromPage(
+                sprintf('form[action$="/admin/tih/delete/%d"] input[name="_token"]', $tihId),
+                $html,
+                [
+                    sprintf('#/admin/tih/delete/%1$d.*?name="_token"\s+value="([^"]+)"#s', $tihId),
+                    sprintf('#/admin/tih/delete/%1$d.*?value="([^"]+)"\s+name="_token"#s', $tihId),
+                ]
             ),
             default => throw new \InvalidArgumentException(sprintf('Unknown TIH admin action "%s".', $action)),
         };
-
-        return $this->extractCsrfTokenFromHtml($html, $pattern);
     }
 
     protected function getAdminUserPromoteCsrfToken(int $userId): string
     {
-        $this->client->request('GET', '/admin/user');
+        $query = [];
+        $user = $this->em->getRepository(User::class)->find($userId);
+        if ($user?->getEmail()) {
+            $query['q'] = $user->getEmail();
+        }
+
+        $this->client->request('GET', '/admin/user', $query);
         $html = $this->client->getResponse()->getContent();
 
-        return $this->extractCsrfTokenFromHtml(
+        return $this->extractCsrfTokenFromPage(
+            sprintf('form[action$="/admin/user/promote/%d"] input[name="_token"]', $userId),
             $html,
-            sprintf(
-                '#/admin/user/promote/%d" method="post"[^>]*>\s*<input type="hidden" name="_token" value="([^"]+)"#s',
-                $userId
-            )
+            [
+                sprintf('#/admin/user/promote/%1$d.*?name="_token"\s+value="([^"]+)"#s', $userId),
+                sprintf('#/admin/user/promote/%1$d.*?value="([^"]+)"\s+name="_token"#s', $userId),
+            ]
         );
     }
 
     protected function getAdminUserDeleteCsrfToken(int $userId): string
     {
-        $this->client->request('GET', '/admin/user');
+        $query = [];
+        $user = $this->em->getRepository(User::class)->find($userId);
+        if ($user?->getEmail()) {
+            $query['q'] = $user->getEmail();
+        }
+
+        $this->client->request('GET', '/admin/user', $query);
         $html = $this->client->getResponse()->getContent();
 
-        return $this->extractCsrfTokenFromHtml(
+        return $this->extractCsrfTokenFromPage(
+            sprintf('form[action$="/admin/user/delete/%d"] input[name="_token"]', $userId),
             $html,
-            sprintf(
-                '#/admin/user/delete/%d" method="post"[^>]*>\s*<input type="hidden" name="_method" value="DELETE">\s*<input type="hidden" name="_token" value="([^"]+)"#s',
-                $userId
-            )
+            [
+                sprintf('#/admin/user/delete/%1$d.*?name="_token"\s+value="([^"]+)"#s', $userId),
+                sprintf('#/admin/user/delete/%1$d.*?value="([^"]+)"\s+name="_token"#s', $userId),
+            ]
         );
     }
 }
