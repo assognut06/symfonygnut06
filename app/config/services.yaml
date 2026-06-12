@@ -8,6 +8,7 @@ parameters:
     helloasso.api_client_secret: '%env(APICLIENTSECRET)%'
     app.slug_asso: '%env(SLUGASSO)%'
     app.google_maps_api_key: '%env(GNUT06MAPAPI)%'
+    app.google_maps_geocoding_api_key: '%env(APIMAPGEOCODING)%'
     mailjet.api_key: '%env(APIMAILJET)%'
     mailjet.api_secret: '%env(APIMAILJETSECRET)%'
     ohme.api_key: '%env(SECRETOHME)%'
@@ -168,7 +169,7 @@ services:
 
     App\Service\GeocodeService:
         arguments:
-            $googleMapsApiKey: '%app.google_maps_api_key%'
+            $googleMapsApiKey: '%app.google_maps_geocoding_api_key%'
 
     App\Controller\RegistrationController:
         arguments:
