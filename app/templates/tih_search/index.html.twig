@@ -24,7 +24,7 @@
         'availabilityDate': profile.availabilityDate ? profile.availabilityDate|date('Y-m-d') : null
       })|json_encode|e('html_attr') }}"
       data-tih-search-api-key-value="{{ googleMapsApiKey }}"
-      data-tih-search-city-coordinates-value="{{ cityCoordinates|json_encode|e('html_attr') }}"
+      data-tih-search-city-coordinates-value="{{ cityCoordinates|json_encode(constant('JSON_FORCE_OBJECT'))|e('html_attr') }}"
       data-action="popstate@window->tih-search&#35;handleBrowserNavigation">
     <div class="container-fluid">
         <header class="text-center mb-5">

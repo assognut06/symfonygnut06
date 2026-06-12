@@ -298,6 +298,11 @@ export default class extends Controller {
             if (newProfilesJson) {
                 try {
                     this.profilesValue = JSON.parse(newProfilesJson);
+                    const newCityCoordinatesJson = newMain.getAttribute('data-tih-search-city-coordinates-value');
+                    if (newCityCoordinatesJson) {
+                        const parsedCityCoordinates = JSON.parse(newCityCoordinatesJson);
+                        this.cityCoordinatesValue = Array.isArray(parsedCityCoordinates) ? {} : parsedCityCoordinates;
+                    }
                     // Refresh map if it's currently visible
                     if (this.hasMapViewTarget && !this.mapViewTarget.classList.contains('d-none')) {
                         this.initializeMap();
@@ -376,7 +381,10 @@ export default class extends Controller {
         }
 
         // Clear existing markers and info windows
-        this.markers.forEach(marker => marker.setMap(null));
+        this.markers.forEach(marker => {
+            // AdvancedMarkerElement is removed from the map by clearing its map property.
+            marker.map = null;
+        });
         this.infoWindows.forEach(infoWindow => infoWindow.close());
         this.markers = [];
         this.infoWindows = [];
