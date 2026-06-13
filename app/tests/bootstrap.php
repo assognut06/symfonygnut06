@@ -24,6 +24,7 @@ $defaults = [
     'APICLIENTSECRET' => 'test',
     'SLUGASSO' => 'gnut-06',
     'GNUT06MAPAPI' => 'test',
+    'APIMAPGEOCODING' => 'test',
     'APIMAILJET' => 'test',
     'APIMAILJETSECRET' => 'test',
     'SECRETOHME' => 'test',
@@ -42,6 +43,41 @@ foreach ($defaults as $name => $value) {
     $_SERVER[$name] = $_SERVER[$name] ?? $_ENV[$name];
     putenv(sprintf('%s=%s', $name, $_ENV[$name]));
 }
+
+/**
+ * CI checkouts do not run npm build (public/build is gitignored).
+ * Admin templates call Encore and asset() which require these files.
+ */
+function ensureWebpackBuildStubs(string $projectDir): void
+{
+    $buildDir = $projectDir.'/public/build';
+    $manifest = $buildDir.'/manifest.json';
+    $entrypoints = $buildDir.'/entrypoints.json';
+
+    if (is_file($manifest) && is_file($entrypoints)) {
+        return;
+    }
+
+    if (!is_dir($buildDir)) {
+        mkdir($buildDir, 0777, true);
+    }
+
+    if (!is_file($manifest)) {
+        file_put_contents($manifest, "{}\n");
+    }
+
+    if (!is_file($entrypoints)) {
+        file_put_contents($entrypoints, json_encode([
+            'entrypoints' => [
+                'app' => ['js' => [], 'css' => []],
+                'profil' => ['js' => [], 'css' => []],
+                'tih_search' => ['js' => [], 'css' => []],
+            ],
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
+    }
+}
+
+ensureWebpackBuildStubs(dirname(__DIR__));
 
 $argv = $_SERVER['argv'] ?? [];
 $isUnitTestsuiteOnly = in_array('--testsuite=Unit', $argv, true);
