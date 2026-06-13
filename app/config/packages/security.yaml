@@ -51,6 +51,16 @@ security:
 
 when@test:
     security:
+        providers:
+            test_user_provider:
+                memory:
+                    users:
+                        user@example.test:
+                            password: null
+                            roles: ['ROLE_USER']
+                        admin@example.test:
+                            password: null
+                            roles: ['ROLE_ADMIN']
         password_hashers:
             # By default, password hashers are resource intensive and take time. This is
             # important to generate secure password hashes. In tests however, secure hashes
