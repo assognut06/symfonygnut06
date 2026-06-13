@@ -3,7 +3,8 @@
 namespace App\Tests\Controller;
 
 use App\Service\HelloAssoApiService;
-use App\Tests\Functional\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -11,23 +12,27 @@ class AdminAccessTest extends WebTestCase
 {
     public function testAnonymousUserIsRedirectedFromAdminArea(): void
     {
-        $this->client->request('GET', '/admin');
+        $client = static::createClient();
 
-        self::assertRedirectedToLoginOrForbidden($this->client);
+        $client->request('GET', '/admin');
+
+        self::assertRedirectedToLoginOrForbidden($client);
     }
 
     public function testRegularUserCannotAccessAdminArea(): void
     {
-        $this->loginAsNewUser();
+        $client = static::createClient();
+        self::loginTestUser($client, 'user@example.test');
 
-        $this->client->request('GET', '/admin');
+        $client->request('GET', '/admin');
 
-        self::assertRedirectedToLoginOrForbidden($this->client);
+        self::assertRedirectedToLoginOrForbidden($client);
     }
 
     public function testAdminUserCanAccessAdminDashboard(): void
     {
-        $this->client->getContainer()->set(HelloAssoApiService::class, new class extends HelloAssoApiService {
+        $client = static::createClient();
+        $client->getContainer()->set(HelloAssoApiService::class, new class extends HelloAssoApiService {
             public function __construct()
             {
             }
@@ -47,20 +52,21 @@ class AdminAccessTest extends WebTestCase
                 ];
             }
         });
-        $this->loginAsAdmin();
+        self::loginTestUser($client, 'admin@example.test');
 
-        $this->client->request('GET', '/admin');
+        $client->request('GET', '/admin');
 
         self::assertResponseIsSuccessful();
     }
 
     public function testSensitiveRoutesOutsideAdminAreExplicitlyProtected(): void
     {
-        $this->loginAsNewUser();
+        $client = static::createClient();
+        self::loginTestUser($client, 'user@example.test');
 
-        $this->client->request('GET', '/oauth-test/');
+        $client->request('GET', '/oauth-test/');
 
-        self::assertRedirectedToLoginOrForbidden($this->client);
+        self::assertRedirectedToLoginOrForbidden($client);
     }
 
     public function testAllAdminControllersDeclareAdminRoleRequirement(): void
@@ -83,7 +89,7 @@ class AdminAccessTest extends WebTestCase
         }
     }
 
-    private static function assertRedirectedToLoginOrForbidden($client): void
+    private static function assertRedirectedToLoginOrForbidden(KernelBrowser $client): void
     {
         $response = $client->getResponse();
         $statusCode = $response->getStatusCode();
@@ -102,5 +108,12 @@ class AdminAccessTest extends WebTestCase
                 sprintf('Expected a security redirect, got "%s".', $location)
             );
         }
+    }
+
+    private static function loginTestUser(KernelBrowser $client, string $identifier): void
+    {
+        $userProvider = $client->getContainer()->get('security.user.provider.concrete.test_user_provider');
+
+        $client->loginUser($userProvider->loadUserByIdentifier($identifier));
     }
 }
