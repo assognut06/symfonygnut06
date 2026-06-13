@@ -32,7 +32,6 @@ class ProfilePictureType extends AbstractType
                     ]),
                 ],
             ]);
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void

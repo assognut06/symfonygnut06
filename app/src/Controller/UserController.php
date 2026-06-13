@@ -21,7 +21,7 @@ class UserController extends AbstractController
     public function editProfilePicture(
         Request $request,
         EntityManagerInterface $entityManager,
-        SluggerInterface $slugger
+        SluggerInterface $slugger,
     ): Response {
         // Récupérer l'utilisateur connecté
         /** @var User $user */

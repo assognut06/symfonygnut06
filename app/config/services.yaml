@@ -172,6 +172,3 @@ services:
             $googleMapsApiKey: '%app.google_maps_geocoding_api_key%'
 
     App\Controller\RegistrationController:
-        arguments:
-            $recaptchaSecret: '%nocaptcha.secret%'
-            $appEnv: '%app.env%'

@@ -1,13 +1,14 @@
 <?php
+
 // src/Service/EmailService.php
+
 namespace App\Service;
 
 use App\Entity\User;
+use App\Security\EmailVerifier;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mime\Address;
-use App\Security\EmailVerifier;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class EmailService
 {

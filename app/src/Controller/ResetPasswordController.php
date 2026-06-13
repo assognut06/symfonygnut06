@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
 use Doctrine\ORM\EntityManagerInterface;
+use GuzzleHttp\Client;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -19,7 +20,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
-use GuzzleHttp\Client;
 
 #[Route('/reset-password')]
 class ResetPasswordController extends AbstractController
@@ -111,7 +111,6 @@ class ResetPasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             // A password reset token should be used only once, remove it.
             $this->resetPasswordHelper->removeResetRequest($token);
 
@@ -122,19 +121,20 @@ class ResetPasswordController extends AbstractController
                 'form_params' => [
                     'secret' => $this->nocaptchaSecret,
                     'response' => $recaptchaResponse,
-                    'remoteip' => $request->getClientIp()
-                ]
+                    'remoteip' => $request->getClientIp(),
+                ],
             ]);
 
             $responseData = json_decode($response->getBody());
 
-            if ($this->appEnv === 'dev') {
+            if ('dev' === $this->appEnv) {
                 $responseData->score = 0.9;
                 $responseData->success = true;
             }
 
             if (!$responseData->success || $responseData->score < 0.5) {
                 $this->addFlash('danger', 'La vérification reCAPTCHA a échoué. Veuillez réessayer.');
+
                 return $this->render('reset_password/reset.html.twig', [
                     'resetForm' => $form,
                     'site_key' => $this->nocaptchaSiteKey

@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -24,6 +23,7 @@ class TokenManager
         $this->urlToken = $urlToken;
         $this->slugAsso = $slugAsso;
     }
+
     public function checkAndUpdateToken()
     {
         try {
@@ -44,7 +44,7 @@ class TokenManager
                 }
 
                 $data = $this->fetchToken($this->urlToken, $params);
-                if ($data === null) {
+                if (null === $data) {
                     // Si fetchToken retourne null, cela signifie que le token n'a pas été récupéré
                     return false;
                 }
@@ -54,12 +54,14 @@ class TokenManager
                     throw new \Exception('Le token a expiré et la tentative de rafraîchissement a échoué.');
                 }
             }
+
             return true; // Token récupéré avec succès
         } catch (\Exception $e) {
             // Gérer l'exception si nécessaire
             return false; // Échec de la récupération du token
         }
     }
+
     private function fetchToken($url, $params)
     {
         try {
@@ -70,7 +72,7 @@ class TokenManager
                 'body' => http_build_query($params),
             ]);
 
-            if ($response->getStatusCode() === 200) {
+            if (200 === $response->getStatusCode()) {
                 return json_decode($response->getContent(), true);
             } else {
                 // Gérer les codes de réponse d'erreur
@@ -79,7 +81,8 @@ class TokenManager
         } catch (\Exception $e) {
             // Gérer l'exception si nécessaire
             // Log l'erreur pour un débogage plus facile
-            error_log('Erreur lors de la requête API : ' . $e->getMessage());
+            error_log('Erreur lors de la requête API : '.$e->getMessage());
+
             return null;
         }
     }
@@ -91,7 +94,7 @@ class TokenManager
 
             // Calculer et mettre à jour expiration_token
             $expirationTime = new \DateTime();
-            $expirationTime->add(new \DateInterval('PT' . $data['expires_in'] . 'S')); // PT seconds S
+            $expirationTime->add(new \DateInterval('PT'.$data['expires_in'].'S')); // PT seconds S
             $this->session->set('expiration_token', $expirationTime);
 
             // Si un refresh_token et son expiration sont retournés, les mettre à jour également
@@ -102,7 +105,7 @@ class TokenManager
                 // Si ce n'est pas le cas, vous devrez définir une durée fixe ou gérer cela différemment
                 if (isset($data['refresh_expires_in'])) {
                     $refreshExpirationTime = new \DateTime();
-                    $refreshExpirationTime->add(new \DateInterval('PT' . $data['refresh_expires_in'] . 'S')); // PT seconds S
+                    $refreshExpirationTime->add(new \DateInterval('PT'.$data['refresh_expires_in'].'S')); // PT seconds S
                     $this->session->set('expirationRefreshToken', $refreshExpirationTime);
                 }
             }

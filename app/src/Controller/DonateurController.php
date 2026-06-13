@@ -2,17 +2,18 @@
 
 namespace App\Controller;
 
-use App\Entity\Societe;
 use App\Entity\PersonnePhysique;
-use App\Form\SocieteType;
+use App\Entity\Societe;
 use App\Form\PersonnePhysiqueType;
+use App\Form\SocieteType;
 use Doctrine\ORM\EntityManagerInterface;
+use GuzzleHttp\Client;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface; // Ajouté pour gérer la session
-use GuzzleHttp\Client;
+use Symfony\Component\Routing\Annotation\Route;
 
 class DonateurController extends AbstractController
 {
@@ -37,7 +38,6 @@ class DonateurController extends AbstractController
 
         // Personne physique
         if ($formPhysique->isSubmitted() && $formPhysique->isValid()) {
-
             if (!$this->verifierRecaptcha($request)) {
                 return $this->renderWithForms($formPhysique, $formSociete);
             }
@@ -52,15 +52,15 @@ class DonateurController extends AbstractController
                 $session->set('selected_donateur_id', $donateurPhysique->getId());
 
                 $this->addFlash('success', 'Personne physique créée avec succès !');
+
                 return $this->redirectToRoute('app_don_casque_new');
-             } catch (\Exception $e) {
-                 $this->addFlash('danger', 'Une erreur est survenue lors de l’enregistrement des données.');
-             }
+            } catch (\Exception $e) {
+                $this->addFlash('danger', 'Une erreur est survenue lors de l’enregistrement des données.');
+            }
         }
 
         // Société
         if ($formSociete->isSubmitted() && $formSociete->isValid()) {
-
             if (!$this->verifierRecaptcha($request)) {
                 return $this->renderWithForms($formPhysique, $formSociete);
             }
@@ -75,6 +75,7 @@ class DonateurController extends AbstractController
                 $session->set('selected_donateur_id', $donateurSociete->getId());
 
                 $this->addFlash('success', 'Société créée avec succès !');
+
                 return $this->redirectToRoute('app_don_casque_new');
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'Une erreur est survenue lors de l’enregistrement des données.');
@@ -84,7 +85,7 @@ class DonateurController extends AbstractController
         return $this->renderWithForms($formPhysique, $formSociete);
     }
 
-    private function renderWithForms($formPhysique, $formSociete): Response
+    private function renderWithForms(FormInterface $formPhysique, FormInterface $formSociete): Response
     {
         return $this->render('donateur/form_donateur.html.twig', [
             'form_physique' => $formPhysique->createView(),
@@ -99,6 +100,7 @@ class DonateurController extends AbstractController
 
         if (!$recaptchaResponse) {
             $this->addFlash('danger', 'La vérification reCAPTCHA est requise.');
+
             return false;
         }
 
@@ -107,19 +109,20 @@ class DonateurController extends AbstractController
             'form_params' => [
                 'secret' => $this->nocaptchaSecret,
                 'response' => $recaptchaResponse,
-                'remoteip' => $request->getClientIp()
-            ]
+                'remoteip' => $request->getClientIp(),
+            ],
         ]);
 
         $responseData = json_decode($response->getBody());
 
-        if ($this->appEnv === 'dev') {
+        if ('dev' === $this->appEnv) {
             $responseData->score = 0.9;
             $responseData->success = true;
         }
 
         if (!$responseData->success || $responseData->score < 0.5) {
             $this->addFlash('danger', 'La vérification reCAPTCHA a échoué. Veuillez réessayer.');
+
             return false;
         }
 

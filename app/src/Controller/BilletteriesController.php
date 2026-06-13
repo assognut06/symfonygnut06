@@ -2,12 +2,12 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\Request;
-use App\Service\HelloAssoApiService; // Service dédié pour les appels API HelloAsso
 use App\Service\DataFilterAndPaginator;
+use App\Service\HelloAssoApiService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response; // Service dédié pour les appels API HelloAsso
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/evenements')]
 class BilletteriesController extends AbstractController
@@ -29,7 +29,7 @@ class BilletteriesController extends AbstractController
         $this->slugAsso = $slugAsso;
         $this->googleMapsApiKey = $googleMapsApiKey;
     }
-    
+
     #[Route('/{page}', name: 'app_billetteries', defaults: ['page' => 1])]
     public function index(int $page): Response
     {
