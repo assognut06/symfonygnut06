@@ -230,4 +230,13 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         return $this->generateCsrfToken('delete' . $userId);
     }
+
+    protected function submitLogin(string $email, string $password): void
+    {
+        $this->client->request('POST', '/login', [
+            '_username' => $email,
+            '_password' => $password,
+            '_csrf_token' => $this->generateCsrfToken('authenticate'),
+        ]);
+    }
 }

@@ -9,22 +9,17 @@ class AuthenticationTest extends WebTestCase
 {
     public function testLoginPageLoads(): void
     {
-        $crawler = $this->client->request('GET', '/login');
+        $this->client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('form');
+        $this->assertSelectorExists('#connexion-form');
     }
 
     public function testLoginWithValidCredentialsRedirectsToProfile(): void
     {
         $this->createUser('login@test.com', 'MyPassword1!');
 
-        $crawler = $this->client->request('GET', '/login');
-        $form = $crawler->filter('form')->form();
-        $form['_username'] = 'login@test.com';
-        $form['_password'] = 'MyPassword1!';
-
-        $this->client->submit($form);
+        $this->submitLogin('login@test.com', 'MyPassword1!');
 
         $this->assertResponseRedirects();
         $location = $this->client->getResponse()->headers->get('Location');
@@ -41,24 +36,14 @@ class AuthenticationTest extends WebTestCase
     {
         $this->createUser('valid@test.com', 'RealPassword1!');
 
-        $crawler = $this->client->request('GET', '/login');
-        $form = $crawler->filter('form')->form();
-        $form['_username'] = 'valid@test.com';
-        $form['_password'] = 'WrongPassword!';
-
-        $this->client->submit($form);
+        $this->submitLogin('valid@test.com', 'WrongPassword!');
 
         $this->assertResponseRedirects('/login');
     }
 
     public function testLoginWithNonExistentUser(): void
     {
-        $crawler = $this->client->request('GET', '/login');
-        $form = $crawler->filter('form')->form();
-        $form['_username'] = 'nobody@test.com';
-        $form['_password'] = 'Whatever1!';
-
-        $this->client->submit($form);
+        $this->submitLogin('nobody@test.com', 'Whatever1!');
 
         $this->assertResponseRedirects('/login');
     }
