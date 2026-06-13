@@ -95,7 +95,7 @@ class ContactController extends AbstractController
 
     private function verifyRecaptcha(Request $request): ?string
     {
-        if ($this->appEnv === 'dev') {
+        if (in_array($this->appEnv, ['dev', 'test'], true)) {
             return null;
         }
 

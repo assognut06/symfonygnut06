@@ -40,6 +40,6 @@ framework:
 #        # Available in version 1.2
 #        cache: true
 
-#when@test:
-#    webpack_encore:
-#        strict_mode: false
+when@test:
+    webpack_encore:
+        strict_mode: false
