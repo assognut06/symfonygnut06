@@ -16,9 +16,9 @@ class ResetPasswordTest extends WebTestCase
 
     public function testResetPasswordRequestHasForm(): void
     {
-        $crawler = $this->client->request('GET', '/reset-password');
+        $this->client->request('GET', '/reset-password');
 
-        $this->assertSelectorExists('form');
+        $this->assertResponseHtmlContainsForm();
     }
 
     public function testResetPasswordCheckEmailPageLoads(): void
@@ -37,12 +37,7 @@ class ResetPasswordTest extends WebTestCase
 
     public function testResetPasswordRequestWithNonExistentEmailStillRedirects(): void
     {
-        $crawler = $this->client->request('GET', '/reset-password');
-
-        $form = $crawler->filter('form')->form();
-        $form['reset_password_request_form[email]'] = 'nonexistent@test.com';
-
-        $this->client->submit($form);
+        $this->submitResetPasswordRequest('nonexistent@test.com');
 
         $this->assertResponseRedirects(
             null,

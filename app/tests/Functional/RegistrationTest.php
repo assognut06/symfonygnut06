@@ -15,13 +15,12 @@ class RegistrationTest extends WebTestCase
         $this->client->request('GET', '/register');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('form[name="registration_form"]');
+        $this->assertResponseHtmlContainsForm();
     }
 
     public function testSuccessfulRegistrationCreatesUserAndLogsIn(): void
     {
-        $crawler = $this->client->request('GET', '/register');
-        $this->submitRegistrationForm($crawler, [
+        $this->submitRegistrationForm([
             'email' => 'newuser@test.com',
             'plainPassword' => 'V3ryStr0ngP@ss!',
             'confirmPassword' => 'V3ryStr0ngP@ss!',
@@ -48,8 +47,7 @@ class RegistrationTest extends WebTestCase
 
     public function testRegistrationWithTihCheckboxCreatesLinkedProfile(): void
     {
-        $crawler = $this->client->request('GET', '/register');
-        $this->submitRegistrationForm($crawler, [
+        $this->submitRegistrationForm([
             'email' => 'tih-new@test.com',
             'plainPassword' => 'V3ryStr0ngP@ss!',
             'confirmPassword' => 'V3ryStr0ngP@ss!',
@@ -67,8 +65,7 @@ class RegistrationTest extends WebTestCase
 
     public function testRegistrationWithEmptyFormShowsValidationErrors(): void
     {
-        $crawler = $this->client->request('GET', '/register');
-        $this->submitRegistrationForm($crawler, [
+        $this->submitRegistrationForm([
             'email' => '',
             'plainPassword' => '',
             'confirmPassword' => '',
@@ -82,8 +79,7 @@ class RegistrationTest extends WebTestCase
 
     public function testRegistrationWithMismatchedPasswordsShowsError(): void
     {
-        $crawler = $this->client->request('GET', '/register');
-        $this->submitRegistrationForm($crawler, [
+        $this->submitRegistrationForm([
             'email' => 'mismatch@test.com',
             'plainPassword' => 'V3ryStr0ngP@ss!',
             'confirmPassword' => 'DifferentP@ssw0rd!',
@@ -99,8 +95,7 @@ class RegistrationTest extends WebTestCase
     {
         $this->createUser('existing@test.com', 'ExistingPass1!');
 
-        $crawler = $this->client->request('GET', '/register');
-        $this->submitRegistrationForm($crawler, [
+        $this->submitRegistrationForm([
             'email' => 'existing@test.com',
             'plainPassword' => 'NewStr0ngP@ss!',
             'confirmPassword' => 'NewStr0ngP@ss!',
@@ -117,30 +112,6 @@ class RegistrationTest extends WebTestCase
             $this->client->getResponse()->isRedirection(),
             'Duplicate email must not redirect as if registration succeeded'
         );
-    }
-
-    /**
-     * @param array{
-     *     email: string,
-     *     plainPassword: string,
-     *     confirmPassword: string,
-     *     agreeTerms: bool,
-     *     isTih?: bool,
-     * } $data
-     */
-    private function submitRegistrationForm($crawler, array $data): void
-    {
-        $form = $crawler->filter('form[name="registration_form"]')->form();
-        $form['registration_form[email]'] = $data['email'];
-        $form['registration_form[plainPassword]'] = $data['plainPassword'];
-        $form['registration_form[confirmPassword]'] = $data['confirmPassword'];
-        $form['registration_form[agreeTerms]'] = $data['agreeTerms'];
-
-        if (!empty($data['isTih'])) {
-            $form['registration_form[isTih]']->tick();
-        }
-
-        $this->client->submit($form);
     }
 
     private function countUsers(): int

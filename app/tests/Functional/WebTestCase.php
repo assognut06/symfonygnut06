@@ -27,14 +27,22 @@ abstract class WebTestCase extends BaseWebTestCase
      * loginUser() alone does not trigger a request, so tokens must be created
      * after at least one client request in the same cookie jar.
      */
-    protected function ensureClientSession(): void
+    protected function bootstrapClientSession(string $path = '/'): void
     {
         if ($this->clientSessionStarted) {
             return;
         }
 
-        $this->client->request('GET', '/');
+        $this->client->request('GET', $path);
         $this->clientSessionStarted = true;
+    }
+
+    /**
+     * @deprecated use bootstrapClientSession()
+     */
+    protected function ensureClientSession(): void
+    {
+        $this->bootstrapClientSession('/');
     }
 
     /**
@@ -43,8 +51,17 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function generateCsrfToken(string $tokenId): string
     {
-        $this->ensureClientSession();
+        $this->bootstrapClientSession('/');
 
+        return $this->readOrCreateCsrfToken($tokenId);
+    }
+
+    /**
+     * Reads an existing CSRF token from the current session or creates one.
+     * Call bootstrapClientSession() with the form page path first for Symfony forms.
+     */
+    protected function readOrCreateCsrfToken(string $tokenId): string
+    {
         $container = $this->client->getContainer();
         $request = $this->client->getRequest();
         $session = $request->getSession();
@@ -55,7 +72,6 @@ abstract class WebTestCase extends BaseWebTestCase
             $token = $container->get('security.csrf.token_manager')
                 ->getToken($tokenId)
                 ->getValue();
-            // Persist token so the following POST loads the same session state.
             $session->save();
 
             return $token;
@@ -233,10 +249,92 @@ abstract class WebTestCase extends BaseWebTestCase
 
     protected function submitLogin(string $email, string $password): void
     {
+        $this->bootstrapClientSession('/login');
+
         $this->client->request('POST', '/login', [
             '_username' => $email,
             '_password' => $password,
-            '_csrf_token' => $this->generateCsrfToken('authenticate'),
+            '_csrf_token' => $this->readOrCreateCsrfToken('authenticate'),
         ]);
+    }
+
+    /**
+     * @param array{
+     *     email: string,
+     *     plainPassword: string,
+     *     confirmPassword: string,
+     *     agreeTerms: bool,
+     *     isTih?: bool,
+     * } $data
+     */
+    protected function submitRegistrationForm(array $data): void
+    {
+        $this->bootstrapClientSession('/register');
+
+        $payload = [
+            'registration_form' => [
+                'email' => $data['email'],
+                'plainPassword' => $data['plainPassword'],
+                'confirmPassword' => $data['confirmPassword'],
+                '_token' => $this->readOrCreateCsrfToken('registration_form'),
+            ],
+            'g-recaptcha-response' => '',
+        ];
+
+        if ($data['agreeTerms']) {
+            $payload['registration_form']['agreeTerms'] = '1';
+        }
+
+        if (!empty($data['isTih'])) {
+            $payload['registration_form']['isTih'] = '1';
+        }
+
+        $this->client->request('POST', '/register', $payload);
+    }
+
+    protected function submitResetPasswordRequest(string $email): void
+    {
+        $this->bootstrapClientSession('/reset-password');
+
+        $this->client->request('POST', '/reset-password', [
+            'reset_password_request_form' => [
+                'email' => $email,
+                '_token' => $this->readOrCreateCsrfToken('reset_password_request_form'),
+            ],
+            'g-recaptcha-response' => '',
+        ]);
+    }
+
+    /**
+     * @param array<string, string> $data
+     */
+    protected function submitContactForm(array $data): void
+    {
+        $this->bootstrapClientSession('/contact');
+
+        $this->client->request('POST', '/contact', array_merge(
+            [
+                '_token' => $this->readOrCreateCsrfToken('App\\Form\\ContactType'),
+                'g-recaptcha-response' => '',
+            ],
+            $data
+        ));
+    }
+
+    protected function submitDeleteProfilePicture(int $userId): void
+    {
+        $this->client->request('POST', '/profile/delete-picture', [
+            '_token' => $this->generateCsrfToken('delete_profile_picture' . $userId),
+        ]);
+    }
+
+    protected function assertResponseHtmlContainsForm(int $minimum = 1): void
+    {
+        $html = $this->client->getResponse()->getContent();
+        $this->assertGreaterThanOrEqual(
+            $minimum,
+            preg_match_all('/<form\b/i', $html),
+            sprintf('Expected at least %d <form> in response HTML.', $minimum)
+        );
     }
 }

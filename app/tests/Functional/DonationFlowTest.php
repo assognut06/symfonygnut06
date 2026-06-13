@@ -23,11 +23,10 @@ class DonationFlowTest extends WebTestCase
 
     public function testDonateurFormHasBothForms(): void
     {
-        $crawler = $this->client->request('GET', '/donateur/formulaire');
+        $this->client->request('GET', '/donateur/formulaire');
 
         $this->assertResponseIsSuccessful();
-        $formCount = $crawler->filter('form')->count();
-        $this->assertGreaterThanOrEqual(1, $formCount, 'Donateur page should have at least one form');
+        $this->assertResponseHtmlContainsForm();
     }
 
     public function testDonCasqueNewWithoutSessionRedirects(): void

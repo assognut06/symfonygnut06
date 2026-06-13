@@ -77,16 +77,7 @@ class ProtectedRouteTest extends WebTestCase
         $user->setProfilePicture('test-photo.jpg');
         $this->em->flush();
 
-        $this->client->request('GET', '/profil');
-        $this->assertResponseIsSuccessful();
-
-        $token = $this->client->getCrawler()
-            ->filter('form[action*="delete-picture"] input[name="_token"]')
-            ->attr('value');
-
-        $this->client->request('POST', '/profile/delete-picture', [
-            '_token' => $token,
-        ]);
+        $this->submitDeleteProfilePicture($user->getId());
 
         $this->assertResponseRedirects('/profil');
     }

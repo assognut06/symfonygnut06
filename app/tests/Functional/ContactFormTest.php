@@ -13,13 +13,12 @@ class ContactFormTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('#form-title');
-        $this->assertSelectorExists('form[action="/contact"]');
+        $this->assertResponseHtmlContainsForm();
     }
 
     public function testSuccessfulContactSubmissionShowsSuccessMessage(): void
     {
-        $crawler = $this->client->request('GET', '/contact');
-        $this->submitContactForm($crawler, $this->validContactPayload());
+        $this->submitContactForm($this->validContactPayload());
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('.alert.alert-success[role="alert"]', 'Votre message a bien été envoyé');
@@ -28,8 +27,7 @@ class ContactFormTest extends WebTestCase
 
     public function testContactFormWithEmptyFieldsShowsValidationErrors(): void
     {
-        $crawler = $this->client->request('GET', '/contact');
-        $this->submitContactForm($crawler, [
+        $this->submitContactForm([
             'first_name' => '',
             'last_name' => '',
             'email' => '',
@@ -45,10 +43,9 @@ class ContactFormTest extends WebTestCase
 
     public function testContactFormWithInvalidEmailShowsError(): void
     {
-        $crawler = $this->client->request('GET', '/contact');
         $payload = $this->validContactPayload();
         $payload['email'] = 'not-an-email';
-        $this->submitContactForm($crawler, $payload);
+        $this->submitContactForm($payload);
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('.alert-danger', "Cette adresse email n'est pas valide");
@@ -57,24 +54,13 @@ class ContactFormTest extends WebTestCase
 
     public function testContactFormWithShortMessageShowsError(): void
     {
-        $crawler = $this->client->request('GET', '/contact');
         $payload = $this->validContactPayload();
         $payload['message'] = 'trop cour';
-        $this->submitContactForm($crawler, $payload);
+        $this->submitContactForm($payload);
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('.alert-danger', 'Le message doit contenir au moins');
         $this->assertSelectorNotExists('.alert-success');
-    }
-
-    /**
-     * @param array<string, string> $data
-     */
-    private function submitContactForm($crawler, array $data): void
-    {
-        $token = $crawler->filter('input[name="_token"]')->attr('value');
-
-        $this->client->request('POST', '/contact', array_merge(['_token' => $token], $data));
     }
 
     /**
