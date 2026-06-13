@@ -37,3 +37,4 @@ wetransfer*
 #script de demarrage
 start-project.sh
 
+docker-compose.override.yaml
