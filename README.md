@@ -77,7 +77,7 @@ Par contre, la base de donnée est vide
 
 6. **Initialisation des valeurs de test**
    ```bash
-   docker exec -it symfony_asso php bin/console doctrine:fixtures:load
+   docker exec -it symfony_asso php bin/console doctrine:fixtures:load --append
    ```
 
 ## Importation des données (si nécessaire)
