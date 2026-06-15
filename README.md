@@ -48,9 +48,9 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    git clone git@github.com:assognut06/symfonygnut06.git
    cd symfonygnut06
    ```
-3. **Résolution de conflit**
-   La solution inclus un container mysql utilisant le port 3306
-   Vérifiez que le poste de dev n'aie pas déjà un serveur monopolisant se port
+3. **Résolution de conflit**  
+   La solution inclus un container mysql utilisant le port 3306  
+   Vérifiez que le poste de dev n'aie pas déjà un serveur monopolisant ce port
    ```bash
    netstat -pnltu | grep -w 3306
    ```
@@ -75,7 +75,7 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 A ce niveau, le site devrait être accessible via le navigateur sur https://localhost
 Par contre, la base de donnée est vide
 
-6. ** Initialisation des valeurs de test
+6. **Initialisation des valeurs de test**
    ```bash
    docker exec -it symfony_asso php bin/console doctrine:fixtures:load
    ```
@@ -91,12 +91,12 @@ Par contre, la base de donnée est vide
 
 3. **Charger le sql**
    Ouvrir PHPmyAdmin: http://localhost:8080
-   S'authentifier
-   Selectionner la base gnut06
-   Ouvrir l'onglet "Importer"
-   Parcourir pour choisir le fichier .sql ou .sql.gz
-   Décocher "Activer la vérification des clés étrangères"
-   Cliquer sur importer
+   S'authentifier  
+   Selectionner la base gnut06  
+   Ouvrir l'onglet "Importer"  
+   Parcourir pour choisir le fichier .sql ou .sql.gz  
+   Décocher "Activer la vérification des clés étrangères"  
+   Cliquer sur importer  
 
 4. **Vérifier**
    Ouvrir le site applicatif
