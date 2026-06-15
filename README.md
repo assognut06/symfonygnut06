@@ -75,6 +75,11 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 A ce niveau, le site devrait être accessible via le navigateur sur https://localhost
 Par contre, la base de donnée est vide
 
+6. ** Initialisation des valeurs de test
+   ```bash
+   docker exec -it symfony_asso php bin/console doctrine:fixtures:load
+   ```
+
 ## Importation des données (si nécessaire)
 
 1. **Demander les données nécessaires**
@@ -96,6 +101,33 @@ Par contre, la base de donnée est vide
 4. **Vérifier**
    Ouvrir le site applicatif
    La liste "Nos alliés dans nos actions" doit contenir des logos défilant
+
+## Configuration de XDebug dans VSCode
+
+Ouvrir Run->Add Configuration
+Dans le launch.json: coller
+   ```bash
+   {
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+    
+
+        {
+            "name": "Listen for Xdebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003,
+            "pathMappings": {
+                "/var/www/app": "${workspaceFolder}/app"
+            }
+        }
+    ]
+}
+   ```
+Lors du lancement du debugger, VSCode devrait pouvoir se connecter au XDebug qui tourne dans l'image docker
 
 ## Arrêt
    ```bash
