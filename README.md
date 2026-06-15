@@ -34,13 +34,13 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    ssh-keygen
    cat <chemin>/<nom_du_fichier_créé_par_keygen(voir_sortie_console)>.pub
    ```
-   Copier la sortie console de cat
-   Ouvrir githb dans le navigateur
-   Cliquer Profil (Icône en haut à droite) -> Settings (Paramètres)
-   Cliquer "SSH and GPG keys"
-   Cliquer "New SSH key"
-   Saisir un nom de clé
-   Coller la sortie console de cat
+   Copier la sortie console de cat  
+   Ouvrir githb dans le navigateur  
+   Cliquer Profil (Icône en haut à droite) -> Settings (Paramètres)  
+   Cliquer "SSH and GPG keys"  
+   Cliquer "New SSH key"  
+   Saisir un nom de clé  
+   Coller la sortie console de cat  
 
 2. **Clonez le dépôt**
 
@@ -89,8 +89,8 @@ Par contre, la base de donnée est vide
 2. **Importation des uploads**
    Copier le répertoire uploads fourni dans app/public/uploads
 
-3. **Charger le sql**
-   Ouvrir PHPmyAdmin: http://localhost:8080
+3. **Charger le sql**  
+   Ouvrir PHPmyAdmin: http://localhost:8080  
    S'authentifier  
    Selectionner la base gnut06  
    Ouvrir l'onglet "Importer"  
