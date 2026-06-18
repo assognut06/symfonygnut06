@@ -2,6 +2,15 @@ function initAdresseAutocomplete(options) {
     const adresseInput = document.querySelector(options.inputSelector);
     if (!adresseInput) return;
 
+    const fillField = (selector, value) => {
+        if (!selector) return;
+
+        const field = document.querySelector(selector);
+        if (field) {
+            field.value = value;
+        }
+    };
+
     const suggestionsContainer = document.createElement('div');
     suggestionsContainer.className = 'autocomplete-suggestions';
     suggestionsContainer.style.display = 'none';
@@ -45,17 +54,17 @@ function initAdresseAutocomplete(options) {
                 div.style.cursor = 'pointer';
 
                 div.addEventListener('click', function () {
+                    const contextParts = (props.context || '').split(',').map(part => part.trim());
+
                     selectedAddress = props.label;
                     adresseInput.value = props.label;
 
-                    if (options.fields.adresse_1)
-                        document.querySelector(options.fields.adresse_1).value = props.name || props.label;
-                    if (options.fields.code_postal)
-                        document.querySelector(options.fields.code_postal).value = props.postcode || '';
-                    if (options.fields.ville)
-                        document.querySelector(options.fields.ville).value = props.city || '';
-                    if (options.fields.pays)
-                        document.querySelector(options.fields.pays).value = props.country || 'France';
+                    fillField(options.fields.adresse_1, props.name || props.label);
+                    fillField(options.fields.code_postal, props.postcode || '');
+                    fillField(options.fields.ville, props.city || '');
+                    fillField(options.fields.region, contextParts.slice(2).join(', '));
+                    fillField(options.fields.departement, contextParts[1] || '');
+                    fillField(options.fields.pays, props.country || 'France');
 
                     suggestionsContainer.innerHTML = '';
                     suggestionsContainer.style.display = 'none';
@@ -111,6 +120,17 @@ document.addEventListener('DOMContentLoaded', function () {
             code_postal: '#societe_code_postal',
             ville: '#societe_ville',
             pays: '#societe_pays'
+        }
+    });
+
+    initAdresseAutocomplete({
+        inputSelector: '#tih_adresse',
+        fields: {
+            adresse_1: '#tih_adresse',
+            code_postal: '#tih_codePostal',
+            ville: '#tih_ville',
+            region: '#tih_region',
+            departement: '#tih_departement'
         }
     });
 });
