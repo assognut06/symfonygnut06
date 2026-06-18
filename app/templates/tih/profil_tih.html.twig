@@ -198,3 +198,8 @@
 </div>
 
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/adresse_auto_complete.js') }}"></script>
+{% endblock %}
