@@ -16,6 +16,17 @@ class ApiFrameVrService
         $this->apiKey = $apiKey;
     }
 
+    /**
+     * @param string $id
+     * @param string $object
+     * @param string $method
+     * @return array<mixed>
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
     public function getSomeData(string $id, string $object, string $method = 'GET'): array
     {
         $urlBaseApi = "https://api.framevr.io/automate/v1/";

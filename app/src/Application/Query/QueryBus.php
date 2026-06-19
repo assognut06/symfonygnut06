@@ -10,7 +10,7 @@ class QueryBus
         private ServiceLocator $handlers
     ) {}
 
-    public function ask(object $query): mixed
+    public function ask(Query $query): mixed
     {
         $handler = $this->handlers->get($query::class);
         

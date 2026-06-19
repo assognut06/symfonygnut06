@@ -68,6 +68,12 @@ class AssoRecommanderService
 
         return null;
     }
+    
+    /**
+     * @param AssoRecommander $assoRecommander
+     * @param array<mixed> $data
+     * @return bool|string
+     */
 
     public function isDataChanged(AssoRecommander $assoRecommander, array $data) 
     {

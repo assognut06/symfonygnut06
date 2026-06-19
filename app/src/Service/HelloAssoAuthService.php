@@ -3,13 +3,14 @@ namespace App\Service;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class HelloAssoAuthService
 {
-    private $requestStack;
-    private $client;
-    private $apiClientId;
-    private $apiClientSecret;
+    private RequestStack $requestStack;
+    private Client $client;
+    private string $apiClientId;
+    private string $apiClientSecret;
 
     public function __construct(RequestStack $requestStack, HttpClientInterface $client, string $apiClientId, string $apiClientSecret)
     {
@@ -19,7 +20,7 @@ class HelloAssoAuthService
         $this->apiClientSecret = $apiClientSecret;
     }
 
-    private function getSession()
+    private function getSession(): SessionInterface
     {
         return $this->requestStack->getSession();
     }

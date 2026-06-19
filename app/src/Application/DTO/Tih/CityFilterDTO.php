@@ -11,6 +11,9 @@ final readonly class CityFilterDTO
     ) {
     }
 
+/**
+ * @param array{city:string,postalCode:string,count:int} $data
+ */
     public static function fromArray(array $data): self
     {
         return new self(

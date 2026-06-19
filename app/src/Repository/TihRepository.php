@@ -160,12 +160,12 @@ class TihRepository extends ServiceEntityRepository
         }
 
         // Filter by rate range
-        if (isset($filters['minRate']) && $filters['minRate'] !== null && $filters['minRate'] !== '') {
+        if (isset($filters['minRate']) && $filters['minRate'] != null && $filters['minRate'] !== '') {
             $qb->andWhere('t.rate >= :minRate')
                ->setParameter('minRate', $filters['minRate']);
         }
         
-        if (isset($filters['maxRate']) && $filters['maxRate'] !== null && $filters['maxRate'] !== '') {
+        if (isset($filters['maxRate']) && $filters['maxRate'] != null && $filters['maxRate'] !== '') {
             $qb->andWhere('t.rate <= :maxRate')
                ->setParameter('maxRate', $filters['maxRate']);
         }
@@ -224,11 +224,11 @@ class TihRepository extends ServiceEntityRepository
             $qbSkills->andWhere('t.availability IN (:availability)')
                    ->setParameter('availability', $tempFilters['availability']);
         }
-        if (isset($tempFilters['minRate']) && $tempFilters['minRate'] !== null) {
+        if (isset($tempFilters['minRate']) && $tempFilters['minRate'] != null) {
             $qbSkills->andWhere('t.rate >= :minRate')
                    ->setParameter('minRate', $tempFilters['minRate']);
         }
-        if (isset($tempFilters['maxRate']) && $tempFilters['maxRate'] !== null) {
+        if (isset($tempFilters['maxRate']) && $tempFilters['maxRate'] != null) {
             $qbSkills->andWhere('t.rate <= :maxRate')
                    ->setParameter('maxRate', $tempFilters['maxRate']);
         }
@@ -253,11 +253,11 @@ class TihRepository extends ServiceEntityRepository
             $qbRegions->andWhere('t.availability IN (:availability)')
                      ->setParameter('availability', $tempFilters['availability']);
         }
-        if (isset($tempFilters['minRate']) && $tempFilters['minRate'] !== null) {
+        if (isset($tempFilters['minRate']) && $tempFilters['minRate'] != null) {
             $qbRegions->andWhere('t.rate >= :minRate')
                      ->setParameter('minRate', $tempFilters['minRate']);
         }
-        if (isset($tempFilters['maxRate']) && $tempFilters['maxRate'] !== null) {
+        if (isset($tempFilters['maxRate']) && $tempFilters['maxRate'] != null) {
             $qbRegions->andWhere('t.rate <= :maxRate')
                      ->setParameter('maxRate', $tempFilters['maxRate']);
         }
@@ -286,11 +286,11 @@ class TihRepository extends ServiceEntityRepository
             $qbDepartements->andWhere('t.availability IN (:availability)')
                      ->setParameter('availability', $tempFilters['availability']);
         }
-        if (isset($tempFilters['minRate']) && $tempFilters['minRate'] !== null) {
+        if (isset($tempFilters['minRate']) && $tempFilters['minRate'] != null) {
             $qbDepartements->andWhere('t.rate >= :minRate')
                      ->setParameter('minRate', $tempFilters['minRate']);
         }
-        if (isset($tempFilters['maxRate']) && $tempFilters['maxRate'] !== null) {
+        if (isset($tempFilters['maxRate']) && $tempFilters['maxRate'] != null) {
             $qbDepartements->andWhere('t.rate <= :maxRate')
                      ->setParameter('maxRate', $tempFilters['maxRate']);
         }
@@ -323,11 +323,11 @@ class TihRepository extends ServiceEntityRepository
             $qbAvailability->andWhere('t.departement IN (:departements)')
                     ->setParameter('departements', $tempFilters['departements']);
         }
-        if (isset($tempFilters['minRate']) && $tempFilters['minRate'] !== null) {
+        if (isset($tempFilters['minRate']) && $tempFilters['minRate'] != null) {
             $qbAvailability->andWhere('t.rate >= :minRate')
                     ->setParameter('minRate', $tempFilters['minRate']);
         }
-        if (isset($tempFilters['maxRate']) && $tempFilters['maxRate'] !== null) {
+        if (isset($tempFilters['maxRate']) && $tempFilters['maxRate'] != null) {
             $qbAvailability->andWhere('t.rate <= :maxRate')
                     ->setParameter('maxRate', $tempFilters['maxRate']);
         }
