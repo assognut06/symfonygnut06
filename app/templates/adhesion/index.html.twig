@@ -5,6 +5,7 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/pages/adhesion.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pages/adhesion.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -110,9 +111,11 @@
             <div class="w-100">
                 <!-- ✅ CORRECTION - Iframe accessible avec fallback -->
                 <div class="iframe-container">
+                <div class="iframe-container">
 
                     <!-- Message de fallback si iframe ne charge pas -->
                     <noscript>
+                        <div class="alert alert-info text-center p-4 mx-auto alert-info-custom" role="alert">
                         <div class="alert alert-info text-center p-4 mx-auto alert-info-custom" role="alert">
                             <h3 class="h5 mb-3">JavaScript requis</h3>
                             <p class="mb-3">Pour adhérer en ligne, veuillez activer JavaScript ou</p>
