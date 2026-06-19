@@ -34,6 +34,10 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     private EmailService $emailService;
     private LoggerInterface $logger;
     private Security $security;
+    /** stocke la session de la request-stack passee par le constructeur 
+     * request-stack est transmise la library donc necessaire dans le constructeur 
+    */
+    /** @phpstan-ignore-next-line */
     private SessionInterface $session;
 
     public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, EmailService $emailService, LoggerInterface $logger, Security $security, RequestStack $requestStack)
@@ -118,23 +122,17 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 $this->entityManager->persist($newUser);
                 $this->entityManager->flush();
 
-                if ($newUser) {
-                    // Si l'utilisateur n'est pas encore vérifié, on envoie l'email de confirmation
-                    try {
-                        $this->emailService->sendConfirmationEmail($newUser);
-                        // $this->addFlash('success', 'Un email de confirmation a été envoyé. Veuillez consulter votre boîte mail.');
-                    } catch (\Exception $e) {
-                        $this->logger->error('Erreur envoi email de confirmation', ['exception' => $e]);
-                        // $this->addFlash('danger', 'Problème lors de l\'envoi du mail. Veuillez réessayer.');
-                    }
-
-                    // return $this->redirectToRoute('app_profil');
-                    return $this->security->login($newUser, 'form_login', 'main'); // Retourne l'utilisateur connecté.
-                } else {
-                    //  $this->addFlash('danger', "Erreur lors de l'authentification Google. Veuillez réessayer ou contacter l'administrateur.");
-                    // return $this->redirectToRoute('app_login');
+                // Si l'utilisateur n'est pas encore vérifié, on envoie l'email de confirmation
+                try {
+                    $this->emailService->sendConfirmationEmail($newUser);
+                    // $this->addFlash('success', 'Un email de confirmation a été envoyé. Veuillez consulter votre boîte mail.');
+                } catch (\Exception $e) {
+                    $this->logger->error('Erreur envoi email de confirmation', ['exception' => $e]);
+                    // $this->addFlash('danger', 'Problème lors de l\'envoi du mail. Veuillez réessayer.');
                 }
 
+                // return $this->redirectToRoute('app_profil');
+                return $this->security->login($newUser, 'form_login', 'main'); // Retourne l'utilisateur connecté.
                 //  return $this->redirectToRoute('app_profil');
             })
         );

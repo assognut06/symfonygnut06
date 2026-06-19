@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Application\Query\Tih;
+use App\Application\Query\Query;
 
-class GetAvailableFiltersQuery
+class GetAvailableFiltersQuery extends Query
 {
     public function __construct(
         private array $currentFilters = []

@@ -9,13 +9,11 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PaginationService
 {
-    private $entityManager;
-    private $limit;
-    private $assoRecommanderRepository;
+    private int $limit;
+    private AssoRecommanderRepository $assoRecommanderRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, int $limit, AssoRecommanderRepository $assoRecommanderRepository)
+    public function __construct(int $limit, AssoRecommanderRepository $assoRecommanderRepository)
     {
-        $this->entityManager = $entityManager;
         $this->limit = $limit;
         $this->assoRecommanderRepository = $assoRecommanderRepository;
     }
@@ -27,16 +25,20 @@ class PaginationService
         return $this;
     }
 
-    public function getPaginatedData(string $entityClass, int $page): array
+    public function getPaginatedData(string $entityClass, int $page): mixed
     {
         $start = $this->limit * ($page - 1);
-        $repository = $this->entityManager->getRepository($entityClass);
-        $data = $repository->findBy([], [], $this->limit, $start);
-        $total = count($repository->findAll());
-        $pages = ceil($total / $this->limit);
+        $cities = [];
+        $data = [];
+        $total = 0;
+        $pages = 0;
         $cities = [];
 
         if (\App\Entity\AssoRecommander::class === $entityClass) {
+
+            $data = $this->assoRecommanderRepository->findBy([], [], $this->limit, $start);
+            $total = count($this->assoRecommanderRepository->findAll());
+            $pages = ceil($total / $this->limit);
             $cities = $this->assoRecommanderRepository->findDistinctCities();
         }
 
@@ -48,18 +50,22 @@ class PaginationService
             'cities' => $cities,
         ];
     }
-
-    public function getPaginatedDataCity(string $entityClass, int $page, array $city): array
+/**
+ * @param array<string,mixed> $city
+ */
+    public function getPaginatedDataCity(string $entityClass, int $page, array $city): mixed
     {
         $start = $this->limit * ($page - 1);
-        $repository = $this->entityManager->getRepository($entityClass);
-        $data = $repository->findBy($city, [], $this->limit, $start);
-        $total = count($repository->findBy($city, []));
-        $pages = ceil($total / $this->limit);
         $cities = [];
+        $data = [];
+        $total = 0;
+        $pages = 0;
 
         if (\App\Entity\AssoRecommander::class === $entityClass) {
             $cities = $this->assoRecommanderRepository->findDistinctCities();
+            $data = $this->assoRecommanderRepository->findBy($city, [], $this->limit, $start);
+            $total = count($this->assoRecommanderRepository->findBy($city, []));
+            $pages = ceil($total / $this->limit);
         }
 
         return [
@@ -71,9 +77,8 @@ class PaginationService
         ];
     }
 
-    public function getPaginatedDataSearch(string $entityClass, string $search): array
+    public function getPaginatedDataSearch(string $entityClass, string $search): mixed
     {
-        $repository = $this->entityManager->getRepository($entityClass);
         $data = [];
         $total = 0;
 

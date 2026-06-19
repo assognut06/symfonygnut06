@@ -10,7 +10,9 @@ final readonly class DepartementFilterDTO
         public ?string $region = null
     ) {
     }
-
+/**
+ * @param array{departement:string,region:?string,count:int} $data
+ */
     public static function fromArray(array $data): self
     {
         return new self(

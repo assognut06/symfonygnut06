@@ -25,7 +25,7 @@ class ApiFrameVrService
      * @param string $id
      * @param string $object
      * @param string $method
-     * @return array
+     * @return array<mixed>
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
      * @throws RedirectionExceptionInterface

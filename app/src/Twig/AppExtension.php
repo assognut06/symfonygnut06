@@ -14,9 +14,9 @@ use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension
 {
-    private $parameterBag;
-    private $helloAssoApiService;
-    private $dataFilterAndPaginator;
+    private ParameterBagInterface $parameterBag;
+    private HelloAssoApiService $helloAssoApiService;
+    private DataFilterAndPaginator $dataFilterAndPaginator;
 
     public function __construct(ParameterBagInterface $parameterBag, HelloAssoApiService $helloAssoApiService, DataFilterAndPaginator $dataFilterAndPaginator)
     {
@@ -41,7 +41,7 @@ class AppExtension extends AbstractExtension
         ];
     }
 
-    public function formatPrice($number): string
+    public function formatPrice(int $number): string
     {
         // Convertir les centimes en euros avec une séparation pour les décimales
         $priceInEuros = $number / 100;
@@ -56,7 +56,7 @@ class AppExtension extends AbstractExtension
         return $formattedPrice;
     }
 
-    public function randomImage($directory)
+    public function randomImage(string $directory): ?string
     {
         // Utiliser le répertoire racine du projet pour construire le chemin absolu
         $projectDir = $this->parameterBag->get('kernel.project_dir');
@@ -81,7 +81,7 @@ class AppExtension extends AbstractExtension
         return null; // ou retourner un chemin d'image par défaut
     }
 
-    public function getEventsAssoRecommender($organizationSlug, string $formTypes): int
+    public function getEventsAssoRecommender(string $organizationSlug, string $formTypes): int
     {
         try {
             $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms?formTypes={$formTypes}&states=Public";
@@ -105,12 +105,6 @@ class AppExtension extends AbstractExtension
                     return is_array($item) && isset($item['organizationSlug']);
                 });
             }
-
-            // ✅ Vérification que $filteredData est un array
-            if (!is_array($filteredData)) {
-                return 0;
-            }
-
             $count = count($filteredData);
 
             return $count;
@@ -122,7 +116,7 @@ class AppExtension extends AbstractExtension
         }
     }
 
-    public function urlDecode($value)
+    public function urlDecode(string $value): string
     {
         return urldecode($value);
     }

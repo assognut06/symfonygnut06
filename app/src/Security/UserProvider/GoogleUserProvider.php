@@ -9,7 +9,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-
+/**
+ * @implements UserProviderInterface<User>
+ */
 final class GoogleUserProvider implements UserProviderInterface
 {
     public function __construct(
@@ -23,7 +25,7 @@ final class GoogleUserProvider implements UserProviderInterface
         return $this->em->getRepository(User::class)->findOneBy(['email' => $identifier]);
     }
 
-    public function loadUserByUsername(string $username): ?UserInterface
+    public function loadUserByUsername(string $username): UserInterface
     {
         return $this->loadUserByIdentifier($username);
     }

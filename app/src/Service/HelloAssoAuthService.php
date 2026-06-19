@@ -4,13 +4,14 @@ namespace App\Service;
 
 use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class HelloAssoAuthService
 {
-    private $requestStack;
-    private $client;
-    private $apiClientId;
-    private $apiClientSecret;
+    private RequestStack $requestStack;
+    private Client $client;
+    private string $apiClientId;
+    private string $apiClientSecret;
 
     public function __construct(RequestStack $requestStack, string $apiClientId, string $apiClientSecret)
     {
@@ -20,7 +21,7 @@ class HelloAssoAuthService
         $this->apiClientSecret = $apiClientSecret;
     }
 
-    private function getSession()
+    private function getSession(): SessionInterface
     {
         return $this->requestStack->getSession();
     }

@@ -7,24 +7,22 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class TokenManager
 {
-    private $client;
-    private $session;
-    private $clientId;
-    private $clientSecret;
-    private $urlToken;
-    private $slugAsso;
+    private HttpClientInterface $client;
+    private SessionInterface $session;
+    private string $clientId;
+    private string $clientSecret;
+    private string $urlToken;
 
-    public function __construct(HttpClientInterface $client, SessionInterface $session, string $clientId, string $clientSecret, string $urlToken, string $slugAsso)
+    public function __construct(HttpClientInterface $client, SessionInterface $session, string $clientId, string $clientSecret, string $urlToken)
     {
         $this->client = $client;
         $this->session = $session;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
         $this->urlToken = $urlToken;
-        $this->slugAsso = $slugAsso;
     }
 
-    public function checkAndUpdateToken()
+    public function checkAndUpdateToken(): bool
     {
         try {
             if (!$this->session->has('bearer_token') || !$this->session->has('expiration_token') || (new \DateTime() > $this->session->get('expiration_token')) || (new \DateTime() > $this->session->get('expirationRefreshToken'))) {
@@ -61,8 +59,10 @@ class TokenManager
             return false; // Échec de la récupération du token
         }
     }
-
-    private function fetchToken($url, $params)
+/**
+ * @param array<mixed> $params
+ */
+    private function fetchToken(string $url,array  $params): mixed
     {
         try {
             $response = $this->client->request('POST', $url, [
@@ -86,8 +86,10 @@ class TokenManager
             return null;
         }
     }
-
-    private function updateTokens($data)
+ /**
+ * @param array{access_token:?string,refresh_token:?string,expires_in:?string, refresh_expires_in:?string} $data
+ */
+    private function updateTokens(array $data):void
     {
         if (isset($data['access_token'])) {
             $this->session->set('bearer_token', $data['access_token']);

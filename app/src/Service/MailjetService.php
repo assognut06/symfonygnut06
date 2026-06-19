@@ -7,8 +7,8 @@ use Mailjet\Resources;
 
 class MailjetService
 {
-    private $apiKey;
-    private $apiSecret;
+    private string $apiKey;
+    private string $apiSecret;
 
     public function __construct(string $apiKey, string $apiSecret)
     {
@@ -16,7 +16,10 @@ class MailjetService
         $this->apiSecret = $apiSecret;
     }
 
-    public function sendEmail(array $message)
+/**
+ * @param array<mixed> $message
+ */
+    public function sendEmail(array $message): mixed
     {
         $mj = new Client($this->apiKey, $this->apiSecret, true, ['version' => 'v3.1']);
         $body = [

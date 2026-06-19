@@ -6,9 +6,9 @@ use GuzzleHttp\Client;
 
 class OhmeApiService
 {
-    private $client;
-    private $slugAsso;
-    private $secretOhme;
+    private Client $client;
+    private string $slugAsso;
+    private string $secretOhme;
 
     public function __construct(string $slugAsso, string $secretOhme)
     {
@@ -16,8 +16,10 @@ class OhmeApiService
         $this->slugAsso = $slugAsso;
         $this->secretOhme = $secretOhme;
     }
-
-    public function getContacts(array $params, string $object, string $method = 'GET')
+/**
+ * @param array<mixed> $params
+ */
+    public function getContacts(array $params, string $object, string $method = 'GET'): mixed
     {
         $urlBaseApi = 'https://api-ohme.oneheart.fr/api/v1/';
         $url = $urlBaseApi.$object.'?'.http_build_query($params);
