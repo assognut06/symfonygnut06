@@ -72,7 +72,9 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    ```bash
    docker exec -it symfony_asso php bin/console doctrine:migration:migrate
    ```
-A ce niveau, le site devrait être accessible via le navigateur sur https://localhost
+A ce niveau, le site devrait être accessible via le navigateur sur https://127.0.0.1  
+Il est important de passer par l'IP car il y a un filtre dans les APIs Google avec cette valeur  
+ 
 Par contre, la base de donnée est vide
 
 6. **Initialisation des valeurs de test**
