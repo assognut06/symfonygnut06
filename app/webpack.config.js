@@ -1,4 +1,5 @@
 const Encore = require('@symfony/webpack-encore');
+const fs = require('fs');
 const webpack = require('webpack');
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
@@ -15,12 +16,6 @@ Encore
 .setPublicPath('/build')
 // only needed for CDN's or subdirectory deploy
     //.setManifestKeyPrefix('build/')
-    .copyFiles({
-      from: './assets/styles/images',
-      to: 'images/[path][name].[ext]',
-      pattern: /\.(png|jpg|jpeg)$/
-      
-    })
     /*
     * ENTRY CONFIG
     *
@@ -92,5 +87,15 @@ Encore
       }))
   
   ;
+
+const imagesPath = './assets/styles/images';
+
+if (fs.existsSync(imagesPath)) {
+    Encore.copyFiles({
+        from: imagesPath,
+        to: 'images/[path][name].[ext]',
+        pattern: /\.(png|jpg|jpeg)$/,
+    });
+}
   
   module.exports = Encore.getWebpackConfig();

@@ -3,103 +3,23 @@
 {% block title %}GNUT 06 participe à Nice Fête sa Rentrée
 {% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ asset('css/pages/nice_fete_sa_rentree.css') }}">
+{% endblock %}
+
 {% block body %}
-	<style>
-		body {
-			background: var(--Color-Background, linear-gradient(180deg, #010208 16%, #010206 21%, #040008 25%, #010101 30%, #010101 34%, #010101 36%, #010101 100%));
-		}
-		h1 {
-			font-family: Orbitron;
-			font-size: 72px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-		}
-
-		h2 {
-			font-family: 'Orbitron', sans-serif;
-			font-size: 32px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-		}
-		h3 {
-			font-family: 'Orbitron', sans-serif;
-			font-size: 24px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-		}
-		p {
-			color: #FFF;
-
-			/* Lead/Text Regular */
-			font-family: Poppins;
-			font-size: 20px;
-			font-style: normal;
-			font-weight: 400;
-			line-height: 36px; /* 180% */
-		}
-		.slogan {
-			font-family: 'Orbitron', sans-serif;
-			font-size: 32px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-			background: var(--2, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%));
-			-webkit-background-clip: text;
-			background-clip: text;
-			-webkit-text-fill-color: transparent;
-		}
-
-		.icon-feature {
-			font-size: 2.5rem;
-			color: #fff;
-			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
-		}
-
-		.card {
-			background-color: rgba(255, 255, 255, 0.05);
-			border: none;
-			border-radius: 15px;
-		}
-
-		.card-title {
-			font-family: 'Orbitron', sans-serif;
-			font-size: 24px;
-			font-style: normal;
-			font-weight: 700;
-			line-height: normal;
-		}
-
-		.btn-primary {
-			border-radius: 5px;
-			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
-		}
-
-		.btn-primary:hover {
-			background-color: #0b5ed7;
-		}
-		.btn-success {
-			border-radius: 5px;
-			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
-		}
-		.badge {
-
-			background: var(--Neon, linear-gradient(97deg, #D10ED1 12.04%, #10A3DA 81.84%));
-		}
-	</style>
 	<div class="text-center mb-4">
 		<img src="{{ asset('images/webp/NiceFeteSaRentree.webp') }}" alt="GNUT 06 participe à Nice Fête sa Rentrée" class="img-fluid rounded">
 	</div>
 	<!-- Hero Section -->
 	<header class="hero-section text-center">
 		<div class="container">
-			<h1 class="display-3 fw-bold" style="background: var(--2, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+			<h1 class="display-3 fw-bold nice-fete-rentree-gradient-text">
 				Participez à « Nice Fête sa Rentrée » avec Gnut 06 !
 			</h1>
-			<div class="video-container mb-4" style="position:relative; max-width:900px; margin:0 auto;">
-				<video id="event-video" class="img-fluid rounded shadow-sm" autoplay controls muted loop playsinline preload="metadata" poster="{{ asset('images/webp/NiceFeteSaRentree.webp') }}">
+			<div class="video-container mb-4 position-relative mx-auto nice-fete-rentree-video-wrapper">
+				<video id="event-video" class="img-fluid rounded shadow-sm nice-fete-rentree-video" autoplay controls muted loop playsinline preload="metadata" poster="{{ asset('images/webp/NiceFeteSaRentree.webp') }}">
 					<source src="{{ asset('videos/De_la_Mairie_a_la_VR.mp4') }}" type="video/mp4">
 					Votre navigateur ne supporte pas la vidéo.
 				</video>
@@ -110,17 +30,7 @@
 				</div>
 			</div>
 
-			<style>
-				.video-container video {
-					max-width: 900px;
-					width: 100%;
-					height: auto;
-					display: block;
-					margin: 0 auto;
-					border-radius: 12px;
-				}
-			</style>
-			<p class="lead mt-3 mb-4">
+		<p class="lead mt-3 mb-4">
 				<span class="fw-bold">Des Mondes Virtuels, des Liens Réels : L'Inclusion à Portée de Main</span>
 			</p>
 			<p class="fs-4">
@@ -139,7 +49,7 @@
 	<!-- Main Content -->
 	<main class="container my-5">
 		<section id="details" class="text-center mb-5">
-			<h2 class="mb-4 display-5 fw-bold text-primary" style="font-family: 'Orbitron', sans-serif; font-size: 32px; font-style: normal; font-weight: 700; line-height: normal;">
+			<h2 class="mb-4 display-5 fw-bold text-primary">
 				Plongez dans l'Expérience Gnut 06 !
 			</h2>
 			<p class="fs-5">
@@ -245,7 +155,7 @@
 			<div class="row justify-content-center my-4">
 				<div class="col-md-8">
 					<div class="card p-3 card-audio shadow-sm">
-						<h3 class="card-title mb-2 text-light" style="background: var(--2, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Écoutez notre message</h3>
+						<h3 class="card-title mb-2 nice-fete-rentree-gradient-text">Écoutez notre message</h3>
 						<p class="mb-2">Audio de présentation — Nice Fête sa Rentrée : "Quand la VR inclut l'handicap" (Gnut 06)</p>
 
 						<audio id="event-audio" class="w-100" controls preload="metadata" aria-label="Audio de présentation Gnut 06">

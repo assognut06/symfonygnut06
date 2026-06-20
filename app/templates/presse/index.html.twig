@@ -3,14 +3,14 @@
 {% block title %}Dossier de presse - Gnut 06
 {% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ asset('css/pages/presse.css') }}">
+{% endblock %}
+
 {% block body %}
-	<style>
-		.btn-outline-gradient:hover {
-			color: white !important;
-		}
-	</style>
 	<div class="container-fluid text-light pt-5 pb-3" role="contentinfo">
-		<div class="container">
+		<div class="container presse-container">
 			<h1 class="text-center mb-5 fw-bold gradient-text">Dossier de presse</h1>
 			<div class="accordion my-5" id="accordionAdherent">
 				<div class="accordion-item">

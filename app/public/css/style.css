@@ -3,11 +3,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 :root {
-    --Bubble-Gum: linear-gradient(90deg, #F86CF8 0%, #64CEF5 100%);
-    --Primary: #F86CF8;
+  --Bubble-Gum: linear-gradient(90deg, #F86CF8 0%, #64CEF5 100%);
+  --Primary: #F86CF8;
 }
-.bg-primary-light{
-    background-color: #E5D8FF;
+
+.bg-primary-light {
+  background-color: #E5D8FF;
 }
 
 body {
@@ -18,285 +19,285 @@ body {
   font-size: 20px;
   leading-trim: NONE;
   line-height: 36px;
-
 }
 
 
-.nav-link:hover{
-    color: var(--Primary) !important;
-
+.nav-link:hover {
+  color: var(--Primary) !important;
 }
 
 .btn-outline-gradient {
-    position: relative;
-    display: inline-block;
-    color: white;
-    background-color: transparent;
-    border: 1px solid transparent;
-    border-radius: 6px;
-    padding: 0.5rem 1rem;
-    z-index: 1;
-    text-decoration: none;
-    transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  color: white;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  z-index: 1;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 /* Bordure dégradée */
 .btn-outline-gradient::before {
-    content: "";
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    background: linear-gradient(97deg, #D10ED1 12.04%, #5328C3 81.84%);
-    z-index: -1;
-    border-radius: inherit;
-    mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-    -webkit-mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    -webkit-mask-composite: destination-out;
-    padding: 1px;
-    transition: opacity 0.3s ease;
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(97deg, #D10ED1 12.04%, #5328C3 81.84%);
+  z-index: -1;
+  border-radius: inherit;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  padding: 1px;
+  transition: opacity 0.3s ease;
 }
 
 /* Hover : suppression de la bordure dégradée + style neon */
 .btn-outline-gradient:hover::before {
-    opacity: 0;
+  opacity: 0;
 }
 
 .btn-outline-gradient:hover {
-    background: #7F29FF;
-    color: white;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
+  background: #7F29FF;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
 }
 
 /* Style pour les boutons formulaire don */
 .btn.btn-neon {
-    display: inline-flex;
-    padding: 6px 12px;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    border-radius: 6px;
-    color: #fff;
-    background-color: #7F29FF;
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 1;
-    border: none;
+  display: inline-flex;
+  padding: 6px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  border-radius: 6px;
+  color: #fff;
+  background-color: #7F29FF;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  border: none;
 }
 
 .btn.btn-outline-gradient {
-    position: relative;
-    display: inline-block;
-    color: white;
-    background-color: transparent;
-    border: 1px solid transparent;
-    border-radius: 6px;
-    padding: 0.5rem 1rem;
-    z-index: 1;
-    text-decoration: none;
-    transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  color: white;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  z-index: 1;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 /* Style pour les boutons formulaire don end */
 
 .btn-asso {
 
-    display: inline-flex;
-    padding: 6px 12px;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    border-radius: 6px;
-    color: white;
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 1;
-    background: #7F29FF;
+  display: inline-flex;
+  padding: 6px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  border-radius: 6px;
+  color: white;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  background: #7F29FF;
 }
 
 
 .btn-asso:hover {
-    background-color: transparent;
-    color: black;
+  background-color: transparent;
+  color: black;
 }
 
 .btn-asso:hover::before {
-    content: "";
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    background: linear-gradient(97deg, #D10ED1 12.04%, #5328C3 81.84%);
-    z-index: -1;
-    border-radius: inherit;
-    mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-    -webkit-mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    -webkit-mask-composite: destination-out;
-    padding: 1px;
-    transition: opacity 0.3s ease;
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(97deg, #D10ED1 12.04%, #5328C3 81.84%);
+  z-index: -1;
+  border-radius: inherit;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  padding: 1px;
+  transition: opacity 0.3s ease;
 }
 
 
 /* Soulignement blanc pour le lien "En savoir plus" */
 .icon-link.text {
-    color: white;
-    text-decoration-color: white !important;
+  color: white;
+  text-decoration-color: white !important;
 }
 
 .icon-link.text:hover {
-    color: white;
-    text-decoration-color: white !important;
+  color: white;
+  text-decoration-color: white !important;
 }
 
 @media (max-width: 1199px) {
-    .navbar .nav-item .btn-outline-gradient,
-    .navbar .nav-item .btn-neon {
-        display: block;
-        width: 100%;
-        text-align: left;
-        background: transparent;
-        border: none;
-        border-radius: 0;
-        padding: 0.5rem 1rem;
-        font-family: Poppins, sans-serif;
-        font-size: 16px;
-        color: white !important;
-        transition: color 0.3s ease;
-    }
 
-    .navbar .nav-item .btn-outline-gradient:hover,
-    .navbar .nav-item .btn-neon:hover {
-        color: var(--Primary) !important;
-        background: none;
-    }
+  .navbar .nav-item .btn-outline-gradient,
+  .navbar .nav-item .btn-neon {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0.5rem 1rem;
+    font-family: Poppins, sans-serif;
+    font-size: 16px;
+    color: white !important;
+    transition: color 0.3s ease;
+  }
 
-    /* Supprimer les effets dégradés et bordures dans le menu mobile */
-    .navbar .nav-item .btn-outline-gradient::before,
-    .navbar .nav-item .btn-neon::before {
-        content: none !important;
-    }
+  .navbar .nav-item .btn-outline-gradient:hover,
+  .navbar .nav-item .btn-neon:hover {
+    color: var(--Primary) !important;
+    background: none;
+  }
+
+  /* Supprimer les effets dégradés et bordures dans le menu mobile */
+  .navbar .nav-item .btn-outline-gradient::before,
+  .navbar .nav-item .btn-neon::before {
+    content: none !important;
+  }
 }
 
 /* Carousel indicators */
-.carousel-indicators > button {
-    border-radius: 50%;
-    height: 12px !important;
-    width: 12px !important;
-    background-color: var(--Primary) !important;
+.carousel-indicators>button {
+  border-radius: 50%;
+  height: 12px !important;
+  width: 12px !important;
+  background-color: var(--Primary) !important;
 }
 
 
 /* Style btn-neon (si utilisé ailleurs) */
 .btn-neon {
 
-    display: inline-flex;
-    padding: 6px 12px;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    border-radius: 6px;
-    color: white;
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 1;
-    background: #7F29FF;
+  display: inline-flex;
+  padding: 6px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  border-radius: 6px;
+  color: white;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  background: #7F29FF;
 }
 
 
 .btn-neon:hover {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .btn-neon:hover::before {
-    content: "";
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    background: linear-gradient(97deg, #D10ED1 12.04%, #5328C3 81.84%);
-    z-index: -1;
-    border-radius: inherit;
-    mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-    -webkit-mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    -webkit-mask-composite: destination-out;
-    padding: 1px;
-    transition: opacity 0.3s ease;
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(97deg, #D10ED1 12.04%, #5328C3 81.84%);
+  z-index: -1;
+  border-radius: inherit;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  padding: 1px;
+  transition: opacity 0.3s ease;
 }
 
 
 .card {
-    border: none !important;
-    background: transparent; /* optionnel, si tu veux supprimer le fond blanc aussi */
+  border: none !important;
+  background: transparent;
+  /* optionnel, si tu veux supprimer le fond blanc aussi */
 }
 
-.logoNavbar{
-    font-family: Orbitron;
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    background: var(--Bubble-Gum, linear-gradient(90deg, #F86CF8 0%, #64CEF5 100%));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    width: 128px;
-    flex-shrink: 0;
-    text-decoration: none;
+
+.logoNavbar {
+  font-family: Orbitron;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  background: var(--Bubble-Gum, linear-gradient(90deg, #F86CF8 0%, #64CEF5 100%));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  width: 128px;
+  flex-shrink: 0;
+  text-decoration: none;
 }
 
-.logoNavbarAdmin
-{
-    width: 40px;
+.logoNavbarAdmin {
+  width: 40px;
 }
 
-.bg-navbar{
+.bg-navbar {
   background: linear-gradient(to right, #010208, #010206, #040008, #010101);
 }
 
-.text-navbar{
+.text-navbar {
   font-family: Poppins;
   font-weight: 400;
   font-size: 16px;
 }
 
-.stars{
-    display: flex;
-    align-items: flex-start;
-    gap: 4px;
+.stars {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .bg-main {
   background: linear-gradient(#010208, #010206, #040008, #010101);
 }
 
-.text-main{
-    font-family: orbitron;
-    font-size: 55px;
-    font-weight: 700;
+.text-main {
+  font-family: orbitron;
+  font-size: 55px;
+  font-weight: 700;
 }
 
 .gradient-text {
@@ -309,33 +310,34 @@ body {
 }
 
 
-h1{
-    font-family: orbitron !important;
-    font-weight: 600 !important;
-    font-size: 45px !important;
-    color: white !important;
-}
-
-h2{
+h1 {
   font-family: orbitron !important;
   font-weight: 600 !important;
   font-size: 45px !important;
   color: white !important;
 }
 
-h3{
-    color: white !important;
-
-    /* Body/Text Medium */
-    font-family: Poppins;
-    font-size: 20px !important;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 36px; /* 180% */
-    text-transform: uppercase;
+h2 {
+  font-family: orbitron !important;
+  font-weight: 600 !important;
+  font-size: 45px !important;
+  color: white !important;
 }
 
-.text{
+h3 {
+  color: white !important;
+
+  /* Body/Text Medium */
+  font-family: Poppins;
+  font-size: 20px !important;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 36px;
+  /* 180% */
+  text-transform: uppercase;
+}
+
+.text {
   color: white;
   font-family: Poppins;
   font-weight: 400;
@@ -345,61 +347,74 @@ h3{
 
 }
 
+.form-donateur {
+  font-family: Segoe UI;
+}
+
 .logo_footer {
   /* width: 70%; */
-    height: auto;
-    font-family: Orbitron;
-    font-size: 50px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
+  height: auto;
+  font-family: Orbitron;
+  font-size: 50px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 
-    background: var(--Bubble-Gum, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  background: var(--Bubble-Gum, linear-gradient(97deg, #F86CF8 12.04%, #64CEF5 81.84%));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.title_footer{
-    color: #F5F5F5;
-    font-family: Orbitron;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
+.title_footer {
+  color: #F5F5F5;
+  font-family: Orbitron;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 }
 
-.section_footer a{
-    text-decoration: none;
-    color: white;
+.section_footer a {
+  text-decoration: none;
+  color: white;
 
-    /* Body/Text Semi Bold */
-    font-family: Poppins;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 150%; /* 24px */
+  /* Body/Text Semi Bold */
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%;
+  /* 24px */
 }
 
+/* Style pour le texte "GNUT Team" du footer */
+
+.gnutTeamText {
+  color: #F86CF8;
+}
 
 
 .carousel.pointer-event {
   padding-top: 18px !important;
 }
 
-.logoBack{
+.logoBack {
   background-color: #090823;
 }
 
-.logoAsso{
+.logoAsso {
 
- width: 180px;
+  width: 180px;
 }
-.logoAssoFiche{
-  width : 220px;
+
+.logoAssoFiche {
+  width: 220px;
 }
+
 .emoji {
-  font-size: 1.5rem; /* Adjust size of emojis */
+  font-size: 1.5rem;
+  /* Adjust size of emojis */
 }
 
 .pagination-container {
@@ -407,9 +422,10 @@ h3{
   justify-content: center;
 }
 
-.logoAssoAdmin{
-  width :35px;
+.logoAssoAdmin {
+  width: 35px;
 }
+
 .text-justify {
   text-align: justify;
 }
@@ -426,19 +442,23 @@ h3{
   display: flex;
   padding: 0;
 }
+
 .HaAuthorizeButton:disabled {
   background-color: #E9E9F0;
   border-color: transparent;
   cursor: not-allowed;
 }
+
 .HaAuthorizeButton:not(:disabled):focus {
   box-shadow: 0 0 0 0.25rem rgba(73, 211, 138, 0.25);
   -webkit-box-shadow: 0 0 0 0.25rem rgba(73, 211, 138, 0.25);
 }
+
 .HaAuthorizeButtonLogo {
   padding: 0 0.8rem;
   width: 2.25rem;
 }
+
 .HaAuthorizeButtonTitle {
   background-color: #49D38A;
   color: #FFFFFF;
@@ -446,14 +466,17 @@ h3{
   font-weight: 700;
   padding: 0.78125rem 1.5rem;
 }
+
 .HaAuthorizeButton:disabled .HaAuthorizeButtonTitle {
   background-color: #E9E9F0;
   color: #9A9DA8;
 }
+
 .HaAuthorizeButton:not(:disabled):hover .HaAuthorizeButtonTitle,
 .HaAuthorizeButton:not(:disabled):focus .HaAuthorizeButtonTitle {
   background-color: #30c677;
 }
+
 /* Début Google map */
 
 /* .google-map {
@@ -483,6 +506,7 @@ h3{
 .map-responsive iframe {
   width: 100%;
 }
+
 /* Fin Google map*/
 
 
@@ -513,14 +537,14 @@ h3{
 .carousel-item img {
   max-height: 100vh;
 }
-.imgTop
-{
+
+.imgTop {
   height: 75px;
 }
 
 /* Always set the map height explicitly to define the size of the div
  * element that contains the map. */
- gmp-map {
+gmp-map {
   height: 100%;
 }
 
@@ -528,15 +552,17 @@ h3{
 .icon-footer {
   border-radius: 50%;
 }
+
 /* Définition de l'animation */
 @keyframes slide-in-left {
   from {
-      transform: translateX(-100%);
-      opacity: 0;
+    transform: translateX(-100%);
+    opacity: 0;
   }
+
   to {
-      transform: translateX(0);
-      opacity: 1;
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
@@ -544,14 +570,16 @@ h3{
 .image-appear {
   animation: slide-in-left 1s ease-out;
 }
+
 @keyframes slide-in-right {
   from {
-      transform: translateX(100%);
-      opacity: 0;
+    transform: translateX(100%);
+    opacity: 0;
   }
+
   to {
-      transform: translateX(0);
-      opacity: 1;
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
@@ -559,12 +587,14 @@ h3{
 .image-appear_r {
   animation: slide-in-right 1s ease-out;
 }
+
 @keyframes zoom-in {
   from {
-      transform: scale(1);
+    transform: scale(1);
   }
+
   to {
-      transform: scale(1.2);
+    transform: scale(1.2);
   }
 }
 
@@ -591,50 +621,50 @@ h3{
   margin-top: 4px;
   display: none;
 }
+
 .suggestion-item:hover {
   background-color: #f0f0f0;
 }
 
 .map-responsive {
-    position: relative;
-    overflow: hidden;
-    padding-bottom: 56.25%; /* ratio 16:9 */
-    height: 0;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 56.25%;
+  /* ratio 16:9 */
+  height: 0;
 }
 
 .map-responsive iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 /* Footer responsive : alignement en colonne sur mobile */
 @media (max-width: 767.98px) {
-    footer .row {
-        flex-direction: column !important;
-        align-items: center !important;
-        text-align: center !important;
-    }
+  footer .row {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
 
-    footer .section_footer {
-        width: 100% !important;
-    }
+  footer .section_footer {
+    width: 100% !important;
+  }
 
-    footer .section_footer ul {
-        padding-left: 0;
-    }
+  footer .section_footer ul {
+    padding-left: 0;
+  }
 
-    footer .d-flex[role="navigation"] {
-        justify-content: center !important;
-    }
+  footer .d-flex[role="navigation"] {
+    justify-content: center !important;
+  }
 
-    footer .col-6 {
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
-    }
+  footer .col-6 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
 }
-
-
