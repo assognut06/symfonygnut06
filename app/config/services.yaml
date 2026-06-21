@@ -24,8 +24,8 @@ parameters:
     app.env: '%env(APP_ENV)%'
     oauth.azure_client_id: '%env(default::AZURE_CLIENT_ID)%'
     oauth.google_client_id: '%env(default::GOOGLE_CLIENT_ID)%'
-    cv_tih_directory: '%kernel.project_dir%/public/uploads/tihcv'
-    attestation_tih_directory: '%kernel.project_dir%/public/uploads/tihattest'
+    cv_tih_directory: '%kernel.project_dir%/var/tihcv'
+    attestation_tih_directory: '%kernel.project_dir%/var/tihattest'
     helloasso.webhook.default_allowed_ips: '51.138.206.200'
     helloasso.webhook.empty_secret: ''
     helloasso.webhook.default_signature_header: 'X-HelloAsso-Signature'
@@ -165,7 +165,9 @@ services:
             $openAiApiKey: '%openai.api_key%'
             $openAiModel: '%openai.model%'
 
-    App\Service\EmailService: ~
+    App\Service\EmailService:
+        arguments:
+            $logoPath: '%kernel.project_dir%/public/images/LogoNew.png'
 
     App\Service\GeocodeService:
         arguments:

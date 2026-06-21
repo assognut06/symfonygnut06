@@ -70,12 +70,12 @@
                         {# Download Links #}
                         <div class="d-grid gap-2">
                             {% if tih.cv %}
-                                <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank" class="btn btn-outline-light btn-sm">
+                                <a href="{{ path('app_tih_public_cv', {'id': tih.id}) }}" target="_blank" class="btn btn-outline-light btn-sm">
                                     <i class="bi bi-file-earmark-pdf me-1"></i> Télécharger le CV
                                 </a>
                             {% endif %}
                             {% if tih.attestationTih %}
-                                <a href="{{ asset('uploads/tihattest/' ~ tih.attestationTih) }}" target="_blank" class="btn btn-outline-light btn-sm">
+                                <a href="{{ path('app_tih_public_attestation', {'id': tih.id}) }}" target="_blank" class="btn btn-outline-light btn-sm">
                                     <i class="bi bi-file-earmark-check me-1"></i> Attestation TIH
                                 </a>
                             {% endif %}
