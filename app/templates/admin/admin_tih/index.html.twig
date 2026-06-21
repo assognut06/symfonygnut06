@@ -110,14 +110,14 @@
                             </p>
                             <p><strong>CV :</strong>
                               {% if tih.cv %}
-                                <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>
+                                <a href="{{ path('espace_tih_cv') }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>
                               {% else %}
                                 —
                               {% endif %}
                             </p>
                             <p><strong>Attestation TIH :</strong>
                               {% if tih.attestationTih %}
-                                <a href="{{ asset('uploads/tihattest/' ~ tih.attestationTih) }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir l'attestation</a>
+                                <a href="{{ path('espace_tih_attestation') }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir l'attestation</a>
                               {% else %}
                                 —
                               {% endif %}
