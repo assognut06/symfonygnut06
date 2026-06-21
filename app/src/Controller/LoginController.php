@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,8 +14,13 @@ class LoginController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // Si l'utilisateur est déjà connecté, le rediriger vers son profil
-        if ($this->getUser()) {
+        $user = $this->getUser();
+        if ($user instanceof User && $user->isVerified()) {
             return $this->redirectToRoute('app_profil');
+        }
+
+        if ($user instanceof User) {
+            $this->addFlash('error', 'Votre compte n\'est pas encore vérifié. Veuillez valider votre adresse email avant d\'accéder à votre profil.');
         }
 
         // get the login error if there is one

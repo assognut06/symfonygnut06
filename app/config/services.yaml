@@ -165,7 +165,9 @@ services:
             $openAiApiKey: '%openai.api_key%'
             $openAiModel: '%openai.model%'
 
-    App\Service\EmailService: ~
+    App\Service\EmailService:
+        arguments:
+            $logoPath: '%kernel.project_dir%/public/images/LogoNew.png'
 
     App\Service\GeocodeService:
         arguments:
