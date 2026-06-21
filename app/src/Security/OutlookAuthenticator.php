@@ -9,6 +9,7 @@ use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -25,13 +26,16 @@ class OutlookAuthenticator extends OAuth2Authenticator implements Authentication
     private EntityManagerInterface $entityManager;
     private RouterInterface $router;
     private UserPasswordHasherInterface $passwordHasher;
+    private Security $security;
+    private bool $oauthLinking = false;
 
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher)
+    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, Security $security)
     {
         $this->clientRegistry = $clientRegistry;
         $this->entityManager = $entityManager;
         $this->router = $router;
         $this->passwordHasher = $passwordHasher;
+        $this->security = $security;
     }
 
     public function supports(Request $request): ?bool
@@ -69,33 +73,40 @@ class OutlookAuthenticator extends OAuth2Authenticator implements Authentication
                 throw new AuthenticationException('Impossible de récupérer l\'email depuis Microsoft Azure. Données reçues: ' . json_encode(array_keys($azureData)));
             }
 
-            // Chercher l'utilisateur par azureId d'abord, puis par email
             $user = $this->entityManager->getRepository(User::class)
                 ->findOneBy(['azureId' => $azureId]);
+            $currentUser = $this->security->getUser();
 
-            if (!$user) {
-                // Vérifier si un utilisateur avec cet email existe déjà
-                $user = $this->entityManager->getRepository(User::class)
+            if ($currentUser instanceof User) {
+                if ($user && $user->getId() !== $currentUser->getId()) {
+                    throw new AuthenticationException('Ce compte Microsoft est déjà lié à un autre utilisateur.');
+                }
+
+                if ($currentUser->getAzureId() && $currentUser->getAzureId() !== $azureId) {
+                    throw new AuthenticationException('Votre profil est déjà lié à un autre compte Microsoft.');
+                }
+
+                $currentUser->setAzureId($azureId);
+                $this->entityManager->flush();
+                $this->oauthLinking = true;
+                $user = $currentUser;
+            } elseif (!$user) {
+                $existingUser = $this->entityManager->getRepository(User::class)
                     ->findOneBy(['email' => $email]);
 
-                if ($user) {
-                    // Lier le compte existant avec Azure
-                    $user->setAzureId($azureId);
-                } else {
-                    // Créer un nouvel utilisateur
-                    $user = new User();
-                    $user->setAzureId($azureId);
-                    $user->setEmail($email);
-                    $user->setRoles(['ROLE_USER']);
-
-                    // Générer un mot de passe aléatoire pour les utilisateurs OAuth
-                    $randomPassword = bin2hex(random_bytes(32));
-                    $hashedPassword = $this->passwordHasher->hashPassword($user, $randomPassword);
-                    $user->setPassword($hashedPassword);
-
-                    // Marquer comme vérifié puisque Microsoft a déjà vérifié l'email
-                    $user->setVerified(true);
+                if ($existingUser) {
+                    throw new AuthenticationException('Un compte existe déjà avec cet email. Connectez-vous avec votre mot de passe, puis liez Microsoft depuis votre profil.');
                 }
+
+                $user = new User();
+                $user->setAzureId($azureId);
+                $user->setEmail($email);
+                $user->setRoles(['ROLE_USER']);
+
+                $randomPassword = bin2hex(random_bytes(32));
+                $hashedPassword = $this->passwordHasher->hashPassword($user, $randomPassword);
+                $user->setPassword($hashedPassword);
+                $user->setVerified(true);
 
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
@@ -115,6 +126,10 @@ class OutlookAuthenticator extends OAuth2Authenticator implements Authentication
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        if ($this->oauthLinking) {
+            $request->getSession()->getFlashBag()->add('success', 'Votre compte Microsoft est lié à votre profil.');
+        }
+
         // Rediriger vers le profil utilisateur après connexion réussie
         $targetUrl = $this->router->generate('app_profil');
         return new RedirectResponse($targetUrl);
@@ -130,7 +145,7 @@ class OutlookAuthenticator extends OAuth2Authenticator implements Authentication
         // Ajouter un message flash pour l'utilisateur
         if ($request->hasSession()) {
             $session = $request->getSession();
-            $session->set('_flash_error', 'Erreur de connexion avec Microsoft: ' . $exception->getMessage());
+            $session->getFlashBag()->add('danger', 'Erreur de connexion avec Microsoft: ' . $exception->getMessage());
         }
 
         return new RedirectResponse($this->router->generate('app_login'));
