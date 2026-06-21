@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -33,8 +34,9 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     private UserPasswordHasherInterface $passwordHasher;
     private EmailService $emailService;
     private LoggerInterface $logger;
+    private Security $security;
   
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, EmailService $emailService, LoggerInterface $logger)
+    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, EmailService $emailService, LoggerInterface $logger, Security $security)
     {
         $this->clientRegistry = $clientRegistry;
         $this->entityManager = $entityManager;
@@ -42,6 +44,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         $this->passwordHasher = $passwordHasher;
         $this->emailService = $emailService;
         $this->logger = $logger;
+        $this->security = $security;
     }
 
     /**
@@ -83,10 +86,22 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
                 if ($existingUser) {
-                    // L'utilisateur existe avec cet email, on lie le compte Google
+                    $currentUser = $this->security->getUser();
+
+                    if (!$currentUser instanceof User || $currentUser->getId() !== $existingUser->getId()) {
+                        throw new CustomUserMessageAuthenticationException(
+                            'Un compte existe déjà avec cet email. Connectez-vous d’abord avec votre mot de passe, puis liez Google depuis votre profil.'
+                        );
+                    }
+
+                    if ($existingUser->getGoogleId() !== null && $existingUser->getGoogleId() !== $googleId) {
+                        throw new CustomUserMessageAuthenticationException('Ce compte Google ne correspond pas au compte déjà lié à votre profil.');
+                    }
+
                     $existingUser->setGoogleId($googleId);
                     $this->entityManager->persist($existingUser);
                     $this->entityManager->flush();
+
                     return $this->ensureVerified($existingUser);
                 }
 
