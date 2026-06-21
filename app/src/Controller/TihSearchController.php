@@ -15,7 +15,9 @@ use App\Form\TihContactType;
 use App\Repository\TihRepository;
 use App\Service\GeocodeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -137,6 +139,40 @@ class TihSearchController extends AbstractController
         ]);
     }
 
+    #[Route('/tih/{id}/cv', name: 'app_tih_public_cv', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function downloadPublicCv(TihRepository $tihRepository, int $id): Response
+    {
+        $tih = $this->getValidatedTih($tihRepository, $id);
+
+        if (!$tih->getCv()) {
+            throw $this->createNotFoundException('CV introuvable.');
+        }
+
+        return $this->createInlineFileResponse(
+            (string) $tih->getCv(),
+            (string) $this->getParameter('cv_tih_directory'),
+            'public/uploads/tihcv',
+            'CV introuvable.'
+        );
+    }
+
+    #[Route('/tih/{id}/attestation', name: 'app_tih_public_attestation', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function downloadPublicAttestation(TihRepository $tihRepository, int $id): Response
+    {
+        $tih = $this->getValidatedTih($tihRepository, $id);
+
+        if (!$tih->getAttestationTih()) {
+            throw $this->createNotFoundException('Attestation introuvable.');
+        }
+
+        return $this->createInlineFileResponse(
+            (string) $tih->getAttestationTih(),
+            (string) $this->getParameter('attestation_tih_directory'),
+            'public/uploads/tihattest',
+            'Attestation introuvable.'
+        );
+    }
+
     #[Route('/tih/{id}/contact', name: 'app_tih_contact', methods: ['GET', 'POST'])]
     public function contact(Request $request, TihRepository $tihRepository, int $id): Response
     {
@@ -175,5 +211,41 @@ class TihSearchController extends AbstractController
             'form' => $form->createView(),
             'tih' => $tihViewModel,
         ]);
+    }
+
+    private function getValidatedTih(TihRepository $tihRepository, int $id): Tih
+    {
+        $tih = $tihRepository->findValidatedById($id);
+
+        if (!$tih) {
+            throw $this->createNotFoundException('TIH non trouvé.');
+        }
+
+        return $tih;
+    }
+
+    private function createInlineFileResponse(
+        string $storedFilename,
+        string $uploadDirectory,
+        string $legacyDirectory,
+        string $notFoundMessage
+    ): BinaryFileResponse {
+        $fileName = basename($storedFilename);
+        $filePath = rtrim($uploadDirectory, '/') . '/' . $fileName;
+
+        if (!is_file($filePath)) {
+            $legacyPath = rtrim((string) $this->getParameter('kernel.project_dir'), '/') . '/' . trim($legacyDirectory, '/') . '/' . $fileName;
+
+            if (is_file($legacyPath)) {
+                $filePath = $legacyPath;
+            } else {
+                throw $this->createNotFoundException($notFoundMessage);
+            }
+        }
+
+        $response = new BinaryFileResponse($filePath);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $fileName);
+
+        return $response;
     }
 }
