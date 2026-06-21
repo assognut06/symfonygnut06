@@ -49,6 +49,10 @@ class ProfilController extends AbstractController
         // Récupérer l'utilisateur connecté
         /** @var User $user */
         $user = $this->getUser();
+        if (!$user instanceof User || !$user->isVerified()) {
+            throw $this->createAccessDeniedException('Veuillez valider votre adresse email pour accéder à votre profil.');
+        }
+
         $userEmail = urlencode($user->getUserIdentifier());
 
         $payer = $this->getOrCreatePayer($user);
