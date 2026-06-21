@@ -82,6 +82,17 @@ class TihRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+    
+    public function findValidatedById(int $id): ?Tih
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.id = :id')
+            ->andWhere('t.isValidate = :validated')
+            ->setParameter('id', $id)
+            ->setParameter('validated', true)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
     /**
      * Search TIH profiles with filters and pagination
