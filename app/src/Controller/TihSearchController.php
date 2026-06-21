@@ -126,7 +126,7 @@ class TihSearchController extends AbstractController
     #[Route('/tih/{id}', name: 'app_tih_details', methods: ['GET'])]
     public function details(TihRepository $tihRepository, int $id): Response
     {
-        $tih = $tihRepository->find($id);
+        $tih = $tihRepository->findValidatedById($id);
 
         if (!$tih) {
             throw $this->createNotFoundException('TIH non trouvé.');
@@ -140,7 +140,7 @@ class TihSearchController extends AbstractController
     #[Route('/tih/{id}/contact', name: 'app_tih_contact', methods: ['GET', 'POST'])]
     public function contact(Request $request, TihRepository $tihRepository, int $id): Response
     {
-        $tih = $tihRepository->find($id);
+        $tih = $tihRepository->findValidatedById($id);
 
         if (!$tih) {
             throw $this->createNotFoundException('TIH non trouvé.');
