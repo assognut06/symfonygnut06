@@ -9,10 +9,12 @@ use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
@@ -25,13 +27,15 @@ class OutlookAuthenticator extends OAuth2Authenticator implements Authentication
     private EntityManagerInterface $entityManager;
     private RouterInterface $router;
     private UserPasswordHasherInterface $passwordHasher;
+    private Security $security;
 
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher)
+    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, Security $security)
     {
         $this->clientRegistry = $clientRegistry;
         $this->entityManager = $entityManager;
         $this->router = $router;
         $this->passwordHasher = $passwordHasher;
+        $this->security = $security;
     }
 
     public function supports(Request $request): ?bool
@@ -79,7 +83,18 @@ class OutlookAuthenticator extends OAuth2Authenticator implements Authentication
                     ->findOneBy(['email' => $email]);
 
                 if ($user) {
-                    // Lier le compte existant avec Azure
+                    $currentUser = $this->security->getUser();
+
+                    if (!$currentUser instanceof User || $currentUser->getId() !== $user->getId()) {
+                        throw new CustomUserMessageAuthenticationException(
+                            'Un compte existe déjà avec cet email. Connectez-vous d’abord avec votre mot de passe, puis liez Microsoft depuis votre profil.'
+                        );
+                    }
+
+                    if ($user->getAzureId() !== null && $user->getAzureId() !== $azureId) {
+                        throw new CustomUserMessageAuthenticationException('Ce compte Microsoft ne correspond pas au compte déjà lié à votre profil.');
+                    }
+
                     $user->setAzureId($azureId);
                 } else {
                     // Créer un nouvel utilisateur
