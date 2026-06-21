@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -30,8 +31,9 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     private UserPasswordHasherInterface $passwordHasher;
     private EmailService $emailService;
     private LoggerInterface $logger;
+    private Security $security;
   
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, EmailService $emailService, LoggerInterface $logger)
+    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, EmailService $emailService, LoggerInterface $logger, Security $security)
     {
         $this->clientRegistry = $clientRegistry;
         $this->entityManager = $entityManager;
@@ -39,6 +41,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         $this->passwordHasher = $passwordHasher;
         $this->emailService = $emailService;
         $this->logger = $logger;
+        $this->security = $security;
     }
 
     /**
@@ -95,6 +98,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                     $existingUser->setGoogleId($googleId);
                     $this->entityManager->persist($existingUser);
                     $this->entityManager->flush();
+
                     return $this->ensureVerified($existingUser);
                 }
 
