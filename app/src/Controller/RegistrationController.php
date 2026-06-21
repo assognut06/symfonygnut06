@@ -14,7 +14,6 @@ use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -37,7 +36,6 @@ class RegistrationController extends AbstractController
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        Security $security,
         EntityManagerInterface $entityManager,
         RecaptchaVerifier $recaptchaVerifier,
         EmailService $emailService
@@ -78,13 +76,13 @@ class RegistrationController extends AbstractController
 
             try {
                 $emailService->sendConfirmationEmail($user);
-                $this->addFlash('success', 'Un email de confirmation a été envoyé. Veuillez consulter votre boîte mail.');
+                $this->addFlash('success', 'Votre compte a été créé. Un email de confirmation vous a été envoyé : validez votre adresse avant de vous connecter.');
             } catch (\Exception $e) {
                 $this->logger->error('Erreur envoi email de confirmation', ['exception' => $e]);
                 $this->addFlash('danger', 'Problème lors de l\'envoi du mail. Veuillez réessayer.');
             }
 
-            return $security->login($user, 'form_login', 'main');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -112,8 +110,22 @@ class RegistrationController extends AbstractController
         try {
             $emailService->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $e) {
-            $this->addFlash('verify_email_error', $translator->trans($e->getReason(), [], 'VerifyEmailBundle'));
-            return $this->redirectToRoute('app_home');
+            try {
+                $emailService->sendConfirmationEmail($user);
+                $this->addFlash('verify_email_error', sprintf(
+                    '%s Un nouveau lien de validation vient de vous être envoyé.',
+                    $translator->trans($e->getReason(), [], 'VerifyEmailBundle')
+                ));
+            } catch (\Exception $mailException) {
+                $this->logger->error('Erreur renvoi email de confirmation apres lien invalide', [
+                    'user_id' => $user->getId(),
+                    'email' => $user->getEmail(),
+                    'exception' => $mailException,
+                ]);
+                $this->addFlash('verify_email_error', $translator->trans($e->getReason(), [], 'VerifyEmailBundle'));
+            }
+
+            return $this->redirectToRoute('app_login');
         }
 
         $this->addFlash('success', 'Votre adresse e-mail a été vérifiée.');

@@ -7,25 +7,21 @@ use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use League\OAuth2\Client\Provider\GoogleUser;
+use App\Service\EmailService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
-use App\Service\EmailService;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Routing\Annotation\Route;
-use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationEntrypointInterface
 {
@@ -36,9 +32,8 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     private EmailService $emailService;
     private LoggerInterface $logger;
     private Security $security;
-    private SessionInterface $session;
   
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, EmailService $emailService, LoggerInterface $logger, Security $security, RequestStack $requestStack)
+    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, EmailService $emailService, LoggerInterface $logger, Security $security)
     {
         $this->clientRegistry = $clientRegistry;
         $this->entityManager = $entityManager;
@@ -47,8 +42,6 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         $this->emailService = $emailService;
         $this->logger = $logger;
         $this->security = $security;
-        $this->session = $requestStack->getSession();
-       
     }
 
     /**
@@ -83,18 +76,30 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
 
                 if ($existingUser) {
                     // L'utilisateur existe déjà avec ce Google ID, on le retourne
-                    return $existingUser;
+                    return $this->ensureVerified($existingUser);
                 }
 
                 // 2. Cherche un utilisateur correspondant à cet e-mail dans notre base de données
                 $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
                 if ($existingUser) {
-                    // L'utilisateur existe avec cet email, on lie le compte Google
+                    $currentUser = $this->security->getUser();
+
+                    if (!$currentUser instanceof User || $currentUser->getId() !== $existingUser->getId()) {
+                        throw new CustomUserMessageAuthenticationException(
+                            'Un compte existe déjà avec cet email. Connectez-vous d’abord avec votre mot de passe, puis liez Google depuis votre profil.'
+                        );
+                    }
+
+                    if ($existingUser->getGoogleId() !== null && $existingUser->getGoogleId() !== $googleId) {
+                        throw new CustomUserMessageAuthenticationException('Ce compte Google ne correspond pas au compte déjà lié à votre profil.');
+                    }
+
                     $existingUser->setGoogleId($googleId);
                     $this->entityManager->persist($existingUser);
                     $this->entityManager->flush();
-                    return $existingUser;
+
+                    return $this->ensureVerified($existingUser);
                 }
 
                 // 3. L'utilisateur n'existe pas, on le crée et on l'enregistre
@@ -120,26 +125,31 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 $this->entityManager->persist($newUser);
                 $this->entityManager->flush();
 
-                if ($newUser) {
-            // Si l'utilisateur n'est pas encore vérifié, on envoie l'email de confirmation
-             try {
-                $this->emailService->sendConfirmationEmail($newUser);
-               // $this->addFlash('success', 'Un email de confirmation a été envoyé. Veuillez consulter votre boîte mail.');
-            } catch (\Exception $e) {
-                $this->logger->error('Erreur envoi email de confirmation', ['exception' => $e]);
-               // $this->addFlash('danger', 'Problème lors de l\'envoi du mail. Veuillez réessayer.');
-            }
-           // return $this->redirectToRoute('app_profil');
-            return $this->security->login($newUser, 'form_login', 'main');; // Retourne l'utilisateur connecté.
-        }
-        else{
-          //  $this->addFlash('danger', "Erreur lors de l'authentification Google. Veuillez réessayer ou contacter l'administrateur.");
-           // return $this->redirectToRoute('app_login');
-        }
-
-              //  return $this->redirectToRoute('app_profil');
+                return $this->ensureVerified($newUser);
             })
         );
+    }
+
+    private function ensureVerified(User $user): User
+    {
+        if ($user->isVerified()) {
+            return $user;
+        }
+
+        try {
+            $this->emailService->sendConfirmationEmail($user);
+            $message = 'Votre compte n\'est pas encore vérifié. Un nouveau lien de validation vient de vous être envoyé par email.';
+        } catch (\Throwable $exception) {
+            $this->logger->error('Erreur renvoi email de confirmation pendant la connexion Google', [
+                'user_id' => $user->getId(),
+                'email' => $user->getEmail(),
+                'exception' => $exception,
+            ]);
+
+            $message = 'Votre compte n\'est pas encore vérifié. Le renvoi du lien de validation a échoué, veuillez réessayer plus tard.';
+        }
+
+        throw new CustomUserMessageAuthenticationException($message);
     }
 
     /**
@@ -161,11 +171,12 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     {
         $message = strtr($exception->getMessageKey(), $exception->getMessageData());
 
-        // Vous pouvez rediriger vers la page de connexion avec un message d'erreur
-       // $request->getSession()-> $this->addFlash('danger', $message);
+        if ($request->hasSession()) {
+            $request->getSession()->getFlashBag()->add('error', $message);
+        }
         
         return new RedirectResponse(
-            $this->router->generate('app_profil')
+            $this->router->generate('app_login')
         );
     }
      public function __toString(): string
