@@ -18,7 +18,8 @@ class MentionLegalesController extends AbstractController
     #[Route('/mentions-legales', name: 'app_mentions_legales')]
     public function mentionsLegales(): Response
     {
-        return $this->render('mention_legales/mentions_legales.html.twig', [
+        return $this->render('mention_legales/index.html.twig', [
+            'page' => 'mentions_legales',
             'title' => 'Mentions légales | GNUT 06',
             'description' => 'Informations légales de l’association GNUT 06, éditrice du site gnut06.org.',
         ]);
@@ -27,7 +28,8 @@ class MentionLegalesController extends AbstractController
     #[Route('/politique-confidentialite', name: 'app_politique_confidentialite')]
     public function politiqueConfidentialite(): Response
     {
-        return $this->render('mention_legales/politique_confidentialite.html.twig', [
+        return $this->render('mention_legales/index.html.twig', [
+            'page' => 'politique_confidentialite',
             'title' => 'Politique de confidentialité | GNUT 06',
             'description' => 'Informations sur la collecte, l’utilisation et la conservation des données personnelles par GNUT 06.',
         ]);
@@ -36,7 +38,8 @@ class MentionLegalesController extends AbstractController
     #[Route('/politique-cookies', name: 'app_politique_cookies')]
     public function politiqueCookies(): Response
     {
-        return $this->render('mention_legales/politique_cookies.html.twig', [
+        return $this->render('mention_legales/index.html.twig', [
+            'page' => 'politique_cookies',
             'title' => 'Politique cookies | GNUT 06',
             'description' => 'Informations sur l’utilisation des cookies et traceurs sur le site gnut06.org.',
         ]);
@@ -45,7 +48,8 @@ class MentionLegalesController extends AbstractController
     #[Route('/charte-chatbot-ia', name: 'app_charte_chatbot_ia')]
     public function charteChatbotIa(): Response
     {
-        return $this->render('mention_legales/charte_chatbot_ia.html.twig', [
+        return $this->render('mention_legales/index.html.twig', [
+            'page' => 'charte_chatbot_ia',
             'title' => 'Charte chatbot IA | GNUT 06',
             'description' => 'Informations sur l’utilisation du chatbot IA proposé sur le site gnut06.org.',
         ]);

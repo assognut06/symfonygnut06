@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.legal-page a:focus { outline: 3px solid #F86CF8 !important; outline-offset: 2px !important; box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important; }
+.legal-page a { color: white !important; text-decoration: underline !important; text-decoration-color: white !important; text-underline-offset: 2px !important; transition: all 0.3s ease !important; font-weight: 500 !important; }
+.legal-page a:hover { color: rgba(255, 255, 255, 0.8) !important; text-decoration-color: rgba(255, 255, 255, 0.8) !important; text-decoration-thickness: 2px !important; }
+.legal-page a[target="_blank"]::after { content: " (nouvelle fenêtre)"; font-size: 0.875rem; color: rgba(255, 255, 255, 0.8); font-weight: normal; }
+.skip-link { position: absolute; top: -40px; left: 6px; background: #000000; color: #ffffff; padding: 8px 12px; text-decoration: none; border-radius: 0 0 4px 4px; z-index: 1000; font-weight: bold; }
+.skip-link:focus { top: 0; outline: 3px solid #F86CF8; }
+.text { color: #ffffff !important; line-height: 1.6 !important; }
+h1, h2, h3 { margin-top: 2rem !important; margin-bottom: 1rem !important; }
+h1 { margin-top: 0 !important; }
+ul { margin-bottom: 1.5rem !important; padding-left: 1.5rem !important; }
+li { margin-bottom: 0.75rem !important; line-height: 1.6 !important; }
+p { margin-bottom: 1rem !important; }
+.legal-nav { border: 1px solid rgba(255,255,255,.2); border-radius: 12px; padding: 1rem; margin: 2rem 0; }
+.cookie-management-button { background: none; border: 1px solid #ffffff; border-radius: 999px; color: #ffffff; padding: .6rem 1rem; text-decoration: underline; }
+.cookie-management-button:hover, .cookie-management-button:focus { border-color: #F86CF8; color: #F86CF8; }
+@media (max-width: 768px) { .container { padding-left: 1rem !important; padding-right: 1rem !important; } .text { font-size: 16px !important; } h1 { font-size: 1.5rem !important; } h2 { font-size: 1.25rem !important; } h3 { font-size: 1.125rem !important; } }
+@media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
+@media (prefers-contrast: high) { .text, .legal-page a { color: #ffffff !important; background-color: #000000 !important; } .legal-page a { border: 2px solid #ffffff !important; padding: 2px 4px !important; } }
+</style>
+{% endblock %}
+
+{% block body %}
+<nav aria-label="Navigation rapide" class="visually-hidden-focusable">
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+</nav>
+
+<main id="main-content" role="main" aria-labelledby="legal-title">
+    <div class="container pt-5 mx-auto legal-page mentions-legales-page">
+        <div class="my-5 text">
+            {% if page == 'mentions_legales' %}
+                <header>
+                    <h1 id="legal-title" class="text-center mb-4 gradient-text">Mentions légales</h1>
+                    <p>Cette page présente les informations légales relatives au site <a href="https://gnut06.org">https://gnut06.org</a>, édité par l’association GNUT 06.</p>
+                </header>
+
+                <section id="editeur" aria-labelledby="editeur-title">
+                    <h2 id="editeur-title">Éditeur du site</h2>
+                    <dl>
+                        <dt><strong>Éditeur du site :</strong></dt><dd>Association GNUT 06</dd>
+                        <dt><strong>Forme juridique :</strong></dt><dd>Association loi 1901</dd>
+                        <dt><strong>RNA :</strong></dt><dd>W062018953</dd>
+                        <dt><strong>SIRET :</strong></dt><dd>92469770900013</dd>
+                        <dt><strong>Siège social :</strong></dt><dd>9 RUE DU PONT VIEUX, 06300 NICE</dd>
+                        <dt><strong>Responsable de publication :</strong></dt><dd>Gérald Col, président de l’association</dd>
+                        <dt><strong>Contact général :</strong></dt><dd><a href="mailto:contact@gnut06.org">contact@gnut06.org</a></dd>
+                        <dt><strong>Téléphone :</strong></dt><dd>+33 6 66 21 56 87</dd>
+                    </dl>
+                </section>
+
+                <section id="hebergement" aria-labelledby="hebergement-title">
+                    <h2 id="hebergement-title">Hébergement, domaine et DNS</h2>
+                    <p>Le site gnut06.org est hébergé sur Microsoft Azure, dans la région France Central (Zone 3). Le nom de domaine et la gestion DNS sont assurés par OVHcloud. OVHcloud n’assure pas l’hébergement applicatif du site, sauf mention contraire pour certains services techniques distincts.</p>
+                </section>
+
+                <section id="propriete" aria-labelledby="propriete-title">
+                    <h2 id="propriete-title">Propriété intellectuelle</h2>
+                    <p>Les contenus présents sur le site, notamment les textes, images, graphismes, logos, vidéos, icônes et sons, sont protégés par le droit de la propriété intellectuelle. Toute reproduction, représentation, modification, publication ou adaptation de tout ou partie des éléments du site est interdite sans autorisation écrite préalable de l’association GNUT 06, sauf usages autorisés par la loi.</p>
+                </section>
+
+                <section id="responsabilite" aria-labelledby="responsabilite-title">
+                    <h2 id="responsabilite-title">Responsabilité éditoriale</h2>
+                    <p>L’association GNUT 06 s’efforce de fournir des informations aussi exactes et à jour que possible. Des erreurs, omissions ou indisponibilités peuvent toutefois survenir. Les informations publiées sont fournies à titre indicatif et peuvent être modifiées.</p>
+                    <h2>Liens externes</h2>
+                    <p>Le site peut contenir des liens vers des sites tiers. GNUT 06 ne contrôle pas en permanence ces sites et ne saurait être tenue responsable de leurs contenus, pratiques ou politiques de confidentialité.</p>
+                </section>
+
+                <nav class="legal-nav" aria-label="Autres informations de conformité">
+                    <h2>Autres pages utiles</h2>
+                    <ul>
+                        <li><a href="{{ path('app_politique_confidentialite') }}">Politique de confidentialité</a></li>
+                        <li><a href="{{ path('app_politique_cookies') }}">Politique cookies</a></li>
+                        <li><a href="{{ path('app_charte_chatbot_ia') }}">Charte chatbot IA</a></li>
+                    </ul>
+                </nav>
+            {% elseif page == 'politique_confidentialite' %}
+                <header><h1 id="legal-title" class="text-center mb-4 gradient-text">Politique de confidentialité</h1></header>
+                <section>
+                    <h2>Responsable du traitement</h2>
+                    <p>Le responsable du traitement est l’Association GNUT 06. Contact protection des données : <a href="mailto:rgpd@gnut06.org">rgpd@gnut06.org</a>.</p>
+                    <h2>Données collectées selon les usages</h2>
+                    <p>Selon les interactions avec le site et l’association, les données peuvent concerner le formulaire de contact, l’adhésion, les cotisations, les dons, les inscriptions aux activités, la newsletter, le chatbot IA, les logs techniques, ainsi que les cookies et traceurs.</p>
+                    <h2>Finalités et bases légales</h2>
+                    <p>Les traitements permettent de répondre aux demandes, gérer la relation associative, les adhésions, cotisations, dons, abonnements, paiements, inscriptions, newsletters, la sécurité du site et les services numériques proposés. Les bases légales peuvent être le consentement, l’intérêt légitime, la gestion de la relation associative ou les obligations légales, comptables ou fiscales.</p>
+                    <h2>Prestataires et sous-traitants</h2>
+                    <ul>
+                        <li>Microsoft Azure : hébergement du site.</li>
+                        <li>OVHcloud : nom de domaine et DNS.</li>
+                        <li>HelloAsso : cotisations, dons, abonnements et paiements.</li>
+                        <li>Mailjet : newsletter.</li>
+                        <li>OpenAI : chatbot IA via l’API OpenAI / ChatGPT 5.4-mini.</li>
+                        <li>Clickio : consentement cookies et traceurs.</li>
+                    </ul>
+                    <h2>Durées de conservation</h2>
+                    <ul>
+                        <li>Demandes de contact : 3 ans après le dernier échange.</li>
+                        <li>Données relatives aux adhérents et cotisations : durée de l’adhésion, puis 3 ans après la fin de la relation associative, sauf obligation légale contraire.</li>
+                        <li>Données relatives aux dons, paiements, reçus et justificatifs comptables : durée nécessaire au traitement de l’opération, puis archivage selon les obligations comptables, fiscales ou légales applicables.</li>
+                        <li>Newsletter : jusqu’au désabonnement de l’utilisateur ou après 3 ans d’inactivité.</li>
+                        <li>Preuves de consentement à la newsletter : 3 ans après le désabonnement ou le dernier contact.</li>
+                        <li>Données liées au chatbot IA : durée strictement nécessaire au fonctionnement, à la sécurité et à l’amélioration du service, avec une conservation côté GNUT 06 limitée autant que possible, idéalement entre 30 jours et 6 mois maximum.</li>
+                        <li>Journaux techniques et logs de sécurité : 6 à 12 mois maximum, sauf nécessité liée à un incident de sécurité.</li>
+                        <li>Cookies et traceurs : selon les choix exprimés via Clickio et les durées propres à chaque traceur.</li>
+                    </ul>
+                    <h2>Droits des personnes</h2>
+                    <p>Les personnes concernées disposent de droits d’accès, de rectification, d’effacement, d’opposition, de limitation, de portabilité si applicable et de retrait du consentement. Elles peuvent écrire à <a href="mailto:rgpd@gnut06.org">rgpd@gnut06.org</a>. Une preuve d’identité pourra être demandée uniquement en cas de doute raisonnable sur l’identité du demandeur.</p>
+                    <p>Une réclamation peut être adressée à la CNIL : <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener noreferrer">https://www.cnil.fr/fr/plaintes</a>.</p>
+                </section>
+            {% elseif page == 'politique_cookies' %}
+                <header><h1 id="legal-title" class="text-center mb-4 gradient-text">Politique cookies</h1></header>
+                <section>
+                    <p>Un cookie ou traceur est un fichier ou identifiant susceptible d’être lu ou enregistré sur l’équipement de l’utilisateur lors de sa navigation. Il peut être nécessaire au fonctionnement du site ou utilisé pour mesurer l’audience, personnaliser certains contenus, afficher de la publicité ou faire fonctionner des services tiers.</p>
+                    <p>Le site gnut06.org utilise un gestionnaire de consentement fourni par Clickio afin de permettre aux utilisateurs d’accepter, de refuser ou de personnaliser l’utilisation des cookies et autres traceurs.</p>
+                    <p>Les cookies strictement nécessaires au fonctionnement du site peuvent être déposés sans consentement préalable. Les cookies de mesure d’audience, de personnalisation, de publicité ou liés à des services tiers ne sont déposés qu’après consentement de l’utilisateur, lorsque ce consentement est requis.</p>
+                    <p>L’utilisateur peut modifier ses choix à tout moment au moyen du module de gestion des cookies accessible depuis le site. Le refus des cookies non nécessaires n’empêche pas l’accès au site.</p>
+                    <h2>Types de cookies et traceurs</h2>
+                    <ul>
+                        <li>Cookies strictement nécessaires : indispensables au fonctionnement du site.</li>
+                        <li>Cookies de mesure d’audience : utilisés pour comprendre la fréquentation du site.</li>
+                        <li>Cookies de personnalisation : utilisés pour adapter certaines fonctionnalités ou préférences.</li>
+                        <li>Cookies publicitaires : utilisés pour personnaliser ou mesurer des contenus publicitaires.</li>
+                        <li>Cookies de services tiers : utilisés par des services intégrés au site.</li>
+                    </ul>
+                    <p><button type="button" class="cookie-management-button js-cookie-management">Gestion des cookies</button></p>
+                </section>
+            {% elseif page == 'charte_chatbot_ia' %}
+                <header><h1 id="legal-title" class="text-center mb-4 gradient-text">Charte chatbot IA</h1></header>
+                <section>
+                    <p>Le site gnut06.org peut proposer un assistant conversationnel basé sur une technologie d’intelligence artificielle via l’API OpenAI / ChatGPT 5.4-mini.</p>
+                    <p>Les utilisateurs sont invités à ne pas transmettre de données sensibles, confidentielles, médicales, bancaires, fiscales, administratives, ni de documents d’identité dans le chatbot.</p>
+                    <p>Les réponses générées automatiquement peuvent comporter des erreurs, omissions ou approximations. Elles ne constituent pas un avis professionnel, juridique, médical, fiscal ou administratif.</p>
+                    <p>Les échanges avec le chatbot peuvent être traités techniquement afin de fournir le service, d’en assurer la sécurité et d’en améliorer le fonctionnement, dans les conditions précisées dans la <a href="{{ path('app_politique_confidentialite') }}">Politique de confidentialité</a>.</p>
+                </section>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}
