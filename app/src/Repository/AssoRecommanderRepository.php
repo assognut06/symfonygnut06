@@ -29,6 +29,9 @@ class AssoRecommanderRepository extends ServiceEntityRepository
         return $qb->getSingleScalarResult() > 0;
     }
 
+    /**
+     * @return array<AssoRecommander>
+     */
     public function findDistinctCities(): array
     {
         $entityManager = $this->getEntityManager();
@@ -42,6 +45,9 @@ class AssoRecommanderRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+    /**
+     * @return array<AssoRecommander>
+     */
     public function findSearch(string $search): array
     {
         $entityManager = $this->getEntityManager();

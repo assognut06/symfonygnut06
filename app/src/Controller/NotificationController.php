@@ -503,6 +503,7 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ MISE À JOUR ASSO DEPUIS DONNÉES FORMULAIRE
+     * @param array{bannerPublicUrl:?string,fiscalReceiptEligibility:?bool,fiscalReceiptIssuanceEnabled:?bool,activityType:?string,organizationLogo:?string,organizationName:?string,placeCity:?string,placeZipCode:?string,description:?string,url:?string} $formData
      */
     private function updateAssoFromFormData(AssoRecommander $asso, array $formData): void
     {
@@ -516,27 +517,15 @@ class NotificationController extends AbstractController
             'city' => $formData['placeCity'] ?? null,
             'zipCode' => $formData['placeZipCode'] ?? null,
             'fiscalReceiptEligibility' => $formData['fiscalReceiptEligibility'] ?? null,
-            'fiscalReceiptIssuanceEnabled' => $formData['fiscalReceiptIssuanceEnabled'] ?? null
+            'fiscalReceiptIssuanceEnabled' => $formData['fiscalReceiptIssuanceEnabled'] ?? null,
+            'category' => null
         ];
-
-        // Utiliser la méthode fillFromApiData si elle existe
-        if (method_exists($asso, 'fillFromApiData')) {
-            $asso->fillFromApiData($apiData);
-        } else {
-            // Fallback : remplissage manuel
-            foreach ($apiData as $key => $value) {
-                if ($value !== null) {
-                    $setter = 'set' . ucfirst($key);
-                    if (method_exists($asso, $setter)) {
-                        $asso->$setter($value);
-                    }
-                }
-            }
-        }
+        $asso->fillFromApiData($apiData);
     }
 
     /**
      * ✅ MÉTHODE EXISTANTE AMÉLIORÉE : Verification des payers
+     * @param array{firstName:?string,lastName:?string,address:?string,city:?string,zipCode:?string,country:?string,company:?string,email:?string} $data
      */
     public function verifyPayer(array $data): void
     {
@@ -581,6 +570,7 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ MÉTHODE EXISTANTE : Mise à jour des données payer
+     * @param array{firstName:?string,lastName:?string,address:?string,city:?string,zipCode:?string,country:?string,company:?string} $data
      */
     private function updatePayer(Payers $payer, array $data): void
     {
@@ -598,6 +588,7 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ ENVOI D'EMAIL DE NOTIFICATION
+     * @param array{eventType:?string,data:?array{organizationName:?string,formSlug:?string,title:?string,payer:?array{firstName:?string,lastName:?string,email:?string}}} $data
      */
     private function sendNotificationEmail(MailerInterface $mailer, array $data): void
     {
@@ -633,6 +624,7 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ GÉNÉRATION DU CONTENU HTML DE L'EMAIL
+     * @param array{eventType:?string,data:?array{organizationName:?string,formSlug:?string,title:?string,payer:?array{firstName:?string,lastName:?string,email:?string}}} $data
      */
     private function generateEmailHtml(array $data): string
     {
@@ -673,6 +665,7 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ GÉNÉRATION DU CONTENU TEXTE DE L'EMAIL
+     * @param array{eventType:?string,data:?array{organizationName:?string,formSlug:?string,title:?string,payer:?array{firstName:?string,lastName:?string,email:?string}}} $data
      */
     private function generateEmailText(array $data): string
     {

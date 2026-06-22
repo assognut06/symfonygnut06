@@ -49,6 +49,9 @@ abstract class Donateur
     #[ORM\Column(length: 150)]
     private ?string $pays = null;
 
+    /**
+     *  @var Collection<int,Don>
+     */
     #[ORM\OneToMany(mappedBy: 'donateur', targetEntity: Don::class, orphanRemoval: true)]
     private Collection $dons;
 
@@ -188,6 +191,9 @@ abstract class Donateur
         return $this;
     }
 
+    /**
+     *  @return Collection<int,Don>
+     */
     public function getDons(): Collection
     {
         return $this->dons;

@@ -171,3 +171,6 @@ services:
             $googleMapsApiKey: '%app.google_maps_api_key%'
 
     App\Controller\RegistrationController:
+        arguments:
+            $nocaptchaSiteKey: '%nocaptcha.sitekey%'
+

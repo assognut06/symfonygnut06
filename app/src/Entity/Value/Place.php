@@ -22,6 +22,9 @@ class Place
     #[ORM\Column(length: 3, nullable: true)]
     private ?string $country = null; // ex: FRA
 
+    /**
+    * @param array{address:?string,name:?string,city:?string,zipCode:?string,country:?string} $data
+    */
     public static function fromArray(array $data): self
     {
         $self = new self();

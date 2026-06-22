@@ -22,8 +22,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ProfilController extends AbstractController
 {
 
-    private $helloAssoApiService;
-    private $entityManager;
+    private HelloAssoApiService $helloAssoApiService;
+    private EntityManagerInterface $entityManager;
     private string $slugAsso;
     private string $googleMapsApiKey;
 
@@ -151,7 +151,9 @@ class ProfilController extends AbstractController
 
         return $payer;
     }
-
+    /**
+     * @return array<mixed>
+     */
     private function makeSafeHelloAssoCall(string $url): array
     {
         try {

@@ -7,7 +7,9 @@ use App\Entity\Donateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
-
+/**
+ * @extends ServiceEntityRepository<Don>
+ */
 class DonRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -17,6 +19,7 @@ class DonRepository extends ServiceEntityRepository
 
     /**
      * Récupère tous les dons avec leurs détails.
+     * @return array<Don>
      */
     public function findAllWithDetails(): array
     {
@@ -27,6 +30,10 @@ class DonRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return Query<null,mixed>
+     */
 
     public function TrouveDonsParDonateur(Donateur $donateur): Query
     {
