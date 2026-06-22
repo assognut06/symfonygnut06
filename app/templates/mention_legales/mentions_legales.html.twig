@@ -1,0 +1,48 @@
+{% extends 'mention_legales/_base.html.twig' %}
+
+{% block legal_content %}
+<header>
+    <h1 id="legal-title" class="text-center mb-4 gradient-text">Mentions légales</h1>
+    <p>Cette page présente les informations légales relatives au site <a href="https://gnut06.org">https://gnut06.org</a>, édité par l’association GNUT 06.</p>
+</header>
+
+<section id="editeur" aria-labelledby="editeur-title">
+    <h2 id="editeur-title">Éditeur du site</h2>
+    <dl>
+        <dt><strong>Éditeur du site :</strong></dt><dd>Association GNUT 06</dd>
+        <dt><strong>Forme juridique :</strong></dt><dd>Association loi 1901</dd>
+        <dt><strong>RNA :</strong></dt><dd>W062018953</dd>
+        <dt><strong>SIRET :</strong></dt><dd>92469770900013</dd>
+        <dt><strong>Siège social :</strong></dt><dd>9 RUE DU PONT VIEUX, 06300 NICE</dd>
+        <dt><strong>Responsable de publication :</strong></dt><dd>Gérald Col, président de l’association</dd>
+        <dt><strong>Contact général :</strong></dt><dd><a href="mailto:contact@gnut06.org">contact@gnut06.org</a></dd>
+        <dt><strong>Téléphone :</strong></dt><dd>+33 6 66 21 56 87</dd>
+    </dl>
+</section>
+
+<section id="hebergement" aria-labelledby="hebergement-title">
+    <h2 id="hebergement-title">Hébergement, domaine et DNS</h2>
+    <p>Le site gnut06.org est hébergé sur Microsoft Azure, dans la région France Central (Zone 3). Le nom de domaine et la gestion DNS sont assurés par OVHcloud. OVHcloud n’assure pas l’hébergement applicatif du site, sauf mention contraire pour certains services techniques distincts.</p>
+</section>
+
+<section id="propriete" aria-labelledby="propriete-title">
+    <h2 id="propriete-title">Propriété intellectuelle</h2>
+    <p>Les contenus présents sur le site, notamment les textes, images, graphismes, logos, vidéos, icônes et sons, sont protégés par le droit de la propriété intellectuelle. Toute reproduction, représentation, modification, publication ou adaptation de tout ou partie des éléments du site est interdite sans autorisation écrite préalable de l’association GNUT 06, sauf usages autorisés par la loi.</p>
+</section>
+
+<section id="responsabilite" aria-labelledby="responsabilite-title">
+    <h2 id="responsabilite-title">Responsabilité éditoriale</h2>
+    <p>L’association GNUT 06 s’efforce de fournir des informations aussi exactes et à jour que possible. Des erreurs, omissions ou indisponibilités peuvent toutefois survenir. Les informations publiées sont fournies à titre indicatif et peuvent être modifiées.</p>
+    <h2>Liens externes</h2>
+    <p>Le site peut contenir des liens vers des sites tiers. GNUT 06 ne contrôle pas en permanence ces sites et ne saurait être tenue responsable de leurs contenus, pratiques ou politiques de confidentialité.</p>
+</section>
+
+<nav class="legal-nav" aria-label="Autres informations de conformité">
+    <h2>Autres pages utiles</h2>
+    <ul>
+        <li><a href="{{ path('app_politique_confidentialite') }}">Politique de confidentialité</a></li>
+        <li><a href="{{ path('app_politique_cookies') }}">Politique cookies</a></li>
+        <li><a href="{{ path('app_charte_chatbot_ia') }}">Charte chatbot IA</a></li>
+    </ul>
+</nav>
+{% endblock %}
