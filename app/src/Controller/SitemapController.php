@@ -24,7 +24,10 @@ class SitemapController extends AbstractController
             ['loc' => $this->generateUrl('app_presse', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.7'],
             ['loc' => $this->generateUrl('app_billetteries', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.7'],
             ['loc' => $this->generateUrl('app_asso_recommander', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.7'],
-            ['loc' => $this->generateUrl('app_mention_legales', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.2'],
+            ['loc' => $this->generateUrl('app_mentions_legales', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.2'],
+            ['loc' => $this->generateUrl('app_politique_confidentialite', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.2'],
+            ['loc' => $this->generateUrl('app_politique_cookies', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.2'],
+            ['loc' => $this->generateUrl('app_charte_chatbot_ia', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.2'],
             ['loc' => $this->generateUrl('app_login', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.8'],
             
 

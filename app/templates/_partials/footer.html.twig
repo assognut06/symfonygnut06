@@ -183,8 +183,33 @@
 			<p class="text mb-0">
 				Conçu et développé avec 💙 par la
 				<span style="color:#F86CF8;">GNUT 06 Team</span>.
-				<a href="{{ path('app_mention_legales') }}" class="mentions-legales-link" rel="noopener">Mentions légales</a>
+				<a href="{{ path('app_mentions_legales') }}" class="mentions-legales-link" rel="noopener">Mentions légales</a>
+				<span aria-hidden="true"> · </span>
+				<a href="{{ path('app_politique_confidentialite') }}" class="mentions-legales-link" rel="noopener">Politique de confidentialité</a>
+				<span aria-hidden="true"> · </span>
+				<a href="{{ path('app_politique_cookies') }}" class="mentions-legales-link" rel="noopener">Politique cookies</a>
+				<span aria-hidden="true"> · </span>
+				<a href="{{ path('app_charte_chatbot_ia') }}" class="mentions-legales-link" rel="noopener">Charte chatbot IA</a>
+				<span aria-hidden="true"> · </span>
+				<button type="button" class="mentions-legales-link js-cookie-management" style="background:none;border:0;padding:0;">Gestion des cookies</button>
 			</p>
 		</div>
 	</div>
 </footer>
+<script>
+document.querySelectorAll('.js-cookie-management').forEach(function (button) {
+	button.addEventListener('click', function () {
+		if (window.ClickioConsent && typeof window.ClickioConsent.open === 'function') {
+			window.ClickioConsent.open();
+			return;
+		}
+		if (window.__tcfapi) {
+			window.__tcfapi('displayConsentUi', 2, function () {});
+			return;
+		}
+		if (window._clickioConsent && typeof window._clickioConsent.show === 'function') {
+			window._clickioConsent.show();
+		}
+	});
+});
+</script>
