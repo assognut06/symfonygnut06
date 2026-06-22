@@ -1,0 +1,36 @@
+{% extends 'mention_legales/_base.html.twig' %}
+
+{% block legal_content %}
+<header><h1 id="legal-title" class="text-center mb-4 gradient-text">Politique de confidentialité</h1></header>
+<section>
+    <h2>Responsable du traitement</h2>
+    <p>Le responsable du traitement est l’Association GNUT 06. Contact protection des données : <a href="mailto:rgpd@gnut06.org">rgpd@gnut06.org</a>.</p>
+    <h2>Données collectées selon les usages</h2>
+    <p>Selon les interactions avec le site et l’association, les données peuvent concerner le formulaire de contact, l’adhésion, les cotisations, les dons, les inscriptions aux activités, la newsletter, le chatbot IA, les logs techniques, ainsi que les cookies et traceurs.</p>
+    <h2>Finalités et bases légales</h2>
+    <p>Les traitements permettent de répondre aux demandes, gérer la relation associative, les adhésions, cotisations, dons, abonnements, paiements, inscriptions, newsletters, la sécurité du site et les services numériques proposés. Les bases légales peuvent être le consentement, l’intérêt légitime, la gestion de la relation associative ou les obligations légales, comptables ou fiscales.</p>
+    <h2>Prestataires et sous-traitants</h2>
+    <ul>
+        <li>Microsoft Azure : hébergement du site.</li>
+        <li>OVHcloud : nom de domaine et DNS.</li>
+        <li>HelloAsso : cotisations, dons, abonnements et paiements.</li>
+        <li>Mailjet : newsletter.</li>
+        <li>OpenAI : chatbot IA via l’API OpenAI / ChatGPT 5.4-mini.</li>
+        <li>Clickio : consentement cookies et traceurs.</li>
+    </ul>
+    <h2>Durées de conservation</h2>
+    <ul>
+        <li>Demandes de contact : 3 ans après le dernier échange.</li>
+        <li>Données relatives aux adhérents et cotisations : durée de l’adhésion, puis 3 ans après la fin de la relation associative, sauf obligation légale contraire.</li>
+        <li>Données relatives aux dons, paiements, reçus et justificatifs comptables : durée nécessaire au traitement de l’opération, puis archivage selon les obligations comptables, fiscales ou légales applicables.</li>
+        <li>Newsletter : jusqu’au désabonnement de l’utilisateur ou après 3 ans d’inactivité.</li>
+        <li>Preuves de consentement à la newsletter : 3 ans après le désabonnement ou le dernier contact.</li>
+        <li>Données liées au chatbot IA : durée strictement nécessaire au fonctionnement, à la sécurité et à l’amélioration du service, avec une conservation côté GNUT 06 limitée autant que possible, idéalement entre 30 jours et 6 mois maximum.</li>
+        <li>Journaux techniques et logs de sécurité : 6 à 12 mois maximum, sauf nécessité liée à un incident de sécurité.</li>
+        <li>Cookies et traceurs : selon les choix exprimés via Clickio et les durées propres à chaque traceur.</li>
+    </ul>
+    <h2>Droits des personnes</h2>
+    <p>Les personnes concernées disposent de droits d’accès, de rectification, d’effacement, d’opposition, de limitation, de portabilité si applicable et de retrait du consentement. Elles peuvent écrire à <a href="mailto:rgpd@gnut06.org">rgpd@gnut06.org</a>. Une preuve d’identité pourra être demandée uniquement en cas de doute raisonnable sur l’identité du demandeur.</p>
+    <p>Une réclamation peut être adressée à la CNIL : <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener noreferrer">https://www.cnil.fr/fr/plaintes</a>.</p>
+</section>
+{% endblock %}
