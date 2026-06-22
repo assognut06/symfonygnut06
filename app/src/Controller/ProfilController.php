@@ -155,7 +155,9 @@ class ProfilController extends AbstractController
 
         return $payer;
     }
-
+    /**
+     * @return array<mixed>
+     */
     private function makeSafeHelloAssoCall(string $url): array
     {
         try {

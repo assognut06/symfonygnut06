@@ -13,6 +13,9 @@ use App\Form\EventListener\PremiereLettreMajuscule;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
+/**
+ * @extends AbstractType<Societe>
+ */
 class SocieteType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

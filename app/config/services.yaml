@@ -180,5 +180,5 @@ services:
 
     App\Controller\RegistrationController:
         arguments:
-            $recaptchaSecret: '%nocaptcha.secret%'
-            $appEnv: '%app.env%'
+            $nocaptchaSiteKey: '%nocaptcha.sitekey%'
+

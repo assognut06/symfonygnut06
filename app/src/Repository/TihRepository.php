@@ -9,11 +9,12 @@ use App\Application\DTO\Tih\DepartementFilterDTO;
 use App\Application\DTO\Tih\RateTypeFilterDTO;
 use App\Application\DTO\Tih\SkillFilterDTO;
 use App\Entity\Tih;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-/**F
+/**
  * @extends ServiceEntityRepository<Tih>
  */
 class TihRepository extends ServiceEntityRepository
@@ -29,7 +30,7 @@ class TihRepository extends ServiceEntityRepository
      * @param string|null $searchTerm
      * @param int $page
      * @param int $limit
-     * @return Paginator
+     * @return Paginator<Tih>
      */
     public function searchWithPagination(?string $searchTerm, int $page = 1, int $limit = 12): Paginator
     {
@@ -96,10 +97,10 @@ class TihRepository extends ServiceEntityRepository
     /**
      * Search TIH profiles with filters and pagination
      * 
-     * @param array $filters ['skills' => [], 'cities' => [], 'availability' => [], 'minRate' => float, 'maxRate' => float, 'rateType' => string, 'availabilityDate' => \DateTime]
+     * @param array{skills:?array<string>,cities:array<string>,regions:array<string>,departements:array<string>,availability:array<string>,minRate:?float,maxRate:?float,rateType:?string,availabilityDate:?DateTime,availabilityDateAfter:?DateTime} $filters 
      * @param int $page
      * @param int $limit
-     * @return Paginator
+     * @return Paginator<Tih>
      */
     public function searchWithFilters(array $filters, int $page = 1, int $limit = 12): Paginator
     {
@@ -160,30 +161,30 @@ class TihRepository extends ServiceEntityRepository
         }
 
         // Filter by rate range
-        if (isset($filters['minRate']) && $filters['minRate'] != null && $filters['minRate'] !== '') {
+        if (isset($filters['minRate']) && $filters['minRate'] != null && $filters['minRate'] != '') {
             $qb->andWhere('t.rate >= :minRate')
                ->setParameter('minRate', $filters['minRate']);
         }
         
-        if (isset($filters['maxRate']) && $filters['maxRate'] != null && $filters['maxRate'] !== '') {
+        if (isset($filters['maxRate']) && $filters['maxRate'] != null && $filters['maxRate'] != '') {
             $qb->andWhere('t.rate <= :maxRate')
                ->setParameter('maxRate', $filters['maxRate']);
         }
 
         // Filter by rate type
-        if (!empty($filters['rateType']) && $filters['rateType'] !== 'all') {
+        if (!empty($filters['rateType']) && $filters['rateType'] != 'all') {
             $qb->andWhere('t.rateType = :rateType')
                ->setParameter('rateType', $filters['rateType']);
         }
 
         // Filter by availability date
-        if (isset($filters['availabilityDate']) && $filters['availabilityDate'] instanceof \DateTimeInterface) {
+        if (isset($filters['availabilityDate'])) {
             $qb->andWhere('t.availabilityDate <= :availabilityDate')
                ->setParameter('availabilityDate', $filters['availabilityDate']);
         }
         
         // Filter by availability date (after)
-        if (isset($filters['availabilityDateAfter']) && $filters['availabilityDateAfter'] instanceof \DateTimeInterface) {
+        if (isset($filters['availabilityDateAfter'])) {
             $qb->andWhere('t.availabilityDate > :availabilityDateAfter')
                ->setParameter('availabilityDateAfter', $filters['availabilityDateAfter']);
         }
@@ -200,7 +201,7 @@ class TihRepository extends ServiceEntityRepository
     /**
      * Get available filter options with counts based on current filters
      * 
-     * @param array $filters Current filters applied
+     * @param array<mixed> $filters Current filters applied
      * @return AvailableFiltersDTO
      */
     public function getAvailableFilters(array $filters = []): AvailableFiltersDTO
@@ -261,7 +262,7 @@ class TihRepository extends ServiceEntityRepository
             $qbRegions->andWhere('t.rate <= :maxRate')
                      ->setParameter('maxRate', $tempFilters['maxRate']);
         }
-        if (!empty($tempFilters['rateType']) && $tempFilters['rateType'] !== 'all') {
+        if (!empty($tempFilters['rateType']) && $tempFilters['rateType'] != 'all') {
             $qbRegions->andWhere('t.rateType = :rateType')
                      ->setParameter('rateType', $tempFilters['rateType']);
         }
@@ -294,7 +295,7 @@ class TihRepository extends ServiceEntityRepository
             $qbDepartements->andWhere('t.rate <= :maxRate')
                      ->setParameter('maxRate', $tempFilters['maxRate']);
         }
-        if (!empty($tempFilters['rateType']) && $tempFilters['rateType'] !== 'all') {
+        if (!empty($tempFilters['rateType']) && $tempFilters['rateType'] != 'all') {
             $qbDepartements->andWhere('t.rateType = :rateType')
                      ->setParameter('rateType', $tempFilters['rateType']);
         }

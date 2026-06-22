@@ -18,6 +18,7 @@ class HelloAssoTierCustomFieldRepository extends ServiceEntityRepository
 
     /**
      * Trouve les champs par tier
+     * @return array<HelloAssoTierCustomField>
      */
     public function findByTier(string $tierId): array
     {
@@ -31,6 +32,7 @@ class HelloAssoTierCustomFieldRepository extends ServiceEntityRepository
 
     /**
      * Trouve les champs requis par tier
+     * @return array<HelloAssoTierCustomField>
      */
     public function findRequiredByTier(string $tierId): array
     {
@@ -54,6 +56,7 @@ class HelloAssoTierCustomFieldRepository extends ServiceEntityRepository
 
     /**
      * Trouve les champs par type
+     * @return array<HelloAssoTierCustomField>
      */
     public function findByType(string $type): array
     {

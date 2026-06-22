@@ -4,8 +4,11 @@ namespace App\Repository;
 
 use App\Entity\Don;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
-
+/**
+ * @extends ServiceEntityRepository<Don>
+ */
 class DonRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -15,6 +18,7 @@ class DonRepository extends ServiceEntityRepository
 
     /**
      * Récupère tous les dons avec leurs détails.
+     * @return array<Don>
      */
     public function findAllWithDetails()
     {
@@ -25,8 +29,12 @@ class DonRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    
-    public function TrouveDonsParDonateur($donateur)
+
+    /**
+     * @return Query<null,mixed>
+     */
+
+    public function TrouveDonsParDonateur(Donateur $donateur): Query
     {
         return $this->createQueryBuilder('d')
             ->where('d.donateur = :donateur') 

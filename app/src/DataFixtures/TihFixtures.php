@@ -138,6 +138,10 @@ class TihFixtures extends Fixture implements DependentFixtureInterface
             $numSkills = rand(2, 4);
             $totalCompetences = 15;
             $skillIndices = array_rand(range(0, $totalCompetences - 1), $numSkills);
+            /** array_rand peut retouner un tableu, une chaine ou un integer 
+            * PHPStan prend uniquement le cas du tableau et retourne une erreur de verification inutile
+            */
+            /** @phpstan-ignore-next-line */
             if (!is_array($skillIndices)) {
                 $skillIndices = [$skillIndices];
             }

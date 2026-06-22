@@ -50,6 +50,9 @@ class HelloAssoTier
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
     private ?bool $isFavorite = null;
 
+    /**
+     * @var Collection<int, HelloAssoTierCustomField>
+     */
     #[ORM\OneToMany(mappedBy: 'tier', targetEntity: HelloAssoTierCustomField::class, cascade: ['persist', 'remove'])]
     private Collection $customFields;
 
@@ -61,6 +64,8 @@ class HelloAssoTier
 
     /**
      * ✅ MÉTHODE STATIQUE : Créer un tier depuis des données d'API
+  
+     * @param array{id:?int,label:?string,description:?string,tierType:?string,price:?string,vatRate:?string,paymentFrequency:?string,isEligibleTaxReceipt:?bool,isFavorite:?bool,customFields:?array<mixed>} $data
      */
     public static function fromArray(array $data): self
     {
@@ -80,7 +85,7 @@ class HelloAssoTier
         $tier->setIsFavorite($data['isFavorite'] ?? null);
 
         // Traiter les champs personnalisés si présents
-        if (isset($data['customFields']) && is_array($data['customFields'])) {
+        if (isset($data['customFields'])) {
             foreach ($data['customFields'] as $fieldData) {
                 $customField = HelloAssoTierCustomField::fromArray($fieldData);
                 $tier->addCustomField($customField);
