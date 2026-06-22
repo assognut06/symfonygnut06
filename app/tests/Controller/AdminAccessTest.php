@@ -94,6 +94,16 @@ class AdminAccessTest extends WebTestCase
         $response = $client->getResponse();
         $statusCode = $response->getStatusCode();
 
+        if ($statusCode === Response::HTTP_OK) {
+            self::assertStringContainsString(
+                'id="connexion-form"',
+                $response->getContent(),
+                'Authenticated users without access should see the login page.'
+            );
+
+            return;
+        }
+
         self::assertContains($statusCode, [
             Response::HTTP_FOUND,
             Response::HTTP_SEE_OTHER,

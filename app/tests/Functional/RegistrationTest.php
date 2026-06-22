@@ -18,7 +18,7 @@ class RegistrationTest extends WebTestCase
         $this->assertResponseHtmlContainsForm();
     }
 
-    public function testSuccessfulRegistrationCreatesUserAndLogsIn(): void
+    public function testSuccessfulRegistrationCreatesUserAndRequiresEmailVerification(): void
     {
         $this->submitRegistrationForm([
             'email' => 'newuser@test.com',
@@ -28,12 +28,16 @@ class RegistrationTest extends WebTestCase
         ]);
 
         $this->assertResponseRedirects();
+        $location = $this->client->getResponse()->headers->get('Location');
+        $this->assertStringContainsString('login', $location);
+
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'newuser@test.com']);
         $this->assertNotNull($user, 'User should be persisted after registration');
         $this->assertContains('ROLE_USER', $user->getRoles());
+        $this->assertFalse($user->isVerified(), 'New users must verify their email before logging in');
 
         $hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
         $this->assertTrue(
@@ -42,7 +46,9 @@ class RegistrationTest extends WebTestCase
         );
 
         $this->client->request('GET', '/profil');
-        $this->assertResponseIsSuccessful();
+        $this->assertResponseRedirects();
+        $profilRedirect = $this->client->getResponse()->headers->get('Location');
+        $this->assertStringContainsString('login', $profilRedirect);
     }
 
     public function testRegistrationWithTihCheckboxCreatesLinkedProfile(): void
