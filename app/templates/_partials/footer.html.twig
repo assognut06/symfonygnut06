@@ -183,8 +183,90 @@
 			<p class="text mb-0">
 				Conçu et développé avec 💙 par la
 				<span style="color:#F86CF8;">GNUT 06 Team</span>.
-				<a href="{{ path('app_mention_legales') }}" class="mentions-legales-link" rel="noopener">Mentions légales</a>
+				<a href="{{ path('app_mentions_legales') }}" class="mentions-legales-link" rel="noopener">Mentions légales</a>
+				<span aria-hidden="true"> · </span>
+				<a href="{{ path('app_politique_confidentialite') }}" class="mentions-legales-link" rel="noopener">Politique de confidentialité</a>
+				<span aria-hidden="true"> · </span>
+				<a href="{{ path('app_politique_cookies') }}" class="mentions-legales-link" rel="noopener">Politique cookies</a>
+				<span aria-hidden="true"> · </span>
+				<a href="{{ path('app_charte_chatbot_ia') }}" class="mentions-legales-link" rel="noopener">Charte chatbot IA</a>
+				<span aria-hidden="true"> · </span>
+				<button type="button" class="mentions-legales-link js-cookie-management" style="background:none;border:0;padding:0;">Gestion des cookies</button>
 			</p>
 		</div>
 	</div>
 </footer>
+<script>
+(function () {
+	function isConsentUiVisible() {
+		return Boolean(document.querySelector('.cl-consent, .cl-consent-popup.cl-consent-visible'));
+	}
+
+	function addConsentParamToUrl() {
+		var url = new URL(window.location.href);
+		url.searchParams.set('showConsent', '1');
+		window.location.href = url.toString();
+	}
+
+	function openClickioConsent() {
+		if (window.__lxG__consent__ && typeof window.__lxG__consent__.showConsent === 'function') {
+			window.__lxG__consent__.showConsent();
+			return true;
+		}
+
+		var clickioSettingsButton = document.querySelector('.cl-consent-settings__btn');
+		if (clickioSettingsButton) {
+			clickioSettingsButton.click();
+			return true;
+		}
+
+		return false;
+	}
+
+	function openWithTcfApiFallback() {
+		if (!window.__tcfapi) {
+			addConsentParamToUrl();
+			return;
+		}
+
+		var fallbackTimeout = window.setTimeout(function () {
+			if (!isConsentUiVisible()) {
+				addConsentParamToUrl();
+			}
+		}, 1000);
+
+		window.__tcfapi('displayConsentUi', 2, function () {
+			window.clearTimeout(fallbackTimeout);
+			window.setTimeout(function () {
+				if (!isConsentUiVisible()) {
+					addConsentParamToUrl();
+				}
+			}, 500);
+		});
+	}
+
+	function openCookieManagement() {
+		var attempts = 0;
+		var maxAttempts = 30;
+		var interval = window.setInterval(function () {
+			attempts += 1;
+
+			if (openClickioConsent()) {
+				window.clearInterval(interval);
+				return;
+			}
+
+			if (attempts >= maxAttempts) {
+				window.clearInterval(interval);
+				openWithTcfApiFallback();
+			}
+		}, 100);
+	}
+
+	document.querySelectorAll('.js-cookie-management').forEach(function (button) {
+		button.addEventListener('click', function () {
+			openCookieManagement();
+		});
+	});
+})();
+</script>
