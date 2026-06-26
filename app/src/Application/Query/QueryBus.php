@@ -6,6 +6,9 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class QueryBus
 {
+    /**
+     * @param ServiceLocator<mixed> $handlers
+     */
     public function __construct(
         private ServiceLocator $handlers
     ) {}

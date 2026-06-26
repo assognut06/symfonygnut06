@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\HelloAssoApiService; // Service dédié pour les appels API HelloAsso
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
@@ -13,7 +14,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class AdminController extends AbstractController
 {
 
-    private $helloAssoApiService;
+    private HelloAssoApiService $helloAssoApiService;
     private string $slugAsso;
     private string $googleMapsApiKey;
 
@@ -41,7 +42,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/{donnees}/{formType}/{formSlug}/{tierTypes}/{page}', name: 'admin_api', requirements: ['donnees' => 'orders|payments'], methods: ['GET'])]
-    public function api(string $donnees, string $page, string $formType, string $formSlug, string $tierTypes)
+    public function api(string $donnees, string $page, string $formType, string $formSlug, string $tierTypes): Response
     {
         $url = $this->buildApiUrl($donnees, $page, $formType, $formSlug, $tierTypes);
 
@@ -58,7 +59,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/details/{donnees}/{id}', name: 'admin_details_show', requirements: ['donnees' => 'orders|payments'], methods: ['GET'])]
-    public function details(string $donnees, string $id)
+    public function details(string $donnees, string $id): Response
     {
         $url = $this->buildDetailsUrl($donnees, $id);
 
@@ -109,6 +110,9 @@ class AdminController extends AbstractController
         return $url;
     }    
 
+    /**
+     * @return array{data:array<mixed>,pagination:array{pageIndex:int,totalPages:int,totalCount:int}}
+     */
     private function normalizeApiResponse(mixed $dataForms, string $page): array
     {
         if (!is_array($dataForms)) {
@@ -136,6 +140,9 @@ class AdminController extends AbstractController
         return $dataForms;
     }
 
+    /**
+     * @return array{data:array<mixed>,pagination:array{pageIndex:int,totalPages:int,totalCount:int}}
+     */
     private function createEmptyApiResponse(string $page): array
     {
         return [
@@ -144,6 +151,9 @@ class AdminController extends AbstractController
         ];
     }
 
+    /**
+     * @return array{pageIndex:int,totalPages:int,totalCount:int}
+     */
     private function createEmptyPagination(string $page): array
     {
         return [
@@ -152,7 +162,10 @@ class AdminController extends AbstractController
             'totalCount' => 0,
         ];
     }
-
+    
+    /**
+     * @return ?array<mixed>
+     */
     private function normalizeDetailsResponse(mixed $dataForms): ?array
     {
         if (!is_array($dataForms)) {
@@ -164,7 +177,7 @@ class AdminController extends AbstractController
         return $dataForms;
     }
 
-    private function buildDetailsUrl($type, $id) {
+    private function buildDetailsUrl(string $type, string $id): string {
         $baseUrl = "https://api.helloasso.com/v5";
         switch ($type) {
             case 'orders':

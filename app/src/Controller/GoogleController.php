@@ -43,7 +43,7 @@ class GoogleController extends AbstractController
     public function connectCheckAction(Request $request, Security $security, EmailService $emailService)
     {
         $user = $this->getUser();
-        if ($user) {
+        if (!$user->isVerified()) {
             // Si l'utilisateur n'est pas encore vérifié, on envoie l'email de confirmation
              try {
                 $emailService->sendConfirmationEmail($user);

@@ -16,20 +16,14 @@ use App\Service\DataFilterAndPaginator;
 #[Route('/assos/recommandees')]
 class AssoRecommanderController extends AbstractController
 {
-    private $assoRecommanderService;
-    private $assoRecommanderRepository;
-    private $helloAssoApiService;
+    private HelloAssoApiService $helloAssoApiService;
     private string $googleMapsApiKey;
 
     function __construct(
-        AssoRecommanderService $assoRecommanderService,
-        AssoRecommanderRepository $assoRecommanderRepository,
         HelloAssoApiService $helloAssoApiService,
         string $googleMapsApiKey
     )
     {
-        $this->assoRecommanderService = $assoRecommanderService;
-        $this->assoRecommanderRepository = $assoRecommanderRepository;
         $this->helloAssoApiService = $helloAssoApiService;
         $this->googleMapsApiKey = $googleMapsApiKey;
     }
@@ -106,8 +100,7 @@ class AssoRecommanderController extends AbstractController
     {
         $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms/{$formType}/{$formSlug}/public";
         $data_form = $this->helloAssoApiService->makeApiCall($url);
-// dd($url);
-
+        
         return $this->render('asso_recommander/detailsEvent.html.twig', [
             'data_actu' => $data_form,
             'googleMapsApiKey' => $this->googleMapsApiKey,
