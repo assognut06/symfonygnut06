@@ -283,6 +283,10 @@ class NotificationController extends AbstractController
         return strtolower($signatureHeader);
     }
 
+    /**
+     *  @param array<string,mixed> $data
+     */
+
     private function buildIdempotencyKey(Request $request, array $data, string $content): string
     {
         $externalId = $request->headers->get('X-HelloAsso-Event-Id')
@@ -302,6 +306,7 @@ class NotificationController extends AbstractController
     }
 
     /**
+     * @param array<string,mixed> $data
      * @param string[] $path
      */
     private function getNestedString(array $data, array $path): ?string
@@ -346,6 +351,8 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ MÉTHODE PRINCIPALE : Traitement des notifications HelloAsso
+     * 
+     * @param array{eventType:?string,data:?array{formSlug:?string,formType:?string,title:?string,bannerPublicUrl:?string,description:?string,url:?string,state:?string,currency:?string,organizationSlug:?string,organizationName:?string,organizationLogo:?string,activityType:?string,activityTypeId:?int,startDate:?string,endDate:?string,banner:?array{fileName:?string,publicUrl:?string},logo:?array{fileName:?string,publicUrl:?string},place:?array{address:?string,name:?string,city:?string,zipCode:?string,country:?string},widget:?array{buttonUrl:?string,fullUrl:?string,vignetteHorizontalUrl:?string,vignetteVerticalUrl:?string},tiers:?array{array{id:?int,label:?string,description:?string,tierType:?string,price:?string,vatRate:?string,paymentFrequency:?string,isEligibleTaxReceipt:?bool,isFavorite:?bool,customFields:?array<mixed>}},name:?string,items:?array<mixed>,amount:?int,id:?string,fiscalReceiptEligibility:?bool,fiscalReceiptIssuanceEnabled:?bool,placeCity:?string,placeZipCode:?string}} $data
      */
     private function processHelloAssoNotification(array $data): void
     {
@@ -396,15 +403,17 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ TRAITEMENT DES ÉVÉNEMENTS DE FORMULAIRE
+     * @param array{formSlug:?string,organizationSlug:?string,bannerPublicUrl:?string,fiscalReceiptEligibility:?bool,fiscalReceiptIssuanceEnabled:?bool,activityType:?string,organizationLogo:?string,organizationName:?string,placeCity:?string,placeZipCode:?string,description:?string,url:?string} $formData
      */
     private function processFormEvent(array $formData, HelloAssoFormNotification $notification): void
     {
-        if (empty($formData['organizationSlug'])) {
+
+        $organizationSlug = $formData['organizationSlug'];
+        if (empty($organizationSlug)) {
             return;
         }
 
         try {
-            $organizationSlug = $formData['organizationSlug'];
             
             // Chercher ou créer l'association
             $asso = $this->em->getRepository(AssoRecommander::class)
@@ -425,25 +434,26 @@ class NotificationController extends AbstractController
             $this->logger->info('Organization processed from form event', [
                 'organizationSlug' => $organizationSlug,
                 'isNew' => $isNew,
-                'formSlug' => $formData['formSlug'] ?? null
+                'formSlug' => $formData['formSlug']
             ]);
 
         } catch (\Exception $e) {
             $this->logger->error('Error processing form event', [
                 'error' => $e->getMessage(),
-                'organizationSlug' => $organizationSlug ?? 'unknown'
+                'organizationSlug' => $organizationSlug
             ]);
         }
     }
 
     /**
      * ✅ TRAITEMENT DES ÉVÉNEMENTS DE COMMANDE
+     * @param array{items:?array<mixed>,amount:?int,id:?string,state:?string} $orderData
      */
     private function processOrderEvent(array $orderData, HelloAssoFormNotification $notification): void
     {
         $this->logger->info('Processing order event', [
-            'orderId' => $orderData['id'] ?? null,
-            'amount' => $orderData['amount'] ?? null,
+            'orderId' => $orderData['id'],
+            'amount' => $orderData['amount'],
             'itemCount' => isset($orderData['items']) ? count($orderData['items']) : 0
         ]);
 
@@ -453,13 +463,15 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ TRAITEMENT DES ÉVÉNEMENTS DE PAIEMENT
+     * 
+     * @param array{name:?string,amount:?int,id:?string,state:?string} $paymentData
      */
     private function processPaymentEvent(array $paymentData, HelloAssoFormNotification $notification): void
     {
         $this->logger->info('Processing payment event', [
-            'paymentId' => $paymentData['id'] ?? null,
-            'state' => $paymentData['state'] ?? null,
-            'amount' => $paymentData['amount'] ?? null
+            'paymentId' => $paymentData['id'],
+            'state' => $paymentData['state'],
+            'amount' => $paymentData['amount']
         ]);
 
         // Traitement spécifique aux paiements si nécessaire
@@ -467,6 +479,7 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ TRAITEMENT DES DONNÉES PAYER
+     * @param array{eventType:string,data:array{payer:array{firstName:?string,lastName:?string,address:?string,city:?string,zipCode:?string,country:?string,company:?string,email:?string},state:?string}} $data
      */
     private function processPayerData(array $data): void
     {
@@ -478,13 +491,15 @@ class NotificationController extends AbstractController
         } elseif ($eventType === 'Payment') {
             $this->logger->info('Payment event for payer', [
                 'email' => $payerData['email'] ?? 'unknown',
-                'paymentState' => $data['data']['state'] ?? null
+                'paymentState' => $data['data']['state']
             ]);
         }
     }
 
     /**
      * ✅ TRAITEMENT DES ITEMS DE COMMANDE
+     * @param array{amount:?int,type:?string,state:?string} $items
+     * @param array<mixed> $data
      */
     private function processOrderItems(array $items, array $data): void
     {
@@ -503,7 +518,7 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ MISE À JOUR ASSO DEPUIS DONNÉES FORMULAIRE
-     * @param array{bannerPublicUrl:?string,fiscalReceiptEligibility:?bool,fiscalReceiptIssuanceEnabled:?bool,activityType:?string,organizationLogo:?string,organizationName:?string,placeCity:?string,placeZipCode:?string,description:?string,url:?string} $formData
+     * @param array{organizationSlug:?string,bannerPublicUrl:?string,fiscalReceiptEligibility:?bool,fiscalReceiptIssuanceEnabled:?bool,activityType:?string,organizationLogo:?string,organizationName:?string,placeCity:?string,placeZipCode:?string,description:?string,url:?string} $formData
      */
     private function updateAssoFromFormData(AssoRecommander $asso, array $formData): void
     {

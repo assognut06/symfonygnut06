@@ -84,7 +84,10 @@ class DonateurController extends AbstractController
 
         return $this->renderWithForms($formPhysique, $formSociete);
     }
-
+    /**
+     * @param FormInterface<PersonnePhysique> $formPhysique
+     * @param FormInterface<Societe> $formSociete
+     */
     private function renderWithForms(FormInterface $formPhysique, FormInterface $formSociete): Response
     {
         return $this->render('donateur/form_donateur.html.twig', [

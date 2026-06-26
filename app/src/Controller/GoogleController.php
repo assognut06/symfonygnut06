@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Security\EmailVerifier;
 use App\Service\EmailService;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Psr\Log\LoggerInterface;
@@ -17,7 +16,7 @@ class GoogleController extends AbstractController
 {
     private LoggerInterface $logger;
 
-    public function __construct(EmailVerifier $emailVerifier, LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
@@ -37,7 +36,7 @@ class GoogleController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        if ($user) {
+        if (!$user->isVerified()) {
             // Si l'utilisateur n'est pas encore vérifié, on envoie l'email de confirmation
             try {
                 $emailService->sendConfirmationEmail($user);

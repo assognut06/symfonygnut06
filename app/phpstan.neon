@@ -7,6 +7,3 @@ parameters:
     level: 6
     paths:
         - src
-    ignoreErrors:
-        - message: '#property\.unusedType#'
-          path: %currentWorkingDirectory%/src/Entity/.*\.php

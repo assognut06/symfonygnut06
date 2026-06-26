@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\AssoRecommander;
-use App\Repository\AssoRecommanderRepository;
-use App\Service\AssoRecommanderService;
 use App\Service\DataFilterAndPaginator;
 use App\Service\HelloAssoApiService;
 use App\Service\PaginationService;
@@ -16,14 +14,10 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/assos/recommandees')]
 class AssoRecommanderController extends AbstractController
 {
-    private $assoRecommanderService;
-    private $assoRecommanderRepository;
-    private $helloAssoApiService;
+    private HelloAssoApiService $helloAssoApiService;
     private string $googleMapsApiKey;
 
     function __construct(
-        AssoRecommanderService $assoRecommanderService,
-        AssoRecommanderRepository $assoRecommanderRepository,
         HelloAssoApiService $helloAssoApiService,
         string $googleMapsApiKey
     )
@@ -105,9 +99,7 @@ class AssoRecommanderController extends AbstractController
     {
         $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms/{$formType}/{$formSlug}/public";
         $data_form = $this->helloAssoApiService->makeApiCall($url);
-        // dd($url);
-        $googleMapsApiKey = $_ENV['GNUT06MAPAPI'];
-
+        
         return $this->render('asso_recommander/detailsEvent.html.twig', [
             'data_actu' => $data_form,
             'googleMapsApiKey' => $this->googleMapsApiKey,
