@@ -5,8 +5,8 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route; // Service dédié pour les appels API HelloAsso
+use Symfony\Component\Routing\Annotation\Route;
+use App\Service\HelloAssoApiService; // Service dédié pour les appels API HelloAsso
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
