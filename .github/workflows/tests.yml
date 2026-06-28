@@ -33,7 +33,8 @@ jobs:
 
     services:
       mysql:
-        image: mysql:5.7
+        # Docker Hub is often unreachable from GitHub runners; use the AWS ECR mirror of the official image.
+        image: public.ecr.aws/docker/library/mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: gnut06_test
@@ -121,7 +122,8 @@ jobs:
 
     services:
       mysql:
-        image: mysql:5.7
+        # Docker Hub is often unreachable from GitHub runners; use the AWS ECR mirror of the official image.
+        image: public.ecr.aws/docker/library/mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: gnut06_test
