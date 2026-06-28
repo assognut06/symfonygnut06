@@ -29,7 +29,7 @@ class PublicRouteSmokeTest extends WebTestCase
         yield 'Don' => ['/don'];
         yield 'Adhesion' => ['/adhesion'];
         yield 'Metavers' => ['/metavers/'];
-        yield 'Mention legales' => ['/mention/legales'];
+        yield 'Mention legales' => ['/mentions-legales'];
         yield 'Presse' => ['/presse'];
         yield 'Handi 3D' => ['/Handi-3D'];
         yield 'Don casque donateur form' => ['/donateur/formulaire'];
