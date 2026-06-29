@@ -197,19 +197,76 @@
 	</div>
 </footer>
 <script>
-document.querySelectorAll('.js-cookie-management').forEach(function (button) {
-	button.addEventListener('click', function () {
-		if (window.ClickioConsent && typeof window.ClickioConsent.open === 'function') {
-			window.ClickioConsent.open();
+(function () {
+	function isConsentUiVisible() {
+		return Boolean(document.querySelector('.cl-consent, .cl-consent-popup.cl-consent-visible'));
+	}
+
+	function addConsentParamToUrl() {
+		var url = new URL(window.location.href);
+		url.searchParams.set('showConsent', '1');
+		window.location.href = url.toString();
+	}
+
+	function openClickioConsent() {
+		if (window.__lxG__consent__ && typeof window.__lxG__consent__.showConsent === 'function') {
+			window.__lxG__consent__.showConsent();
+			return true;
+		}
+
+		var clickioSettingsButton = document.querySelector('.cl-consent-settings__btn');
+		if (clickioSettingsButton) {
+			clickioSettingsButton.click();
+			return true;
+		}
+
+		return false;
+	}
+
+	function openWithTcfApiFallback() {
+		if (!window.__tcfapi) {
+			addConsentParamToUrl();
 			return;
 		}
-		if (window.__tcfapi) {
-			window.__tcfapi('displayConsentUi', 2, function () {});
-			return;
-		}
-		if (window._clickioConsent && typeof window._clickioConsent.show === 'function') {
-			window._clickioConsent.show();
-		}
+
+		var fallbackTimeout = window.setTimeout(function () {
+			if (!isConsentUiVisible()) {
+				addConsentParamToUrl();
+			}
+		}, 1000);
+
+		window.__tcfapi('displayConsentUi', 2, function () {
+			window.clearTimeout(fallbackTimeout);
+			window.setTimeout(function () {
+				if (!isConsentUiVisible()) {
+					addConsentParamToUrl();
+				}
+			}, 500);
+		});
+	}
+
+	function openCookieManagement() {
+		var attempts = 0;
+		var maxAttempts = 30;
+		var interval = window.setInterval(function () {
+			attempts += 1;
+
+			if (openClickioConsent()) {
+				window.clearInterval(interval);
+				return;
+			}
+
+			if (attempts >= maxAttempts) {
+				window.clearInterval(interval);
+				openWithTcfApiFallback();
+			}
+		}, 100);
+	}
+
+	document.querySelectorAll('.js-cookie-management').forEach(function (button) {
+		button.addEventListener('click', function () {
+			openCookieManagement();
+		});
 	});
-});
+})();
 </script>
