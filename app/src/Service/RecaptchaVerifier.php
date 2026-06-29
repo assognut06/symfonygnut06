@@ -12,7 +12,7 @@ class RecaptchaVerifier
     public function __construct(
         private HttpClientInterface $client,
         private string $appEnv,
-        private string $recaptchaSecret,
+        private string $recaptchaSecret
     ) {
     }
 
