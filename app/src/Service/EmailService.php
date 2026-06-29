@@ -5,6 +5,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Security\EmailVerifier;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
