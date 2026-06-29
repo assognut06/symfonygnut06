@@ -24,7 +24,7 @@ class TihController extends AbstractController
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        $tih = $user?->getTih();
+        $tih = $user->getTih();
 
         if (!$tih || !$tih->getCv()) {
             throw $this->createNotFoundException('CV introuvable.');
@@ -53,7 +53,7 @@ class TihController extends AbstractController
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        $tih = $user?->getTih();
+        $tih = $user->getTih();
 
         if (!$tih || !$tih->getAttestationTih()) {
             throw $this->createNotFoundException('Attestation introuvable.');

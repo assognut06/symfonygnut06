@@ -163,20 +163,6 @@ class AdminController extends AbstractController
             'totalCount' => 0,
         ];
     }
-    
-    /**
-     * @return ?array<mixed>
-     */
-    private function normalizeDetailsResponse(mixed $dataForms): ?array
-    {
-        if (!is_array($dataForms)) {
-            $this->addFlash('danger', 'Impossible de recuperer le detail HelloAsso pour le moment.');
-
-            return null;
-        }
-
-        return $dataForms;
-    }
 
     private function buildDetailsUrl(string $type, string $id): string {
         $baseUrl = "https://api.helloasso.com/v5";
