@@ -40,7 +40,6 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/assos/crud, roles: ROLE_ADMIN }
         - { path: ^/oauth-test, roles: ROLE_ADMIN }
         - { path: ^/connect/outlook, roles: PUBLIC_ACCESS }
         - { path: ^/connect/google, roles: PUBLIC_ACCESS }

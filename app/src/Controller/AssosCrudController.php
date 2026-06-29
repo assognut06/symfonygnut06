@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/assos/crud')]
+#[Route('/admin/assos/crud')]
 #[IsGranted('ROLE_ADMIN')]
 class AssosCrudController extends AbstractController
 {
