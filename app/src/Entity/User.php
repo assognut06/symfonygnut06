@@ -49,8 +49,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', targetEntity: Tih::class, cascade: ['persist', 'remove'])]
     private ?Tih $tih = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $profile_picture;
+    #[ORM\Column(name: 'profile_picture', type: 'string', length: 255, nullable: true)]
+    private ?string $profilePicture = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $googleId = null;
@@ -176,12 +176,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getProfilePicture(): ?string
     {
-        return $this->profile_picture;
+        return $this->profilePicture;
     }
     
-    public function setProfilePicture(?string $profile_picture): self
+    public function setProfilePicture(?string $profilePicture): self
     {
-        $this->profile_picture = $profile_picture;
+        $this->profilePicture = $profilePicture;
         return $this;
     }
 
