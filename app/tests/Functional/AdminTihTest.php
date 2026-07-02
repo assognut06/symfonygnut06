@@ -3,12 +3,29 @@
 namespace App\Tests\Functional;
 
 use App\Entity\Tih;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Functional tests for TIH administration (list, search, validate, refuse, delete).
  */
 class AdminTihTest extends WebTestCase
 {
+    /** @var string[] */
+    private array $createdFiles = [];
+
+    protected function tearDown(): void
+    {
+        foreach ($this->createdFiles as $filePath) {
+            if (is_file($filePath)) {
+                unlink($filePath);
+            }
+        }
+
+        $this->createdFiles = [];
+
+        parent::tearDown();
+    }
+
     public function testIndexListsTihProfiles(): void
     {
         $this->loginAsAdmin();
@@ -92,6 +109,18 @@ class AdminTihTest extends WebTestCase
         $this->client->request('GET', '/admin/tih/2');
 
         $this->assertResponseIsSuccessful();
+    }
+
+    public function testIndexPaginationCapsRequestedPageToLastAvailablePage(): void
+    {
+        $this->loginAsAdmin();
+        $this->createTihUser('single-page-tih@test.com');
+
+        $this->client->request('GET', '/admin/tih/999');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('.pagination .page-item.active .page-link');
+        $this->assertSelectorTextSame('.pagination .page-item.active .page-link', '1');
     }
 
     public function testValidateRejectsInvalidCsrf(): void
@@ -280,5 +309,157 @@ class AdminTihTest extends WebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testDownloadCvReturnsInlineFileFromConfiguredDirectory(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'cv-configured@test.com']);
+        $fileName = sprintf('cv-configured-%s.pdf', uniqid('', true));
+        $this->createUploadedFile('var/tihcv', $fileName, 'cv-content');
+        $tih->setCv($fileName);
+        $this->em->flush();
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/cv');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertStringContainsString(
+            'inline; filename=' . $fileName,
+            (string) $this->client->getResponse()->headers->get('Content-Disposition')
+        );
+    }
+
+    public function testDownloadCvFallsBackToLegacyDirectory(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'cv-legacy@test.com']);
+        $fileName = sprintf('cv-legacy-%s.pdf', uniqid('', true));
+        $this->createUploadedFile('public/uploads/tihcv', $fileName, 'legacy-cv-content');
+        $tih->setCv($fileName);
+        $this->em->flush();
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/cv');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertStringContainsString(
+            'inline; filename=' . $fileName,
+            (string) $this->client->getResponse()->headers->get('Content-Disposition')
+        );
+    }
+
+    public function testDownloadCvReturns404WhenNoCvSet(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'cv-missing-field@test.com']);
+        $tih->setCv(null);
+        $this->em->flush();
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/cv');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testDownloadCvReturns404WhenStoredFileIsMissing(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'cv-file-missing@test.com']);
+        $tih->setCv('missing-file.pdf');
+        $this->em->flush();
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/cv');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testDownloadCvReturns404WhenTihMissing(): void
+    {
+        $this->loginAsAdmin();
+
+        $this->client->request('GET', '/admin/tih/999999/cv');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testDownloadAttestationReturnsInlineFileFromConfiguredDirectory(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'att-configured@test.com']);
+        $fileName = sprintf('att-configured-%s.pdf', uniqid('', true));
+        $this->createUploadedFile('var/tihattest', $fileName, 'att-content');
+        $tih->setAttestationTih($fileName);
+        $this->em->flush();
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/attestation');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertStringContainsString(
+            'inline; filename=' . $fileName,
+            (string) $this->client->getResponse()->headers->get('Content-Disposition')
+        );
+    }
+
+    public function testDownloadAttestationFallsBackToLegacyDirectory(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'att-legacy@test.com']);
+        $fileName = sprintf('att-legacy-%s.pdf', uniqid('', true));
+        $this->createUploadedFile('public/uploads/tihattest', $fileName, 'legacy-att-content');
+        $tih->setAttestationTih($fileName);
+        $this->em->flush();
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/attestation');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertStringContainsString(
+            'inline; filename=' . $fileName,
+            (string) $this->client->getResponse()->headers->get('Content-Disposition')
+        );
+    }
+
+    public function testDownloadAttestationReturns404WhenNoFileSet(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'att-missing-field@test.com']);
+        $tih->setAttestationTih(null);
+        $this->em->flush();
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/attestation');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testDownloadAttestationReturns404WhenStoredFileIsMissing(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'att-file-missing@test.com']);
+        $tih->setAttestationTih('missing-attestation.pdf');
+        $this->em->flush();
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/attestation');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testDownloadAttestationReturns404WhenTihMissing(): void
+    {
+        $this->loginAsAdmin();
+
+        $this->client->request('GET', '/admin/tih/999999/attestation');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    private function createUploadedFile(string $relativeDirectory, string $fileName, string $content): void
+    {
+        $projectDir = (string) static::getContainer()->getParameter('kernel.project_dir');
+        $directory = rtrim($projectDir, '/') . '/' . trim($relativeDirectory, '/');
+
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
+        $filePath = $directory . '/' . $fileName;
+        file_put_contents($filePath, $content);
+        $this->createdFiles[] = $filePath;
     }
 }
