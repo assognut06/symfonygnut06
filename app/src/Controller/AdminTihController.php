@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\Tih;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -57,6 +59,40 @@ class AdminTihController extends AbstractController
             'page_size' => self::PAGE_SIZE,
             'query'     => $q,
         ]);
+    }
+
+    #[Route('/admin/tih/{id}/cv', name: 'app_admin_tih_cv', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function downloadCv(EntityManagerInterface $em, int $id): Response
+    {
+        $tih = $this->findTihOrFail($em, $id);
+
+        if (!$tih->getCv()) {
+            throw $this->createNotFoundException('CV introuvable.');
+        }
+
+        return $this->createInlineFileResponse(
+            (string) $tih->getCv(),
+            (string) $this->getParameter('cv_tih_directory'),
+            'public/uploads/tihcv',
+            'CV introuvable.'
+        );
+    }
+
+    #[Route('/admin/tih/{id}/attestation', name: 'app_admin_tih_attestation', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function downloadAttestation(EntityManagerInterface $em, int $id): Response
+    {
+        $tih = $this->findTihOrFail($em, $id);
+
+        if (!$tih->getAttestationTih()) {
+            throw $this->createNotFoundException('Attestation introuvable.');
+        }
+
+        return $this->createInlineFileResponse(
+            (string) $tih->getAttestationTih(),
+            (string) $this->getParameter('attestation_tih_directory'),
+            'public/uploads/tihattest',
+            'Attestation introuvable.'
+        );
     }
 
     #[Route('/admin/tih/validate/{id}', name: 'app_admin_tih_validate', methods: ['POST'])]
@@ -135,5 +171,41 @@ class AdminTihController extends AbstractController
 
         $this->addFlash('success', 'TIH supprimé avec succès.');
         return $this->redirectToRoute('app_admin_tih');
+    }
+
+    private function findTihOrFail(EntityManagerInterface $em, int $id): Tih
+    {
+        $tih = $em->getRepository(Tih::class)->find($id);
+
+        if (!$tih) {
+            throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
+        }
+
+        return $tih;
+    }
+
+    private function createInlineFileResponse(
+        string $storedFilename,
+        string $uploadDirectory,
+        string $legacyDirectory,
+        string $notFoundMessage
+    ): BinaryFileResponse {
+        $fileName = basename($storedFilename);
+        $filePath = rtrim($uploadDirectory, '/') . '/' . $fileName;
+
+        if (!is_file($filePath)) {
+            $legacyPath = rtrim((string) $this->getParameter('kernel.project_dir'), '/') . '/' . trim($legacyDirectory, '/') . '/' . $fileName;
+
+            if (is_file($legacyPath)) {
+                $filePath = $legacyPath;
+            } else {
+                throw $this->createNotFoundException($notFoundMessage);
+            }
+        }
+
+        $response = new BinaryFileResponse($filePath);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $fileName);
+
+        return $response;
     }
 }

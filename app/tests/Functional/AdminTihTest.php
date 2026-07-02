@@ -3,12 +3,28 @@
 namespace App\Tests\Functional;
 
 use App\Entity\Tih;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * Functional tests for TIH administration (list, search, validate, refuse, delete).
  */
 class AdminTihTest extends WebTestCase
 {
+    /** @var list<string> */
+    private array $createdFiles = [];
+
+    protected function tearDown(): void
+    {
+        foreach ($this->createdFiles as $path) {
+            if (is_file($path)) {
+                @unlink($path);
+            }
+        }
+
+        $this->createdFiles = [];
+        parent::tearDown();
+    }
+
     public function testIndexListsTihProfiles(): void
     {
         $this->loginAsAdmin();
@@ -92,6 +108,80 @@ class AdminTihTest extends WebTestCase
         $this->client->request('GET', '/admin/tih/2');
 
         $this->assertResponseIsSuccessful();
+    }
+
+    public function testDownloadCvReturnsInlineFileFromConfiguredDirectory(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'cv-download@example.com']);
+        $tih->setCv('admin-cv.pdf');
+        $this->em->flush();
+
+        $this->createStoredFile((string) static::getContainer()->getParameter('cv_tih_directory'), 'admin-cv.pdf', 'cv');
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/cv');
+
+        $this->assertInlineDownloadResponse('admin-cv.pdf');
+    }
+
+    public function testDownloadCvFallsBackToLegacyDirectory(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'cv-legacy@example.com']);
+        $tih->setCv('legacy-admin-cv.pdf');
+        $this->em->flush();
+
+        $projectDir = (string) static::getContainer()->getParameter('kernel.project_dir');
+        $this->createStoredFile($projectDir . '/public/uploads/tihcv', 'legacy-admin-cv.pdf', 'legacy-cv');
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/cv');
+
+        $this->assertInlineDownloadResponse('legacy-admin-cv.pdf');
+    }
+
+    public function testDownloadCvReturns404WhenStoredFileIsMissing(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'cv-missing-file@example.com']);
+        $tih->setCv('missing-admin-cv.pdf');
+        $this->em->flush();
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/cv');
+
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testDownloadCvReturns404WhenTihIsMissing(): void
+    {
+        $this->loginAsAdmin();
+
+        $this->client->request('GET', '/admin/tih/999999/cv');
+
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testDownloadAttestationReturnsInlineFileFromConfiguredDirectory(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'attestation-download@example.com']);
+        $tih->setAttestationTih('admin-attestation.pdf');
+        $this->em->flush();
+
+        $this->createStoredFile((string) static::getContainer()->getParameter('attestation_tih_directory'), 'admin-attestation.pdf', 'attestation');
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/attestation');
+
+        $this->assertInlineDownloadResponse('admin-attestation.pdf');
+    }
+
+    public function testDownloadAttestationReturns404WhenNoDocumentIsStored(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih(['email' => 'attestation-missing@example.com']);
+
+        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/attestation');
+
+        $this->assertResponseStatusCodeSame(404);
     }
 
     public function testValidateRejectsInvalidCsrf(): void
@@ -280,5 +370,24 @@ class AdminTihTest extends WebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(404);
+    }
+
+    private function createStoredFile(string $directory, string $filename, string $contents): void
+    {
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
+        $path = rtrim($directory, '/') . '/' . $filename;
+        file_put_contents($path, $contents);
+        $this->createdFiles[] = $path;
+    }
+
+    private function assertInlineDownloadResponse(string $filename): void
+    {
+        $this->assertResponseIsSuccessful();
+        self::assertInstanceOf(BinaryFileResponse::class, $this->client->getResponse());
+        self::assertStringContainsString('inline', (string) $this->client->getResponse()->headers->get('content-disposition'));
+        self::assertStringContainsString($filename, (string) $this->client->getResponse()->headers->get('content-disposition'));
     }
 }
