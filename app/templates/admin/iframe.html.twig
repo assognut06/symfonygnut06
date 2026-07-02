@@ -9,6 +9,10 @@
 		<!-- Include header -->
 		{% include 'admin/_partials/header.html.twig' %}
 		{{ encore_entry_link_tags('app') }}
+		<!-- Include javascripts in <head> so Turbo is initialized only once per page load -->
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
 	</head>
 	<body>
 		<!-- Spinner de Chargement -->
@@ -23,9 +27,5 @@
 		<!-- Include scripts -->
 		{% include 'admin/_partials/scripts.html.twig' %}
 
-		<!-- Include javascripts -->
-		{% block javascripts %}
-			{{ encore_entry_script_tags('app') }}
-		{% endblock %}
 	</body>
 </html>
