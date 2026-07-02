@@ -159,8 +159,11 @@ jobs:
             else
               git fetch origin "$DEPLOY_BRANCH"
             fi
-            git checkout "$DEPLOY_BRANCH"
-            git pull --ff-only origin "$DEPLOY_BRANCH"
+            # The deploy working tree must exactly match the remote branch.
+            # Using checkout/reset handles forced updates and discarded local deploy-only commits
+            # without failing on divergent history like `git pull --ff-only` does.
+            git checkout -B "$DEPLOY_BRANCH" "origin/$DEPLOY_BRANCH"
+            git reset --hard "origin/$DEPLOY_BRANCH"
             echo "🌿 Deploying branch: $DEPLOY_BRANCH"
 
             # Aller dans le dossier app
