@@ -1,0 +1,201 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - master
+  pull_request:
+    branches:
+      - develop
+      - main
+      - master
+
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  phpunit:
+    name: PHPUnit (${{ matrix.suite }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    defaults:
+      run:
+        working-directory: app
+
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [Unit, Functional]
+
+    services:
+      mysql:
+        # Docker Hub is often unreachable from GitHub runners; use the AWS ECR mirror of the official image.
+        image: public.ecr.aws/docker/library/mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: gnut06_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      APP_ENV: test
+      APP_SECRET: ci_test_secret_not_for_production
+      DATABASE_URL_TEST: mysql://root:root@127.0.0.1:3306/gnut06_test?serverVersion=5.7&charset=utf8mb4
+      MAILER_DSN: null://null
+      MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
+      APICLIENTID: test
+      APICLIENTSECRET: test
+      SLUGASSO: test
+      GNUT06MAPAPI: test
+      APIMAPGEOCODING: test
+      APIMAILJET: test
+      APIMAILJETSECRET: test
+      SECRETOHME: test
+      APIFRAMEVR: test
+      NOCAPTCHA_SECRET: test
+      NOCAPTCHA_SITEKEY: test
+      GOOGLE_CLIENT_ID: test
+      GOOGLE_CLIENT_SECRET: test
+      GOOGLE_REDIRECT_URI: http://localhost/connect/google/check
+      AZURE_CLIENT_ID: test
+      AZURE_CLIENT_SECRET: test
+      HELLOASSO_WEBHOOK_SECRET: test-webhook-secret
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: ctype, iconv, pdo_mysql, mysqli, intl, zip, mbstring, gd, opcache
+          coverage: none
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-${{ hashFiles('app/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      - name: Install PHP dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if php -r "new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'root');" 2>/dev/null; then
+              echo "MySQL is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "MySQL did not become ready in time"
+          exit 1
+
+      - name: Run PHPUnit (${{ matrix.suite }})
+        run: vendor/bin/phpunit --testsuite=${{ matrix.suite }} --colors=always
+
+  coverage:
+    name: Coverage (admin controllers)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: phpunit
+
+    defaults:
+      run:
+        working-directory: app
+
+    services:
+      mysql:
+        # Docker Hub is often unreachable from GitHub runners; use the AWS ECR mirror of the official image.
+        image: public.ecr.aws/docker/library/mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: gnut06_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      APP_ENV: test
+      APP_SECRET: ci_test_secret_not_for_production
+      DATABASE_URL_TEST: mysql://root:root@127.0.0.1:3306/gnut06_test?serverVersion=5.7&charset=utf8mb4
+      MAILER_DSN: null://null
+      MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
+      APICLIENTID: test
+      APICLIENTSECRET: test
+      SLUGASSO: test
+      GNUT06MAPAPI: test
+      APIMAPGEOCODING: test
+      APIMAILJET: test
+      APIMAILJETSECRET: test
+      SECRETOHME: test
+      APIFRAMEVR: test
+      NOCAPTCHA_SECRET: test
+      NOCAPTCHA_SITEKEY: test
+      GOOGLE_CLIENT_ID: test
+      GOOGLE_CLIENT_SECRET: test
+      GOOGLE_REDIRECT_URI: http://localhost/connect/google/check
+      AZURE_CLIENT_ID: test
+      AZURE_CLIENT_SECRET: test
+      HELLOASSO_WEBHOOK_SECRET: test-webhook-secret
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: ctype, iconv, pdo_mysql, mysqli, intl, zip, mbstring, gd, opcache
+          coverage: pcov
+
+      - name: Install PHP dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if php -r "new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'root');" 2>/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
+
+      - name: Run tests with coverage
+        run: |
+          vendor/bin/phpunit \
+            --coverage-clover var/coverage/clover.xml \
+            --coverage-text \
+            --colors=always
+
+      - name: Enforce minimum coverage on critical controllers
+        run: php scripts/check-coverage-threshold.php var/coverage/clover.xml
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: phpunit-coverage
+          path: app/var/coverage/clover.xml
+          if-no-files-found: error
