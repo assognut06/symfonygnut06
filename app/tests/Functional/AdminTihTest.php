@@ -35,6 +35,52 @@ class AdminTihTest extends WebTestCase
         $this->assertSelectorTextNotContains('table#tih-table', 'beta-tih@test.com');
     }
 
+    public function testIndexSearchFiltersByProfessionalEmail(): void
+    {
+        $this->loginAsAdmin();
+        $this->createSearchableTih([
+            'email' => 'account-pro@example.com',
+            'professionalEmail' => 'contact-pro@example.com',
+        ]);
+        $this->createSearchableTih([
+            'email' => 'other-pro@example.com',
+            'professionalEmail' => 'other-contact@example.com',
+        ]);
+
+        $this->client->request('GET', '/admin/tih', ['q' => 'contact-pro']);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('table#tih-table', 'contact-pro@example.com');
+        $this->assertSelectorTextNotContains('table#tih-table', 'other-contact@example.com');
+    }
+
+    public function testIndexSearchFiltersByFirstAndLastName(): void
+    {
+        $this->loginAsAdmin();
+        $this->createSearchableTih([
+            'email' => 'named-tih@example.com',
+            'firstName' => 'Camille',
+            'lastName' => 'Martin',
+        ]);
+        $this->createSearchableTih([
+            'email' => 'unnamed-tih@example.com',
+            'firstName' => 'Alex',
+            'lastName' => 'Durand',
+        ]);
+
+        $this->client->request('GET', '/admin/tih', ['q' => 'camille']);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('table#tih-table', 'named-tih@example.com');
+        $this->assertSelectorTextNotContains('table#tih-table', 'unnamed-tih@example.com');
+
+        $this->client->request('GET', '/admin/tih', ['q' => 'martin']);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('table#tih-table', 'named-tih@example.com');
+        $this->assertSelectorTextNotContains('table#tih-table', 'unnamed-tih@example.com');
+    }
+
     public function testIndexPagination(): void
     {
         $this->loginAsAdmin();

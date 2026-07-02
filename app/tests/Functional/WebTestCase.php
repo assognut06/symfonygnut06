@@ -136,6 +136,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *     rate?: string,
      *     rateType?: string,
      *     validated?: bool,
+     *     professionalEmail?: string,
      *     competences?: Competence[],
      * } $options
      */
@@ -153,6 +154,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $tih->setUser($user);
         $tih->setFirstName($options['firstName'] ?? 'Jean');
         $tih->setLastName($options['lastName'] ?? 'Dupont');
+        $tih->setProfessionalEmail($options['professionalEmail'] ?? null);
         $tih->setCity($options['city'] ?? 'Nice');
         $tih->setRegion($options['region'] ?? 'PACA');
         $tih->setDepartement($options['departement'] ?? null);
