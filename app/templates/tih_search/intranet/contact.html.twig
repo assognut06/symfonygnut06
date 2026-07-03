@@ -1,0 +1,40 @@
+{% extends 'tih_search/intranet/base.html.twig' %}
+
+{% block title %}Contacter {{ tih.firstName }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="mb-4">Contacter {{ tih.fullName }}</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+            {{ form_errors(form) }}
+
+            <div class="row">
+                <div class="col-md-6 mb-3">{{ form_row(form.prenom) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.nom) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.email) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.telephone) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.entreprise) }}</div>
+                <div class="col-md-6 mb-3">{{ form_row(form.subject) }}</div>
+                <div class="col-12 mb-3">{{ form_row(form.message) }}</div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-send"></i> Envoyer
+                </button>
+                <a href="{{ path('intranet_tih_details', {'id': tih.id}) }}" class="btn btn-secondary">
+                    Annuler
+                </a>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <div class="mt-4">
+    </div>
+</div>
+{% endblock %}

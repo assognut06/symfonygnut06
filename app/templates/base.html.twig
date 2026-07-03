@@ -13,6 +13,10 @@
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
+		<!-- Include javascripts in <head> so Turbo is initialized only once per page load -->
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
 		{% include '_partials/analytics.html.twig' %}
 	</head>
 	<body>
@@ -42,10 +46,5 @@
 
 		{# Include agent AI #}
 		{% include '_partials/chatbot.html.twig' %}
-
-		<!-- Include javascripts -->
-		{% block javascripts %}
-			{{ encore_entry_script_tags('app') }}
-		{% endblock %}
 	</body>
 </html>
