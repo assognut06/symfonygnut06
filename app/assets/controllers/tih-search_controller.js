@@ -502,10 +502,6 @@ export default class extends Controller {
         }
     }
 
-    profileDetailUrl(profile) {
-        return profile.detailUrl || `/tih/tih/${profile.id}`;
-    }
-
     createCarouselPopup(profiles, city) {
         if (profiles.length === 1) {
             const profile = profiles[0];
@@ -515,7 +511,7 @@ export default class extends Controller {
                     <p class="mb-1"><i class="bi bi-geo-alt"></i> ${profile.postalCode} ${profile.city}</p>
                     ${profile.rate ? `<p class="mb-1"><i class="bi bi-currency-euro"></i> ${profile.rate}€ / ${profile.rateType}</p>` : ''}
                     ${profile.availability ? `<p class="mb-2"><small>${profile.availability}</small></p>` : ''}
-                    <a href="${this.profileDetailUrl(profile)}" class="btn btn-sm btn-primary w-100">Voir le profil</a>
+                    <a href="${profile.detailUrl}" class="btn btn-sm btn-primary w-100">Voir le profil</a>
                 </div>
             `;
         }
@@ -530,7 +526,7 @@ export default class extends Controller {
                     ${profile.rate ? `<p class="mb-1"><i class="bi bi-currency-euro"></i> ${profile.rate}€ / ${profile.rateType}</p>` : ''}
                     ${profile.availability ? `<p class="mb-2"><small>${profile.availability}</small></p>` : ''}
                     <div class="d-flex gap-2 align-items-center">
-                        <a href="${this.profileDetailUrl(profile)}" class="btn btn-sm btn-primary flex-grow-1">Voir le profil</a>
+                        <a href="${profile.detailUrl}" class="btn btn-sm btn-primary flex-grow-1">Voir le profil</a>
                         <span class="badge bg-secondary">${index + 1}/${profiles.length}</span>
                     </div>
                 </div>

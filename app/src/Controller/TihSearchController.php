@@ -8,6 +8,7 @@ use App\Application\Query\QueryBus;
 use App\Application\Query\Tih\GetAvailableFiltersQuery;
 use App\Application\Query\Tih\SearchTihQuery;
 use App\Application\DTO\Tih\TihContactDTO;
+use App\Application\DTO\Tih\TihMapProfileDTO;
 use App\Application\ViewModel\Tih\TihContactViewModel;
 use App\Application\ViewModel\Tih\TihDetailsViewModel;
 use App\Entity\Tih;
@@ -113,7 +114,7 @@ class TihSearchController extends AbstractController
 
         return $this->render('tih_search/index.html.twig', [
             'tihs' => $paginator,
-            'allTihs' => iterator_to_array($allFilteredResults), // All results for map
+            'allTihs' => $this->buildMapProfiles($allFilteredResults, 'app_tih_details'), // All results for map
             'currentFilters' => $filters,
             'availableFilters' => $availableFilters,
             'currentPage' => $page,
@@ -123,6 +124,25 @@ class TihSearchController extends AbstractController
             'cityCoordinates' => $cityCoordinates,
             'googleMapsApiKey' => $this->googleMapsApiKey,
         ]);
+    }
+
+    /**
+     * @param iterable<Tih> $tihs
+     *
+     * @return TihMapProfileDTO[]
+     */
+    private function buildMapProfiles(iterable $tihs, string $detailRoute): array
+    {
+        $profiles = [];
+
+        foreach ($tihs as $tih) {
+            $profiles[] = TihMapProfileDTO::fromEntity(
+                $tih,
+                $this->generateUrl($detailRoute, ['id' => $tih->getId()])
+            );
+        }
+
+        return $profiles;
     }
 
     #[Route('/tih/{id}', name: 'app_tih_details', methods: ['GET'])]

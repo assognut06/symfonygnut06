@@ -11,19 +11,7 @@
 <main class="bg-main min-vh-100 py-5" role="main" 
       data-controller="tih-search"
       data-tih-search-url-value="{{ path('intranet_tih_search') }}"
-      data-tih-search-profiles-value="{{ allTihs|map(profile => {
-        'id': profile.id,
-        'firstName': profile.firstName,
-        'lastName': profile.lastName,
-        'city': profile.city,
-        'postalCode': profile.postalCode,
-        'photo': profile.photo,
-        'rate': profile.rate,
-        'rateType': profile.rateType,
-        'availability': profile.availability,
-        'availabilityDate': profile.availabilityDate ? profile.availabilityDate|date('Y-m-d') : null,
-        'detailUrl': path('intranet_tih_details', {'id': profile.id})
-      })|json_encode|e('html_attr') }}"
+      data-tih-search-profiles-value="{{ allTihs|json_encode|e('html_attr') }}"
       data-tih-search-api-key-value="{{ googleMapsApiKey }}"
       data-tih-search-city-coordinates-value="{{ cityCoordinates|json_encode|e('html_attr') }}"
       data-action="popstate@window->tih-search&#35;handleBrowserNavigation">
