@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Recherche TIH{% endblock %}</title>
+        {% include '_partials/header.html.twig' %}
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+    <body>
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="container pt-3">
+                    <div class="alert alert-{{ type }}" role="alert">{{ message }}</div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {% block body %}{% endblock %}
+    </body>
+</html>

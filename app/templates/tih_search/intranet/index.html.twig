@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'tih_search/intranet/base.html.twig' %}
 
 {% block title %}Recherche TIH{% endblock %}
 
@@ -10,7 +10,7 @@
 {% block body %}
 <main class="bg-main min-vh-100 py-5" role="main" 
       data-controller="tih-search"
-      data-tih-search-url-value="{{ path('app_tih_search') }}"
+      data-tih-search-url-value="{{ path('intranet_tih_search') }}"
       data-tih-search-profiles-value="{{ allTihs|json_encode|e('html_attr') }}"
       data-tih-search-api-key-value="{{ googleMapsApiKey }}"
       data-tih-search-city-coordinates-value="{{ cityCoordinates|json_encode|e('html_attr') }}"
@@ -38,7 +38,7 @@
                             <i class="bi bi-funnel me-2"></i>Filtres
                         </h5>
 
-                        <form id="filter-form" method="GET" action="{{ path('app_tih_search') }}"
+                        <form id="filter-form" method="GET" action="{{ path('intranet_tih_search') }}"
                               data-tih-search-target="form">
                             {# Skills Filter #}
                             <div class="filter-section mb-4">
@@ -288,7 +288,7 @@
                             {% endif %}
 
                             <div class="mt-auto pt-3">
-                                <a href="{{ path('app_tih_details', {'id': tih.id}) }}"
+                                <a href="{{ path('intranet_tih_details', {'id': tih.id}) }}"
                                    class="btn btn-outline-light btn-sm w-100"
                                    aria-label="Voir le profil détaillé de {{ tih.firstName }} {{ tih.lastName }}">
                                     <i class="bi bi-eye me-2"></i>Voir le profil
@@ -315,7 +315,7 @@
                     {# Previous button #}
                     <li class="page-item {{ currentPage == 1 ? 'disabled' : '' }}">
                         <a class="page-link" 
-                           href="{{ currentPage > 1 ? path('app_tih_search', {'page': currentPage - 1}) : '#' }}"
+                           href="{{ currentPage > 1 ? path('intranet_tih_search', {'page': currentPage - 1}) : '#' }}"
                            aria-label="Page précédente"
                            data-action="click->tih-search&#35;handlePagination"
                            {{ currentPage == 1 ? 'tabindex="-1" aria-disabled="true"' : '' }}>
@@ -330,7 +330,7 @@
                     {% if startPage > 1 %}
                         <li class="page-item">
                             <a class="page-link" 
-                               href="{{ path('app_tih_search', {'page': 1}) }}"
+                               href="{{ path('intranet_tih_search', {'page': 1}) }}"
                                data-action="click->tih-search&#35;handlePagination">1</a>
                         </li>
                         {% if startPage > 2 %}
@@ -343,7 +343,7 @@
                     {% for page in startPage..endPage %}
                         <li class="page-item {{ page == currentPage ? 'active' : '' }}">
                             <a class="page-link" 
-                               href="{{ path('app_tih_search', { 'page': page}) }}"
+                               href="{{ path('intranet_tih_search', { 'page': page}) }}"
                                data-action="click->tih-search&#35;handlePagination">
                                 {{ page }}
                                 {% if page == currentPage %}
@@ -361,7 +361,7 @@
                         {% endif %}
                         <li class="page-item">
                             <a class="page-link" 
-                               href="{{ path('app_tih_search', { 'page': totalPages}) }}"
+                               href="{{ path('intranet_tih_search', { 'page': totalPages}) }}"
                                data-action="click->tih-search&#35;handlePagination">{{ totalPages }}</a>
                         </li>
                     {% endif %}
@@ -369,7 +369,7 @@
                     {# Next button #}
                     <li class="page-item {{ currentPage == totalPages ? 'disabled' : '' }}">
                         <a class="page-link" 
-                           href="{{ currentPage < totalPages ? path('app_tih_search', {'page': currentPage + 1}) : '#' }}"
+                           href="{{ currentPage < totalPages ? path('intranet_tih_search', {'page': currentPage + 1}) : '#' }}"
                            aria-label="Page suivante"
                            data-action="click->tih-search&#35;handlePagination"
                            {{ currentPage == totalPages ? 'tabindex="-1" aria-disabled="true"' : '' }}>
