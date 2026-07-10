@@ -12,6 +12,7 @@ services:
       - "3306:3306"
     volumes:
       - ./mysql:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
  
   
   phpmyadmin:
@@ -43,6 +44,7 @@ services:
     restart: always
     environment:
       DATABASE_URL: "mysql://root:root@mysql:3306/gnut06?serverVersion=5.7&charset=utf8mb4"
+      DATABASE_URL_TEST: "mysql://root:root@mysql:3306/gnut06_test?serverVersion=5.7&charset=utf8mb4"
     volumes:
       - ./app:/var/www/app
     ports:

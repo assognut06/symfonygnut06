@@ -49,7 +49,6 @@
         "symfony/translation": "7.1.*",
         "symfony/twig-bundle": "7.1.*",
         "symfony/uid": "7.1.*",
-        "symfony/ux-turbo": "^2.17",
         "symfony/validator": "7.1.*",
         "symfony/web-link": "7.1.*",
         "symfony/webpack-encore-bundle": "^2.1",
@@ -113,6 +112,7 @@
         }
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^8.2",
         "doctrine/doctrine-fixtures-bundle": "^3.6",
         "friendsofphp/php-cs-fixer": "^3.66",
         "phpstan/phpstan": "^2.2",

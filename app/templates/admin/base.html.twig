@@ -12,40 +12,10 @@
 		{% include 'admin/_partials/header.html.twig' %}
 		{% block stylesheets %}{{ encore_entry_link_tags('app') }}{% endblock %}
 		<link rel="stylesheet" href="{{ asset('css/admin_table.css') }}">
-	</head>
-	<body>
-		<!-- Include navbar -->
-		{% include 'admin/_partials/navbar.html.twig' %}
-
-
-		{% include 'admin/_partials/nav_tabs.html.twig' %}
-		<!-- Spinner de Chargement -->
-		
-
-		<!-- Display flash messages -->
-		{% for type, messages in app.flashes %}
-			{% for message in messages %}
-				<div class="alert alert-{{ type }} text-center" role="alert">{{ message }}</div>
-			{% endfor %}
-		{% endfor %}
-
-		<!-- Body content -->
-	
-		{% include('_partials/loader.html.twig') %}
-		<main>
-           {% block body %}{% endblock %}
-        </main>
-
-		<!-- Include footer -->
-		{% include 'admin/_partials/footer.html.twig' %}
-
-		<!-- Include scripts -->
-		{% include 'admin/_partials/scripts.html.twig' %}
-
-		<!-- Include javascripts -->
+		<!-- Include javascripts in <head> so Turbo is initialized only once per page load -->
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
-			   <script>
+			<script>
             document.addEventListener("DOMContentLoaded", function() {
                 var loader = document.getElementById('loader');
 
@@ -86,5 +56,35 @@
             });
         </script>
         {% endblock %}
+	</head>
+	<body>
+		<!-- Include navbar -->
+		{% include 'admin/_partials/navbar.html.twig' %}
+
+
+		{% include 'admin/_partials/nav_tabs.html.twig' %}
+		<!-- Spinner de Chargement -->
+		
+
+		<!-- Display flash messages -->
+		{% for type, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ type }} text-center" role="alert">{{ message }}</div>
+			{% endfor %}
+		{% endfor %}
+
+		<!-- Body content -->
+	
+		{% include('_partials/loader.html.twig') %}
+		<main>
+           {% block body %}{% endblock %}
+        </main>
+
+		<!-- Include footer -->
+		{% include 'admin/_partials/footer.html.twig' %}
+
+		<!-- Include scripts -->
+		{% include 'admin/_partials/scripts.html.twig' %}
+
 	</body>
 </html>

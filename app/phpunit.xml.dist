@@ -11,15 +11,21 @@
     <php>
         <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
+        <ini name="memory_limit" value="512M" />
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
+        <server name="KERNEL_CLASS" value="App\Kernel" />
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
-            <directory>tests</directory>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Functional">
+            <directory>tests/Functional</directory>
+            <directory>tests/Controller</directory>
         </testsuite>
         <testsuite name="Rules">
             <directory>tests/Rules</directory>
@@ -37,5 +43,6 @@
     </listeners>
 
     <extensions>
+        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
     </extensions>
 </phpunit>

@@ -24,4 +24,11 @@
 - Environment: Use `.env` for config; avoid hardcoded values—move to parameters.
 - Security: Never expose secrets; use environment variables for API keys, DB credentials.
 
+## Branch Naming and Deployment Flow
+- Branch names must follow `<type>/tg-<taiga-ticket-number>-<free-text>`.
+- Allowed branch types are `feature`, `fix`, and `hotfix`.
+- `feature/*` and `fix/*` branches follow the standard delivery flow: merge into `develop` first, then into `main`.
+- `hotfix/*` branches follow the emergency production flow: merge into `main` first, then backport or merge into `develop`.
+- Keep the free-text part short and descriptive so the branch remains easy to identify.
+
 See README.md for installation, AUDIT_TECHNIQUE.md for security/architecture issues, DEPLOIEMENT_PRODUCTION.md for production deployment.
