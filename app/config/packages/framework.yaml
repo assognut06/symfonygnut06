@@ -3,6 +3,7 @@ framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
     secret: '%env(APP_SECRET)%'
+    trusted_hosts: ['^(?:.+\.)?gnut06\.org$', '^localhost$', '^127\.0\.0\.1$']
     #csrf_protection: true
     
     # Configuration des headers de sécurité
