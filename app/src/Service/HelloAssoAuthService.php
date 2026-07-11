@@ -2,7 +2,7 @@
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\RequestStack;
-use GuzzleHttp\Client;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HelloAssoAuthService
 {
@@ -11,10 +11,10 @@ class HelloAssoAuthService
     private $apiClientId;
     private $apiClientSecret;
 
-    public function __construct(RequestStack $requestStack, string $apiClientId, string $apiClientSecret)
+    public function __construct(RequestStack $requestStack, HttpClientInterface $client, string $apiClientId, string $apiClientSecret)
     {
         $this->requestStack = $requestStack;
-        $this->client = new Client();
+        $this->client = $client;
         $this->apiClientId = $apiClientId;
         $this->apiClientSecret = $apiClientSecret;
     }
@@ -43,8 +43,8 @@ class HelloAssoAuthService
                 $params['client_secret'] = $this->apiClientSecret;
             }
 
-            $response = $this->client->request('POST', 'https://api.helloasso.com/oauth2/token', ['form_params' => $params]);
-            $dataToken = json_decode($response->getBody(), true);
+            $response = $this->client->request('POST', '/oauth2/token', ['body' => $params]);
+            $dataToken = $response->toArray();
 
             $session->set('bearer_token', $dataToken['access_token']);
             $session->set('expiration_token', (new \DateTime())->modify('+' . $dataToken['expires_in'] . ' seconds'));
