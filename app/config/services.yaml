@@ -38,6 +38,8 @@ parameters:
     helloasso.webhook.rate_limit_max_requests: 60
     helloasso.webhook.rate_limit_window_seconds: 60
     helloasso.webhook.max_payload_bytes: 1048576
+    chatbot.rate_limit_max_requests: 20
+    chatbot.rate_limit_window_seconds: 60
 
 
 services:
@@ -163,6 +165,9 @@ services:
         arguments:
             $openAiApiKey: '%openai.api_key%'
             $openAiModel: '%openai.model%'
+            $cache: '@cache.app'
+            $chatbotRateLimitMaxRequests: '%chatbot.rate_limit_max_requests%'
+            $chatbotRateLimitWindowSeconds: '%chatbot.rate_limit_window_seconds%'
 
     App\Service\EmailService: ~
 

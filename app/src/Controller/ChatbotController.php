@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,9 @@ final class ChatbotController extends AbstractController
         private readonly HttpClientInterface $httpClient,
         private readonly string $openAiApiKey,
         private readonly string $openAiModel,
+        private readonly CacheItemPoolInterface $cache,
+        private readonly int $chatbotRateLimitMaxRequests,
+        private readonly int $chatbotRateLimitWindowSeconds,
     ) {}
 
     #[Route('/api/chatbot/ask', name: 'chatbot_ask', methods: ['POST'])]
@@ -26,6 +30,12 @@ final class ChatbotController extends AbstractController
             return $this->json([
                 'error' => 'Jeton de sécurité invalide.',
             ], 403);
+        }
+
+        if (!$this->consumeRateLimit($request)) {
+            return $this->json([
+                'error' => 'Trop de demandes. Veuillez réessayer dans quelques instants.',
+            ], 429);
         }
 
         $payload = json_decode($request->getContent(), true);
@@ -115,6 +125,29 @@ TXT;
                 'error' => 'Le chatbot est momentanément indisponible.',
             ], 500);
         }
+    }
+
+    private function consumeRateLimit(Request $request): bool
+    {
+        $user = $this->getUser();
+        $requesterIdentifier = $user !== null
+            ? 'user_' . $user->getUserIdentifier()
+            : 'ip_' . ($request->getClientIp() ?? 'anonymous');
+        $window = max(1, $this->chatbotRateLimitWindowSeconds);
+        $bucket = (int) floor(time() / $window);
+        $cacheKey = sprintf('chatbot_ask_rate_%s_%d', sha1($requesterIdentifier), $bucket);
+        $item = $this->cache->getItem($cacheKey);
+        $count = $item->isHit() ? (int) $item->get() : 0;
+
+        if ($count >= $this->chatbotRateLimitMaxRequests) {
+            return false;
+        }
+
+        $item->set($count + 1);
+        $item->expiresAfter($window * 2);
+        $this->cache->save($item);
+
+        return true;
     }
 
     private function cleanHistory(mixed $history): array
