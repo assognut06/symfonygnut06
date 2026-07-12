@@ -8,6 +8,7 @@ use App\Form\ResetPasswordRequestFormType;
 use App\Service\ResetPasswordEmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -188,11 +189,18 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('app_check_email');
         }
 
-        $this->resetPasswordEmailService->sendResetPasswordEmail($user, $resetToken);
+        try {
+            $this->resetPasswordEmailService->sendResetPasswordEmail($user, $resetToken);
+        } catch (TransportExceptionInterface) {
+            $this->resetPasswordHelper->removeResetRequest($resetToken->getToken());
+            $this->addFlash('reset_password_error', 'L’envoi de l’email de réinitialisation a échoué. Veuillez réessayer dans quelques instants.');
+
+            return $this->redirectToRoute('app_forgot_password_request');
+        }
 
         // Store the token object in session for retrieval in check-email route.
         $this->setTokenObjectInSession($resetToken);
 
-        return $this->redirectToRoute('app_profil');
+        return $this->redirectToRoute('app_check_email');
     }
 }
