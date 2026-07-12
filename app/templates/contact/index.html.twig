@@ -538,13 +538,15 @@ legend {
                                     </div>
                                 </div>
                             </div>
-                            <div id="project_type_error" class="invalid-feedback d-block">
-                                {% for error in form.project_type.vars.errors %}
-                                    {{ error.message }}{% if not loop.last %}<br>{% endif %}
-                                {% else %}
-                                    Veuillez sélectionner un type de projet.
-                                {% endfor %}
-                            </div>
+                            {% if not form.project_type.vars.valid %}
+                                <div id="project_type_error" class="invalid-feedback d-block">
+                                    {% for error in form.project_type.vars.errors %}
+                                        {{ error.message }}{% if not loop.last %}<br>{% endif %}
+                                    {% else %}
+                                        Veuillez sélectionner un type de projet.
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </fieldset>
 
                         <!-- Message -->

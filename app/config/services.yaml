@@ -173,6 +173,10 @@ services:
         arguments:
             $googleMapsApiKey: '%app.google_maps_geocoding_api_key%'
 
+    App\Service\ResetPasswordEmailService:
+        arguments:
+            $fromEmail: '%app.email.from%'
+
     App\Controller\RegistrationController:
         arguments:
             $recaptchaSecret: '%nocaptcha.secret%'
