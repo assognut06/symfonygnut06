@@ -7,6 +7,8 @@ use App\Form\TihType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -17,6 +19,64 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 #[IsGranted('ROLE_USER')]
 class TihController extends AbstractController
 {
+    #[Route('/cv', name: 'espace_tih_cv')]
+    public function downloadCv(): Response
+    {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        $tih = $user?->getTih();
+
+        if (!$tih || !$tih->getCv()) {
+            throw $this->createNotFoundException('CV introuvable.');
+        }
+
+        $fileName = basename((string) $tih->getCv());
+        $cvPath = rtrim((string) $this->getParameter('cv_tih_directory'), '/') . '/' . $fileName;
+
+        if (!is_file($cvPath)) {
+            $legacyPath = rtrim((string) $this->getParameter('kernel.project_dir'), '/') . '/public/uploads/tihcv/' . $fileName;
+            if (is_file($legacyPath)) {
+                $cvPath = $legacyPath;
+            } else {
+                throw $this->createNotFoundException('CV introuvable.');
+            }
+        }
+
+        $response = new BinaryFileResponse($cvPath);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $fileName);
+
+        return $response;
+    }
+
+    #[Route('/attestation', name: 'espace_tih_attestation')]
+    public function downloadAttestation(): Response
+    {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        $tih = $user?->getTih();
+
+        if (!$tih || !$tih->getAttestationTih()) {
+            throw $this->createNotFoundException('Attestation introuvable.');
+        }
+
+        $fileName = basename((string) $tih->getAttestationTih());
+        $attestationPath = rtrim((string) $this->getParameter('attestation_tih_directory'), '/') . '/' . $fileName;
+
+        if (!is_file($attestationPath)) {
+            $legacyPath = rtrim((string) $this->getParameter('kernel.project_dir'), '/') . '/public/uploads/tihattest/' . $fileName;
+            if (is_file($legacyPath)) {
+                $attestationPath = $legacyPath;
+            } else {
+                throw $this->createNotFoundException('Attestation introuvable.');
+            }
+        }
+
+        $response = new BinaryFileResponse($attestationPath);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $fileName);
+
+        return $response;
+    }
+
     #[Route('', name: 'espace_tih')]
     public function profiltih(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {

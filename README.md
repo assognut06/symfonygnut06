@@ -57,15 +57,18 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    La sortie console doit être vide, sinon:
    - désinstallez le serveur concurrent
 4. **Intégration du projet**
+
    ```bash
    sudo groupmod -U <username> docker
    docker compose up --build -d
    ```
+
    Certains éléments de configuration ne peuvent être faits qu'une fois que les images sont démarrées.
-     ```bash   
+
+   ```bash
    docker exec -it symfony_asso composer install --no-interaction
    docker exec -it symfony_asso npm install
-   docker exec -it symfony_asso npm run build   
+   docker exec -it symfony_asso npm run build
    ```
 
 5. **Initialisation de la base de données**
@@ -132,13 +135,95 @@ Dans le launch.json: coller
 Lors du lancement du debugger, VSCode devrait pouvoir se connecter au XDebug qui tourne dans l'image docker
 
 ## Arrêt
-   ```bash
-   docker compose stop
-   ```
+
+```bash
+docker compose stop
+```
 
 ## Démarrage normal
-   ```bash
-   docker compose up -d
-   ```
-e
-   
+
+```bash
+docker compose up -d
+```
+
+## Tests
+
+# All tests
+
+docker exec symfony_asso php vendor/bin/phpunit
+
+# Unit tests only (fast, no DB)
+
+docker exec symfony_asso php vendor/bin/phpunit --testsuite=Unit
+
+# Functional tests only
+
+docker exec symfony_asso php vendor/bin/phpunit --testsuite=Functional
+
+# Specific test file
+
+docker exec symfony_asso php vendor/bin/phpunit tests/Functional/SecurityHeadersTest.php
+
+# How to run coverage
+
+<!--
+From the app/ directory (or inside the symfony_asso container, where the app root is usually /var/www/html or similar):
+
+Text summary in the terminal:
+
+docker exec symfony_asso php vendor/bin/phpunit --coverage-text
+HTML report (easiest to browse):
+
+docker exec symfony_asso php vendor/bin/phpunit --coverage-html var/coverage
+Then open app/var/coverage/index.html in a browser (or the equivalent path inside the container)
+ -->
+
+Run coverage now (no rebuild)
+Enable coverage for that command only:
+
+docker exec symfony_asso php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-text
+
+HTML report:
+
+docker exec symfony_asso php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-html var/coverage
+
+TO DO : Permanent fix (rebuild image)
+In app/Dockerfile, copy the ini into the path PHP actually reads, for example:
+
+COPY ./config/xdebug.ini /usr/local/etc/php/conf.d/99-xdebug.ini
+In app/config/xdebug.ini, include coverage, e.g.:
+
+xdebug.mode=debug,coverage
+Then rebuild and restart:
+
+docker compose build symfony
+docker compose up -d symfony
+After rebuild, php -i | grep xdebug.mode should show debug,coverage (or at least coverage).
+
+## Trouble shoot
+
+Sur Mac, il peut y avoir une erreur avec l'extension opcache.so
+L'extension opcache.so de l'image phpmyadmin/phpmyadmin:latest a un symbole incompatible quand elle tourne en émulation AMD64 sur Apple Silicon. Le fix suivant supprime la config opcache au démarrage du conteneur avant de lancer Apache :
+Dans docker-compose.yaml :
+
+```bash
+services:
+ mysql:
++    platform: linux/amd64
+   image: mysql:5.7
+   container_name: mysql_gnut
+   restart: always
+@@ -16,6 +17,7 @@ services:
+
+ phpmyadmin:
+   image: phpmyadmin/phpmyadmin:latest
++    platform: linux/amd64
+   container_name: phpmyadmin_gnut
+   restart: always
+   environment:
+@@ -25,6 +27,7 @@ services:
+     - "8080:80"
+   depends_on:
+     - mysql
++    entrypoint: ["bash", "-c", "rm -f /usr/local/etc/php/conf.d/*opcache* && /docker-entrypoint.sh apache2-foreground"]
+```

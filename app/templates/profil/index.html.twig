@@ -196,6 +196,41 @@
                                             <strong>Identifiant :</strong> {{ user.id }}
                                         </p>
 
+                                        <div class="mt-3" aria-labelledby="oauth-links-title">
+                                            <h3 id="oauth-links-title" class="h6 mb-2">
+                                                <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                                                Connexions OAuth liées
+                                            </h3>
+                                            <div class="d-flex flex-column flex-sm-row gap-2">
+                                                {% if user.googleId %}
+                                                    <span class="btn btn-outline-success btn-sm disabled" aria-disabled="true">
+                                                        <i class="bi bi-google" aria-hidden="true"></i>
+                                                        Google lié
+                                                    </span>
+                                                {% else %}
+                                                    <a href="{{ path('connect_google_start') }}" class="btn btn-outline-danger btn-sm">
+                                                        <i class="bi bi-google" aria-hidden="true"></i>
+                                                        Lier Google
+                                                    </a>
+                                                {% endif %}
+
+                                                {% if user.azureId %}
+                                                    <span class="btn btn-outline-success btn-sm disabled" aria-disabled="true">
+                                                        <i class="bi bi-microsoft" aria-hidden="true"></i>
+                                                        Microsoft lié
+                                                    </span>
+                                                {% else %}
+                                                    <a href="{{ path('connect_outlook_start') }}" class="btn btn-outline-primary btn-sm">
+                                                        <i class="bi bi-microsoft" aria-hidden="true"></i>
+                                                        Lier Microsoft
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                            <p class="text-muted small mt-2 mb-0">
+                                                Pour éviter une prise de contrôle, un compte OAuth ne peut être lié à cet email que depuis cette session déjà authentifiée.
+                                            </p>
+                                        </div>
+
                                         {% if user.isVerified == 0 %}
                                             <div class="alert alert-warning" role="alert">
                                                 <h3 class="h6 mb-2">

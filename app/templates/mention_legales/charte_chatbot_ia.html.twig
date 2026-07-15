@@ -1,0 +1,16 @@
+{% extends 'mention_legales/_base.html.twig' %}
+
+{% block legal_content %}
+<header><h1 id="legal-title" class="text-center mb-4 gradient-text">Charte chatbot IA</h1></header>
+<section>
+    <p>Le site gnut06.org peut proposer un assistant conversationnel basé sur une technologie d’intelligence artificielle via l’API OpenAI / ChatGPT 5.4-mini.</p>
+    <p>Les utilisateurs sont invités à ne pas transmettre de données sensibles, confidentielles, médicales, bancaires, fiscales, administratives, ni de documents d’identité dans le chatbot.</p>
+    <p>Les réponses générées automatiquement peuvent comporter des erreurs, omissions ou approximations. Elles ne constituent pas un avis professionnel, juridique, médical, fiscal ou administratif.</p>
+    <p>Les échanges avec le chatbot peuvent être traités techniquement afin de fournir le service, d’en assurer la sécurité et d’en améliorer le fonctionnement, dans les conditions précisées dans la <a href="{{ path('app_politique_confidentialite') }}">Politique de confidentialité</a>.</p>
+</section>
+
+<section id="autres-contenus-ia" aria-labelledby="autres-contenus-ia-title">
+    <h2 id="autres-contenus-ia-title">Autres contenus générés ou assistés par IA</h2>
+    <p>Au-delà du chatbot, certaines images, illustrations ou éléments graphiques publiés sur le site peuvent être générés, retouchés ou enrichis à l’aide d’outils d’intelligence artificielle. Ces contenus sont utilisés à des fins d’illustration ou de communication, avec un objectif de transparence envers les utilisateurs.</p>
+</section>
+{% endblock %}

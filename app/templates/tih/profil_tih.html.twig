@@ -12,7 +12,7 @@
 {% endfor %}
 
 {% if form is defined and form is not null %}
-    <p class="text-center">Complétez ou modifiez votre profil TIH</p>
+    <p class="text-center text-white">Complétez ou modifiez votre profil TIH</p>
     <div class="container w-75 shadow p-4 rounded bg-white">
         {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
         {{ form_errors(form) }}
@@ -93,7 +93,7 @@
                 {% if tih.cv %}
                     <div class="form-text">
                         CV actuel :
-                        <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank" rel="noopener">voir le fichier</a>
+                        <a href="{{ path('espace_tih_cv') }}" target="_blank" rel="noopener">voir le fichier</a>
                     </div>
                 {% endif %}
             </div>
@@ -102,7 +102,7 @@
                 {% if tih.attestationTih %}
                     <div class="form-text">
                         Attestation actuelle :
-                        <a href="{{ asset('uploads/tihattest/' ~ tih.attestationTih) }}" target="_blank" rel="noopener">voir le fichier</a>
+                        <a href="{{ path('espace_tih_attestation') }}" target="_blank" rel="noopener">voir le fichier</a>
                     </div>
                 {% endif %}
 
@@ -146,7 +146,7 @@
                 <p><strong>Tarif :</strong> {{ tih.rate ? tih.rate ~ '€ / ' ~ tih.rateType : 'Non renseigné' }}</p>
                 <p><strong>CV :</strong>
                     {% if tih.cv %}
-                        <a href="{{ asset('uploads/tihcv/' ~ tih.cv) }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>
+                        <a href="{{ path('espace_tih_cv') }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>
                     {% else %}
                         Non fourni
                     {% endif %}
@@ -154,7 +154,7 @@
                 <p><strong>SIRET :</strong> {{ tih.siret }}</p>
                 <p><strong>Attestation TIH :</strong>
                     {% if tih.attestationTih %}
-                        <a href="{{ asset('uploads/tihattest/' ~ tih.attestationTih) }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir l'attestation</a>
+                        <a href="{{ path('espace_tih_attestation') }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir l'attestation</a>
                     {% else %}
                         Non fournie
                     {% endif %}
@@ -197,4 +197,9 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/adresse_auto_complete.js') }}"></script>
 {% endblock %}
