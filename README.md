@@ -34,14 +34,13 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    ssh-keygen
    cat <chemin>/<nom_du_fichier_créé_par_keygen(voir_sortie_console)>.pub
    ```
-
-   Copier la sortie console de cat
-   Ouvrir githb dans le navigateur
-   Cliquer Profil (Icône en haut à droite) -> Settings (Paramètres)
-   Cliquer "SSH and GPG keys"
-   Cliquer "New SSH key"
-   Saisir un nom de clé
-   Coller la sortie console de cat
+   Copier la sortie console de cat  
+   Ouvrir githb dans le navigateur  
+   Cliquer Profil (Icône en haut à droite) -> Settings (Paramètres)  
+   Cliquer "SSH and GPG keys"  
+   Cliquer "New SSH key"  
+   Saisir un nom de clé  
+   Coller la sortie console de cat  
 
 2. **Clonez le dépôt**
 
@@ -49,10 +48,9 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    git clone git@github.com:assognut06/symfonygnut06.git
    cd symfonygnut06
    ```
-
-3. **Résolution de conflit**
-   La solution inclus un container mysql utilisant le port 3306
-   Vérifiez que le poste de dev n'aie pas déjà un serveur monopolisant se port
+3. **Résolution de conflit**  
+   La solution inclus un container mysql utilisant le port 3306  
+   Vérifiez que le poste de dev n'aie pas déjà un serveur monopolisant ce port
    ```bash
    netstat -pnltu | grep -w 3306
    ```
@@ -77,8 +75,15 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    ```bash
    docker exec -it symfony_asso php bin/console doctrine:migration:migrate
    ```
-   A ce niveau, le site devrait être accessible via le navigateur sur https://localhost
-   Par contre, la base de donnée est vide
+A ce niveau, le site devrait être accessible via le navigateur sur https://127.0.0.1  
+Il est important de passer par l'IP car il y a un filtre dans les APIs Google avec cette valeur  
+ 
+Par contre, la base de donnée est vide
+
+6. **Initialisation des valeurs de test**
+   ```bash
+   docker exec -it symfony_asso php bin/console doctrine:fixtures:load --append
+   ```
 
 ## Importation des données (si nécessaire)
 
@@ -89,18 +94,45 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 2. **Importation des uploads**
    Copier le répertoire uploads fourni dans app/public/uploads
 
-3. **Charger le sql**
-   Ouvrir PHPmyAdmin: http://localhost:8080
-   S'authentifier
-   Selectionner la base gnut06
-   Ouvrir l'onglet "Importer"
-   Parcourir pour choisir le fichier .sql ou .sql.gz
-   Décocher "Activer la vérification des clés étrangères"
-   Cliquer sur importer
+3. **Charger le sql**  
+   Ouvrir PHPmyAdmin: http://localhost:8080  
+   S'authentifier  
+   Selectionner la base gnut06  
+   Ouvrir l'onglet "Importer"  
+   Parcourir pour choisir le fichier .sql ou .sql.gz  
+   Décocher "Activer la vérification des clés étrangères"  
+   Cliquer sur importer  
 
 4. **Vérifier**
    Ouvrir le site applicatif
    La liste "Nos alliés dans nos actions" doit contenir des logos défilant
+
+## Configuration de XDebug dans VSCode
+
+Ouvrir Run->Add Configuration
+Dans le launch.json: coller
+   ```bash
+   {
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+    
+
+        {
+            "name": "Listen for Xdebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003,
+            "pathMappings": {
+                "/var/www/app": "${workspaceFolder}/app"
+            }
+        }
+    ]
+}
+   ```
+Lors du lancement du debugger, VSCode devrait pouvoir se connecter au XDebug qui tourne dans l'image docker
 
 ## Arrêt
 
