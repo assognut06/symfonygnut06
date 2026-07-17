@@ -28,14 +28,19 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - name: Checkout
+      # Checkout the PR head tip — NOT the synthetic merge commit.
+      # On pull_request, the default checkout merges the base into HEAD, which
+      # hides lag vs main (especially when the PR targets main or an up-to-date develop).
+      - name: Checkout PR head
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Fail if PR branch is behind main
         env:
           PR_BASE: ${{ github.base_ref }}
+          PR_HEAD: ${{ github.head_ref }}
         run: |
           set -euo pipefail
 
@@ -44,12 +49,14 @@ jobs:
           BEHIND=$(git rev-list --count "HEAD..origin/main")
           AHEAD=$(git rev-list --count "origin/main..HEAD")
 
+          echo "PR branch: ${PR_HEAD}"
           echo "PR targets: ${PR_BASE}"
           echo "Compared to: origin/main"
+          echo "Checked out SHA: $(git rev-parse HEAD)"
           echo "PR head is ahead by ${AHEAD} commit(s), behind by ${BEHIND} commit(s)"
 
           if [ "$BEHIND" -gt 0 ]; then
-            echo "::error::This branch is ${BEHIND} commit(s) behind 'main'. Merge or rebase 'main' into this branch, then push again (even if the PR targets '${PR_BASE}')."
+            echo "::error::Branch '${PR_HEAD}' is ${BEHIND} commit(s) behind 'main'. Merge or rebase 'main' into this branch, then push again (even if the PR targets '${PR_BASE}')."
             exit 1
           fi
 
