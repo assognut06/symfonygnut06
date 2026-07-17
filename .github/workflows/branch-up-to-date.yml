@@ -1,4 +1,4 @@
-name: Branch up to date
+name: Branch up to date with main
 
 on:
   pull_request:
@@ -6,14 +6,10 @@ on:
     branches:
       - develop
       - main
-      - master
       - test-retard-branche
-
   push:
     branches:
-      - develop
       - main
-      - master
 
 permissions:
   contents: read
@@ -26,7 +22,7 @@ concurrency:
 
 jobs:
   check-pr:
-    name: Branch up to date
+    name: Up to date with main
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -37,58 +33,64 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fail if PR is behind base
+      - name: Fail if PR branch is behind main
         env:
-          BASE_REF: ${{ github.base_ref }}
+          PR_BASE: ${{ github.base_ref }}
         run: |
           set -euo pipefail
 
-          git fetch origin "$BASE_REF"
+          git fetch origin main
 
-          BEHIND=$(git rev-list --count "HEAD..origin/${BASE_REF}")
-          AHEAD=$(git rev-list --count "origin/${BASE_REF}..HEAD")
+          BEHIND=$(git rev-list --count "HEAD..origin/main")
+          AHEAD=$(git rev-list --count "origin/main..HEAD")
 
-          echo "Base: origin/${BASE_REF}"
+          echo "PR targets: ${PR_BASE}"
+          echo "Compared to: origin/main"
           echo "PR head is ahead by ${AHEAD} commit(s), behind by ${BEHIND} commit(s)"
 
           if [ "$BEHIND" -gt 0 ]; then
-            echo "::error::This branch is ${BEHIND} commit(s) behind '${BASE_REF}'. Rebase or merge '${BASE_REF}' into this branch, then push again."
+            echo "::error::This branch is ${BEHIND} commit(s) behind 'main'. Merge or rebase 'main' into this branch, then push again (even if the PR targets '${PR_BASE}')."
             exit 1
           fi
 
-          echo "Branch is up to date with ${BASE_REF}."
+          echo "Branch is up to date with main."
 
   recheck-open-prs:
-    name: Recheck open PRs after base update
+    name: Recheck open PRs after main update
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-      - name: Mark outdated open PRs
+      - name: Mark PRs behind main
         uses: actions/github-script@v7
         with:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const base = context.ref.replace(/^refs\/heads\//, '');
-            const checkName = 'Branch up to date';
+            const reference = 'main';
+            const checkName = 'Up to date with main';
+            const targetBases = ['main', 'develop'];
 
-            const prs = await github.paginate(github.rest.pulls.list, {
-              owner,
-              repo,
-              state: 'open',
-              base,
-              per_page: 100,
-            });
+            const prs = [];
+            for (const base of targetBases) {
+              const page = await github.paginate(github.rest.pulls.list, {
+                owner,
+                repo,
+                state: 'open',
+                base,
+                per_page: 100,
+              });
+              prs.push(...page);
+            }
 
-            core.info(`Found ${prs.length} open PR(s) targeting ${base}`);
+            core.info(`Found ${prs.length} open PR(s) targeting main or develop`);
 
             for (const pr of prs) {
               const comparison = await github.rest.repos.compareCommitsWithBasehead({
                 owner,
                 repo,
-                basehead: `${base}...${pr.head.sha}`,
+                basehead: `${reference}...${pr.head.sha}`,
               });
 
               const behindBy = comparison.data.behind_by ?? 0;
@@ -96,12 +98,13 @@ jobs:
               const isBehind = behindBy > 0;
               const conclusion = isBehind ? 'failure' : 'success';
               const title = isBehind
-                ? `Behind ${base} by ${behindBy} commit(s)`
-                : `Up to date with ${base}`;
+                ? `Behind main by ${behindBy} commit(s)`
+                : 'Up to date with main';
               const summary = isBehind
-                ? `This branch is **${behindBy}** commit(s) behind \`${base}\` (and ${aheadBy} ahead).\n\n` +
-                  `Rebase or merge \`${base}\` into \`${pr.head.ref}\`, then push again.`
-                : `This branch is up to date with \`${base}\` (${aheadBy} commit(s) ahead).`;
+                ? `This branch is **${behindBy}** commit(s) behind \`main\` (and ${aheadBy} ahead).\n\n` +
+                  `PR target: \`${pr.base.ref}\`.\n\n` +
+                  `Merge or rebase \`main\` into \`${pr.head.ref}\`, then push again.`
+                : `This branch is up to date with \`main\` (${aheadBy} commit(s) ahead). PR target: \`${pr.base.ref}\`.`;
 
               await github.rest.checks.create({
                 owner,
@@ -116,5 +119,5 @@ jobs:
                 },
               });
 
-              core.info(`PR #${pr.number}: ${title}`);
+              core.info(`PR #${pr.number} (→ ${pr.base.ref}): ${title}`);
             }
