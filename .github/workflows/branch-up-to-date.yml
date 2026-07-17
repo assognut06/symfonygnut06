@@ -6,7 +6,7 @@ on:
     branches:
       - develop
       - main
-      - test-retard-branche
+      - feature/retard-branches
   push:
     branches:
       - main
