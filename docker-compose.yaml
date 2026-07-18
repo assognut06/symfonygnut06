@@ -1,5 +1,8 @@
 version: '3.9'
 
+
+volumes:
+  mysql:
 services:
   mysql:
     image: mysql:5.7
@@ -50,11 +53,6 @@ services:
     ports:
       - "8000:80"
       - "443:443"
-      - "9003:9003"
     depends_on:
       - mysql
 
-
-
-volumes:
-  mysql:
