@@ -107,8 +107,8 @@ services:
         arguments:
             $requestStack: '@request_stack'
             $client: '@helloasso.client'
-            $apiClientId: '%env(APICLIENTID)%'
-            $apiClientSecret: '%env(APICLIENTSECRET)%'
+            $apiClientId: '%helloasso.api_client_id%'
+            $apiClientSecret: '%helloasso.api_client_secret%'
 
     App\Service\HelloAssoApiService:
         class: App\Service\HelloAssoApiService
