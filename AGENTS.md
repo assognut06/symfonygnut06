@@ -40,7 +40,7 @@ This file mirrors `.github/copilot-instructions.md` for coding agents such as Co
   - the free-text description.
 - Once the information is available, create the branch name with this exact format: `<type>/tg-<taiga-ticket-number>-<free-text>`.
 - Normalize the free-text description before creating the branch: lowercase when possible, replace spaces with hyphens, remove punctuation that is unsafe for Git branch names, and keep it short.
-- For `feature` and `fix` branches, create the branch from `develop` unless the user explicitly asks for another base.
-- For `hotfix` branches, create the branch from `main` unless the user explicitly asks for another base.
+- Always create every branch from the current `HEAD` of `main`, regardless of whether its type is `feature`, `fix`, or `hotfix`.
+- Never use `develop` as the branch creation base.
 
 See `README.md` for installation, `AUDIT_TECHNIQUE.md` for security/architecture issues, and `DEPLOIEMENT_PRODUCTION.md` for production deployment.
