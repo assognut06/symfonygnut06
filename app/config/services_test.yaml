@@ -8,6 +8,7 @@ services:
     App\Service\HelloAssoAuthService:
         class: App\Service\HelloAssoAuthService
         arguments:
-            - '@request_stack'
-            - 'test_client_id'
-            - 'test_client_secret'
+            $requestStack: '@request_stack'
+            $client: '@helloasso.client'
+            $apiClientId: 'test_client_id'
+            $apiClientSecret: 'test_client_secret'

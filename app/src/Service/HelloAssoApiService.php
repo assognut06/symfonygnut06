@@ -2,16 +2,16 @@
 // Service HelloAssoApiService
 namespace App\Service;
 
-use GuzzleHttp\Client;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HelloAssoApiService
 {
     private $client;
     private $helloAssoAuthService;
 
-    public function __construct(HelloAssoAuthService $helloAssoAuthService)
+    public function __construct(HelloAssoAuthService $helloAssoAuthService, HttpClientInterface $client)
     {
-        $this->client = new Client();
+        $this->client = $client;
         $this->helloAssoAuthService = $helloAssoAuthService;
     }
 
@@ -22,10 +22,9 @@ class HelloAssoApiService
         $headers['authorization'] = $authorization;
         try {
             $response = $this->client->request($method, $url, [
-                'accept' => 'application/json',
-                'headers' => $headers,  
+                'headers' => $headers,
             ]);
-            return json_decode($response->getBody(), true);
+            return $response->toArray();
         } catch (\Exception $e) {
             // Gérer l'exception ou la logger
             // return $e;
