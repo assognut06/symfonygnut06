@@ -2,36 +2,25 @@
 
 namespace App\Service;
 
-use GuzzleHttp\Client;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class OhmeApiService
 {
     private $client;
-    private $slugAsso;
-    private $secretOhme;
 
-    public function __construct(string $slugAsso, string $secretOhme)
+    public function __construct(HttpClientInterface $client)
     {
-        $this->client = new Client();;
-        $this->slugAsso = $slugAsso;
-        $this->secretOhme = $secretOhme;
+        $this->client = $client;
     }
 
     public function getContacts(array $params, string $object, string $method = 'GET')
     {
-        $urlBaseApi = 'https://api-ohme.oneheart.fr/api/v1/';
-        $url = $urlBaseApi . $object . '?' . http_build_query($params);
-
-        $headers = [
-            'client-name' => $this->slugAsso,
-            'client-secret' => $this->secretOhme,
-        ];
-
-        $response = $this->client->request($method, $url, [
-            'Accept' => 'application/json',
-            'headers' => $headers,
+        // La base_uri et les en-têtes d'authentification (client-name / client-secret)
+        // sont fournis par le client scopé « ohme.client » (voir framework.yaml).
+        $response = $this->client->request($method, $object, [
+            'query' => $params,
         ]);
 
-        return json_decode($response->getBody(), true);
+        return $response->toArray();
     }
 }

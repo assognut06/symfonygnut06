@@ -9,6 +9,17 @@ framework:
     # Configuration des headers de sécurité
     http_method_override: false
 
+    # Clients HTTP scopés (remplacent l'instanciation manuelle de GuzzleHttp\Client)
+    http_client:
+        scoped_clients:
+            helloasso.client:
+                base_uri: 'https://api.helloasso.com'
+            ohme.client:
+                base_uri: 'https://api-ohme.oneheart.fr/api/v1/'
+                headers:
+                    client-name: '%app.slug_asso%'
+                    client-secret: '%ohme.api_key%'
+
     # Note that the session will be started ONLY if you read or write from it.
     #session: true
     session:
