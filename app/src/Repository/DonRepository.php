@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Don;
+use App\Entity\Donateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;

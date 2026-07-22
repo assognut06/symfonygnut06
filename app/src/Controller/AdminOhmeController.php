@@ -11,7 +11,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class AdminOhmeController extends AbstractController
 {
-    private $ohmeApiService;
+    private OhmeApiService $ohmeApiService;
 
     public function __construct(OhmeApiService $ohmeApiService)
     {

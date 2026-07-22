@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class HelloAssoAuthService
 {
     private RequestStack $requestStack;
-    private Client $client;
+    private HttpClientInterface $client;
     private string $apiClientId;
     private string $apiClientSecret;
 

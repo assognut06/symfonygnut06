@@ -99,7 +99,7 @@ class NotificationController extends AbstractController
 
             // ✅ TRAITEMENT CONDITIONNEL : Items de commande (si présents)
             if (isset($data['data']['items']) && is_array($data['data']['items'])) {
-                $this->processOrderItems($data['data']['items'], $data);
+                $this->processOrderItems($data['data']['items']);
             }
 
             $this->em->flush();
@@ -283,6 +283,9 @@ class NotificationController extends AbstractController
         return strtolower($signatureHeader);
     }
 
+    /**
+     * @param array{eventId?: int|string, id?: int|string, data?: array{id?: int|string, order?: array{id?: int|string}, payment?: array{id?: int|string}}} $data
+     */
     private function buildIdempotencyKey(Request $request, array $data, string $content): string
     {
         $externalId = $request->headers->get('X-HelloAsso-Event-Id')
@@ -302,7 +305,8 @@ class NotificationController extends AbstractController
     }
 
     /**
-     * @param string[] $path
+     * @param array<string> $path
+     * @param array<mixed> $data
      */
     private function getNestedString(array $data, array $path): ?string
     {
@@ -346,6 +350,7 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ MÉTHODE PRINCIPALE : Traitement des notifications HelloAsso
+     * @param array{eventType?: string, data?: array<string, mixed>} $data
      */
     private function processHelloAssoNotification(array $data): void
     {
@@ -396,6 +401,7 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ TRAITEMENT DES ÉVÉNEMENTS DE FORMULAIRE
+     * @param array{organizationSlug?: string, formSlug?: string, organizationName?: string, organizationLogo?: string, bannerPublicUrl?: string, url?: string, description?: string, activityType?: string, placeCity?: string, placeZipCode?: string, fiscalReceiptEligibility?: bool, fiscalReceiptIssuanceEnabled?: bool} $formData
      */
     private function processFormEvent(array $formData, HelloAssoFormNotification $notification): void
     {
@@ -403,8 +409,8 @@ class NotificationController extends AbstractController
             return;
         }
 
+        $organizationSlug = $formData['organizationSlug'];
         try {
-            $organizationSlug = $formData['organizationSlug'];
             
             // Chercher ou créer l'association
             $asso = $this->em->getRepository(AssoRecommander::class)
@@ -431,13 +437,14 @@ class NotificationController extends AbstractController
         } catch (\Exception $e) {
             $this->logger->error('Error processing form event', [
                 'error' => $e->getMessage(),
-                'organizationSlug' => $organizationSlug ?? 'unknown'
+                'organizationSlug' => $organizationSlug
             ]);
         }
     }
 
     /**
      * ✅ TRAITEMENT DES ÉVÉNEMENTS DE COMMANDE
+     * @param array{id?: int|string, amount?: int|float|string, items?: list<mixed>} $orderData
      */
     private function processOrderEvent(array $orderData, HelloAssoFormNotification $notification): void
     {
@@ -453,6 +460,7 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ TRAITEMENT DES ÉVÉNEMENTS DE PAIEMENT
+     * @param array{id?: int|string, state?: string, amount?: int|float|string} $paymentData
      */
     private function processPaymentEvent(array $paymentData, HelloAssoFormNotification $notification): void
     {
@@ -467,6 +475,7 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ TRAITEMENT DES DONNÉES PAYER
+     * @param array{eventType?: string, data?: array{payer?: array{email?: string, firstName?: string, lastName?: string, address?: string, city?: string, zipCode?: string, country?: string, company?: string}, state?: string}} $data
      */
     private function processPayerData(array $data): void
     {
@@ -485,8 +494,9 @@ class NotificationController extends AbstractController
 
     /**
      * ✅ TRAITEMENT DES ITEMS DE COMMANDE
-     */
-    private function processOrderItems(array $items, array $data): void
+     * @param list<array{name?: string, amount?: int|float|string, type?: string, state?: string}> $items
+     */    
+    private function processOrderItems(array $items): void
     {
         foreach ($items as $item) {
             $this->logger->info('Processing order item', [

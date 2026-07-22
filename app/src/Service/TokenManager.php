@@ -13,16 +13,14 @@ class TokenManager
     private string $clientId;
     private string $clientSecret;
     private string $urlToken;
-    private string $slugAsso;
 
-    public function __construct(HttpClientInterface $client, SessionInterface $session, string $clientId, string $clientSecret, string $urlToken, string $slugAsso)
+    public function __construct(HttpClientInterface $client, SessionInterface $session, string $clientId, string $clientSecret, string $urlToken)
     {
         $this->client = $client;
         $this->session = $session;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
         $this->urlToken = $urlToken;
-        $this->slugAsso = $slugAsso;
     }
 
     public function checkAndUpdateToken(): bool

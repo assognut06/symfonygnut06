@@ -16,8 +16,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class AdminAssoRecommanderController extends AbstractController
 {
-    private $assoRecommanderService;
-    private $assoRecommanderRepository;
+    private AssoRecommanderService $assoRecommanderService;
+    private AssoRecommanderRepository $assoRecommanderRepository;
 
     public function __construct(AssoRecommanderService $assoRecommanderService, AssoRecommanderRepository $assoRecommanderRepository, )
     {
@@ -76,7 +76,8 @@ class AdminAssoRecommanderController extends AbstractController
     }
 
     #[Route('/update-data', name: 'app_asso_update_data')]
-    public function updateData(){
+    public function updateData(): Response
+    {
 
         $assoRecommander = [];
         foreach($this->assoRecommanderRepository->findAll() as $asso) {

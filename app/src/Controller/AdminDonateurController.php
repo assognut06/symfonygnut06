@@ -57,6 +57,10 @@ class AdminDonateurController extends AbstractController
         } else if ($donateur->getTypeDonateur() == "personne_physique") {
             $form = $this->createForm(PersonnePhysiqueType::class, $donateur);
         }
+        else {
+            $this->addFlash('danger', "Erreur Type de Donnateur inconnu.");
+            return $this->redirectToRoute('admin_donateurs');
+        }
     
         $form->handleRequest($request);
     

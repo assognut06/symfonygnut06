@@ -6,8 +6,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HelloAssoApiService
 {
-    private $client;
-    private $helloAssoAuthService;
+    private HttpClientInterface $client;
+    private HelloAssoAuthService $helloAssoAuthService;
 
     public function __construct(HelloAssoAuthService $helloAssoAuthService, HttpClientInterface $client)
     {

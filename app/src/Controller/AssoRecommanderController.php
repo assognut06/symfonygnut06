@@ -60,7 +60,7 @@ class AssoRecommanderController extends AbstractController
     public function search(Request $request,PaginationService $paginationService): Response
     {
         $query = $request->query->get('query');
-        $pagination = $paginationService->getPaginatedDataSearch(AssoRecommander::class, $query, 1);
+        $pagination = $paginationService->getPaginatedDataSearch(AssoRecommander::class, $query);
         return $this->render('asso_recommander/index.html.twig', [
             'data_forms' => $pagination['data'],
             'total' => $pagination['total'],

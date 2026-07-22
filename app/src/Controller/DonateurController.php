@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface; // Ajouté pour gérer la session
 use GuzzleHttp\Client;
+use Symfony\Component\Form\FormInterface;
 
 class DonateurController extends AbstractController
 {
@@ -84,7 +85,12 @@ class DonateurController extends AbstractController
         return $this->renderWithForms($formPhysique, $formSociete);
     }
 
-    private function renderWithForms($formPhysique, $formSociete): Response
+    /**
+     * @param FormInterface<PersonnePhysique> $formPhysique
+     * @param FormInterface<Societe> $formSociete
+     * 
+     */
+    private function renderWithForms(FormInterface $formPhysique, FormInterface $formSociete): Response
     {
         return $this->render('donateur/form_donateur.html.twig', [
             'form_physique' => $formPhysique->createView(),

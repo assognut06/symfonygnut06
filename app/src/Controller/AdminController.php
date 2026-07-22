@@ -29,7 +29,7 @@ class AdminController extends AbstractController
         $this->googleMapsApiKey = $googleMapsApiKey;
     }
     #[Route('', name: 'admin_dashboard')]
-    public function dashboard()
+    public function dashboard(): Response
     {
         $url = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}";
         
@@ -81,7 +81,7 @@ class AdminController extends AbstractController
                 'loading' => false,
             ]);
         }
-       
+        throw $this->createNotFoundException("Type de donnees non pris en charge: " . $donnees);
     }
 
     private function buildApiUrl(string $donnees, string $page, string $formType, string $formSlug, string $tierTypes): string {
