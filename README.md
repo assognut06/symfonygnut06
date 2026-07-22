@@ -170,6 +170,11 @@ docker exec symfony_asso php vendor/bin/phpunit tests/Functional/SecurityHeaders
    docker exec symfony_asso php vendor/bin/phpunit --testsuite=Rules
    ```
 
+# Run PHPStan
+   ```bash 
+   docker exec symfony_asso vendor/bin/phpstan analyse --memory-limit 256M
+   ```
+
 # How to run coverage
 
 <!--
