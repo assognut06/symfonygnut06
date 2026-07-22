@@ -61,8 +61,8 @@ class OAuthTestController extends AbstractController
                 'https://graph.microsoft.com/email',
                 'openid',
                 'profile',
-                'email'
-            ]);
+                'email',
+            ], []);
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erreur Azure: ' . $e->getMessage());
             return $this->redirectToRoute('oauth_test');
@@ -76,7 +76,7 @@ class OAuthTestController extends AbstractController
             $client = $clientRegistry->getClient('azure');
 
             // Utiliser la méthode correcte pour récupérer le token
-            $accessToken = $client->fetchAccessToken();
+            $accessToken = $client->getAccessToken();
             $azureUser = $client->fetchUserFromToken($accessToken);
             $userData = $azureUser->toArray();
 
@@ -106,7 +106,8 @@ class OAuthTestController extends AbstractController
     {
         try {
             $client = $clientRegistry->getClient('google');
-            return $client->redirect();
+
+            return $client->redirect([],[]);
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erreur Google: ' . $e->getMessage());
             return $this->redirectToRoute('oauth_test');

@@ -100,7 +100,6 @@ services:
             $clientId: '%env(APICLIENTID)%'
             $clientSecret: '%env(APICLIENTSECRET)%'
             $urlToken: 'https://api.helloasso.com/oauth2/token'
-            $slugAsso: '%app.slug_asso%'
 
     App\Service\HelloAssoAuthService:
         class: App\Service\HelloAssoAuthService
@@ -144,7 +143,6 @@ services:
     App\Service\RecaptchaVerifier:
         arguments:
             $client: '@http_client'
-            $secretKey: '%nocaptcha.secret%'
             $appEnv: '%app.env%'
             $recaptchaSecret: '%nocaptcha.secret%'
 
@@ -180,5 +178,5 @@ services:
 
     App\Controller\RegistrationController:
         arguments:
-            $recaptchaSecret: '%nocaptcha.secret%'
-            $appEnv: '%app.env%'
+            $nocaptchaSiteKey: '%nocaptcha.sitekey%'
+

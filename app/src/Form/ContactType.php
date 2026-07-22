@@ -10,7 +10,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-
+/**
+ * @extends AbstractType<array<mixed>>
+ */
 class ContactType extends AbstractType
 {
     public const PROJECT_TYPES = [

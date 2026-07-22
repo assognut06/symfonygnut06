@@ -22,6 +22,9 @@ class ProtectedRouteTest extends WebTestCase
         );
     }
 
+    /**
+     * @return iterable<array<int,string>>
+     */
     public static function protectedUrlProvider(): iterable
     {
         yield 'Profile' => ['/profil'];

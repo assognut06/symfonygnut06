@@ -19,7 +19,7 @@ class OutlookController extends AbstractController
         // 'azure' est le nom de notre client configuré dans knpu_oauth2_client.yaml
         return $clientRegistry
             ->getClient('azure')
-            ->redirect();
+            ->redirect([],[]);
     }
 
     /**

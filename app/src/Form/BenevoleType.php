@@ -14,7 +14,9 @@ use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use App\Form\EventListener\PremiereLettreMajuscule;
 use Symfony\Component\Validator\Constraints as Assert;
-
+/**
+ * @extends AbstractType<Benevole>
+ */
 class BenevoleType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

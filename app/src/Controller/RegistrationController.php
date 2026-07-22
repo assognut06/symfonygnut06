@@ -27,9 +27,7 @@ class RegistrationController extends AbstractController
     public function __construct(
         private LoggerInterface $logger,
         private MessageBusInterface $bus,
-        private string $appEnv ,
-        private string $recaptchaSecret,
-        private string $nocaptchaSiteKey,
+        private readonly string $nocaptchaSiteKey
     ) {}
 
     #[Route('/register', name: 'app_register')]

@@ -3,12 +3,17 @@
 
 namespace App\Service;
 
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ApiFrameVrService
 {
-    private $client;
-    private $apiKey;
+    private HttpClientInterface $client;
+    private string $apiKey;
 
     public function __construct(HttpClientInterface $client, string $apiKey)
     {
@@ -16,6 +21,17 @@ class ApiFrameVrService
         $this->apiKey = $apiKey;
     }
 
+    /**
+     * @param string $id
+     * @param string $object
+     * @param string $method
+     * @return array<mixed>
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
     public function getSomeData(string $id, string $object, string $method = 'GET'): array
     {
         $urlBaseApi = "https://api.framevr.io/automate/v1/";

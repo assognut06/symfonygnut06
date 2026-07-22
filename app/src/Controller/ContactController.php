@@ -80,6 +80,7 @@ class ContactController extends AbstractController
     }
 
     /**
+     * @param FormInterface<covariant array<mixed>|null> $form
      * @return string[]
      */
     private function getFormErrorMessages(FormInterface $form): array

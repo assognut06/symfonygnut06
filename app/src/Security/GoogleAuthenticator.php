@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -172,7 +173,11 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         $message = strtr($exception->getMessageKey(), $exception->getMessageData());
 
         if ($request->hasSession()) {
-            $request->getSession()->getFlashBag()->add('error', $message);
+            $session= $request->getSession();
+           if (!$session instanceof FlashBagAwareSessionInterface) {
+                throw new \LogicException(sprintf('You cannot use the getFlashBag method because class "%s" doesn\'t implement "%s".', get_debug_type($session), FlashBagAwareSessionInterface::class));            }
+
+            $session->getFlashBag()->add('error', $message);
         }
         
         return new RedirectResponse(

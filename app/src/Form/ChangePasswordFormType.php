@@ -11,9 +11,14 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
-
+/**
+ * @extends AbstractType<PasswordType>
+ */
 class ChangePasswordFormType extends AbstractType
 {
+    /**
+     *  @param array<mixed> $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

@@ -14,7 +14,7 @@ class HelloAssoApiServiceStub extends HelloAssoApiService
         // Skip parent constructor to avoid requiring HelloAssoAuthService
     }
 
-    public function makeApiCall(string $url, array $headers = [], string $method = 'GET')
+    public function makeApiCall(string $url, array $headers = [], string $method = 'GET') :mixed
     {
         if (str_contains($url, '/organizations/') && !str_contains($url, '/items') && !str_contains($url, '/payments') && !str_contains($url, '/forms/')) {
             return [

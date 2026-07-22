@@ -49,7 +49,7 @@ class ProfilController extends AbstractController
         // Récupérer l'utilisateur connecté
         /** @var User $user */
         $user = $this->getUser();
-        if (!$user instanceof User || !$user->isVerified()) {
+        if ((null == $user) || !$user->isVerified()) {
             throw $this->createAccessDeniedException('Veuillez valider votre adresse email pour accéder à votre profil.');
         }
 
@@ -155,7 +155,9 @@ class ProfilController extends AbstractController
 
         return $payer;
     }
-
+    /**
+     * @return array<mixed>
+     */
     private function makeSafeHelloAssoCall(string $url): array
     {
         try {

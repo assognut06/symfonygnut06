@@ -15,7 +15,7 @@ class RecaptchaVerifierTest extends TestCase
         $client = $this->createMock(HttpClientInterface::class);
         $client->expects($this->never())->method('request');
 
-        $verifier = new RecaptchaVerifier($client, 'secret', 'dev', 'secret');
+        $verifier = new RecaptchaVerifier($client, 'dev', 'secret');
         $request = Request::create('/test', 'POST');
 
         $this->assertTrue($verifier->verify($request));
@@ -25,7 +25,7 @@ class RecaptchaVerifierTest extends TestCase
     {
         $client = $this->createMock(HttpClientInterface::class);
 
-        $verifier = new RecaptchaVerifier($client, 'secret', 'prod', 'secret');
+        $verifier = new RecaptchaVerifier($client, 'prod', 'secret');
         $request = Request::create('/test', 'POST');
 
         $this->assertFalse($verifier->verify($request));
@@ -40,7 +40,7 @@ class RecaptchaVerifierTest extends TestCase
         $client = $this->createMock(HttpClientInterface::class);
         $client->method('request')->willReturn($response);
 
-        $verifier = new RecaptchaVerifier($client, 'secret', 'prod', 'secret');
+        $verifier = new RecaptchaVerifier($client, 'prod', 'secret');
         $request = Request::create('/test', 'POST', [
             'g-recaptcha-response' => 'valid-token',
         ]);
@@ -57,7 +57,7 @@ class RecaptchaVerifierTest extends TestCase
         $client = $this->createMock(HttpClientInterface::class);
         $client->method('request')->willReturn($response);
 
-        $verifier = new RecaptchaVerifier($client, 'secret', 'prod', 'secret');
+        $verifier = new RecaptchaVerifier($client, 'prod', 'secret');
         $request = Request::create('/test', 'POST', [
             'g-recaptcha-response' => 'invalid-token',
         ]);
@@ -86,7 +86,7 @@ class RecaptchaVerifierTest extends TestCase
             )
             ->willReturn($response);
 
-        $verifier = new RecaptchaVerifier($client, 'my-secret', 'prod', 'my-secret');
+        $verifier = new RecaptchaVerifier($client, 'prod', 'my-secret');
         $request = Request::create('/test', 'POST', [
             'g-recaptcha-response' => 'test-token',
         ]);

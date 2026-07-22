@@ -54,6 +54,9 @@ class AdminAccessControlTest extends WebTestCase
         );
     }
 
+    /**
+     * @return iterable<array<int,string>>
+     */
     public static function adminUrlProvider(): iterable
     {
         yield 'Dashboard' => ['/admin'];
@@ -62,6 +65,9 @@ class AdminAccessControlTest extends WebTestCase
         yield 'Donations' => ['/admin/dons'];
     }
 
+    /**
+     * @return iterable<array<int,string>>
+     */
     public static function adminUrlAllProvider(): iterable
     {
         yield 'Dashboard' => ['/admin'];

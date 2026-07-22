@@ -6,8 +6,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HelloAssoApiService
 {
-    private $client;
-    private $helloAssoAuthService;
+    private HttpClientInterface $client;
+    private HelloAssoAuthService $helloAssoAuthService;
 
     public function __construct(HelloAssoAuthService $helloAssoAuthService, HttpClientInterface $client)
     {
@@ -15,7 +15,10 @@ class HelloAssoApiService
         $this->helloAssoAuthService = $helloAssoAuthService;
     }
 
-    public function makeApiCall(string $url, array $headers = [], string $method = 'GET')
+/**
+ * @param array<mixed> $headers
+ */
+    public function makeApiCall(string $url, array $headers = [], string $method = 'GET'): mixed
     {
         $bearerToken = $this->helloAssoAuthService->getToken();
         $authorization = "Bearer " . $bearerToken;

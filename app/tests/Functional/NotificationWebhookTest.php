@@ -15,6 +15,7 @@ class NotificationWebhookTest extends WebTestCase
     private const TIMESTAMP_HEADER = 'HTTP_X_HELLOASSO_TIMESTAMP';
     private const SIGNATURE_HEADER = 'HTTP_X_HELLOASSO_SIGNATURE';
     private const EVENT_ID_HEADER = 'HTTP_X_HELLOASSO_EVENT_ID';
+    private const WEBHOOK_SECRET = 'test-webhook-secret';
 
     public function testCallbackRejectsInvalidJson(): void
     {
@@ -287,6 +288,9 @@ class NotificationWebhookTest extends WebTestCase
         $this->assertSame('Nice', $asso->getCity());
     }
 
+    /**
+     * @return iterable<array<int,string>>
+     */
     public static function formEventTypeProvider(): iterable
     {
         yield 'Form' => ['Form'];
@@ -438,6 +442,10 @@ class NotificationWebhookTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    
+    /**
+     * @param array<mixed> $dataOverrides
+     */
     private function buildOrderPayload(?string $eventId = null, array $dataOverrides = []): string
     {
         return json_encode([
@@ -457,6 +465,9 @@ class NotificationWebhookTest extends WebTestCase
         ]);
     }
 
+    /**
+     * @param array<mixed> $extraServer
+     */
     private function postWebhook(string $content, array $extraServer = [], bool $sign = true): void
     {
         $server = array_merge([
@@ -483,6 +494,6 @@ class NotificationWebhookTest extends WebTestCase
 
     private function getWebhookSecret(): string
     {
-        return trim((string) ($_ENV['HELLOASSO_WEBHOOK_SECRET'] ?? $_SERVER['HELLOASSO_WEBHOOK_SECRET'] ?? ''));
+        return self::WEBHOOK_SECRET;
     }
 }

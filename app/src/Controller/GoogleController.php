@@ -7,25 +7,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Security\EmailVerifier;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mime\Address;
 use App\Entity\User;
 use App\Service\EmailService;
 use Symfony\Bundle\SecurityBundle\Security;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
  
 class GoogleController extends AbstractController
 {
-      private EmailVerifier $emailVerifier;
-      private User $user; 
-      private LoggerInterface $logger;
+    private LoggerInterface $logger;
 
-    public function __construct(EmailVerifier $emailVerifier, LoggerInterface $logger)
+    public function __construct( LoggerInterface $logger)
     {
-        $this->emailVerifier = $emailVerifier; 
         $this->logger = $logger;    
     }
 
@@ -40,10 +33,10 @@ class GoogleController extends AbstractController
     }
  
     #[Route('/connect/google/check', name: 'connect_google_check')]
-    public function connectCheckAction(Request $request, Security $security, EmailService $emailService)
+    public function connectCheckAction(Request $request, Security $security, EmailService $emailService) : RedirectResponse
     {
         $user = $this->getUser();
-        if ($user) {
+        if (($user instanceof User) && (!$user->isVerified())) {
             // Si l'utilisateur n'est pas encore vérifié, on envoie l'email de confirmation
              try {
                 $emailService->sendConfirmationEmail($user);
@@ -53,14 +46,11 @@ class GoogleController extends AbstractController
                 $this->addFlash('danger', 'Problème lors de l\'envoi du mail. Veuillez réessayer.');
             }
             return $this->redirectToRoute('app_profil');
-            return $security->login($user, 'form_login', 'main');
         }
         else{
             $this->addFlash('danger', "Erreur lors de l'authentification Google. Veuillez réessayer ou contacter l'administrateur.");
             return $this->redirectToRoute('app_login');
         }
-        
 
-        return $this->redirectToRoute('app_profil');
     }
 }

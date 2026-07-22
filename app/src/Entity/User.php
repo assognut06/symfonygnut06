@@ -50,7 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Tih $tih = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $profile_picture;
+    private ?string $profile_picture = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $googleId = null;

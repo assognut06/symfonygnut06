@@ -7,6 +7,7 @@
          colors="true"
          bootstrap="tests/bootstrap.php"
          convertDeprecationsToExceptions="false"
+         defaultTestSuite="Default"
 >
     <php>
         <ini name="display_errors" value="1" />
@@ -27,12 +28,23 @@
             <directory>tests/Functional</directory>
             <directory>tests/Controller</directory>
         </testsuite>
+        <testsuite name="Rules">
+            <directory>tests/Rules</directory>
+        </testsuite>
+        <testsuite name="Default">
+            <directory>tests/Unit</directory>
+            <directory>tests/Functional</directory>
+            <directory>tests/Controller</directory>
+        </testsuite>
     </testsuites>
 
     <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">src</directory>
         </include>
+        <exclude>
+            <directory>tests/Rules</directory>
+        </exclude>
     </coverage>
 
     <listeners>

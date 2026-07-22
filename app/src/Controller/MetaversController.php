@@ -10,7 +10,7 @@ use App\Service\ApiFrameVrService;
 #[Route('/metavers')]
 class MetaversController extends AbstractController
 {
-    private $apiFrameVrService;
+    private ApiFrameVrService $apiFrameVrService;
 
     public function __construct(ApiFrameVrService $apiFrameVrService)
     {
