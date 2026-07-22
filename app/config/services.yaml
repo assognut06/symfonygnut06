@@ -143,7 +143,6 @@ services:
     App\Service\RecaptchaVerifier:
         arguments:
             $client: '@http_client'
-            $secretKey: '%nocaptcha.secret%'
             $appEnv: '%app.env%'
             $recaptchaSecret: '%nocaptcha.secret%'
 
