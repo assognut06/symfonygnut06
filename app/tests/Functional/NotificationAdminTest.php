@@ -61,9 +61,9 @@ class NotificationAdminTest extends WebTestCase
         $notification = HelloAssoFormNotification::fromHelloAssoPayload([
             'eventType' => 'Order',
             'data' => [
-                'organizationSlug' => 'stats-org',
-                'organizationName' => 'Stats Org',
                 'formSlug' => 'stats-form',
+                'organizationSlug' => 'stats-org',
+                'organizationName' => 'Stats Org'
             ],
         ]);
         $this->em->persist($notification);
@@ -108,7 +108,7 @@ class NotificationAdminTest extends WebTestCase
                     [
                         'id' => 42,
                         'label' => 'Don libre',
-                        'price' => 10,
+                        'price' => '10',
                         'tierType' => 'Donation',
                         'isFavorite' => true,
                         'customFields' => [
@@ -157,6 +157,10 @@ class NotificationAdminTest extends WebTestCase
         );
     }
 
+
+    /**
+     * @return iterable<array<int,string>>
+     */
     public static function notificationAdminUrlProvider(): iterable
     {
         yield 'Test endpoint' => ['/notification/test'];

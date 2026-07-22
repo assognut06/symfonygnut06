@@ -2,8 +2,6 @@
 namespace App\Tests\Rules;
 
 use App\Rules\NoSuperGlobalRule;
-
-use PHPUnit\Framework\TestCase;
 use PHPStan\Testing\RuleTestCase;
 
 /**

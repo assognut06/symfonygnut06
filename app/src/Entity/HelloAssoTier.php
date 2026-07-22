@@ -65,7 +65,7 @@ class HelloAssoTier
     /**
      * ✅ MÉTHODE STATIQUE : Créer un tier depuis des données d'API
   
-     * @param array{id:?int,label:?string,description:?string,tierType:?string,price:?string,vatRate:?string,paymentFrequency:?string,isEligibleTaxReceipt:?bool,isFavorite:?bool,customFields:?array<mixed>} $data
+     * @param array{id?:int,label?:string,description?:string,tierType?:string,price?:string,vatRate?:string,paymentFrequency?:string,isEligibleTaxReceipt?:bool,isFavorite?:bool,customFields?:array<mixed>} $data
      */
     public static function fromArray(array $data): self
     {

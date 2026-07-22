@@ -7,3 +7,8 @@ parameters:
     level: 6
     paths:
         - src
+        - tests
+    excludePaths:
+        analyseAndScan:
+            - tests/bootstrap.php
+            - tests/Rules/data
