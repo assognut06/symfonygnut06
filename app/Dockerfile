@@ -83,13 +83,14 @@ RUN a2ensite default-ssl
 # Configuration de Xdebug
 COPY ./config/xdebug.ini /usr/local/etc/php/conf.d//xdebug.ini
 
-RUN chown -R root:root /var/www/app && \
-chmod -R 755 /var/www/app && \
+RUN addgroup --gid 1000 user && usermod -aG user www-data
+RUN chown -R www-data:user /var/www && \
+chmod -R 755 /etc/apache2 && \
+chmod -R 775 /var/www/app && \
 chmod +x /var/www/app/
 COPY . /var/www/app
 
-RUN addgroup --gid 1000 user && usermod -aG user www-data
-
+USER www-data:user
 # Ensure the composer.json file exists
 RUN composer install --no-scripts
 # RUN composer install
