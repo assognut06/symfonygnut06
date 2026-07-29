@@ -101,9 +101,6 @@
                            href="{{ path('app_a_propos') }}"
                            {% if app.request.attributes.get('_route') == 'app_a_propos' %}
                                aria-current="page"
-                               aria-label="Notre Mission - Page courante"
-                           {% else %}
-                               aria-label="Découvrir notre mission d'inclusion numérique"
                            {% endif %}>
                             Notre Mission
                         </a>
@@ -114,9 +111,6 @@
                            href="{{ path('app_billetteries') }}"
                            {% if app.request.attributes.get('_route') == 'app_billetteries' %}
                                aria-current="page"
-                               aria-label="Réserver une activité - Page courante"
-                           {% else %}
-                               aria-label="Réserver une activité ou un événement"
                            {% endif %}>
                             Réserver une activité
                         </a>
@@ -127,9 +121,6 @@
                            href="{{ path('app_metavers') }}"
                            {% if app.request.attributes.get('_route') == 'app_metavers' %}
                                aria-current="page"
-                               aria-label="Salles 3D immersives - Page courante"
-                           {% else %}
-                               aria-label="Découvrir nos salles 3D immersives"
                            {% endif %}>
                             Salles 3D immersives
                         </a>
@@ -154,9 +145,6 @@
                            href="{{ path('app_don') }}"
                            {% if app.request.attributes.get('_route') == 'app_don' %}
                                aria-current="page"
-                               aria-label="Nous Soutenir - Page courante"
-                           {% else %}
-                               aria-label="Soutenir notre association par un don"
                            {% endif %}>
                             Nous Soutenir
                         </a>
@@ -171,8 +159,7 @@
                                id="navbarProfilDropdown"
                                data-bs-toggle="dropdown"
                                aria-expanded="false"
-                               aria-haspopup="true"
-                               aria-label="Menu du profil utilisateur">
+                               aria-haspopup="true">
                                 <img src="{{ asset('../images/webp/person-circle.svg') }}"
                                      alt="Icône de profil utilisateur"
                                      width="20"
@@ -218,8 +205,7 @@
                                 </li>
                                 <li>
                                     <a class="dropdown-item text-light"
-                                       href="{{ path('app_logout') }}"
-                                       aria-label="Se déconnecter du compte">
+                                       href="{{ path('app_logout') }}">
                                         Déconnexion
                                     </a>
                                 </li>
@@ -232,9 +218,6 @@
                                href="{{ path('app_profil') }}"
                                {% if app.request.attributes.get('_route') == 'app_profil' %}
                                    aria-current="page"
-                                   aria-label="Tableau de bord - Page courante"
-                               {% else %}
-                                   aria-label="Accéder au tableau de bord"
                                {% endif %}>
                                 Tableau de bord
                             </a>
@@ -246,9 +229,6 @@
                                    href="{{ path('admin_dashboard') }}"
                                    {% if app.request.attributes.get('_route') == 'admin_dashboard' %}
                                        aria-current="page"
-                                       aria-label="Administration - Page courante"
-                                   {% else %}
-                                       aria-label="Accéder à l'administration"
                                    {% endif %}>
                                     Administration
                                 </a>
@@ -257,8 +237,7 @@
 
                         <li class="nav-item d-block d-xl-none">
                             <a class="nav-link text-light"
-                               href="{{ path('app_logout') }}"
-                               aria-label="Se déconnecter du compte">
+                               href="{{ path('app_logout') }}">
                                 Déconnexion
                             </a>
                         </li>
@@ -269,9 +248,6 @@
                                class="btn-outline-gradient btn-sm text-white {{ app.request.attributes.get('_route') == 'app_register' ? ' active' }}"
                                {% if app.request.attributes.get('_route') == 'app_register' %}
                                    aria-current="page"
-                                   aria-label="Inscription - Page courante"
-                               {% else %}
-                                   aria-label="S'inscrire sur le site"
                                {% endif %}>
                                 Inscription
                             </a>
@@ -279,9 +255,6 @@
                                class="btn-neon btn-sm text-white {{ app.request.attributes.get('_route') == 'app_login' ? ' active' }}"
                                {% if app.request.attributes.get('_route') == 'app_login' %}
                                    aria-current="page"
-                                   aria-label="Connexion - Page courante"
-                               {% else %}
-                                   aria-label="Se connecter au site"
                                {% endif %}>
                                 Connexion
                             </a>
