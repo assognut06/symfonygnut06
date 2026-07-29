@@ -19,23 +19,25 @@
 		{% endblock %}
 		{% include '_partials/analytics.html.twig' %}
 	</head>
-	<body>
+	<body class="site-layout">
 		<script defer data-cfasync='false' src='https://s.clickiocdn.com/t/243913_wv.js'></script>
 		<!-- Include navbar -->
 		{% include '_partials/navbar.html.twig' %}
 
-		<!-- Include main content -->
-		{% include '_partials/main.html.twig' %}
+		<div class="site-content">
+			<!-- Include main content -->
+			{% include '_partials/main.html.twig' %}
 
-		<!-- Display flash messages -->
+			<!-- Display flash messages -->
 		{% for type, messages in app.flashes %}
 			{% for message in messages %}
 				<div class="alert alert-{{ type }}" role="alert">{{ message }}</div>
 			{% endfor %}
 		{% endfor %}
 
-		<!-- Body content -->
-		{% block body %}{% endblock %}
+			<!-- Body content -->
+			{% block body %}{% endblock %}
+		</div>
 
 		<!-- Include footer -->
 		{% include '_partials/footer.html.twig' %}

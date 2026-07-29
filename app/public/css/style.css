@@ -638,3 +638,22 @@ h3{
 }
 
 
+
+/* Sticky footer: keeps the footer at the bottom on short pages without overlaying content. */
+html {
+  min-height: 100%;
+}
+
+body.site-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.site-content {
+  flex: 1 0 auto;
+}
+
+body.site-layout > footer {
+  flex-shrink: 0;
+}
