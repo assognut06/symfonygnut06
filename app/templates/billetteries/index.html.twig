@@ -211,8 +211,7 @@
                 <h1 id="main-title">Mondes Virtuels, Liens Réels : L'Inclusion à Portée de main</h1>
                 <p class="text">Venez découvrir nos actions sur place !</p>
                 <a href="{{ path('app_a_propos') }}" 
-                   class="btn-neon text-white" 
-                   aria-label="En savoir plus sur GNUT 06 et nos actions d'inclusion">
+                   class="btn-neon text-white">
                     Découvrez GNUT 06
                 </a>
             </header>
@@ -425,15 +424,13 @@
         <div class="container text-center">
             {% if app.request.headers.get('Referer') %}
                 <a href="{{ app.request.headers.get('Referer')|e('html_attr') }}" 
-                   class="text text-decoration-underline"
-                   aria-label="Retourner à la page précédente">
+                   class="text text-decoration-underline">
                     <i class="bi bi-arrow-left" aria-hidden="true"></i>
-                    Retour à la page précédente
+                    Retourner à la page précédente
                 </a>
             {% else %}
                 <a href="{{ path('app_home') }}" 
-                   class="text text-decoration-underline"
-                   aria-label="Retourner à l'accueil">
+                   class="text text-decoration-underline">
                     <i class="bi bi-house" aria-hidden="true"></i>
                     Retour à l'accueil
                 </a>
