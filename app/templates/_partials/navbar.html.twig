@@ -126,10 +126,9 @@
                         </a>
                     </li>
 
-                    <li class="nav-item" role="none">
+                    <li class="nav-item">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'handi_3d_index' ? 'active' : '' }}"
                            href="{{ path('handi_3d_index') }}"
-                           role="menuitem"
                            {% if app.request.attributes.get('_route') == 'handi_3d_index' %}
                                aria-current="page"
                                aria-label="Handi-3D - Page courante"
@@ -205,7 +204,8 @@
                                 </li>
                                 <li>
                                     <a class="dropdown-item text-light"
-                                       href="{{ path('app_logout') }}">
+                                       href="{{ path('app_logout') }}"
+                                       aria-label="Se déconnecter du compte">
                                         Déconnexion
                                     </a>
                                 </li>
@@ -237,7 +237,8 @@
 
                         <li class="nav-item d-block d-xl-none">
                             <a class="nav-link text-light"
-                               href="{{ path('app_logout') }}">
+                               href="{{ path('app_logout') }}"
+                               aria-label="Se déconnecter du compte">
                                 Déconnexion
                             </a>
                         </li>
