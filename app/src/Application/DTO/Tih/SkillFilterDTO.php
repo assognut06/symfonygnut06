@@ -10,7 +10,9 @@ final readonly class SkillFilterDTO
         public int $count
     ) {
     }
-
+/**
+ * @param array{id:int,name:string,count:int} $data
+ */
     public static function fromArray(array $data): self
     {
         return new self(

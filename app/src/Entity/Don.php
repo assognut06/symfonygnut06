@@ -33,6 +33,9 @@ class Don
     #[ORM\JoinColumn(nullable: false)]
     private ?Donateur $donateur = null;
 
+    /**
+     *  @var Collection<int,Casque>
+     */
     #[ORM\OneToMany(mappedBy: 'don', targetEntity: Casque::class, cascade: ['persist', 'remove'])]
     private Collection $casques;
 

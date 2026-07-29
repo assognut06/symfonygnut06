@@ -109,6 +109,10 @@ class HelloAssoFormNotification
     private Meta $meta;
 
     // ✅ NOUVELLE RELATION : Collection des tiers HelloAsso
+
+    /**
+     * @var Collection<int,HelloAssoTier>
+     */
     #[ORM\OneToMany(mappedBy: 'form', targetEntity: HelloAssoTier::class, cascade: ['persist', 'remove'])]
     private Collection $tiers;
 
@@ -121,6 +125,7 @@ class HelloAssoFormNotification
 
     /**
      * ✅ MÉTHODE STATIQUE : Créer une entité depuis un payload HelloAsso
+     * @param array{eventType?:string,data?:array{formSlug?:string,formType?:string,title?:string,description?:string,url?:string,state?:string,currency?:string,organizationSlug?:string,organizationName?:string,organizationLogo?:string,activityType?:string,activityTypeId?:int,startDate?:string,endDate?:string,banner?:array{fileName?:string,publicUrl?:string},logo?:array{fileName?:string,publicUrl?:string},place?:array{address?:string,name?:string,city?:string,zipCode?:string,country?:string},widget?:array{buttonUrl?:string,fullUrl?:string,vignetteHorizontalUrl?:string,vignetteVerticalUrl?:string},tiers?:array{array{id?:int,label?:string,description?:string,tierType?:string,price?:string,vatRate?:string,paymentFrequency?:string,isEligibleTaxReceipt?:bool,isFavorite?:bool,customFields?:array<mixed>}}}} $payload
      */
     public static function fromHelloAssoPayload(array $payload): self
     {
@@ -188,7 +193,7 @@ class HelloAssoFormNotification
             }
 
             // ✅ TRAITEMENT DES TIERS si présents dans le payload
-            if (isset($data['tiers']) && is_array($data['tiers'])) {
+            if (isset($data['tiers'])) {
                 foreach ($data['tiers'] as $tierData) {
                     $tier = HelloAssoTier::fromArray($tierData);
                     $entity->addTier($tier);
@@ -333,6 +338,9 @@ class HelloAssoFormNotification
         return !$this->tiers->isEmpty();
     }
 
+    /**
+     * @return Collection<int,HelloAssoTier>
+     */
     public function getFavoriteTiers(): Collection
     {
         return $this->tiers->filter(function(HelloAssoTier $tier) {
@@ -340,6 +348,9 @@ class HelloAssoFormNotification
         });
     }
 
+    /**
+     * @return Collection<int,HelloAssoTier>
+     */
     public function getTiersByPriceRange(float $minPrice, float $maxPrice): Collection
     {
         return $this->tiers->filter(function(HelloAssoTier $tier) use ($minPrice, $maxPrice) {

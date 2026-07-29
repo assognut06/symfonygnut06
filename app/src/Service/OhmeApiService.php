@@ -6,14 +6,16 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class OhmeApiService
 {
-    private $client;
+    private HttpClientInterface $client;
 
     public function __construct(HttpClientInterface $client)
     {
         $this->client = $client;
     }
-
-    public function getContacts(array $params, string $object, string $method = 'GET')
+/**
+ * @param array<mixed> $params
+ */
+    public function getContacts(array $params, string $object, string $method = 'GET'): mixed
     {
         // La base_uri et les en-têtes d'authentification (client-name / client-secret)
         // sont fournis par le client scopé « ohme.client » (voir framework.yaml).

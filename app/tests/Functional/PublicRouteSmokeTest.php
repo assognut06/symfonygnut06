@@ -19,6 +19,9 @@ class PublicRouteSmokeTest extends WebTestCase
         );
     }
 
+    /**
+     * @return iterable<array<int,string>>
+     */
     public static function publicUrlProvider(): iterable
     {
         yield 'Home' => ['/'];
@@ -52,6 +55,9 @@ class PublicRouteSmokeTest extends WebTestCase
         );
     }
 
+    /**
+     * @return iterable<array<int,string>>
+     */
     public static function redirectUrlProvider(): iterable
     {
         yield 'Logout redirects' => ['/logout'];

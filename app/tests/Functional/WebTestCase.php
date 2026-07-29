@@ -80,6 +80,9 @@ abstract class WebTestCase extends BaseWebTestCase
         }
     }
 
+    /**
+     * @param list<string> $roles
+     */
     protected function createUser(
         string $email = 'user@test.com',
         string $password = 'Test1234!',

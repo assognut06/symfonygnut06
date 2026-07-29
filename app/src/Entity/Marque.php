@@ -18,7 +18,10 @@ class Marque
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
-    #[ORM\OneToMany(mappedBy: 'marque', targetEntity: Casque::class)]
+    /**
+     * @var Collection<int, Casque>
+     */
+    #[ORM\OneToMany(targetEntity: Casque::class, mappedBy: 'marque')]
     private Collection $casques;
 
     public function __construct()

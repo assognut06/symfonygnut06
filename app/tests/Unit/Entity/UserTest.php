@@ -4,6 +4,7 @@ namespace App\Tests\Unit\Entity;
 
 use App\Entity\Tih;
 use App\Entity\User;
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
@@ -149,10 +150,15 @@ class UserTest extends TestCase
 
     public function testEraseCredentials(): void
     {
+        $ok= true;
         $user = new User();
-        $user->eraseCredentials();
-
-        $this->assertTrue(true, 'eraseCredentials should not throw');
+        try{
+            $user->eraseCredentials();
+        }
+        catch (Exception $e) {
+            $ok= false;
+        }
+        $this->assertTrue($ok, 'eraseCredentials should not throw');
     }
 
     public function testSettersReturnSelf(): void

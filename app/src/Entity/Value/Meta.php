@@ -25,6 +25,10 @@ class Meta
         $this->createdAt = new \DateTimeImmutable();
     }
 
+    /**
+     * @param array{createdAt:?string,updatedAt:?string,createdBy:?string,updatedBy:?string} $data
+     * 
+     */
     public static function fromArray(array $data): self
     {
         $self = new self();

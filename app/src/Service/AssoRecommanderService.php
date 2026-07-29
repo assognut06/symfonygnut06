@@ -4,12 +4,11 @@ namespace App\Service;
 use App\Entity\AssoRecommander;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class AssoRecommanderService
 {
-    private $helloAssoApiService;
-    private $entityManager;
+    private HelloAssoApiService $helloAssoApiService;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(HelloAssoApiService $helloAssoApiService, EntityManagerInterface $entityManager)
     {
@@ -17,7 +16,7 @@ class AssoRecommanderService
         $this->entityManager = $entityManager;
     }
 
-    public function createdAssoRecommanderFromApi(string $organizationSlug)
+    public function createdAssoRecommanderFromApi(string $organizationSlug) :?AssoRecommander
     {
         $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}";
         $data = $this->helloAssoApiService->makeApiCall($url);
@@ -39,8 +38,7 @@ class AssoRecommanderService
         return null;
     }
 
-    public function updateAssoRecommanderFromApi(AssoRecommander $assoRecommander) 
-    {
+    public function updateAssoRecommanderFromApi(AssoRecommander $assoRecommander) :AssoRecommander|string    {
         // $assos = $this->entityManager->getRepository(AssoRecommander::class)->findAll();
 
         // foreach ($assos as $asso) {
@@ -66,10 +64,16 @@ class AssoRecommanderService
         // }
 
 
-        return null;
+        // return null;
     }
+    
+    /**
+     * @param AssoRecommander $assoRecommander
+     * @param array<mixed> $data
+     * @return bool|string
+     */
 
-    public function isDataChanged(AssoRecommander $assoRecommander, array $data) 
+    public function isDataChanged(AssoRecommander $assoRecommander, array $data) :bool|string
     {
         try{
             if(count($data) > 0 ){
@@ -80,7 +84,7 @@ class AssoRecommanderService
                 }
 
             } else {
-                return "Pas de données dans le tableau ".$data;
+                return "Pas de données dans le tableau";
             }
         } catch(Exception $e) {
             return $e;

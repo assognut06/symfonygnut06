@@ -117,6 +117,10 @@ TXT;
         }
     }
 
+
+    /**
+     * @return list<array{role:string,content:string}> 
+     */
     private function cleanHistory(mixed $history): array
     {
         if (!is_array($history)) {
@@ -150,6 +154,9 @@ TXT;
         return $clean;
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     private function extractOutputText(array $data): string
     {
         if (isset($data['output_text']) && is_string($data['output_text'])) {

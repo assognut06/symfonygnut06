@@ -37,7 +37,7 @@ class AdminAccessTest extends WebTestCase
             {
             }
 
-            public function makeApiCall(string $url, array $headers = [], string $method = 'GET')
+            public function makeApiCall(string $url, array $headers = [], string $method = 'GET') :mixed
             {
                 return [
                     'name' => 'GNUT 06',

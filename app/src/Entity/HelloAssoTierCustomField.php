@@ -38,6 +38,9 @@ class HelloAssoTierCustomField
     // private ?array $values = null;
 
     // ✅ SOLUTION : Échapper avec backticks
+    /**
+     * @var ?array<mixed>
+     */
     #[ORM\Column(name: '`values`', type: Types::JSON, nullable: true)]
     private ?array $values = null;
 
@@ -48,7 +51,10 @@ class HelloAssoTierCustomField
 
     /**
      * ✅ MÉTHODE STATIQUE : Créer un champ personnalisé depuis des données d'API
+     * 
+     * @param array{id:?int,label:?string,type:?string,isRequired:?bool,values:?array<mixed>} $data
      */
+
     public static function fromArray(array $data): self
     {
         $field = new self();
@@ -122,12 +128,17 @@ class HelloAssoTierCustomField
         $this->isRequired = $isRequired;
         return $this;
     }
-
+    /**
+     * @return array<mixed>
+     */
     public function getValues(): ?array
     {
         return $this->values;
     }
 
+    /**
+     * @param array<mixed> $values
+     */
     public function setValues(?array $values): self
     {
         $this->values = $values;
@@ -139,7 +150,7 @@ class HelloAssoTierCustomField
      */
     public function hasOptions(): bool
     {
-        return !empty($this->values) && is_array($this->values);
+        return !($this->values)&&!empty($this->values);
     }
 
     public function getOptionsAsString(): string
@@ -162,6 +173,6 @@ class HelloAssoTierCustomField
 
     public function __toString(): string
     {
-        return $this->label ?? 'Custom Field #' . $this->externalId ?? 'Custom Field #' . $this->id;
+        return $this->label ?? 'Custom Field #' . ($this->externalId ??  $this->id);
     }
 }

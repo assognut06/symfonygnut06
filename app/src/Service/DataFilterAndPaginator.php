@@ -5,6 +5,10 @@ use DateTime;
 
 class DataFilterAndPaginator
 {
+    /**
+    * @param array<mixed> $data
+    * @return array<mixed>
+    */
     public function filterAndSortData(array $data): array
     {
         $filteredData = array_filter($data, function ($entry) {
@@ -30,6 +34,10 @@ class DataFilterAndPaginator
         return $filteredData;
     }
 
+    /**
+    * @param array<mixed> $data
+    * @return array<mixed>
+    */
     public function filterMemberShipSortData(array $data): array
     {
         $filteredData = array_filter($data, function ($entry) {
@@ -50,7 +58,10 @@ class DataFilterAndPaginator
     
         return $filteredData;
     }
-
+    /**
+    * @param array<mixed> $data
+    * @return array{items:array<mixed>,totalItems:int,totalPages:float,currentPage:int}
+    */
     public function paginateData(array $data, int $page, int $itemsPerPage = 6): array
     {
         $totalItems = count($data);
