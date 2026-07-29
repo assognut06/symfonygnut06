@@ -34,6 +34,7 @@ wetransfer*
 # Logs
 *.log
 
+reinit-project.sh
 #script de demarrage
 start-project.sh
 
