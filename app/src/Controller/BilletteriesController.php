@@ -12,8 +12,8 @@ use App\Service\DataFilterAndPaginator;
 #[Route('/evenements')]
 class BilletteriesController extends AbstractController
 {
-    private $helloAssoApiService;
-    private $dataFilterAndPaginator;
+    private HelloAssoApiService $helloAssoApiService;
+    private DataFilterAndPaginator $dataFilterAndPaginator;
     private string $slugAsso;
     private string $googleMapsApiKey;
 

@@ -12,8 +12,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\EventListener\PremiereLettreMajuscule;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-
-
+/**
+ * @extends AbstractType<PersonnePhysique>
+ */
 class PersonnePhysiqueType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

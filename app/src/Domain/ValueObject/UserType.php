@@ -34,7 +34,9 @@ final class UserType
     {
         return $this->value;
     }
-
+    /** 
+     * @return array<int,string>
+    */
     public function getRoles(): array
     {
         return match($this->value) {

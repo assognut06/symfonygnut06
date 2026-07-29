@@ -12,7 +12,9 @@ class Media
 
     #[ORM\Column(length: 2048, nullable: true)]
     private ?string $publicUrl = null;
-
+    /**
+     * @param array{fileName:?string,publicUrl:?string} $data
+     */
     public static function fromArray(array $data): self
     {
         $self = new self();

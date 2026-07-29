@@ -6,6 +6,9 @@ use App\Entity\Tih;
 
 final readonly class TihDetailsViewModel
 {
+    /**
+     * @param array<string> $competences
+     */
     public function __construct(
         public int $id,
         public string $title,

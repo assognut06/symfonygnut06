@@ -18,6 +18,7 @@ class HelloAssoFormNotificationRepository extends ServiceEntityRepository
 
     /**
      * Trouve les notifications par slug d'organisation
+     * @return array<HelloAssoFormNotification>
      */
     public function findByOrganizationSlug(string $organizationSlug): array
     {
@@ -31,6 +32,7 @@ class HelloAssoFormNotificationRepository extends ServiceEntityRepository
 
     /**
      * Trouve les notifications récentes
+     * @return array<HelloAssoFormNotification>
      */
     public function findRecentNotifications(int $limit = 10): array
     {
@@ -43,6 +45,7 @@ class HelloAssoFormNotificationRepository extends ServiceEntityRepository
 
     /**
      * Trouve les notifications par type d'événement
+     * @return array<HelloAssoFormNotification>
      */
     public function findByEventType(string $eventType): array
     {
@@ -83,6 +86,7 @@ class HelloAssoFormNotificationRepository extends ServiceEntityRepository
 
     /**
      * Trouve les formulaires actifs (état Public)
+     * @return array<HelloAssoFormNotification>
      */
     public function findActiveForms(): array
     {

@@ -9,7 +9,9 @@ final readonly class RegionFilterDTO
         public int $count
     ) {
     }
-
+/**
+ * @param array{region:string,count:int} $data
+ */
     public static function fromArray(array $data): self
     {
         return new self(

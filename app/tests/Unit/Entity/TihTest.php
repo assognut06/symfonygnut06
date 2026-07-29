@@ -127,8 +127,8 @@ class TihTest extends TestCase
         $tih = new Tih();
         $tih->onPrePersist();
 
-        $this->assertNotNull($tih->getCreatedAt());
-        $this->assertNotNull($tih->getUpdatedAt());
+        $this->assertEquals($tih->getCreatedAt(),
+            $tih->getUpdatedAt());
     }
 
     public function testSettersReturnSelf(): void

@@ -20,6 +20,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\File;
 
+/**
+ * @extends AbstractType<Tih>
+ */
+
 class TihType extends AbstractType
 {
     private const MAX_FILE_SIZE = '5M';

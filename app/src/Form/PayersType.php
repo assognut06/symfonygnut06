@@ -6,7 +6,9 @@ use App\Entity\Payers;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
+/**
+ * @extends AbstractType<Payers>
+ */
 class PayersType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

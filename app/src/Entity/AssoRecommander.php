@@ -247,6 +247,7 @@ class AssoRecommander
 
     /**
      * Remplit l'entité avec les données de l'API HelloAsso
+     * @param array{banner:?string,fiscalReceiptEligibility:?bool,fiscalReceiptIssuanceEnabled:?bool,type:?string,category:?string,logo:?string,name:?string,city:?string,zipCode:?string,description:?string,url:?string} $data
      */
     public function fillFromApiData(array $data): self
     {

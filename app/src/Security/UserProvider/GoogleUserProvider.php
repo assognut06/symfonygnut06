@@ -3,47 +3,48 @@
 namespace App\Security\UserProvider;
 
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
-use KnpU\OAuth2ClientBundle\Security\User\OAuthUserProviderInterface;
-use League\OAuth2\Client\Provider\ResourceOwnerInterface;
+use App\Repository\UserRepository;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-
-class GoogleUserProvider implements OAuthUserProviderInterface, UserProviderInterface
+/**
+ * @implements UserProviderInterface<User>
+ */
+final class GoogleUserProvider implements UserProviderInterface
 {
-    private EntityManagerInterface $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(private readonly UserRepository $userRepository)
     {
-        $this->em = $em;
     }
 
-    public function loadUserByOAuthUserResponse(ResourceOwnerInterface $response)
+    public function loadUserByIdentifier(string $identifier): UserInterface
     {
-        $email = $response->getEmail();
-        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
-        if (!$user) {
-            $user = new User();
-            $user->setEmail($email);
-            $user->setRoles(["ROLE_USER"]);
-            $this->em->persist($user);
-            $this->em->flush();
+        $user = $this->userRepository->findOneBy(['email' => $identifier]);
+
+        if ($user === null) {
+            throw new UserNotFoundException(sprintf('User with email "%s" was not found.', $identifier));
         }
+
         return $user;
     }
 
-    public function loadUserByUsername($username)
+    public function refreshUser(UserInterface $user): UserInterface
     {
-        return $this->em->getRepository(User::class)->findOneBy(['email' => $username]);
+        if (!$user instanceof User) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
+        }
+
+        $refreshedUser = $this->userRepository->find($user->getId());
+
+        if ($refreshedUser === null) {
+            throw new UserNotFoundException(sprintf('User with identifier "%s" was not found.', $user->getUserIdentifier()));
+        }
+
+        return $refreshedUser;
     }
 
-    public function refreshUser(UserInterface $user)
+    public function supportsClass(string $class): bool
     {
-        return $this->em->getRepository(User::class)->find($user->getId());
-    }
-
-    public function supportsClass($class)
-    {
-        return User::class === $class;
+        return User::class === $class || is_subclass_of($class, User::class);
     }
 }

@@ -41,6 +41,9 @@ class Entreprise
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $telephone = null;
 
+    /**
+     *  @var Collection<int,EntrepriseTihMessage>
+     */
     #[ORM\OneToMany(mappedBy: 'entreprise', targetEntity: EntrepriseTihMessage::class, cascade: ['persist', 'remove'])]
     private Collection $messages;
 
@@ -139,6 +142,9 @@ class Entreprise
 
         return $this;
     }
+    /**
+     *  @return Collection<int,EntrepriseTihMessage>
+     */
     public function getMessages(): Collection
     {
         return $this->messages;

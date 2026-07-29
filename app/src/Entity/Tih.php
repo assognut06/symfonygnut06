@@ -80,6 +80,10 @@ class Tih
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
     private \DateTimeInterface $updatedAt;
 
+
+    /**
+     * @var Collection<int,Competence> $competences
+     */
     #[ORM\ManyToMany(targetEntity: Competence::class)]
     private Collection $competences;
 

@@ -22,6 +22,7 @@ class GeocodeService
     /**
      * Get coordinates for a city in France
      * Uses cache to avoid repeated API calls
+     * @return array{lat:mixed,lng:mixed}
      */
     public function getCityCoordinates(string $city): ?array
     {
@@ -75,6 +76,8 @@ class GeocodeService
     /**
      * Get coordinates for multiple cities at once
      * Returns an associative array: ['CityName' => ['lat' => x, 'lng' => y]]
+     * @param array<string> $cities
+     * @return array<string,array{lat:mixed,lng:mixed}>
      */
     public function getCitiesCoordinates(array $cities): array
     {
