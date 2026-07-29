@@ -254,8 +254,8 @@
 					Nos activités sont conçues pour être accessibles à toutes et à tous.<br>
 					Explorez notre large éventail d'options adaptées à chaque besoin.
 				</p>
-				<div class="row g-4 justify-content-center" role="list" aria-label="Liste de nos hubs numériques">
-					<article class="col-sm-6 col-md-4" role="listitem">
+				<ul class="row g-4 justify-content-center list-unstyled" aria-label="Liste de nos hubs numériques">
+					<li class="col-sm-6 col-md-4">
 						<div class="card text-center text-white bg-black h-100" tabindex="0">
 							<img src="{{ asset('images/webp/galerie-3d-GNUT.webp') }}" class="card-img-top img-fluid" alt="Vue immersive de la galerie d'art virtuelle GNUT avec œuvres exposées" role="img">
 							<div class="card-body d-flex flex-column">
@@ -268,8 +268,8 @@
 								</a>
 							</div>
 						</div>
-					</article>
-					<article class="col-sm-6 col-md-4" role="listitem">
+					</li>
+					<li class="col-sm-6 col-md-4">
 						<div class="card text-center text-white bg-black h-100" tabindex="0">
 							<img src="{{ asset('images/webp/meteo3D.webp') }}" class="card-img-top img-fluid" alt="Interface de l'application météo 3D GNUT montrant des données météorologiques" role="img">
 							<div class="card-body d-flex flex-column">
@@ -282,8 +282,8 @@
 								</a>
 							</div>
 						</div>
-					</article>
-					<article class="col-sm-6 col-md-4" role="listitem">
+					</li>
+					<li class="col-sm-6 col-md-4">
 						<div class="card text-center text-white bg-black h-100" tabindex="0">
 							<img src="{{ asset('images/webp/galerie-3d-immo.webp') }}" class="card-img-top img-fluid" alt="Modélisation 3D d'un projet immobilier avec architecture moderne" role="img">
 							<div class="card-body d-flex flex-column">
@@ -296,8 +296,8 @@
 								</a>
 							</div>
 						</div>
-					</article>
-				</div>
+					</li>
+				</ul>
 			</div>
 		</section>
 
@@ -386,8 +386,8 @@
 					<p class="text">
 						Votre soutien est essentiel pour notre mission. Découvrez comment vous pouvez faire une différence.
 					</p>
-					<div class="row g-4" role="list" aria-label="Façons de nous soutenir">
-						<article class="col-6 text-center text-md-start" role="listitem">
+					<ul class="row g-4 list-unstyled" aria-label="Façons de nous soutenir">
+						<li class="col-6 text-center text-md-start">
 							<img src="{{ asset ('images/webp/send_money.svg') }}" style="width:64px;" alt="Icône représentant un don financier" role="img"/>
 							<h3>Faites un don</h3>
 							<p class="text">
@@ -396,8 +396,8 @@
 							<a href="{{ path('app_don') }}" class="btn-neon" role="button" aria-label="Faire un don pour soutenir GNUT 06">
 								Je donne
 							</a>
-						</article>
-						<article class="col-6 text-center text-md-start" role="listitem">
+						</li>
+						<li class="col-6 text-center text-md-start">
 							<img src="{{ asset ('images/webp/volunteer_activism.svg') }}" style="width:64px;" alt="Icône représentant l'engagement bénévole" role="img"/>
 							<h3>Devenez adhérent.e</h3>
 							<p class="text">
@@ -406,8 +406,8 @@
 							<a href="{{ path('app_adhesion') }}" class="btn-outline-gradient" role="button" aria-label="Devenir adhérent de l'association GNUT 06">
 								J'adhère
 							</a>
-						</article>
-					</div>
+						</li>
+					</ul>
 				</article>
 				<div class="col-md-6 text-center">
 				<figure class="rounded-4 filtre-gnut06">
@@ -466,9 +466,9 @@
                 }
             } %}
 
-				<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" role="list" aria-label="Membres de notre équipe technique">
+				<ul class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 list-unstyled" aria-label="Membres de notre équipe technique">
 					{% for key, member in team_members %}
-						<article class="col d-flex" role="listitem">
+						<li class="col d-flex">
 							<div class="card text-center h-100 bg-dark border-secondary" tabindex="0">
 								<img src="{{ asset('images/webp/' ~ member.image) }}" class="card-img-top img-fluid" alt="Portrait de {{ member.name }}, {{ member.role }} chez GNUT 06" role="img">
 								<div class="card-body d-flex flex-column bg-dark">
@@ -481,9 +481,9 @@
 									</div>
 								</div>
 							</div>
-						</article>
+						</li>
 					{% endfor %}
-				</div>
+				</ul>
 			</div>
 		</section>
 
