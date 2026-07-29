@@ -206,7 +206,7 @@
 					<p class="text text-start">
 						GNUT 06 est une association engagée pour l'inclusion des personnes en situation de handicap à travers l'innovation numérique. Découvrez nos actions, nos projets en réalité virtuelle et rejoignez-nous pour construire un impact social durable.
 					</p>
-					<a href="{{ path('app_a_propos') }}" class="btn-neon text-white mt-3" role="button" aria-label="Découvrir la mission et les actions de GNUT 06">
+					<a href="{{ path('app_a_propos') }}" class="btn-neon text-white mt-3" role="button">
 						Découvrez GNUT 06
 					</a>
 				</header>
@@ -234,9 +234,9 @@
 						<a href="{{ path('app_billetteries') }}" class="btn-outline-gradient text-white" role="button" aria-label="Réserver une séance de réalité virtuelle">
 							Réserver une séance
 						</a>
-						<a href="{{ path('handi_3d_index') }}" class="btn-outline-gradient text-white position-relative" role="button" rel="noopener noreferrer" aria-label="Découvrir Handi-3D, notre espace virtuel inclusif (ouvre dans un nouvel onglet)">
-							Découvrez ♿ Handi-3D
-							<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger" style="transform: translate(-50%, -50%) rotate(23deg); transform-origin: center;" aria-label="Nouveau">
+						<a href="{{ path('handi_3d_index') }}" class="btn-outline-gradient text-white position-relative" role="button">
+							Découvrez <span aria-hidden="true">♿</span> Handi-3D
+							<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger" style="transform: translate(-50%, -50%) rotate(23deg); transform-origin: center;" aria-hidden="true">
 								New
 							</span>
 						</a>
@@ -263,8 +263,10 @@
 								<p class="card-text flex-grow-1">
 									Profitez d'une immersion totale dans notre galerie d'art virtuelle !
 								</p>
-								<a href="https://gnut.eu/galerie_art_by_gnut/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer" aria-label="Visiter la galerie d'art GNUT (ouvre dans un nouvel onglet)">
-									Visiter maintenant
+								<a href="https://gnut.eu/galerie_art_by_gnut/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer">
+									Visiter la galerie d'art GNUT
+									<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+									<span class="visually-hidden">(ouvre dans un nouvel onglet)</span>
 								</a>
 							</div>
 						</div>
@@ -277,8 +279,10 @@
 								<p class="card-text flex-grow-1">
 									Découvrez la météo en temps réel partout dans le monde !
 								</p>
-								<a href="https://gnut.eu/3d_meteo/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer" aria-label="Accéder à l'application météo 3D (ouvre dans un nouvel onglet)">
-									Visiter maintenant
+								<a href="https://gnut.eu/3d_meteo/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer">
+									Accéder à l'application Météo3D GNUT
+									<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+									<span class="visually-hidden">(ouvre dans un nouvel onglet)</span>
 								</a>
 							</div>
 						</div>
@@ -291,8 +295,10 @@
 								<p class="card-text flex-grow-1">
 									Visitez notre construction 3D !
 								</p>
-								<a href="https://gnut.eu/3d_immo/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer" aria-label="Explorer le projet 3D Immo (ouvre dans un nouvel onglet)">
-									Visiter maintenant
+								<a href="https://gnut.eu/3d_immo/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer">
+									Explorer le projet 3D Immo
+									<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+									<span class="visually-hidden">(ouvre dans un nouvel onglet)</span>
 								</a>
 							</div>
 						</div>
