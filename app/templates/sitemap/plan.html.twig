@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Plan du site - GNUT 06{% endblock %}
+
+{% block body %}
+	<main id="main-content" class="bg-main w-100 py-5" role="main">
+		<div class="container">
+			<header class="mb-5">
+				<h1>Plan du site</h1>
+				<p class="text">
+					Retrouvez les principales pages et rubriques du site GNUT 06.
+				</p>
+			</header>
+
+			<nav aria-label="Plan du site">
+				<div class="row g-5">
+					<section class="col-12 col-md-6" aria-labelledby="plan-association">
+						<h2 id="plan-association">L’association</h2>
+						<ul>
+							<li><a class="link-light" href="{{ path('app_home') }}">Accueil</a></li>
+							<li><a class="link-light" href="{{ path('app_a_propos') }}">Notre mission</a></li>
+							<li><a class="link-light" href="{{ path('app_presse') }}">Presse</a></li>
+							<li><a class="link-light" href="{{ path('app_contact') }}">Nous contacter</a></li>
+						</ul>
+					</section>
+
+					<section class="col-12 col-md-6" aria-labelledby="plan-activites">
+						<h2 id="plan-activites">Activités et services</h2>
+						<ul>
+							<li><a class="link-light" href="{{ path('app_billetteries') }}">Évènements et réservations</a></li>
+							<li><a class="link-light" href="{{ path('app_metavers') }}">Salles 3D immersives</a></li>
+							<li><a class="link-light" href="{{ path('handi_3d_index') }}">Handi-3D</a></li>
+							<li><a class="link-light" href="{{ path('app_digital_consulting') }}">Digital consulting</a></li>
+							<li><a class="link-light" href="{{ path('app_asso_recommander') }}">Associations recommandées</a></li>
+						</ul>
+					</section>
+
+					<section class="col-12 col-md-6" aria-labelledby="plan-soutien">
+						<h2 id="plan-soutien">Soutenir GNUT 06</h2>
+						<ul>
+							<li><a class="link-light" href="{{ path('app_adhesion') }}">Adhérer à l’association</a></li>
+							<li><a class="link-light" href="{{ path('app_don') }}">Faire un don</a></li>
+							<li><a class="link-light" href="{{ path('donateur_formulaire') }}">Faire un don de casque VR</a></li>
+						</ul>
+					</section>
+
+					<section class="col-12 col-md-6" aria-labelledby="plan-compte">
+						<h2 id="plan-compte">Compte utilisateur</h2>
+						<ul>
+							<li><a class="link-light" href="{{ path('app_register') }}">Inscription</a></li>
+							<li><a class="link-light" href="{{ path('app_login') }}">Connexion</a></li>
+						</ul>
+					</section>
+
+					<section class="col-12" aria-labelledby="plan-informations-legales">
+						<h2 id="plan-informations-legales">Informations légales et accessibilité</h2>
+						<ul>
+							<li><a class="link-light" href="{{ path('app_mentions_legales') }}">Mentions légales</a></li>
+							<li><a class="link-light" href="{{ path('app_politique_confidentialite') }}">Politique de confidentialité</a></li>
+							<li><a class="link-light" href="{{ path('app_politique_cookies') }}">Politique de gestion des cookies</a></li>
+							<li><a class="link-light" href="{{ path('app_charte_chatbot_ia') }}">Charte du chatbot IA</a></li>
+						</ul>
+					</section>
+				</div>
+			</nav>
+		</div>
+	</main>
+{% endblock %}

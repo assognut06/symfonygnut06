@@ -36,6 +36,7 @@ class PublicRouteSmokeTest extends WebTestCase
         yield 'Reset password request' => ['/reset-password'];
         yield 'TIH Search' => ['/tih/tih_search'];
         yield 'Digital consulting' => ['/digital/consulting'];
+        yield 'Plan du site' => ['/plan-du-site'];
     }
 
     /**
@@ -90,6 +91,15 @@ class PublicRouteSmokeTest extends WebTestCase
             $response->isSuccessful() || $response->getStatusCode() === 404,
             'Sitemap should return 200 or 404'
         );
+    }
+
+    public function testSiteMapPageProvidesASecondNavigationSystem(): void
+    {
+        $crawler = $this->client->request('GET', '/plan-du-site');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Plan du site');
+        $this->assertGreaterThanOrEqual(10, $crawler->filter('main nav a')->count());
     }
 
     public function test404ReturnsProperStatusCode(): void

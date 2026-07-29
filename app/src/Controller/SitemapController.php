@@ -4,11 +4,17 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SitemapController extends AbstractController
 {
+    #[Route('/plan-du-site', name: 'app_plan_site', methods: ['GET'])]
+    public function plan(): Response
+    {
+        return $this->render('sitemap/plan.html.twig');
+    }
+
     #[Route('/sitemap.xml', name: 'sitemap', defaults: ['_format' => 'xml'])]
     public function index(): Response
     {
@@ -28,6 +34,7 @@ class SitemapController extends AbstractController
             ['loc' => $this->generateUrl('app_politique_confidentialite', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.2'],
             ['loc' => $this->generateUrl('app_politique_cookies', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.2'],
             ['loc' => $this->generateUrl('app_charte_chatbot_ia', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.2'],
+            ['loc' => $this->generateUrl('app_plan_site', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.2'],
             ['loc' => $this->generateUrl('app_login', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.8'],
             
 
