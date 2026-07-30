@@ -5,7 +5,6 @@
 namespace App\Service;
 
 use App\Repository\AssoRecommanderRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 class PaginationService
 {
@@ -27,13 +26,15 @@ class PaginationService
     public function getPaginatedData(string $entityClass, int $page): mixed
     {
         $start = $this->limit * ($page - 1);
-        $cities = [];
         $data = [];
         $total = 0;
         $pages = 0;
         $cities = [];
 
         if (\App\Entity\AssoRecommander::class === $entityClass) {
+            $data = $this->assoRecommanderRepository->findBy([], [], $this->limit, $start);
+            $total = $this->assoRecommanderRepository->count([]);
+            $pages = (int) ceil($total / $this->limit);
             $cities = $this->assoRecommanderRepository->findDistinctCities();
         }
 
