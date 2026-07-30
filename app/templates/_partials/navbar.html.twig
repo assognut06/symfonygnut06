@@ -140,16 +140,16 @@
                     </li>
 
                     <li class="nav-item" role="none">
-                        <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_digital_consulting' ? 'active' : '' }}"
-                           href="{{ path('app_digital_consulting') }}"
+                        <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'handi_3d_index' ? 'active' : '' }}"
+                           href="{{ path('handi_3d_index') }}"
                            role="menuitem"
-                           {% if app.request.attributes.get('_route') == 'app_digital_consulting' %}
+                           {% if app.request.attributes.get('_route') == 'handi_3d_index' %}
                                aria-current="page"
-                               aria-label="Digital Consulting - Page courante"
+                               aria-label="Handi-3D - Page courante"
                            {% else %}
-                               aria-label="Services de conseil en transformation numérique"
+                               aria-label="Découvrir Handi-3D, notre espace virtuel inclusif"
                            {% endif %}>
-                            Digital Consulting
+                            ♿ Handi-3D
                         </a>
                     </li>
 
