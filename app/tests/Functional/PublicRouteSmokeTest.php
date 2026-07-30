@@ -38,7 +38,7 @@ class PublicRouteSmokeTest extends WebTestCase
         yield 'Don casque donateur form' => ['/donateur/formulaire'];
         yield 'Reset password request' => ['/reset-password'];
         yield 'TIH Search' => ['/tih/tih_search'];
-        yield 'Digital consulting' => ['/digital/consulting'];
+        yield 'Accompagnement digital' => ['/digital/consulting'];
         yield 'Newsletter confirmation' => ['/newsletter/confirmation'];
     }
 
