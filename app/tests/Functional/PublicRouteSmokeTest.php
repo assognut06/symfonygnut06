@@ -39,6 +39,7 @@ class PublicRouteSmokeTest extends WebTestCase
         yield 'Reset password request' => ['/reset-password'];
         yield 'TIH Search' => ['/tih/tih_search'];
         yield 'Digital consulting' => ['/digital/consulting'];
+        yield 'Newsletter confirmation' => ['/newsletter/confirmation'];
     }
 
     /**
@@ -69,6 +70,15 @@ class PublicRouteSmokeTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
+    }
+
+    public function testNewsletterConfirmationPageHasConfirmationAndHomeLink(): void
+    {
+        $this->client->request('GET', '/newsletter/confirmation');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Votre inscription est confirmée !');
+        $this->assertSelectorExists('a[href="/"]');
     }
 
     public function testLoginPageHasForm(): void
