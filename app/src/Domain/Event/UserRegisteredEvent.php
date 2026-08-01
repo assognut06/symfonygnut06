@@ -8,7 +8,7 @@ final class UserRegisteredEvent
         public readonly int $userId,
         public readonly string $email,
         public readonly bool $isTih,
-        public readonly \DateTimeImmutable $occurredAt = new \DateTimeImmutable()
+        public readonly \DateTimeImmutable $occurredAt = new \DateTimeImmutable(),
     ) {
     }
 }

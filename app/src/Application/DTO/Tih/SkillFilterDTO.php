@@ -7,12 +7,13 @@ final readonly class SkillFilterDTO
     public function __construct(
         public int $id,
         public string $name,
-        public int $count
+        public int $count,
     ) {
     }
-/**
- * @param array{id:int,name:string,count:int} $data
- */
+
+    /**
+     * @param array{id:int,name:string,count:int} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(

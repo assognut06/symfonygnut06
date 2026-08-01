@@ -29,7 +29,7 @@ class AdminTihController extends AbstractController
             ->leftJoin('t.user', 'u')->addSelect('u')
             ->orderBy('t.id', 'DESC');
 
-        if ($q !== '') {
+        if ('' !== $q) {
             $needle = '%'.mb_strtolower($q).'%';
 
             // Recherche sur toute la table TIH et sur l'email du compte utilisateur lie.
@@ -55,12 +55,12 @@ class AdminTihController extends AbstractController
             ->getResult();
 
         return $this->render('admin/admin_tih/index.html.twig', [
-            'tihs'      => $tihs,
-            'page'      => $page,
-            'pages'     => $pages,
-            'total'     => $total,
+            'tihs' => $tihs,
+            'page' => $page,
+            'pages' => $pages,
+            'total' => $total,
             'page_size' => self::PAGE_SIZE,
-            'query'     => $q,
+            'query' => $q,
         ]);
     }
 
@@ -104,6 +104,7 @@ class AdminTihController extends AbstractController
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('validate_tih'.$id, $token)) {
             $this->addFlash('danger', 'Token de sécurité invalide.');
+
             return $this->redirectToRoute('app_admin_tih');
         }
 
@@ -124,6 +125,7 @@ class AdminTihController extends AbstractController
         }
 
         $this->addFlash('success', 'Profil TIH validé avec succès.');
+
         return $this->redirectToRoute('app_admin_tih');
     }
 
@@ -132,12 +134,12 @@ class AdminTihController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         TihApplicationWorkflowService $workflow,
-        int $id
-    ): Response
-    {
+        int $id,
+    ): Response {
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('refuse_tih'.$id, $token)) {
             $this->addFlash('danger', 'Token de sécurité invalide.');
+
             return $this->redirectToRoute('app_admin_tih');
         }
 
@@ -210,14 +212,16 @@ class AdminTihController extends AbstractController
     {
         $method = $request->request->get('_method', 'POST');
 
-        if ($method !== 'DELETE') {
+        if ('DELETE' !== $method) {
             $this->addFlash('danger', 'Méthode non autorisée pour cette action.');
+
             return $this->redirectToRoute('app_admin_tih');
         }
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('delete_tih'.$id, $token)) {
             $this->addFlash('danger', 'Token de sécurité invalide.');
+
             return $this->redirectToRoute('app_admin_tih');
         }
 
@@ -230,6 +234,7 @@ class AdminTihController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'TIH supprimé avec succès.');
+
         return $this->redirectToRoute('app_admin_tih');
     }
 
@@ -248,13 +253,13 @@ class AdminTihController extends AbstractController
         string $storedFilename,
         string $uploadDirectory,
         string $legacyDirectory,
-        string $notFoundMessage
+        string $notFoundMessage,
     ): BinaryFileResponse {
         $fileName = basename($storedFilename);
-        $filePath = rtrim($uploadDirectory, '/') . '/' . $fileName;
+        $filePath = rtrim($uploadDirectory, '/').'/'.$fileName;
 
         if (!is_file($filePath)) {
-            $legacyPath = rtrim((string) $this->getParameter('kernel.project_dir'), '/') . '/' . trim($legacyDirectory, '/') . '/' . $fileName;
+            $legacyPath = rtrim((string) $this->getParameter('kernel.project_dir'), '/').'/'.trim($legacyDirectory, '/').'/'.$fileName;
 
             if (is_file($legacyPath)) {
                 $filePath = $legacyPath;

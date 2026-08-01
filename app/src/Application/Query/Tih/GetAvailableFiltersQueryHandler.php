@@ -8,8 +8,9 @@ use App\Repository\TihRepository;
 class GetAvailableFiltersQueryHandler
 {
     public function __construct(
-        private TihRepository $tihRepository
-    ) {}
+        private TihRepository $tihRepository,
+    ) {
+    }
 
     public function __invoke(GetAvailableFiltersQuery $query): AvailableFiltersDTO
     {

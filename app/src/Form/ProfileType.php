@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @extends AbstractType<User>
  */
@@ -27,7 +28,7 @@ class ProfileType extends AbstractType
                     'aria-describedby' => 'firstName-error',
                 ],
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label',
                 ],
                 'constraints' => [
                     new Assert\NotBlank([
@@ -48,7 +49,7 @@ class ProfileType extends AbstractType
                     'aria-describedby' => 'lastName-error',
                 ],
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label',
                 ],
                 'constraints' => [
                     new Assert\NotBlank([
@@ -69,7 +70,7 @@ class ProfileType extends AbstractType
                     'aria-describedby' => 'address-error',
                 ],
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label',
                 ],
                 'constraints' => [
                     new Assert\NotBlank([
@@ -90,7 +91,7 @@ class ProfileType extends AbstractType
                     'aria-describedby' => 'city-error',
                 ],
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label',
                 ],
                 'constraints' => [
                     new Assert\NotBlank([
@@ -112,12 +113,12 @@ class ProfileType extends AbstractType
                     'aria-describedby' => 'zipCode-help zipCode-error',
                 ],
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label',
                 ],
                 'help' => 'Format : 5 chiffres (ex: 06000)',
                 'help_attr' => [
                     'class' => 'form-text',
-                    'id' => 'zipCode-help'
+                    'id' => 'zipCode-help',
                 ],
                 'constraints' => [
                     new Assert\NotBlank([
@@ -140,12 +141,12 @@ class ProfileType extends AbstractType
                     'aria-describedby' => 'phone-help phone-error',
                 ],
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label',
                 ],
                 'help' => 'Format : 06 12 34 56 78 ou +33 6 12 34 56 78',
                 'help_attr' => [
                     'class' => 'form-text',
-                    'id' => 'phone-help'
+                    'id' => 'phone-help',
                 ],
                 'constraints' => [
                     new Assert\Length([

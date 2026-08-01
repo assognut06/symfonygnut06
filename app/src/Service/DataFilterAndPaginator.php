@@ -1,14 +1,14 @@
 <?php
-namespace App\Service;
 
-use DateTime;
+namespace App\Service;
 
 class DataFilterAndPaginator
 {
     /**
-    * @param array<mixed> $data
-    * @return array<mixed>
-    */
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
+     */
     public function filterAndSortData(array $data): array
     {
         $filteredData = array_filter($data, function ($entry) {
@@ -16,28 +16,31 @@ class DataFilterAndPaginator
                 // La clé 'endDate' n'existe pas, exclure cet élément
                 return false;
             }
-            if (!isset($entry['state']) || $entry['state'] !== 'Public') {
+            if (!isset($entry['state']) || 'Public' !== $entry['state']) {
                 // La clé 'state' n'existe pas, ou différent de Public exclure cet élément
                 return false;
             }
-            $endDate = DateTime::createFromFormat(DateTime::ISO8601, $entry['endDate']);
-            $now = new DateTime();
+            $endDate = \DateTime::createFromFormat(\DateTime::ISO8601, $entry['endDate']);
+            $now = new \DateTime();
+
             return $endDate > $now;
         });
-    
+
         usort($filteredData, function ($a, $b) {
-            $dateA = DateTime::createFromFormat(DateTime::ISO8601, $a['endDate']);
-            $dateB = DateTime::createFromFormat(DateTime::ISO8601, $b['endDate']);
+            $dateA = \DateTime::createFromFormat(\DateTime::ISO8601, $a['endDate']);
+            $dateB = \DateTime::createFromFormat(\DateTime::ISO8601, $b['endDate']);
+
             return $dateA <=> $dateB;
         });
-    
+
         return $filteredData;
     }
 
     /**
-    * @param array<mixed> $data
-    * @return array<mixed>
-    */
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
+     */
     public function filterMemberShipSortData(array $data): array
     {
         $filteredData = array_filter($data, function ($entry) {
@@ -45,23 +48,27 @@ class DataFilterAndPaginator
                 // La clé 'endDate' n'existe pas inclure cet élément
                 return true;
             }
-            $endDate = DateTime::createFromFormat(DateTime::ISO8601, $entry['endDate']);
-            $now = new DateTime();
+            $endDate = \DateTime::createFromFormat(\DateTime::ISO8601, $entry['endDate']);
+            $now = new \DateTime();
+
             return $endDate > $now;
         });
-    
+
         usort($filteredData, function ($a, $b) {
-            $dateA = DateTime::createFromFormat(DateTime::ISO8601, $a['endDate']);
-            $dateB = DateTime::createFromFormat(DateTime::ISO8601, $b['endDate']);
+            $dateA = \DateTime::createFromFormat(\DateTime::ISO8601, $a['endDate']);
+            $dateB = \DateTime::createFromFormat(\DateTime::ISO8601, $b['endDate']);
+
             return $dateA <=> $dateB;
         });
-    
+
         return $filteredData;
     }
+
     /**
-    * @param array<mixed> $data
-    * @return array{items:array<mixed>,totalItems:int,totalPages:float,currentPage:int}
-    */
+     * @param array<mixed> $data
+     *
+     * @return array{items:array<mixed>,totalItems:int,totalPages:float,currentPage:int}
+     */
     public function paginateData(array $data, int $page, int $itemsPerPage = 6): array
     {
         $totalItems = count($data);

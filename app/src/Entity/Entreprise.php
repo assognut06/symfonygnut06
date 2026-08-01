@@ -3,13 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\EntrepriseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Attribute as Vich;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use App\Entity\EntrepriseTihMessage;
-
 
 #[ORM\Entity(repositoryClass: EntrepriseRepository::class)]
 #[Vich\Uploadable]
@@ -42,7 +40,7 @@ class Entreprise
     private ?string $telephone = null;
 
     /**
-     *  @var Collection<int,EntrepriseTihMessage>
+     * @var Collection<int,EntrepriseTihMessage>
      */
     #[ORM\OneToMany(mappedBy: 'entreprise', targetEntity: EntrepriseTihMessage::class, cascade: ['persist', 'remove'])]
     private Collection $messages;
@@ -142,8 +140,9 @@ class Entreprise
 
         return $this;
     }
+
     /**
-     *  @return Collection<int,EntrepriseTihMessage>
+     * @return Collection<int,EntrepriseTihMessage>
      */
     public function getMessages(): Collection
     {

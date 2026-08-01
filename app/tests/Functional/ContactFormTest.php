@@ -37,9 +37,9 @@ class ContactFormTest extends WebTestCase
         $this->assertSelectorExists('iframe.contact-map-frame');
         $this->assertSelectorNotExists(
             'iframe.contact-map-frame[width], '
-            . 'iframe.contact-map-frame[height], '
-            . 'iframe.contact-map-frame[frameborder], '
-            . 'iframe.contact-map-frame[style]'
+            .'iframe.contact-map-frame[height], '
+            .'iframe.contact-map-frame[frameborder], '
+            .'iframe.contact-map-frame[style]'
         );
     }
 

@@ -17,7 +17,8 @@ class HelloAssoFormNotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve les notifications par slug d'organisation
+     * Trouve les notifications par slug d'organisation.
+     *
      * @return array<HelloAssoFormNotification>
      */
     public function findByOrganizationSlug(string $organizationSlug): array
@@ -31,7 +32,8 @@ class HelloAssoFormNotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve les notifications récentes
+     * Trouve les notifications récentes.
+     *
      * @return array<HelloAssoFormNotification>
      */
     public function findRecentNotifications(int $limit = 10): array
@@ -44,7 +46,8 @@ class HelloAssoFormNotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve les notifications par type d'événement
+     * Trouve les notifications par type d'événement.
+     *
      * @return array<HelloAssoFormNotification>
      */
     public function findByEventType(string $eventType): array
@@ -58,7 +61,7 @@ class HelloAssoFormNotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve les notifications par slug de formulaire
+     * Trouve les notifications par slug de formulaire.
      */
     public function findByFormSlug(string $formSlug): ?HelloAssoFormNotification
     {
@@ -72,7 +75,7 @@ class HelloAssoFormNotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Compte les notifications par organisation
+     * Compte les notifications par organisation.
      */
     public function countByOrganization(string $organizationSlug): int
     {
@@ -85,7 +88,8 @@ class HelloAssoFormNotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve les formulaires actifs (état Public)
+     * Trouve les formulaires actifs (état Public).
+     *
      * @return array<HelloAssoFormNotification>
      */
     public function findActiveForms(): array

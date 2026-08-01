@@ -12,5 +12,6 @@ class TihContactDTO
         public string $email = '',
         public string $subject = '',
         public string $message = '',
-    ) {}
+    ) {
+    }
 }

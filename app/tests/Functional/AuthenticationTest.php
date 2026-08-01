@@ -26,11 +26,11 @@ class AuthenticationTest extends WebTestCase
         );
         $this->assertSelectorExists(
             '#connexion-form[aria-describedby~="required-fields-info"] '
-            . '#username[required][aria-required="true"][aria-describedby~="username-error"]'
+            .'#username[required][aria-required="true"][aria-describedby~="username-error"]'
         );
         $this->assertSelectorExists(
             '#connexion-form[aria-describedby~="required-fields-info"] '
-            . '#password[required][aria-required="true"][aria-describedby~="password-error"]'
+            .'#password[required][aria-required="true"][aria-describedby~="password-error"]'
         );
         $this->assertSelectorExists('#username-error.invalid-feedback[role="alert"]');
         $this->assertSelectorExists('#password-error.invalid-feedback[role="alert"]');
@@ -102,7 +102,7 @@ class AuthenticationTest extends WebTestCase
 
         $response = $this->client->getResponse();
         $this->assertTrue(
-            $response->isRedirection() || $response->getStatusCode() === 500,
+            $response->isRedirection() || 500 === $response->getStatusCode(),
             'Outlook OAuth should redirect or fail gracefully without Azure config'
         );
     }

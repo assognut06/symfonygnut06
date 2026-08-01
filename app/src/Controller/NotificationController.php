@@ -1,21 +1,22 @@
 <?php
+
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\IpUtils;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Entity\Payers;
-use App\Entity\HelloAssoFormNotification;
 use App\Entity\AssoRecommander;
+use App\Entity\HelloAssoFormNotification;
+use App\Entity\Payers;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\IpUtils;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class NotificationController extends AbstractController
 {
@@ -49,18 +50,19 @@ class NotificationController extends AbstractController
         try {
             $securityResponse = $this->validateWebhookRequest($request, $content);
 
-            if ($securityResponse !== null) {
+            if (null !== $securityResponse) {
                 return $securityResponse;
             }
 
             // ✅ VALIDATION DU CONTENU JSON
             $data = json_decode($content, true);
-    
-            if ($data === null || json_last_error() !== JSON_ERROR_NONE) {
+
+            if (null === $data || JSON_ERROR_NONE !== json_last_error()) {
                 $this->logger->error('Invalid JSON received', [
                     'content' => substr($content, 0, 500), // Limiter les logs
-                    'json_error' => json_last_error_msg()
+                    'json_error' => json_last_error_msg(),
                 ]);
+
                 return new JsonResponse(['error' => 'Invalid JSON'], Response::HTTP_BAD_REQUEST);
             }
 
@@ -90,12 +92,12 @@ class NotificationController extends AbstractController
                 'organizationSlug' => $data['data']['organizationSlug'] ?? null,
                 'formSlug' => $data['data']['formSlug'] ?? null,
                 'idempotency_key' => $idempotencyKey,
-                'timestamp' => date('Y-m-d H:i:s')
+                'timestamp' => date('Y-m-d H:i:s'),
             ]);
 
             // ✅ TRAITEMENT PRINCIPAL : Notification HelloAsso
             $this->processHelloAssoNotification($data);
-    
+
             // ✅ TRAITEMENT CONDITIONNEL : Payers (si données présentes)
             if (isset($data['data']['payer'])) {
                 $this->processPayerData($data);
@@ -107,18 +109,17 @@ class NotificationController extends AbstractController
             }
 
             $this->em->flush();
-    
+
             // ✅ ENVOI D'EMAIL DE NOTIFICATION
             $this->sendNotificationEmail($mailer, $data);
-    
-            return new JsonResponse([
-                'status' => 'success', 
-                'message' => 'Notification processed successfully',
-                'eventType' => $data['eventType'] ?? null
-            ]);
 
+            return new JsonResponse([
+                'status' => 'success',
+                'message' => 'Notification processed successfully',
+                'eventType' => $data['eventType'] ?? null,
+            ]);
         } catch (\Exception $e) {
-            if ($idempotencyKey !== null) {
+            if (null !== $idempotencyKey) {
                 $this->cache->deleteItem($this->getReplayCacheKey($idempotencyKey));
             }
 
@@ -127,11 +128,11 @@ class NotificationController extends AbstractController
                 'eventType' => $data['eventType'] ?? null,
                 'idempotency_key' => $idempotencyKey,
             ]);
-            
+
             return new JsonResponse([
                 'status' => 'error',
                 'message' => 'Internal server error',
-                'error_code' => 'CALLBACK_ERROR'
+                'error_code' => 'CALLBACK_ERROR',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -193,13 +194,13 @@ class NotificationController extends AbstractController
     {
         $allowedIps = $this->getAllowedIps();
 
-        if ($allowedIps === []) {
+        if ([] === $allowedIps) {
             return false;
         }
 
         $clientIp = $request->getClientIp();
 
-        return $clientIp !== null && IpUtils::checkIp($clientIp, $allowedIps);
+        return null !== $clientIp && IpUtils::checkIp($clientIp, $allowedIps);
     }
 
     /**
@@ -234,7 +235,7 @@ class NotificationController extends AbstractController
     {
         $timestamp = $request->headers->get($this->webhookTimestampHeader);
 
-        if ($timestamp === null || trim($timestamp) === '') {
+        if (null === $timestamp || '' === trim($timestamp)) {
             return true;
         }
 
@@ -247,13 +248,13 @@ class NotificationController extends AbstractController
 
     private function isSignatureValid(Request $request, string $content): bool
     {
-        if (trim($this->webhookSignatureSecret) === '') {
+        if ('' === trim($this->webhookSignatureSecret)) {
             return true;
         }
 
         $signatureHeader = (string) $request->headers->get($this->webhookSignatureHeader, '');
 
-        if ($signatureHeader === '') {
+        if ('' === $signatureHeader) {
             return false;
         }
 
@@ -261,7 +262,7 @@ class NotificationController extends AbstractController
         $timestamp = $request->headers->get($this->webhookTimestampHeader);
         $payloadsToSign = array_filter([
             $content,
-            $timestamp ? $timestamp . '.' . $content : null,
+            $timestamp ? $timestamp.'.'.$content : null,
         ]);
 
         foreach ($payloadsToSign as $payload) {
@@ -301,16 +302,16 @@ class NotificationController extends AbstractController
             ?? $this->getNestedString($data, ['data', 'order', 'id'])
             ?? $this->getNestedString($data, ['data', 'payment', 'id']);
 
-        if ($externalId !== null) {
-            return hash('sha256', 'helloasso-event:' . $externalId);
+        if (null !== $externalId) {
+            return hash('sha256', 'helloasso-event:'.$externalId);
         }
 
-        return hash('sha256', 'helloasso-payload:' . $content);
+        return hash('sha256', 'helloasso-payload:'.$content);
     }
 
     /**
      * @param array<string> $path
-     * @param array<mixed> $data
+     * @param array<mixed>  $data
      */
     private function getNestedString(array $data, array $path): ?string
     {
@@ -328,7 +329,7 @@ class NotificationController extends AbstractController
             return (string) $value;
         }
 
-        return is_string($value) && $value !== '' ? $value : null;
+        return is_string($value) && '' !== $value ? $value : null;
     }
 
     /**
@@ -336,6 +337,7 @@ class NotificationController extends AbstractController
      * Les valeurs propres au paiement restent prioritaires (id, état, montant, etc.).
      *
      * @param array{eventType?: string, data?: array<string, mixed>} $payload
+     *
      * @return array{eventType?: string, data?: array<string, mixed>}
      */
     private function normalizeHelloAssoPayload(array $payload): array
@@ -374,11 +376,12 @@ class NotificationController extends AbstractController
 
     private function getReplayCacheKey(string $idempotencyKey): string
     {
-        return 'helloasso_webhook_seen_' . $idempotencyKey;
+        return 'helloasso_webhook_seen_'.$idempotencyKey;
     }
 
     /**
-     * ✅ MÉTHODE PRINCIPALE : Traitement des notifications HelloAsso
+     * ✅ MÉTHODE PRINCIPALE : Traitement des notifications HelloAsso.
+     *
      * @param array{eventType?: string, data?: array<string, mixed>} $data
      */
     private function processHelloAssoNotification(array $data): void
@@ -390,22 +393,22 @@ class NotificationController extends AbstractController
 
             // Traitement spécifique selon le type d'événement
             $eventType = $data['eventType'] ?? 'unknown';
-            
+
             switch ($eventType) {
                 case 'Form':
                 case 'FormPublished':
                 case 'FormUpdated':
                     $this->processFormEvent($data['data'] ?? [], $notification);
                     break;
-                    
+
                 case 'Order':
                     $this->processOrderEvent($data['data'] ?? [], $notification);
                     break;
-                    
+
                 case 'Payment':
                     $this->processPaymentEvent($data['data'] ?? [], $notification);
                     break;
-                    
+
                 default:
                     $this->logger->info('Unknown event type processed', ['eventType' => $eventType]);
             }
@@ -415,21 +418,21 @@ class NotificationController extends AbstractController
                 'eventType' => $notification->getEventType(),
                 'formSlug' => $notification->getFormSlug(),
                 'organizationSlug' => $notification->getOrganizationSlug(),
-                'tierCount' => $notification->getTierCount()
+                'tierCount' => $notification->getTierCount(),
             ]);
-
         } catch (\Exception $e) {
             $this->logger->error('Error processing HelloAsso notification', [
                 'error' => $e->getMessage(),
                 'eventType' => $data['eventType'] ?? 'unknown',
-                'data_keys' => array_keys($data)
+                'data_keys' => array_keys($data),
             ]);
             throw $e;
         }
     }
 
     /**
-     * ✅ TRAITEMENT DES ÉVÉNEMENTS DE FORMULAIRE
+     * ✅ TRAITEMENT DES ÉVÉNEMENTS DE FORMULAIRE.
+     *
      * @param array{organizationSlug?: string, formSlug?: string, organizationName?: string, organizationLogo?: string, bannerPublicUrl?: string, url?: string, description?: string, activityType?: string, placeCity?: string, placeZipCode?: string, fiscalReceiptEligibility?: bool, fiscalReceiptIssuanceEnabled?: bool} $formData
      */
     private function processFormEvent(array $formData, HelloAssoFormNotification $notification): void
@@ -440,7 +443,6 @@ class NotificationController extends AbstractController
 
         $organizationSlug = $formData['organizationSlug'];
         try {
-            
             // Chercher ou créer l'association
             $asso = $this->em->getRepository(AssoRecommander::class)
                 ->findOneBy(['organizationSlug' => $organizationSlug]);
@@ -456,23 +458,23 @@ class NotificationController extends AbstractController
             // Remplir avec les données disponibles
             $this->updateAssoFromFormData($asso, $formData);
             $this->em->persist($asso);
-            
+
             $this->logger->info('Organization processed from form event', [
                 'organizationSlug' => $organizationSlug,
                 'isNew' => $isNew,
-                'formSlug' => $formData['formSlug'] ?? null
+                'formSlug' => $formData['formSlug'] ?? null,
             ]);
-
         } catch (\Exception $e) {
             $this->logger->error('Error processing form event', [
                 'error' => $e->getMessage(),
-                'organizationSlug' => $organizationSlug
+                'organizationSlug' => $organizationSlug,
             ]);
         }
     }
 
     /**
-     * ✅ TRAITEMENT DES ÉVÉNEMENTS DE COMMANDE
+     * ✅ TRAITEMENT DES ÉVÉNEMENTS DE COMMANDE.
+     *
      * @param array{id?: int|string, amount?: int|float|string, items?: list<mixed>} $orderData
      */
     private function processOrderEvent(array $orderData, HelloAssoFormNotification $notification): void
@@ -480,7 +482,7 @@ class NotificationController extends AbstractController
         $this->logger->info('Processing order event', [
             'orderId' => $orderData['id'] ?? null,
             'amount' => $orderData['amount'] ?? null,
-            'itemCount' => isset($orderData['items']) ? count($orderData['items']) : 0
+            'itemCount' => isset($orderData['items']) ? count($orderData['items']) : 0,
         ]);
 
         // Traitement spécifique aux commandes si nécessaire
@@ -488,7 +490,8 @@ class NotificationController extends AbstractController
     }
 
     /**
-     * ✅ TRAITEMENT DES ÉVÉNEMENTS DE PAIEMENT
+     * ✅ TRAITEMENT DES ÉVÉNEMENTS DE PAIEMENT.
+     *
      * @param array{id?: int|string, state?: string, amount?: int|float|string} $paymentData
      */
     private function processPaymentEvent(array $paymentData, HelloAssoFormNotification $notification): void
@@ -496,14 +499,15 @@ class NotificationController extends AbstractController
         $this->logger->info('Processing payment event', [
             'paymentId' => $paymentData['id'] ?? null,
             'state' => $paymentData['state'] ?? null,
-            'amount' => $paymentData['amount'] ?? null
+            'amount' => $paymentData['amount'] ?? null,
         ]);
 
         // Traitement spécifique aux paiements si nécessaire
     }
 
     /**
-     * ✅ TRAITEMENT DES DONNÉES PAYER
+     * ✅ TRAITEMENT DES DONNÉES PAYER.
+     *
      * @param array{eventType?: string, data?: array{payer?: array{email?: string, firstName?: string, lastName?: string, address?: string, city?: string, zipCode?: string, country?: string, company?: string}, state?: string}} $data
      */
     private function processPayerData(array $data): void
@@ -511,20 +515,21 @@ class NotificationController extends AbstractController
         $payerData = $data['data']['payer'];
         $eventType = $data['eventType'];
 
-        if ($eventType === 'Order') {
+        if ('Order' === $eventType) {
             $this->verifyPayer($payerData);
-        } elseif ($eventType === 'Payment') {
+        } elseif ('Payment' === $eventType) {
             $this->logger->info('Payment event for payer', [
                 'email' => $payerData['email'] ?? 'unknown',
-                'paymentState' => $data['data']['state'] ?? null
+                'paymentState' => $data['data']['state'] ?? null,
             ]);
         }
     }
 
     /**
-     * ✅ TRAITEMENT DES ITEMS DE COMMANDE
+     * ✅ TRAITEMENT DES ITEMS DE COMMANDE.
+     *
      * @param list<array{name?: string, amount?: int|float|string, type?: string, state?: string}> $items
-     */    
+     */
     private function processOrderItems(array $items): void
     {
         foreach ($items as $item) {
@@ -532,16 +537,17 @@ class NotificationController extends AbstractController
                 'name' => $item['name'] ?? 'unknown',
                 'amount' => $item['amount'] ?? 0,
                 'type' => $item['type'] ?? 'unknown',
-                'state' => $item['state'] ?? 'unknown'
+                'state' => $item['state'] ?? 'unknown',
             ]);
-            
+
             // Traitement spécifique des items si nécessaire
             // Par exemple, gestion des stocks, etc.
         }
     }
 
     /**
-     * ✅ MISE À JOUR ASSO DEPUIS DONNÉES FORMULAIRE
+     * ✅ MISE À JOUR ASSO DEPUIS DONNÉES FORMULAIRE.
+     *
      * @param array{bannerPublicUrl:?string,fiscalReceiptEligibility:?bool,fiscalReceiptIssuanceEnabled:?bool,activityType:?string,organizationLogo:?string,organizationName:?string,placeCity:?string,placeZipCode:?string,description:?string,url:?string} $formData
      */
     private function updateAssoFromFormData(AssoRecommander $asso, array $formData): void
@@ -557,21 +563,23 @@ class NotificationController extends AbstractController
             'zipCode' => $formData['placeZipCode'] ?? null,
             'fiscalReceiptEligibility' => $formData['fiscalReceiptEligibility'] ?? null,
             'fiscalReceiptIssuanceEnabled' => $formData['fiscalReceiptIssuanceEnabled'] ?? null,
-            'category' => null
+            'category' => null,
         ];
         $asso->fillFromApiData($apiData);
     }
 
     /**
-     * ✅ MÉTHODE EXISTANTE AMÉLIORÉE : Verification des payers
+     * ✅ MÉTHODE EXISTANTE AMÉLIORÉE : Verification des payers.
+     *
      * @param array{firstName:?string,lastName:?string,address:?string,city:?string,zipCode:?string,country:?string,company:?string,email:?string} $data
      */
     public function verifyPayer(array $data): void
     {
         $payerEmail = $data['email'] ?? null;
-        
+
         if (!$payerEmail) {
             $this->logger->warning('Payer data received without email');
+
             return;
         }
 
@@ -584,7 +592,7 @@ class NotificationController extends AbstractController
                 $this->updatePayer($payer, $data);
                 $this->logger->info('Payer updated', [
                     'email' => $payerEmail,
-                    'id' => $payer->getId()
+                    'id' => $payer->getId(),
                 ]);
             } else {
                 // Création d'un nouveau payer
@@ -593,7 +601,7 @@ class NotificationController extends AbstractController
                 $payer->setCreatedAt(new \DateTimeImmutable());
                 $this->updatePayer($payer, $data);
                 $this->em->persist($payer);
-                
+
                 $this->logger->info('New payer created', ['email' => $payerEmail]);
             }
 
@@ -601,32 +609,48 @@ class NotificationController extends AbstractController
         } catch (\Exception $e) {
             $this->logger->error('Error in verifyPayer', [
                 'email' => $payerEmail,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
     }
 
     /**
-     * ✅ MÉTHODE EXISTANTE : Mise à jour des données payer
+     * ✅ MÉTHODE EXISTANTE : Mise à jour des données payer.
+     *
      * @param array{firstName:?string,lastName:?string,address:?string,city:?string,zipCode:?string,country:?string,company:?string} $data
      */
     private function updatePayer(Payers $payer, array $data): void
     {
         // Mise à jour sécurisée des champs
-        if (isset($data['firstName'])) $payer->setFirstName($data['firstName']);
-        if (isset($data['lastName'])) $payer->setLastName($data['lastName']);
-        if (isset($data['address'])) $payer->setAddress($data['address']);
-        if (isset($data['city'])) $payer->setCity($data['city']);
-        if (isset($data['zipCode'])) $payer->setZipCode($data['zipCode']);
-        if (isset($data['country'])) $payer->setCountry($data['country']);
-        if (isset($data['company'])) $payer->setCompany($data['company']);
-        
+        if (isset($data['firstName'])) {
+            $payer->setFirstName($data['firstName']);
+        }
+        if (isset($data['lastName'])) {
+            $payer->setLastName($data['lastName']);
+        }
+        if (isset($data['address'])) {
+            $payer->setAddress($data['address']);
+        }
+        if (isset($data['city'])) {
+            $payer->setCity($data['city']);
+        }
+        if (isset($data['zipCode'])) {
+            $payer->setZipCode($data['zipCode']);
+        }
+        if (isset($data['country'])) {
+            $payer->setCountry($data['country']);
+        }
+        if (isset($data['company'])) {
+            $payer->setCompany($data['company']);
+        }
+
         $payer->setUpdatedAt(new \DateTime());
     }
 
     /**
-     * ✅ ENVOI D'EMAIL DE NOTIFICATION
+     * ✅ ENVOI D'EMAIL DE NOTIFICATION.
+     *
      * @param array{eventType:?string,data:?array{organizationName:?string,formSlug:?string,title:?string,payer:?array{firstName:?string,lastName:?string,email:?string}}} $data
      */
     private function sendNotificationEmail(MailerInterface $mailer, array $data): void
@@ -635,10 +659,10 @@ class NotificationController extends AbstractController
             $eventType = $data['eventType'] ?? 'Unknown';
             $organizationName = $data['data']['organizationName'] ?? 'Organisation inconnue';
             $formSlug = $data['data']['formSlug'] ?? 'N/A';
-            
+
             // Email HTML formaté
             $htmlContent = $this->generateEmailHtml($data);
-            
+
             $email = (new Email())
                 ->from('gnut@gnut06.org')
                 ->to('gnut@gnut06.org')
@@ -647,22 +671,22 @@ class NotificationController extends AbstractController
                 ->text($this->generateEmailText($data));
 
             $mailer->send($email);
-            
+
             $this->logger->info('Notification email sent successfully', [
                 'eventType' => $eventType,
-                'organizationName' => $organizationName
+                'organizationName' => $organizationName,
             ]);
-            
         } catch (\Exception $e) {
             $this->logger->error('Failed to send notification email', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             // Ne pas faire échouer le traitement si l'email échoue
         }
     }
 
     /**
-     * ✅ GÉNÉRATION DU CONTENU HTML DE L'EMAIL
+     * ✅ GÉNÉRATION DU CONTENU HTML DE L'EMAIL.
+     *
      * @param array{eventType:?string,data:?array{organizationName:?string,formSlug:?string,title:?string,payer:?array{firstName:?string,lastName:?string,email:?string}}} $data
      */
     private function generateEmailHtml(array $data): string
@@ -670,25 +694,25 @@ class NotificationController extends AbstractController
         $eventType = $data['eventType'] ?? 'Unknown';
         $timestamp = date('d/m/Y H:i:s');
         $formData = $data['data'] ?? [];
-        
-        $html = "<h2>Notification HelloAsso - " . htmlspecialchars($eventType, ENT_QUOTES, 'UTF-8') . "</h2>";
-        $html .= "<p><strong>Reçue le :</strong> " . htmlspecialchars($timestamp, ENT_QUOTES, 'UTF-8') . "</p>";
-        
+
+        $html = '<h2>Notification HelloAsso - '.htmlspecialchars($eventType, ENT_QUOTES, 'UTF-8').'</h2>';
+        $html .= '<p><strong>Reçue le :</strong> '.htmlspecialchars($timestamp, ENT_QUOTES, 'UTF-8').'</p>';
+
         if (isset($formData['organizationName'])) {
-            $html .= "<p><strong>Organisation :</strong> " . htmlspecialchars((string) $formData['organizationName'], ENT_QUOTES, 'UTF-8') . "</p>";
+            $html .= '<p><strong>Organisation :</strong> '.htmlspecialchars((string) $formData['organizationName'], ENT_QUOTES, 'UTF-8').'</p>';
         }
-        
+
         if (isset($formData['formSlug'])) {
-            $html .= "<p><strong>Formulaire :</strong> " . htmlspecialchars((string) $formData['formSlug'], ENT_QUOTES, 'UTF-8') . "</p>";
+            $html .= '<p><strong>Formulaire :</strong> '.htmlspecialchars((string) $formData['formSlug'], ENT_QUOTES, 'UTF-8').'</p>';
         }
-        
+
         if (isset($formData['title'])) {
-            $html .= "<p><strong>Titre :</strong> " . htmlspecialchars((string) $formData['title'], ENT_QUOTES, 'UTF-8') . "</p>";
+            $html .= '<p><strong>Titre :</strong> '.htmlspecialchars((string) $formData['title'], ENT_QUOTES, 'UTF-8').'</p>';
         }
 
         if (isset($formData['payer'])) {
             $payer = $formData['payer'];
-            $html .= "<h3>Informations du payeur :</h3>";
+            $html .= '<h3>Informations du payeur :</h3>';
             $firstName = htmlspecialchars((string) ($payer['firstName'] ?? ''), ENT_QUOTES, 'UTF-8');
             $lastName = htmlspecialchars((string) ($payer['lastName'] ?? ''), ENT_QUOTES, 'UTF-8');
             $payerEmail = htmlspecialchars((string) ($payer['email'] ?? ''), ENT_QUOTES, 'UTF-8');
@@ -696,31 +720,32 @@ class NotificationController extends AbstractController
             $html .= "<p><strong>Email :</strong> {$payerEmail}</p>";
         }
 
-        $html .= "<hr><h3>Données complètes :</h3>";
-        $html .= "<pre>" . htmlspecialchars(json_encode($data, JSON_PRETTY_PRINT)) . "</pre>";
-        
+        $html .= '<hr><h3>Données complètes :</h3>';
+        $html .= '<pre>'.htmlspecialchars(json_encode($data, JSON_PRETTY_PRINT)).'</pre>';
+
         return $html;
     }
 
     /**
-     * ✅ GÉNÉRATION DU CONTENU TEXTE DE L'EMAIL
+     * ✅ GÉNÉRATION DU CONTENU TEXTE DE L'EMAIL.
+     *
      * @param array{eventType:?string,data:?array{organizationName:?string,formSlug:?string,title:?string,payer:?array{firstName:?string,lastName:?string,email:?string}}} $data
      */
     private function generateEmailText(array $data): string
     {
         $eventType = $data['eventType'] ?? 'Unknown';
         $timestamp = date('d/m/Y H:i:s');
-        
+
         $text = "Notification HelloAsso - {$eventType}\n";
         $text .= "Reçue le : {$timestamp}\n\n";
         $text .= "Données complètes :\n";
         $text .= print_r($data, true);
-        
+
         return $text;
     }
 
     /**
-     * ✅ ENDPOINT DE TEST (pour développement)
+     * ✅ ENDPOINT DE TEST (pour développement).
      */
     #[Route('/notification/test', name: 'notification_test', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -733,13 +758,13 @@ class NotificationController extends AbstractController
             'entities' => [
                 'HelloAssoFormNotification' => class_exists(HelloAssoFormNotification::class),
                 'AssoRecommander' => class_exists(AssoRecommander::class),
-                'Payers' => class_exists(Payers::class)
-            ]
+                'Payers' => class_exists(Payers::class),
+            ],
         ]);
     }
 
     /**
-     * ✅ ENDPOINT DE STATS (pour monitoring)
+     * ✅ ENDPOINT DE STATS (pour monitoring).
      */
     #[Route('/notification/stats', name: 'notification_stats', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -756,8 +781,8 @@ class NotificationController extends AbstractController
                     'notifications' => $notificationCount,
                     'payers' => $payerCount,
                     'associations' => $assoCount,
-                    'last_updated' => date('Y-m-d H:i:s')
-                ]
+                    'last_updated' => date('Y-m-d H:i:s'),
+                ],
             ]);
         } catch (\Exception $e) {
             $this->logger->error('Unable to load notification stats', [
@@ -766,13 +791,13 @@ class NotificationController extends AbstractController
 
             return new JsonResponse([
                 'status' => 'error',
-                'message' => 'Unable to load notification stats'
+                'message' => 'Unable to load notification stats',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    
-        /**
-     * 🐛 DEBUG: Voir toutes les données créées
+
+    /**
+     * 🐛 DEBUG: Voir toutes les données créées.
      */
     #[Route('/notification/debug-all', name: 'notification_debug_all', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -781,23 +806,23 @@ class NotificationController extends AbstractController
         $notification = $this->em
             ->getRepository(HelloAssoFormNotification::class)
             ->findOneBy(['organizationSlug' => 'gnut-test-association']);
-        
+
         if (!$notification) {
             return new JsonResponse(['error' => 'Notification not found'], 404);
         }
-        
+
         $result = [
             'notification' => [
                 'id' => $notification->getId()->toString(),
                 'title' => $notification->getTitle(),
                 'organization' => $notification->getOrganizationName(),
                 'form_slug' => $notification->getFormSlug(),
-                'event_type' => $notification->getEventType()
+                'event_type' => $notification->getEventType(),
             ],
             'tiers' => [],
-            'custom_fields' => []
+            'custom_fields' => [],
         ];
-        
+
         // Récupérer les tiers
         foreach ($notification->getTiers() as $tier) {
             $tierData = [
@@ -807,9 +832,9 @@ class NotificationController extends AbstractController
                 'price' => $tier->getPrice(),
                 'tier_type' => $tier->getTierType(),
                 'is_favorite' => $tier->getIsFavorite(),
-                'custom_fields' => []
+                'custom_fields' => [],
             ];
-            
+
             // Récupérer les champs personnalisés du tier
             foreach ($tier->getCustomFields() as $field) {
                 $fieldData = [
@@ -819,19 +844,19 @@ class NotificationController extends AbstractController
                     'type' => $field->getType(),
                     'required' => $field->getIsRequired(),
                     'values' => $field->getValues(),
-                    'has_options' => $field->hasOptions()
+                    'has_options' => $field->hasOptions(),
                 ];
-                
+
                 $tierData['custom_fields'][] = $fieldData;
                 $result['custom_fields'][] = $fieldData;
             }
-            
+
             $result['tiers'][] = $tierData;
         }
-        
+
         // ❌ ERREUR : JSON_PRETTY_PRINT au mauvais endroit
         // return new JsonResponse($result, 200, [], JSON_PRETTY_PRINT);
-        
+
         // ✅ CORRECTION : Retour normal
         return new JsonResponse($result);
     }

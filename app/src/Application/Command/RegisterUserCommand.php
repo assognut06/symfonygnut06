@@ -9,7 +9,7 @@ class RegisterUserCommand
     public function __construct(
         private readonly string $email,
         private readonly string $plainPassword,
-        private readonly UserType $userType
+        private readonly UserType $userType,
     ) {
     }
 

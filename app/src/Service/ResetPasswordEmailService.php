@@ -12,7 +12,8 @@ class ResetPasswordEmailService
     public function __construct(
         private MailerInterface $mailer,
         private string $fromEmail,
-    ) {}
+    ) {
+    }
 
     public function sendResetPasswordEmail(User $user, mixed $resetToken): void
     {

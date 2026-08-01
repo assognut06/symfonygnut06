@@ -24,7 +24,7 @@ class AdminCompetenceController extends AbstractController
         $qb = $em->getRepository(Competence::class)->createQueryBuilder('c')
             ->orderBy('c.id', 'DESC');
 
-        if ($q !== '') {
+        if ('' !== $q) {
             $qb->andWhere('LOWER(c.name) LIKE :q')
                ->setParameter('q', '%'.mb_strtolower($q).'%');
         }
@@ -40,10 +40,10 @@ class AdminCompetenceController extends AbstractController
 
         return $this->render('admin/admin_competence/index.html.twig', [
             'competences' => iterator_to_array($paginator),
-            'page'        => $page,
-            'pages'       => $pages,
-            'total'       => $total,
-            'query'       => $q,
+            'page' => $page,
+            'pages' => $pages,
+            'total' => $total,
+            'query' => $q,
         ]);
     }
 
@@ -53,12 +53,14 @@ class AdminCompetenceController extends AbstractController
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('add_competence', $token)) {
             $this->addFlash('danger', 'Token de sécurité invalide.');
+
             return $this->redirectToRoute('app_admin_competence');
         }
 
         $name = trim((string) $request->request->get('name', ''));
-        if ($name === '') {
+        if ('' === $name) {
             $this->addFlash('warning', 'Le nom de la compétence est requis.');
+
             return $this->redirectToRoute('app_admin_competence');
         }
 
@@ -66,6 +68,7 @@ class AdminCompetenceController extends AbstractController
         $existing = $em->getRepository(Competence::class)->findOneBy(['name' => $name]);
         if ($existing) {
             $this->addFlash('info', 'Cette compétence existe déjà.');
+
             return $this->redirectToRoute('app_admin_competence');
         }
 
@@ -74,6 +77,7 @@ class AdminCompetenceController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Compétence ajoutée avec succès.');
+
         return $this->redirectToRoute('app_admin_competence');
     }
 
@@ -81,14 +85,16 @@ class AdminCompetenceController extends AbstractController
     public function delete(Request $request, EntityManagerInterface $em, int $id): Response
     {
         $method = $request->request->get('_method', 'POST');
-        if ($method !== 'DELETE') {
+        if ('DELETE' !== $method) {
             $this->addFlash('danger', 'Méthode non autorisée pour cette action.');
+
             return $this->redirectToRoute('app_admin_competence');
         }
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('delete_competence'.$id, $token)) {
             $this->addFlash('danger', 'Token de sécurité invalide.');
+
             return $this->redirectToRoute('app_admin_competence');
         }
 
@@ -101,6 +107,7 @@ class AdminCompetenceController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Compétence supprimée avec succès.');
+
         return $this->redirectToRoute('app_admin_competence');
     }
 }

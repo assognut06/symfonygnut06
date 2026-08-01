@@ -3,10 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CompetenceRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CompetenceRepository::class)]
 #[UniqueEntity(fields: ['name'], message: 'Cette compétence existe déjà.')]
@@ -38,6 +36,7 @@ class Competence
     public function setName(string $name): static
     {
         $this->name = $name;
+
         return $this;
     }
 }

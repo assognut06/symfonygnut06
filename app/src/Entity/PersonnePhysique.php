@@ -20,6 +20,7 @@ class PersonnePhysique extends Donateur
     public function setDateNaissance(?\DateTimeInterface $date_naissance): static
     {
         $this->date_naissance = $date_naissance;
+
         return $this;
     }
 }

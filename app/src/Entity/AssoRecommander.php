@@ -88,6 +88,7 @@ class AssoRecommander
     public function setOrganizationSlug(string $organizationSlug): static
     {
         $this->organizationSlug = $organizationSlug;
+
         return $this;
     }
 
@@ -99,6 +100,7 @@ class AssoRecommander
     public function setBanner(?string $banner): static
     {
         $this->banner = $banner;
+
         return $this;
     }
 
@@ -110,6 +112,7 @@ class AssoRecommander
     public function setFiscalReceiptEligibility(?bool $fiscalReceiptEligibility): static
     {
         $this->fiscalReceiptEligibility = $fiscalReceiptEligibility;
+
         return $this;
     }
 
@@ -121,6 +124,7 @@ class AssoRecommander
     public function setFiscalReceiptIssuanceEnabled(?bool $fiscalReceiptIssuanceEnabled): static
     {
         $this->fiscalReceiptIssuanceEnabled = $fiscalReceiptIssuanceEnabled;
+
         return $this;
     }
 
@@ -132,6 +136,7 @@ class AssoRecommander
     public function setType(?string $type): static
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -143,6 +148,7 @@ class AssoRecommander
     public function setCategory(?string $category): static
     {
         $this->category = $category;
+
         return $this;
     }
 
@@ -154,6 +160,7 @@ class AssoRecommander
     public function setLogo(?string $logo): static
     {
         $this->logo = $logo;
+
         return $this;
     }
 
@@ -165,6 +172,7 @@ class AssoRecommander
     public function setName(?string $name): static
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -176,6 +184,7 @@ class AssoRecommander
     public function setCity(?string $city): static
     {
         $this->city = $city;
+
         return $this;
     }
 
@@ -187,6 +196,7 @@ class AssoRecommander
     public function setZipCode(?string $zipCode): static
     {
         $this->zipCode = $zipCode;
+
         return $this;
     }
 
@@ -198,6 +208,7 @@ class AssoRecommander
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -209,6 +220,7 @@ class AssoRecommander
     public function setUrl(?string $url): static
     {
         $this->url = $url;
+
         return $this;
     }
 
@@ -220,6 +232,7 @@ class AssoRecommander
     public function setCreatedAt(?\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -231,6 +244,7 @@ class AssoRecommander
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -242,11 +256,13 @@ class AssoRecommander
     public function setMeta(Meta $meta): static
     {
         $this->meta = $meta;
+
         return $this;
     }
 
     /**
-     * Remplit l'entité avec les données de l'API HelloAsso
+     * Remplit l'entité avec les données de l'API HelloAsso.
+     *
      * @param array{banner:?string,fiscalReceiptEligibility:?bool,fiscalReceiptIssuanceEnabled:?bool,type:?string,category:?string,logo:?string,name:?string,city:?string,zipCode:?string,description:?string,url:?string} $data
      */
     public function fillFromApiData(array $data): self
@@ -262,15 +278,15 @@ class AssoRecommander
         $this->zipCode = $this->truncateString($data['zipCode'] ?? null, 10);
         $this->description = $data['description'] ?? null;
         $this->url = $this->truncateString($data['url'] ?? null, 500);
-        
+
         // Mettre à jour les métadonnées
         $this->meta->touch();
-        
+
         return $this;
     }
 
     /**
-     * Met à jour automatiquement la date de modification
+     * Met à jour automatiquement la date de modification.
      */
     #[ORM\PreUpdate]
     public function updateTimestamp(): void
@@ -280,24 +296,24 @@ class AssoRecommander
     }
 
     /**
-     * Tronque une chaîne si elle dépasse la longueur maximale
+     * Tronque une chaîne si elle dépasse la longueur maximale.
      */
     private function truncateString(?string $value, int $maxLength): ?string
     {
-        if ($value === null) {
+        if (null === $value) {
             return null;
         }
 
-        return mb_strlen($value) > $maxLength 
-            ? mb_substr($value, 0, $maxLength) 
+        return mb_strlen($value) > $maxLength
+            ? mb_substr($value, 0, $maxLength)
             : $value;
     }
 
     /**
-     * Retourne une représentation string de l'entité
+     * Retourne une représentation string de l'entité.
      */
     public function __toString(): string
     {
-        return $this->name ?? $this->organizationSlug ?? 'Association #' . $this->id;
+        return $this->name ?? $this->organizationSlug ?? 'Association #'.$this->id;
     }
 }

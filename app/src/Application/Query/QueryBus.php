@@ -10,13 +10,14 @@ class QueryBus
      * @param ServiceLocator<mixed> $handlers
      */
     public function __construct(
-        private ServiceLocator $handlers
-    ) {}
+        private ServiceLocator $handlers,
+    ) {
+    }
 
     public function ask(Query $query): mixed
     {
         $handler = $this->handlers->get($query::class);
-        
+
         return $handler($query);
     }
 }

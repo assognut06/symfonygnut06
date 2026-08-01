@@ -40,7 +40,7 @@ class AdminUserTest extends WebTestCase
         $target = $this->createUser('promote-me@test.com');
         $userId = $target->getId();
 
-        $this->client->request('POST', '/admin/user/promote/' . $userId, [
+        $this->client->request('POST', '/admin/user/promote/'.$userId, [
             '_token' => $this->getAdminUserPromoteCsrfToken($userId),
         ]);
 
@@ -58,7 +58,7 @@ class AdminUserTest extends WebTestCase
         $target = $this->createAdmin('demote-me@test.com');
         $userId = $target->getId();
 
-        $this->client->request('POST', '/admin/user/promote/' . $userId, [
+        $this->client->request('POST', '/admin/user/promote/'.$userId, [
             '_token' => $this->getAdminUserPromoteCsrfToken($userId),
         ]);
 
@@ -77,7 +77,7 @@ class AdminUserTest extends WebTestCase
         $target = $this->createUser('delete-me@test.com');
         $userId = $target->getId();
 
-        $this->client->request('POST', '/admin/user/delete/' . $userId, [
+        $this->client->request('POST', '/admin/user/delete/'.$userId, [
             '_method' => 'DELETE',
             '_token' => $this->getAdminUserDeleteCsrfToken($userId),
         ]);
@@ -92,13 +92,13 @@ class AdminUserTest extends WebTestCase
         $target = $this->createUser('csrf-promote@test.com');
         $userId = $target->getId();
 
-        $this->client->request('POST', '/admin/user/promote/' . $userId, [
+        $this->client->request('POST', '/admin/user/promote/'.$userId, [
             '_token' => 'invalid_token',
         ]);
 
         $response = $this->client->getResponse();
         $this->assertTrue(
-            $response->getStatusCode() === 403 || $response->isRedirection(),
+            403 === $response->getStatusCode() || $response->isRedirection(),
             'Invalid CSRF must not promote the user'
         );
         $this->em->refresh($target);
@@ -111,7 +111,7 @@ class AdminUserTest extends WebTestCase
         $target = $this->createUser('csrf-delete@test.com');
         $userId = $target->getId();
 
-        $this->client->request('POST', '/admin/user/delete/' . $userId, [
+        $this->client->request('POST', '/admin/user/delete/'.$userId, [
             '_method' => 'DELETE',
             '_token' => 'invalid_token',
         ]);

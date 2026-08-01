@@ -50,15 +50,14 @@ class HelloAssoTierCustomField
     }
 
     /**
-     * ✅ MÉTHODE STATIQUE : Créer un champ personnalisé depuis des données d'API
-     * 
+     * ✅ MÉTHODE STATIQUE : Créer un champ personnalisé depuis des données d'API.
+     *
      * @param array{id:?int,label:?string,type:?string,isRequired:?bool,values:?array<mixed>} $data
      */
-
     public static function fromArray(array $data): self
     {
         $field = new self();
-        
+
         $field->setExternalId($data['id'] ?? null);
         $field->setLabel($data['label'] ?? null);
         $field->setType($data['type'] ?? null);
@@ -82,6 +81,7 @@ class HelloAssoTierCustomField
     public function setTier(?HelloAssoTier $tier): self
     {
         $this->tier = $tier;
+
         return $this;
     }
 
@@ -93,6 +93,7 @@ class HelloAssoTierCustomField
     public function setExternalId(?int $externalId): self
     {
         $this->externalId = $externalId;
+
         return $this;
     }
 
@@ -104,6 +105,7 @@ class HelloAssoTierCustomField
     public function setLabel(?string $label): self
     {
         $this->label = $label;
+
         return $this;
     }
 
@@ -115,6 +117,7 @@ class HelloAssoTierCustomField
     public function setType(?string $type): self
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -126,8 +129,10 @@ class HelloAssoTierCustomField
     public function setIsRequired(bool $isRequired): self
     {
         $this->isRequired = $isRequired;
+
         return $this;
     }
+
     /**
      * @return array<mixed>
      */
@@ -142,15 +147,16 @@ class HelloAssoTierCustomField
     public function setValues(?array $values): self
     {
         $this->values = $values;
+
         return $this;
     }
 
     /**
-     * ✅ MÉTHODES UTILITAIRES
+     * ✅ MÉTHODES UTILITAIRES.
      */
     public function hasOptions(): bool
     {
-        return !($this->values)&&!empty($this->values);
+        return !$this->values && !empty($this->values);
     }
 
     public function getOptionsAsString(): string
@@ -158,6 +164,7 @@ class HelloAssoTierCustomField
         if ($this->hasOptions()) {
             return implode(', ', $this->values);
         }
+
         return '';
     }
 
@@ -173,6 +180,6 @@ class HelloAssoTierCustomField
 
     public function __toString(): string
     {
-        return $this->label ?? 'Custom Field #' . ($this->externalId ??  $this->id);
+        return $this->label ?? 'Custom Field #'.($this->externalId ?? $this->id);
     }
 }

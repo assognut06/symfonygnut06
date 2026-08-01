@@ -5,11 +5,11 @@ namespace App\Application\DTO\Tih;
 final readonly class AvailableFiltersDTO
 {
     /**
-     * @param SkillFilterDTO[] $skills
-     * @param RegionFilterDTO[] $regions
-     * @param DepartementFilterDTO[] $departements
+     * @param SkillFilterDTO[]        $skills
+     * @param RegionFilterDTO[]       $regions
+     * @param DepartementFilterDTO[]  $departements
      * @param AvailabilityFilterDTO[] $availability
-     * @param RateTypeFilterDTO[] $rateTypes
+     * @param RateTypeFilterDTO[]     $rateTypes
      */
     public function __construct(
         public array $skills,

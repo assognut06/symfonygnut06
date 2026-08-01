@@ -8,6 +8,7 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+
 /**
  * @implements UserProviderInterface<User>
  */
@@ -21,7 +22,7 @@ final class GoogleUserProvider implements UserProviderInterface
     {
         $user = $this->userRepository->findOneBy(['email' => $identifier]);
 
-        if ($user === null) {
+        if (null === $user) {
             throw new UserNotFoundException(sprintf('User with email "%s" was not found.', $identifier));
         }
 
@@ -36,7 +37,7 @@ final class GoogleUserProvider implements UserProviderInterface
 
         $refreshedUser = $this->userRepository->find($user->getId());
 
-        if ($refreshedUser === null) {
+        if (null === $refreshedUser) {
             throw new UserNotFoundException(sprintf('User with identifier "%s" was not found.', $user->getUserIdentifier()));
         }
 

@@ -8,6 +8,7 @@ final readonly class SendTihContactCommand
 {
     public function __construct(
         public int $tihId,
-        public TihContactDTO $contactData
-    ) {}
+        public TihContactDTO $contactData,
+    ) {
+    }
 }

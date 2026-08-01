@@ -91,11 +91,11 @@ class NotificationWebhookTest extends WebTestCase
     {
         $content = $this->buildOrderPayload();
         $timestamp = (string) time();
-        $signature = hash_hmac('sha256', $timestamp . '.' . $content, $this->getWebhookSecret());
+        $signature = hash_hmac('sha256', $timestamp.'.'.$content, $this->getWebhookSecret());
 
         $this->postWebhook($content, [
             self::TIMESTAMP_HEADER => $timestamp,
-            self::SIGNATURE_HEADER => 'sha256=' . $signature,
+            self::SIGNATURE_HEADER => 'sha256='.$signature,
         ], sign: false);
 
         $this->assertResponseIsSuccessful();
@@ -129,7 +129,7 @@ class NotificationWebhookTest extends WebTestCase
 
     public function testCallbackUsesHelloAssoEventIdHeaderForIdempotency(): void
     {
-        $eventId = 'header-event-' . uniqid();
+        $eventId = 'header-event-'.uniqid();
         $firstPayload = $this->buildOrderPayload('payload-event-a');
         $secondPayload = $this->buildOrderPayload('payload-event-b');
 
@@ -145,7 +145,7 @@ class NotificationWebhookTest extends WebTestCase
     public function testCallbackPersistsHelloAssoNotificationOnOrder(): void
     {
         $repository = $this->em->getRepository(HelloAssoFormNotification::class);
-        $slug = 'persist-order-' . uniqid();
+        $slug = 'persist-order-'.uniqid();
 
         $this->postWebhook($this->buildOrderPayload(null, [
             'organizationSlug' => $slug,
@@ -165,10 +165,10 @@ class NotificationWebhookTest extends WebTestCase
 
     public function testCallbackProcessesUnknownEventType(): void
     {
-        $slug = 'unknown-event-' . uniqid();
+        $slug = 'unknown-event-'.uniqid();
 
         $this->postWebhook(json_encode([
-            'eventId' => 'unknown-' . uniqid('', true),
+            'eventId' => 'unknown-'.uniqid('', true),
             'eventType' => 'UnknownHelloAssoEvent',
             'data' => [
                 'organizationSlug' => $slug,
@@ -189,7 +189,7 @@ class NotificationWebhookTest extends WebTestCase
 
     public function testCallbackCreatesPayerOnOrderEvent(): void
     {
-        $email = 'new-payer-' . uniqid() . '@test.com';
+        $email = 'new-payer-'.uniqid().'@test.com';
         $repository = $this->em->getRepository(Payers::class);
 
         $this->postWebhook($this->buildOrderPayload(null, [
@@ -214,7 +214,7 @@ class NotificationWebhookTest extends WebTestCase
 
     public function testCallbackUpdatesExistingPayerOnOrderEvent(): void
     {
-        $email = 'existing-payer-' . uniqid() . '@test.com';
+        $email = 'existing-payer-'.uniqid().'@test.com';
         $payer = new Payers();
         $payer->setEmail($email);
         $payer->setFirstName('Old');
@@ -262,11 +262,11 @@ class NotificationWebhookTest extends WebTestCase
      */
     public function testCallbackProcessesFormEventAndCreatesAsso(string $eventType): void
     {
-        $slug = 'new-asso-' . uniqid() . '-' . $eventType;
+        $slug = 'new-asso-'.uniqid().'-'.$eventType;
         $repository = $this->em->getRepository(AssoRecommander::class);
 
         $this->postWebhook(json_encode([
-            'eventId' => 'form-' . uniqid('', true),
+            'eventId' => 'form-'.uniqid('', true),
             'eventType' => $eventType,
             'data' => [
                 'organizationSlug' => $slug,
@@ -300,7 +300,7 @@ class NotificationWebhookTest extends WebTestCase
 
     public function testCallbackUpdatesExistingAssoOnFormEvent(): void
     {
-        $slug = 'existing-asso-' . uniqid();
+        $slug = 'existing-asso-'.uniqid();
         $asso = new AssoRecommander();
         $asso->setOrganizationSlug($slug);
         $asso->setName('Old Association Name');
@@ -308,7 +308,7 @@ class NotificationWebhookTest extends WebTestCase
         $this->em->flush();
 
         $this->postWebhook(json_encode([
-            'eventId' => 'form-update-' . uniqid('', true),
+            'eventId' => 'form-update-'.uniqid('', true),
             'eventType' => 'FormUpdated',
             'data' => [
                 'organizationSlug' => $slug,
@@ -333,7 +333,7 @@ class NotificationWebhookTest extends WebTestCase
         $beforeCount = count($this->em->getRepository(AssoRecommander::class)->findAll());
 
         $this->postWebhook(json_encode([
-            'eventId' => 'form-no-slug-' . uniqid('', true),
+            'eventId' => 'form-no-slug-'.uniqid('', true),
             'eventType' => 'FormPublished',
             'data' => [
                 'organizationName' => 'Association sans slug',
@@ -347,10 +347,10 @@ class NotificationWebhookTest extends WebTestCase
 
     public function testCallbackPersistsFormNotificationWithTiers(): void
     {
-        $slug = 'tiers-org-' . uniqid();
+        $slug = 'tiers-org-'.uniqid();
 
         $this->postWebhook(json_encode([
-            'eventId' => 'tiers-' . uniqid('', true),
+            'eventId' => 'tiers-'.uniqid('', true),
             'eventType' => 'FormPublished',
             'data' => [
                 'organizationSlug' => $slug,
@@ -391,10 +391,10 @@ class NotificationWebhookTest extends WebTestCase
     public function testCallbackProcessesPaymentEventWithPayer(): void
     {
         $repository = $this->em->getRepository(HelloAssoFormNotification::class);
-        $slug = 'payment-org-' . uniqid();
+        $slug = 'payment-org-'.uniqid();
 
         $this->postWebhook(json_encode([
-            'eventId' => 'payment-' . uniqid('', true),
+            'eventId' => 'payment-'.uniqid('', true),
             'eventType' => 'Payment',
             'data' => [
                 'id' => 987654321,
@@ -428,10 +428,10 @@ class NotificationWebhookTest extends WebTestCase
     public function testCallbackProcessesOrderItems(): void
     {
         $this->postWebhook(json_encode([
-            'eventId' => 'order-items-' . uniqid('', true),
+            'eventId' => 'order-items-'.uniqid('', true),
             'eventType' => 'Order',
             'data' => [
-                'organizationSlug' => 'items-org-' . uniqid(),
+                'organizationSlug' => 'items-org-'.uniqid(),
                 'organizationName' => 'Items Org',
                 'formSlug' => 'shop-form',
                 'items' => [
@@ -448,14 +448,13 @@ class NotificationWebhookTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    
     /**
      * @param array<mixed> $dataOverrides
      */
     private function buildOrderPayload(?string $eventId = null, array $dataOverrides = []): string
     {
         return json_encode([
-            'eventId' => $eventId ?? 'test-' . uniqid('', true),
+            'eventId' => $eventId ?? 'test-'.uniqid('', true),
             'eventType' => 'Order',
             'data' => array_merge([
                 'organizationSlug' => 'test-asso',
@@ -483,7 +482,7 @@ class NotificationWebhookTest extends WebTestCase
 
         if ($sign && !array_key_exists(self::SIGNATURE_HEADER, $server)) {
             $secret = $this->getWebhookSecret();
-            if ($secret !== '') {
+            if ('' !== $secret) {
                 $server[self::SIGNATURE_HEADER] = hash_hmac('sha256', $content, $secret);
             }
         }

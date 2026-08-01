@@ -38,16 +38,17 @@ class AdminEntrepriseController extends AbstractController
     {
         $entreprise = new Entreprise();
         $form = $this->createForm(EntrepriseType::class, $entreprise);
-    
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->persist($entreprise);
             $this->entityManager->flush();
-    
+
             $this->addFlash('success', 'Entreprise ajoutée avec succès !');
+
             return $this->redirectToRoute('app_entreprise');
         }
-    
+
         return $this->render('admin_entreprise/new.html.twig', [
             'form' => $form->createView(),
         ]);
@@ -57,15 +58,16 @@ class AdminEntrepriseController extends AbstractController
     public function edit(Request $request, Entreprise $entreprise): Response
     {
         $form = $this->createForm(EntrepriseType::class, $entreprise);
-    
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
-    
+
             $this->addFlash('success', 'Entreprise mise à jour avec succès !');
+
             return $this->redirectToRoute('app_entreprise');
         }
-    
+
         return $this->render('admin_entreprise/edit.html.twig', [
             'form' => $form->createView(),
             'entreprise' => $entreprise,
@@ -75,12 +77,11 @@ class AdminEntrepriseController extends AbstractController
     #[Route('/admin/entreprise/{id}/delete', name: 'entreprise_delete', methods: ['POST'])]
     public function delete(Request $request, Entreprise $entreprise, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $entreprise->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$entreprise->getId(), $request->request->get('_token'))) {
             $em->remove($entreprise);
             $em->flush();
         }
-    
+
         return $this->redirectToRoute('app_entreprise');
     }
-    
 }

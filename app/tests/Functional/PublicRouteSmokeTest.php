@@ -127,7 +127,7 @@ class PublicRouteSmokeTest extends WebTestCase
 
         $response = $this->client->getResponse();
         $this->assertTrue(
-            $response->isSuccessful() || $response->getStatusCode() === 404,
+            $response->isSuccessful() || 404 === $response->getStatusCode(),
             'Sitemap should return 200 or 404'
         );
     }

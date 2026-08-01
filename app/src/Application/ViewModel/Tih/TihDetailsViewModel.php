@@ -30,7 +30,8 @@ final readonly class TihDetailsViewModel
         public ?string $cv,
         public ?string $attestationTih,
         public ?string $photo,
-    ) {}
+    ) {
+    }
 
     public static function fromEntity(Tih $tih): self
     {
@@ -44,7 +45,7 @@ final readonly class TihDetailsViewModel
             title: $tih->getTitle() ?? '',
             firstName: $tih->getFirstName() ?? '',
             lastName: $tih->getLastName() ?? '',
-            fullName: trim(($tih->getFirstName() ?? '') . ' ' . ($tih->getLastName() ?? '')),
+            fullName: trim(($tih->getFirstName() ?? '').' '.($tih->getLastName() ?? '')),
             professionalEmail: $tih->getProfessionalEmail() ?? '',
             phone: $tih->getPhone() ?? '',
             siret: $tih->getSiret() ?? '',

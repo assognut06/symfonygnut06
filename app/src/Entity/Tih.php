@@ -78,12 +78,11 @@ class Tih
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeInterface $updatedAt;
-
 
     /**
      * @var Collection<int,Competence> $competences
@@ -126,84 +125,278 @@ class Tih
         $this->updatedAt = new \DateTimeImmutable();
     }
 
-    public function getId(): ?int { return $this->id; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getUser(): ?User { return $this->user; }
-    public function setUser(?User $user): self { $this->user = $user; return $this; }
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
 
-    public function getTitle(): ?string { return $this->title; }
-    public function setTitle(?string $title): self { $this->title = $title; return $this; }
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
-    public function getLastName(): ?string { return $this->lastName; }
-    public function setLastName(?string $lastName): self { $this->lastName = $lastName; return $this; }
+        return $this;
+    }
 
-    public function getFirstName(): ?string { return $this->firstName; }
-    public function setFirstName(?string $firstName): self { $this->firstName = $firstName; return $this; }
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
 
-    public function getProfessionalEmail(): ?string { return $this->professionalEmail; }
-    public function setProfessionalEmail(?string $professionalEmail): self { $this->professionalEmail = $professionalEmail; return $this; }
+    public function setTitle(?string $title): self
+    {
+        $this->title = $title;
 
-    public function getPhone(): ?string { return $this->phone; }
-    public function setPhone(?string $phone): self { $this->phone = $phone; return $this; }
+        return $this;
+    }
 
-    public function getAddress(): ?string { return $this->address; }
-    public function setAddress(?string $address): self { $this->address = $address; return $this; }
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
 
-    public function getPostalCode(): ?string { return $this->postalCode; }
-    public function setPostalCode(?string $postalCode): self { $this->postalCode = $postalCode; return $this; }
+    public function setLastName(?string $lastName): self
+    {
+        $this->lastName = $lastName;
 
-    public function getCity(): ?string { return $this->city; }
-    public function setCity(?string $city): self { $this->city = $city; return $this; }
+        return $this;
+    }
 
-    public function getRegion(): ?string { return $this->region; }
-    public function setRegion(?string $region): self { $this->region = $region; return $this; }
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
 
-    public function getDepartement(): ?string { return $this->departement; }
-    public function setDepartement(?string $departement): self { $this->departement = $departement; return $this; }
+    public function setFirstName(?string $firstName): self
+    {
+        $this->firstName = $firstName;
 
-    public function getAvailability(): ?string { return $this->availability; }
-    public function setAvailability(?string $availability): self { $this->availability = $availability; return $this; }
+        return $this;
+    }
 
-    public function getAvailabilityDate(): ?\DateTimeInterface { return $this->availabilityDate; }
-    public function setAvailabilityDate(?\DateTimeInterface $availabilityDate): self { $this->availabilityDate = $availabilityDate; return $this; }
+    public function getProfessionalEmail(): ?string
+    {
+        return $this->professionalEmail;
+    }
 
-    public function getRate(): ?string { return $this->rate; }
-    public function setRate(?string $rate): self { $this->rate = $rate; return $this; }
+    public function setProfessionalEmail(?string $professionalEmail): self
+    {
+        $this->professionalEmail = $professionalEmail;
 
-    public function getRateType(): ?string { return $this->rateType; }
-    public function setRateType(?string $rateType): self { $this->rateType = $rateType; return $this; }
+        return $this;
+    }
 
-    public function getCv(): ?string { return $this->cv; }
-    public function setCv(?string $cv): self { $this->cv = $cv; return $this; }
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
 
-    public function getSiret(): ?string { return $this->siret; }
-    public function setSiret(?string $siret): self { $this->siret = $siret; return $this; }
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
 
-    public function getAttestationTih(): ?string { return $this->attestationTih; }
-    public function setAttestationTih(?string $attestationTih): self { $this->attestationTih = $attestationTih; return $this; }
+        return $this;
+    }
 
-    public function getCreatedAt(): \DateTimeInterface { return $this->createdAt; }
-    public function setCreatedAt(\DateTimeInterface $createdAt): self { $this->createdAt = $createdAt; return $this; }
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
 
-    public function getUpdatedAt(): \DateTimeInterface { return $this->updatedAt; }
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self { $this->updatedAt = $updatedAt; return $this; }
+    public function setAddress(?string $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getPostalCode(): ?string
+    {
+        return $this->postalCode;
+    }
+
+    public function setPostalCode(?string $postalCode): self
+    {
+        $this->postalCode = $postalCode;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    public function setRegion(?string $region): self
+    {
+        $this->region = $region;
+
+        return $this;
+    }
+
+    public function getDepartement(): ?string
+    {
+        return $this->departement;
+    }
+
+    public function setDepartement(?string $departement): self
+    {
+        $this->departement = $departement;
+
+        return $this;
+    }
+
+    public function getAvailability(): ?string
+    {
+        return $this->availability;
+    }
+
+    public function setAvailability(?string $availability): self
+    {
+        $this->availability = $availability;
+
+        return $this;
+    }
+
+    public function getAvailabilityDate(): ?\DateTimeInterface
+    {
+        return $this->availabilityDate;
+    }
+
+    public function setAvailabilityDate(?\DateTimeInterface $availabilityDate): self
+    {
+        $this->availabilityDate = $availabilityDate;
+
+        return $this;
+    }
+
+    public function getRate(): ?string
+    {
+        return $this->rate;
+    }
+
+    public function setRate(?string $rate): self
+    {
+        $this->rate = $rate;
+
+        return $this;
+    }
+
+    public function getRateType(): ?string
+    {
+        return $this->rateType;
+    }
+
+    public function setRateType(?string $rateType): self
+    {
+        $this->rateType = $rateType;
+
+        return $this;
+    }
+
+    public function getCv(): ?string
+    {
+        return $this->cv;
+    }
+
+    public function setCv(?string $cv): self
+    {
+        $this->cv = $cv;
+
+        return $this;
+    }
+
+    public function getSiret(): ?string
+    {
+        return $this->siret;
+    }
+
+    public function setSiret(?string $siret): self
+    {
+        $this->siret = $siret;
+
+        return $this;
+    }
+
+    public function getAttestationTih(): ?string
+    {
+        return $this->attestationTih;
+    }
+
+    public function setAttestationTih(?string $attestationTih): self
+    {
+        $this->attestationTih = $attestationTih;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): \DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
 
     /** @return Collection<int, Competence> */
-    public function getCompetences(): Collection { return $this->competences; }
+    public function getCompetences(): Collection
+    {
+        return $this->competences;
+    }
+
     public function addCompetence(Competence $competence): self
     {
         if (!$this->competences->contains($competence)) {
             $this->competences->add($competence);
         }
-        return $this;
-    }
-    public function removeCompetence(Competence $competence): self
-    {
-        $this->competences->removeElement($competence);
+
         return $this;
     }
 
-    public function isValidate(): bool { return $this->isValidate; }
+    public function removeCompetence(Competence $competence): self
+    {
+        $this->competences->removeElement($competence);
+
+        return $this;
+    }
+
+    public function isValidate(): bool
+    {
+        return $this->isValidate;
+    }
+
     public function setIsValidate(bool $isValidate): self
     {
         $this->isValidate = $isValidate;
@@ -212,7 +405,11 @@ class Tih
         return $this;
     }
 
-    public function getApplicationStatus(): string { return $this->applicationStatus; }
+    public function getApplicationStatus(): string
+    {
+        return $this->applicationStatus;
+    }
+
     public function setApplicationStatus(string $applicationStatus): self
     {
         if (!in_array($applicationStatus, [self::STATUS_PENDING, self::STATUS_APPROVED, self::STATUS_REFUSED], true)) {
@@ -225,11 +422,23 @@ class Tih
         return $this;
     }
 
-    public function getValidationMessage(): ?string { return $this->validationMessage; }
-    public function setValidationMessage(?string $validationMessage): self { $this->validationMessage = $validationMessage; return $this; }
+    public function getValidationMessage(): ?string
+    {
+        return $this->validationMessage;
+    }
+
+    public function setValidationMessage(?string $validationMessage): self
+    {
+        $this->validationMessage = $validationMessage;
+
+        return $this;
+    }
 
     /** @return Collection<int, TihApplicationEvent> */
-    public function getApplicationEvents(): Collection { return $this->applicationEvents; }
+    public function getApplicationEvents(): Collection
+    {
+        return $this->applicationEvents;
+    }
 
     public function addApplicationEvent(TihApplicationEvent $event): self
     {
@@ -258,6 +467,15 @@ class Tih
         return $latest;
     }
 
-    public function getPhoto(): ?string { return $this->photo; }
-    public function setPhoto(?string $photo): self { $this->photo = $photo; return $this; }
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): self
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
 }

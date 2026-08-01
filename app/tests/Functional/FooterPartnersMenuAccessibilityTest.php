@@ -12,10 +12,10 @@ final class FooterPartnersMenuAccessibilityTest extends WebTestCase
         $this->assertSelectorCount(1, '#footerPartnersMenuButton');
         $this->assertSelectorExists(
             'button#footerPartnersMenuButton[type="button"]'
-            . '[data-bs-toggle="dropdown"]'
-            . '[aria-haspopup="menu"]'
-            . '[aria-expanded="false"]'
-            . '[aria-controls="footerPartnersMenu"]'
+            .'[data-bs-toggle="dropdown"]'
+            .'[aria-haspopup="menu"]'
+            .'[aria-expanded="false"]'
+            .'[aria-controls="footerPartnersMenu"]'
         );
         $this->assertSelectorTextSame(
             '#footerPartnersMenuButton',
@@ -24,7 +24,7 @@ final class FooterPartnersMenuAccessibilityTest extends WebTestCase
 
         $this->assertSelectorExists(
             '#footerPartnersMenu[role="menu"]'
-            . '[aria-labelledby="footerPartnersMenuButton"]'
+            .'[aria-labelledby="footerPartnersMenuButton"]'
         );
         $this->assertSelectorCount(9, '#footerPartnersMenu > li[role="none"]');
         $this->assertSelectorCount(

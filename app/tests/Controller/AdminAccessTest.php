@@ -37,7 +37,7 @@ class AdminAccessTest extends WebTestCase
             {
             }
 
-            public function makeApiCall(string $url, array $headers = [], string $method = 'GET') :mixed
+            public function makeApiCall(string $url, array $headers = [], string $method = 'GET'): mixed
             {
                 return [
                     'name' => 'GNUT 06',
@@ -94,7 +94,7 @@ class AdminAccessTest extends WebTestCase
         $response = $client->getResponse();
         $statusCode = $response->getStatusCode();
 
-        if ($statusCode === Response::HTTP_OK) {
+        if (Response::HTTP_OK === $statusCode) {
             self::assertStringContainsString(
                 'id="connexion-form"',
                 $response->getContent(),

@@ -21,7 +21,7 @@ class UserController extends AbstractController
     public function editProfilePicture(
         Request $request,
         EntityManagerInterface $entityManager,
-        SluggerInterface $slugger
+        SluggerInterface $slugger,
     ): Response {
         // Récupérer l'utilisateur connecté
         /** @var User $user */
@@ -44,7 +44,7 @@ class UserController extends AbstractController
                     $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
                     $safeFilename = (string) $slugger->slug($originalFilename ?: 'photo');
                     $extension = $photoFile->guessExtension() ?: $photoFile->getClientOriginalExtension() ?: 'bin';
-                    $newFilename = $safeFilename . '-' . uniqid('', true) . '.' . $extension;
+                    $newFilename = $safeFilename.'-'.uniqid('', true).'.'.$extension;
 
                     // Déplacer le fichier vers le dossier de destination
                     $photoFile->move(
@@ -54,7 +54,7 @@ class UserController extends AbstractController
 
                     $oldPhotoPath = null;
                     if ($user->getProfilePicture()) {
-                        $oldPhotoPath = $photosDirectory . '/' . $user->getProfilePicture();
+                        $oldPhotoPath = $photosDirectory.'/'.$user->getProfilePicture();
                     }
 
                     // Mémoriser le nom du fichier en BDD
@@ -97,7 +97,7 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if (!$this->isCsrfTokenValid('delete_profile_picture' . $user->getId(), (string) $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('delete_profile_picture'.$user->getId(), (string) $request->request->get('_token'))) {
             $this->addFlash('danger', 'La suppression de la photo a expiré. Veuillez réessayer.');
 
             return $this->redirectToRoute('app_profil');
@@ -106,13 +106,12 @@ class UserController extends AbstractController
         // Vérifier si l'utilisateur a une photo de profil
         if ($user->getProfilePicture()) {
             $photoFilename = $user->getProfilePicture();
-            $photoPath = $this->getParameter('photos_directory') . '/' . $photoFilename;
+            $photoPath = $this->getParameter('photos_directory').'/'.$photoFilename;
 
             try {
                 // Supprimer la référence en base de données
                 $user->setProfilePicture(null);
                 $entityManager->flush();
-
             } catch (\Throwable $e) {
                 $this->addFlash('danger', 'Impossible de supprimer la photo pour le moment (droits fichiers serveur).');
 

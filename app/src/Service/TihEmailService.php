@@ -24,8 +24,9 @@ class TihEmailService
         private RouterInterface $router,
         private string $fromEmail,
         private string $adminEmail,
-        private string $logoPath
-    ) {}
+        private string $logoPath,
+    ) {
+    }
 
     /**
      * @throws TransportExceptionInterface
@@ -40,12 +41,10 @@ class TihEmailService
         $recipient = $tih->getUser()?->getEmail();
 
         if (!$recipient) {
-            throw new \InvalidArgumentException(
-                sprintf('TIH #%d has no account email address', $tih->getId())
-            );
+            throw new \InvalidArgumentException(sprintf('TIH #%d has no account email address', $tih->getId()));
         }
 
-        $profileUrl = $this->router->generate('app_profil', [], UrlGeneratorInterface::ABSOLUTE_URL) . '#tih-rejection-message';
+        $profileUrl = $this->router->generate('app_profil', [], UrlGeneratorInterface::ABSOLUTE_URL).'#tih-rejection-message';
         $htmlContent = $this->twig->render('mailjet/tih_rejection.html.twig', [
             'firstName' => $tih->getFirstName(),
             'reason' => $event->getReason(),
@@ -73,11 +72,9 @@ class TihEmailService
     public function sendContactEmail(Tih $tih, TihContactDTO $contactData): void
     {
         $professionalEmail = $tih->getProfessionalEmail();
-        
+
         if (!$professionalEmail) {
-            throw new \InvalidArgumentException(
-                sprintf('TIH #%d has no professional email address', $tih->getId())
-            );
+            throw new \InvalidArgumentException(sprintf('TIH #%d has no professional email address', $tih->getId()));
         }
 
         $tihViewModel = TihDetailsViewModel::fromEntity($tih);
@@ -98,12 +95,12 @@ class TihEmailService
 
         try {
             $this->mailer->send($email);
-            
+
             $this->logger->info('Contact email sent to TIH', [
                 'tih_id' => $tih->getId(),
                 'tih_email' => $professionalEmail,
                 'from_email' => $contactData->email,
-                'from_name' => $contactData->prenom . ' ' . $contactData->nom,
+                'from_name' => $contactData->prenom.' '.$contactData->nom,
                 'subject' => $contactData->subject,
             ]);
         } catch (TransportExceptionInterface $e) {
@@ -112,7 +109,7 @@ class TihEmailService
                 'tih_email' => $professionalEmail,
                 'error' => $e->getMessage(),
             ]);
-            
+
             throw $e;
         }
     }

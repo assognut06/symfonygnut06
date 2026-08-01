@@ -6,15 +6,15 @@ use App\Entity\Tih;
 use App\Form\TihType;
 use App\Service\TihApplicationWorkflowService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/espace-tih')]
 #[IsGranted('ROLE_USER')]
@@ -32,10 +32,10 @@ class TihController extends AbstractController
         }
 
         $fileName = basename((string) $tih->getCv());
-        $cvPath = rtrim((string) $this->getParameter('cv_tih_directory'), '/') . '/' . $fileName;
+        $cvPath = rtrim((string) $this->getParameter('cv_tih_directory'), '/').'/'.$fileName;
 
         if (!is_file($cvPath)) {
-            $legacyPath = rtrim((string) $this->getParameter('kernel.project_dir'), '/') . '/public/uploads/tihcv/' . $fileName;
+            $legacyPath = rtrim((string) $this->getParameter('kernel.project_dir'), '/').'/public/uploads/tihcv/'.$fileName;
             if (is_file($legacyPath)) {
                 $cvPath = $legacyPath;
             } else {
@@ -61,10 +61,10 @@ class TihController extends AbstractController
         }
 
         $fileName = basename((string) $tih->getAttestationTih());
-        $attestationPath = rtrim((string) $this->getParameter('attestation_tih_directory'), '/') . '/' . $fileName;
+        $attestationPath = rtrim((string) $this->getParameter('attestation_tih_directory'), '/').'/'.$fileName;
 
         if (!is_file($attestationPath)) {
-            $legacyPath = rtrim((string) $this->getParameter('kernel.project_dir'), '/') . '/public/uploads/tihattest/' . $fileName;
+            $legacyPath = rtrim((string) $this->getParameter('kernel.project_dir'), '/').'/public/uploads/tihattest/'.$fileName;
             if (is_file($legacyPath)) {
                 $attestationPath = $legacyPath;
             } else {
@@ -84,14 +84,13 @@ class TihController extends AbstractController
         EntityManagerInterface $em,
         SluggerInterface $slugger,
         TihApplicationWorkflowService $workflow,
-    ): Response
-    {
+    ): Response {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
         $tih = $user->getTih();
         $initialSubmission = null === $tih;
-        $showForm = $request->query->get('edit') === '1' || !$tih;
+        $showForm = '1' === $request->query->get('edit') || !$tih;
 
         if (!$tih) {
             $tih = new Tih();
@@ -113,7 +112,7 @@ class TihController extends AbstractController
                 if ($cvFile) {
                     $originalFilename = pathinfo($cvFile->getClientOriginalName(), PATHINFO_FILENAME);
                     $safeFilename = $slugger->slug($originalFilename)->lower();
-                    $newFilename = uniqid() . '-' . $safeFilename . '.' . $cvFile->guessExtension();
+                    $newFilename = uniqid().'-'.$safeFilename.'.'.$cvFile->guessExtension();
 
                     $cvFile->move($this->getParameter('cv_tih_directory'), $newFilename);
                     $tih->setCv($newFilename);
@@ -124,7 +123,7 @@ class TihController extends AbstractController
                 if ($attestationFile) {
                     $originalFilename = pathinfo($attestationFile->getClientOriginalName(), PATHINFO_FILENAME);
                     $safeFilename = $slugger->slug($originalFilename)->lower();
-                    $newFilename = uniqid() . '-' . $safeFilename . '.' . $attestationFile->guessExtension();
+                    $newFilename = uniqid().'-'.$safeFilename.'.'.$attestationFile->guessExtension();
 
                     $attestationFile->move($this->getParameter('attestation_tih_directory'), $newFilename);
                     $tih->setAttestationTih($newFilename);
@@ -135,9 +134,9 @@ class TihController extends AbstractController
                 if ($photoFile) {
                     $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
                     $safeFilename = $slugger->slug($originalFilename)->lower();
-                    $newFilename = uniqid() . '-' . $safeFilename . '.' . $photoFile->guessExtension();
+                    $newFilename = uniqid().'-'.$safeFilename.'.'.$photoFile->guessExtension();
 
-                    $photoFile->move($this->getParameter('kernel.project_dir') . '/public/uploads/tih', $newFilename);
+                    $photoFile->move($this->getParameter('kernel.project_dir').'/public/uploads/tih', $newFilename);
                     $tih->setPhoto($newFilename);
                 }
 
@@ -155,6 +154,7 @@ class TihController extends AbstractController
                 $em->flush();
 
                 $this->addFlash('success', 'Votre profil est en attente de validation par un admin.');
+
                 return $this->redirectToRoute('espace_tih');
             }
 

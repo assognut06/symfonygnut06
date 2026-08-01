@@ -63,23 +63,23 @@ class HelloAssoTier
     }
 
     /**
-     * ✅ MÉTHODE STATIQUE : Créer un tier depuis des données d'API
-  
+     * ✅ MÉTHODE STATIQUE : Créer un tier depuis des données d'API.
+     *
      * @param array{id?:int,label?:string,description?:string,tierType?:string,price?:string,vatRate?:string,paymentFrequency?:string,isEligibleTaxReceipt?:bool,isFavorite?:bool,customFields?:array<mixed>} $data
      */
     public static function fromArray(array $data): self
     {
         $tier = new self();
-        
+
         $tier->setExternalId($data['id'] ?? null);
         $tier->setLabel($data['label'] ?? null);
         $tier->setDescription($data['description'] ?? null);
         $tier->setTierType($data['tierType'] ?? null);
-        
+
         // ✅ CORRECTION : Convertir correctement les prix en string
-        $tier->setPrice(isset($data['price']) ? (string)$data['price'] : '0.00');
-        $tier->setVatRate(isset($data['vatRate']) ? (string)$data['vatRate'] : '0.00');
-        
+        $tier->setPrice(isset($data['price']) ? (string) $data['price'] : '0.00');
+        $tier->setVatRate(isset($data['vatRate']) ? (string) $data['vatRate'] : '0.00');
+
         $tier->setPaymentFrequency($data['paymentFrequency'] ?? null);
         $tier->setIsEligibleTaxReceipt($data['isEligibleTaxReceipt'] ?? null);
         $tier->setIsFavorite($data['isFavorite'] ?? null);
@@ -109,6 +109,7 @@ class HelloAssoTier
     public function setForm(?HelloAssoFormNotification $form): self
     {
         $this->form = $form;
+
         return $this;
     }
 
@@ -120,6 +121,7 @@ class HelloAssoTier
     public function setExternalId(?int $externalId): self
     {
         $this->externalId = $externalId;
+
         return $this;
     }
 
@@ -131,6 +133,7 @@ class HelloAssoTier
     public function setLabel(?string $label): self
     {
         $this->label = $label;
+
         return $this;
     }
 
@@ -142,6 +145,7 @@ class HelloAssoTier
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -153,6 +157,7 @@ class HelloAssoTier
     public function setTierType(?string $tierType): self
     {
         $this->tierType = $tierType;
+
         return $this;
     }
 
@@ -164,12 +169,13 @@ class HelloAssoTier
     // ✅ CORRECTION : Méthode setPrice corrigée
     public function setPrice(mixed $price): self
     {
-        if ($price === null) {
+        if (null === $price) {
             $this->price = null;
         } else {
             // Convertir en string pour DECIMAL
-            $this->price = (string)$price;
+            $this->price = (string) $price;
         }
+
         return $this;
     }
 
@@ -181,12 +187,13 @@ class HelloAssoTier
     // ✅ CORRECTION : Méthode setVatRate corrigée
     public function setVatRate(mixed $vatRate): self
     {
-        if ($vatRate === null) {
+        if (null === $vatRate) {
             $this->vatRate = null;
         } else {
             // Convertir en string pour DECIMAL
-            $this->vatRate = (string)$vatRate;
+            $this->vatRate = (string) $vatRate;
         }
+
         return $this;
     }
 
@@ -198,6 +205,7 @@ class HelloAssoTier
     public function setPaymentFrequency(?string $paymentFrequency): self
     {
         $this->paymentFrequency = $paymentFrequency;
+
         return $this;
     }
 
@@ -209,6 +217,7 @@ class HelloAssoTier
     public function setIsEligibleTaxReceipt(?bool $isEligibleTaxReceipt): self
     {
         $this->isEligibleTaxReceipt = $isEligibleTaxReceipt;
+
         return $this;
     }
 
@@ -220,6 +229,7 @@ class HelloAssoTier
     public function setIsFavorite(?bool $isFavorite): self
     {
         $this->isFavorite = $isFavorite;
+
         return $this;
     }
 
@@ -255,37 +265,37 @@ class HelloAssoTier
     // ✅ MÉTHODES UTILITAIRES SUPPLÉMENTAIRES
     public function getPriceAsFloat(): ?float
     {
-        return $this->price ? (float)$this->price : null;
+        return $this->price ? (float) $this->price : null;
     }
 
     public function getVatRateAsFloat(): ?float
     {
-        return $this->vatRate ? (float)$this->vatRate : null;
+        return $this->vatRate ? (float) $this->vatRate : null;
     }
 
     public function getPriceWithVat(): ?float
     {
-        if ($this->price === null) {
+        if (null === $this->price) {
             return null;
         }
-        
-        $price = (float)$this->price;
-        $vatRate = $this->vatRate ? (float)$this->vatRate : 0;
-        
+
+        $price = (float) $this->price;
+        $vatRate = $this->vatRate ? (float) $this->vatRate : 0;
+
         return $price * (1 + $vatRate / 100);
     }
 
     public function getFormattedPrice(): string
     {
-        if ($this->price === null) {
+        if (null === $this->price) {
             return '0,00 €';
         }
-        
-        return number_format((float)$this->price, 2, ',', ' ') . ' €';
+
+        return number_format((float) $this->price, 2, ',', ' ').' €';
     }
 
     public function __toString(): string
     {
-        return $this->label ?? 'Tier #' . ($this->externalId ?? $this->id);
+        return $this->label ?? 'Tier #'.($this->externalId ?? $this->id);
     }
 }

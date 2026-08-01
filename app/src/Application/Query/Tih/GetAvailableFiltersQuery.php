@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Application\Query\Tih;
+
 use App\Application\Query\Query;
 
 class GetAvailableFiltersQuery extends Query
@@ -9,8 +10,9 @@ class GetAvailableFiltersQuery extends Query
      * @param array<mixed> $currentFilters
      */
     public function __construct(
-        private array $currentFilters = []
-    ) {}
+        private array $currentFilters = [],
+    ) {
+    }
 
     /**
      * @return array<mixed>

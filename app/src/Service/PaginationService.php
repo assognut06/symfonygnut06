@@ -20,6 +20,7 @@ class PaginationService
     public function setLimit(int $limit): self
     {
         $this->limit = $limit;
+
         return $this;
     }
 
@@ -46,9 +47,10 @@ class PaginationService
             'cities' => $cities,
         ];
     }
-/**
- * @param array<string,mixed> $city
- */
+
+    /**
+     * @param array<string,mixed> $city
+     */
     public function getPaginatedDataCity(string $entityClass, int $page, array $city): mixed
     {
         $start = $this->limit * ($page - 1);
@@ -57,7 +59,7 @@ class PaginationService
         $total = 0;
         $pages = 0;
 
-        if ($entityClass === \App\Entity\AssoRecommander::class) {
+        if (\App\Entity\AssoRecommander::class === $entityClass) {
             $cities = $this->assoRecommanderRepository->findDistinctCities();
             $data = $this->assoRecommanderRepository->findBy($city, [], $this->limit, $start);
             $total = count($this->assoRecommanderRepository->findBy($city, []));
@@ -78,7 +80,7 @@ class PaginationService
         $data = [];
         $total = 0;
 
-        if ($entityClass === \App\Entity\AssoRecommander::class) {
+        if (\App\Entity\AssoRecommander::class === $entityClass) {
             $data = $this->assoRecommanderRepository->findSearch($search);
             $total = count($data);
         }

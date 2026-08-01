@@ -1,5 +1,7 @@
 <?php
+
 // Service HelloAssoApiService
+
 namespace App\Service;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -15,18 +17,19 @@ class HelloAssoApiService
         $this->helloAssoAuthService = $helloAssoAuthService;
     }
 
-/**
- * @param array<mixed> $headers
- */
+    /**
+     * @param array<mixed> $headers
+     */
     public function makeApiCall(string $url, array $headers = [], string $method = 'GET'): mixed
     {
         $bearerToken = $this->helloAssoAuthService->getToken();
-        $authorization = "Bearer " . $bearerToken;
+        $authorization = 'Bearer '.$bearerToken;
         $headers['authorization'] = $authorization;
         try {
             $response = $this->client->request($method, $url, [
                 'headers' => $headers,
             ]);
+
             return $response->toArray();
         } catch (\Exception $e) {
             // Gérer l'exception ou la logger

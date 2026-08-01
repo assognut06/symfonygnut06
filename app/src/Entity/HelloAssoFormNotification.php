@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use App\Entity\Value\Meta;
@@ -124,18 +125,19 @@ class HelloAssoFormNotification
     }
 
     /**
-     * ✅ MÉTHODE STATIQUE : Créer une entité depuis un payload HelloAsso
+     * ✅ MÉTHODE STATIQUE : Créer une entité depuis un payload HelloAsso.
+     *
      * @param array{eventType?:string,data?:array{formSlug?:string,formType?:string,title?:string,description?:string,url?:string,state?:string,currency?:string,organizationSlug?:string,organizationName?:string,organizationLogo?:string,activityType?:string,activityTypeId?:int,startDate?:string,endDate?:string,banner?:array{fileName?:string,publicUrl?:string},logo?:array{fileName?:string,publicUrl?:string},place?:array{address?:string,name?:string,city?:string,zipCode?:string,country?:string},widget?:array{buttonUrl?:string,fullUrl?:string,vignetteHorizontalUrl?:string,vignetteVerticalUrl?:string},tiers?:array{array{id?:int,label?:string,description?:string,tierType?:string,price?:string,vatRate?:string,paymentFrequency?:string,isEligibleTaxReceipt?:bool,isFavorite?:bool,customFields?:array<mixed>}}}} $payload
      */
     public static function fromHelloAssoPayload(array $payload): self
     {
         $entity = new self();
-        
+
         $entity->setEventType($payload['eventType'] ?? null);
-        
+
         if (isset($payload['data'])) {
             $data = $payload['data'];
-            
+
             $entity->setFormSlug($data['formSlug'] ?? null);
             $entity->setFormType($data['formType'] ?? null);
             $entity->setTitle($data['title'] ?? null);
@@ -143,13 +145,13 @@ class HelloAssoFormNotification
             $entity->setUrl($data['url'] ?? null);
             $entity->setState($data['state'] ?? null);
             $entity->setCurrency($data['currency'] ?? null);
-            
+
             $entity->setOrganizationSlug($data['organizationSlug'] ?? null);
             $entity->setOrganizationName($data['organizationName'] ?? null);
             $entity->setOrganizationLogo($data['organizationLogo'] ?? null);
             $entity->setActivityType($data['activityType'] ?? null);
             $entity->setActivityTypeId($data['activityTypeId'] ?? null);
-            
+
             if (isset($data['startDate'])) {
                 try {
                     $entity->setStartDate(new \DateTimeImmutable($data['startDate']));
@@ -164,17 +166,17 @@ class HelloAssoFormNotification
                     // Ignorer les erreurs de date
                 }
             }
-            
+
             if (isset($data['banner'])) {
                 $entity->setBannerFileName($data['banner']['fileName'] ?? null);
                 $entity->setBannerPublicUrl($data['banner']['publicUrl'] ?? null);
             }
-            
+
             if (isset($data['logo'])) {
                 $entity->setLogoFileName($data['logo']['fileName'] ?? null);
                 $entity->setLogoPublicUrl($data['logo']['publicUrl'] ?? null);
             }
-            
+
             if (isset($data['place'])) {
                 $place = $data['place'];
                 $entity->setPlaceName($place['name'] ?? null);
@@ -183,7 +185,7 @@ class HelloAssoFormNotification
                 $entity->setPlaceZipCode($place['zipCode'] ?? null);
                 $entity->setPlaceCountry($place['country'] ?? null);
             }
-            
+
             if (isset($data['widget'])) {
                 $widget = $data['widget'];
                 $entity->setWidgetButtonUrl($widget['buttonUrl'] ?? null);
@@ -200,9 +202,9 @@ class HelloAssoFormNotification
                 }
             }
         }
-        
+
         $entity->getMeta()->touch();
-        
+
         return $entity;
     }
 
@@ -238,94 +240,358 @@ class HelloAssoFormNotification
     }
 
     // ✅ GETTERS ET SETTERS
-    public function getId(): ?Uuid { return $this->id; }
+    public function getId(): ?Uuid
+    {
+        return $this->id;
+    }
 
-    public function getEventType(): ?string { return $this->eventType; }
-    public function setEventType(?string $eventType): self { $this->eventType = $eventType; return $this; }
+    public function getEventType(): ?string
+    {
+        return $this->eventType;
+    }
 
-    public function getOrganizationName(): ?string { return $this->organizationName; }
-    public function setOrganizationName(?string $organizationName): self { $this->organizationName = $organizationName; return $this; }
+    public function setEventType(?string $eventType): self
+    {
+        $this->eventType = $eventType;
 
-    public function getOrganizationLogo(): ?string { return $this->organizationLogo; }
-    public function setOrganizationLogo(?string $organizationLogo): self { $this->organizationLogo = $organizationLogo; return $this; }
+        return $this;
+    }
 
-    public function getOrganizationSlug(): ?string { return $this->organizationSlug; }
-    public function setOrganizationSlug(?string $organizationSlug): self { $this->organizationSlug = $organizationSlug; return $this; }
+    public function getOrganizationName(): ?string
+    {
+        return $this->organizationName;
+    }
 
-    public function getFormSlug(): ?string { return $this->formSlug; }
-    public function setFormSlug(?string $formSlug): self { $this->formSlug = $formSlug; return $this; }
+    public function setOrganizationName(?string $organizationName): self
+    {
+        $this->organizationName = $organizationName;
 
-    public function getFormType(): ?string { return $this->formType; }
-    public function setFormType(?string $formType): self { $this->formType = $formType; return $this; }
+        return $this;
+    }
 
-    public function getTitle(): ?string { return $this->title; }
-    public function setTitle(?string $title): self { $this->title = $title; return $this; }
+    public function getOrganizationLogo(): ?string
+    {
+        return $this->organizationLogo;
+    }
 
-    public function getDescription(): ?string { return $this->description; }
-    public function setDescription(?string $description): self { $this->description = $description; return $this; }
+    public function setOrganizationLogo(?string $organizationLogo): self
+    {
+        $this->organizationLogo = $organizationLogo;
 
-    public function getUrl(): ?string { return $this->url; }
-    public function setUrl(?string $url): self { $this->url = $url; return $this; }
+        return $this;
+    }
 
-    public function getState(): ?string { return $this->state; }
-    public function setState(?string $state): self { $this->state = $state; return $this; }
+    public function getOrganizationSlug(): ?string
+    {
+        return $this->organizationSlug;
+    }
 
-    public function getCurrency(): ?string { return $this->currency; }
-    public function setCurrency(?string $currency): self { $this->currency = $currency; return $this; }
+    public function setOrganizationSlug(?string $organizationSlug): self
+    {
+        $this->organizationSlug = $organizationSlug;
 
-    public function getActivityType(): ?string { return $this->activityType; }
-    public function setActivityType(?string $activityType): self { $this->activityType = $activityType; return $this; }
+        return $this;
+    }
 
-    public function getActivityTypeId(): ?int { return $this->activityTypeId; }
-    public function setActivityTypeId(?int $activityTypeId): self { $this->activityTypeId = $activityTypeId; return $this; }
+    public function getFormSlug(): ?string
+    {
+        return $this->formSlug;
+    }
 
-    public function getStartDate(): ?\DateTimeImmutable { return $this->startDate; }
-    public function setStartDate(?\DateTimeImmutable $startDate): self { $this->startDate = $startDate; return $this; }
+    public function setFormSlug(?string $formSlug): self
+    {
+        $this->formSlug = $formSlug;
 
-    public function getEndDate(): ?\DateTimeImmutable { return $this->endDate; }
-    public function setEndDate(?\DateTimeImmutable $endDate): self { $this->endDate = $endDate; return $this; }
+        return $this;
+    }
 
-    public function getBannerFileName(): ?string { return $this->bannerFileName; }
-    public function setBannerFileName(?string $bannerFileName): self { $this->bannerFileName = $bannerFileName; return $this; }
+    public function getFormType(): ?string
+    {
+        return $this->formType;
+    }
 
-    public function getBannerPublicUrl(): ?string { return $this->bannerPublicUrl; }
-    public function setBannerPublicUrl(?string $bannerPublicUrl): self { $this->bannerPublicUrl = $bannerPublicUrl; return $this; }
+    public function setFormType(?string $formType): self
+    {
+        $this->formType = $formType;
 
-    public function getLogoFileName(): ?string { return $this->logoFileName; }
-    public function setLogoFileName(?string $logoFileName): self { $this->logoFileName = $logoFileName; return $this; }
+        return $this;
+    }
 
-    public function getLogoPublicUrl(): ?string { return $this->logoPublicUrl; }
-    public function setLogoPublicUrl(?string $logoPublicUrl): self { $this->logoPublicUrl = $logoPublicUrl; return $this; }
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
 
-    public function getPlaceName(): ?string { return $this->placeName; }
-    public function setPlaceName(?string $placeName): self { $this->placeName = $placeName; return $this; }
+    public function setTitle(?string $title): self
+    {
+        $this->title = $title;
 
-    public function getPlaceAddress(): ?string { return $this->placeAddress; }
-    public function setPlaceAddress(?string $placeAddress): self { $this->placeAddress = $placeAddress; return $this; }
+        return $this;
+    }
 
-    public function getPlaceCity(): ?string { return $this->placeCity; }
-    public function setPlaceCity(?string $placeCity): self { $this->placeCity = $placeCity; return $this; }
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
 
-    public function getPlaceZipCode(): ?string { return $this->placeZipCode; }
-    public function setPlaceZipCode(?string $placeZipCode): self { $this->placeZipCode = $placeZipCode; return $this; }
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
-    public function getPlaceCountry(): ?string { return $this->placeCountry; }
-    public function setPlaceCountry(?string $placeCountry): self { $this->placeCountry = $placeCountry; return $this; }
+        return $this;
+    }
 
-    public function getWidgetButtonUrl(): ?string { return $this->widgetButtonUrl; }
-    public function setWidgetButtonUrl(?string $widgetButtonUrl): self { $this->widgetButtonUrl = $widgetButtonUrl; return $this; }
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
 
-    public function getWidgetFullUrl(): ?string { return $this->widgetFullUrl; }
-    public function setWidgetFullUrl(?string $widgetFullUrl): self { $this->widgetFullUrl = $widgetFullUrl; return $this; }
+    public function setUrl(?string $url): self
+    {
+        $this->url = $url;
 
-    public function getWidgetVignetteHorizontalUrl(): ?string { return $this->widgetVignetteHorizontalUrl; }
-    public function setWidgetVignetteHorizontalUrl(?string $widgetVignetteHorizontalUrl): self { $this->widgetVignetteHorizontalUrl = $widgetVignetteHorizontalUrl; return $this; }
+        return $this;
+    }
 
-    public function getWidgetVignetteVerticalUrl(): ?string { return $this->widgetVignetteVerticalUrl; }
-    public function setWidgetVignetteVerticalUrl(?string $widgetVignetteVerticalUrl): self { $this->widgetVignetteVerticalUrl = $widgetVignetteVerticalUrl; return $this; }
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
 
-    public function getMeta(): Meta { return $this->meta; }
-    public function setMeta(Meta $meta): self { $this->meta = $meta; return $this; }
+    public function setState(?string $state): self
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    public function getCurrency(): ?string
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency(?string $currency): self
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    public function getActivityType(): ?string
+    {
+        return $this->activityType;
+    }
+
+    public function setActivityType(?string $activityType): self
+    {
+        $this->activityType = $activityType;
+
+        return $this;
+    }
+
+    public function getActivityTypeId(): ?int
+    {
+        return $this->activityTypeId;
+    }
+
+    public function setActivityTypeId(?int $activityTypeId): self
+    {
+        $this->activityTypeId = $activityTypeId;
+
+        return $this;
+    }
+
+    public function getStartDate(): ?\DateTimeImmutable
+    {
+        return $this->startDate;
+    }
+
+    public function setStartDate(?\DateTimeImmutable $startDate): self
+    {
+        $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    public function getEndDate(): ?\DateTimeImmutable
+    {
+        return $this->endDate;
+    }
+
+    public function setEndDate(?\DateTimeImmutable $endDate): self
+    {
+        $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    public function getBannerFileName(): ?string
+    {
+        return $this->bannerFileName;
+    }
+
+    public function setBannerFileName(?string $bannerFileName): self
+    {
+        $this->bannerFileName = $bannerFileName;
+
+        return $this;
+    }
+
+    public function getBannerPublicUrl(): ?string
+    {
+        return $this->bannerPublicUrl;
+    }
+
+    public function setBannerPublicUrl(?string $bannerPublicUrl): self
+    {
+        $this->bannerPublicUrl = $bannerPublicUrl;
+
+        return $this;
+    }
+
+    public function getLogoFileName(): ?string
+    {
+        return $this->logoFileName;
+    }
+
+    public function setLogoFileName(?string $logoFileName): self
+    {
+        $this->logoFileName = $logoFileName;
+
+        return $this;
+    }
+
+    public function getLogoPublicUrl(): ?string
+    {
+        return $this->logoPublicUrl;
+    }
+
+    public function setLogoPublicUrl(?string $logoPublicUrl): self
+    {
+        $this->logoPublicUrl = $logoPublicUrl;
+
+        return $this;
+    }
+
+    public function getPlaceName(): ?string
+    {
+        return $this->placeName;
+    }
+
+    public function setPlaceName(?string $placeName): self
+    {
+        $this->placeName = $placeName;
+
+        return $this;
+    }
+
+    public function getPlaceAddress(): ?string
+    {
+        return $this->placeAddress;
+    }
+
+    public function setPlaceAddress(?string $placeAddress): self
+    {
+        $this->placeAddress = $placeAddress;
+
+        return $this;
+    }
+
+    public function getPlaceCity(): ?string
+    {
+        return $this->placeCity;
+    }
+
+    public function setPlaceCity(?string $placeCity): self
+    {
+        $this->placeCity = $placeCity;
+
+        return $this;
+    }
+
+    public function getPlaceZipCode(): ?string
+    {
+        return $this->placeZipCode;
+    }
+
+    public function setPlaceZipCode(?string $placeZipCode): self
+    {
+        $this->placeZipCode = $placeZipCode;
+
+        return $this;
+    }
+
+    public function getPlaceCountry(): ?string
+    {
+        return $this->placeCountry;
+    }
+
+    public function setPlaceCountry(?string $placeCountry): self
+    {
+        $this->placeCountry = $placeCountry;
+
+        return $this;
+    }
+
+    public function getWidgetButtonUrl(): ?string
+    {
+        return $this->widgetButtonUrl;
+    }
+
+    public function setWidgetButtonUrl(?string $widgetButtonUrl): self
+    {
+        $this->widgetButtonUrl = $widgetButtonUrl;
+
+        return $this;
+    }
+
+    public function getWidgetFullUrl(): ?string
+    {
+        return $this->widgetFullUrl;
+    }
+
+    public function setWidgetFullUrl(?string $widgetFullUrl): self
+    {
+        $this->widgetFullUrl = $widgetFullUrl;
+
+        return $this;
+    }
+
+    public function getWidgetVignetteHorizontalUrl(): ?string
+    {
+        return $this->widgetVignetteHorizontalUrl;
+    }
+
+    public function setWidgetVignetteHorizontalUrl(?string $widgetVignetteHorizontalUrl): self
+    {
+        $this->widgetVignetteHorizontalUrl = $widgetVignetteHorizontalUrl;
+
+        return $this;
+    }
+
+    public function getWidgetVignetteVerticalUrl(): ?string
+    {
+        return $this->widgetVignetteVerticalUrl;
+    }
+
+    public function setWidgetVignetteVerticalUrl(?string $widgetVignetteVerticalUrl): self
+    {
+        $this->widgetVignetteVerticalUrl = $widgetVignetteVerticalUrl;
+
+        return $this;
+    }
+
+    public function getMeta(): Meta
+    {
+        return $this->meta;
+    }
+
+    public function setMeta(Meta $meta): self
+    {
+        $this->meta = $meta;
+
+        return $this;
+    }
 
     // ✅ MÉTHODES UTILITAIRES SUPPLÉMENTAIRES
     public function getTierCount(): int
@@ -343,8 +609,8 @@ class HelloAssoFormNotification
      */
     public function getFavoriteTiers(): Collection
     {
-        return $this->tiers->filter(function(HelloAssoTier $tier) {
-            return $tier->getIsFavorite() === true;
+        return $this->tiers->filter(function (HelloAssoTier $tier) {
+            return true === $tier->getIsFavorite();
         });
     }
 
@@ -353,9 +619,10 @@ class HelloAssoFormNotification
      */
     public function getTiersByPriceRange(float $minPrice, float $maxPrice): Collection
     {
-        return $this->tiers->filter(function(HelloAssoTier $tier) use ($minPrice, $maxPrice) {
+        return $this->tiers->filter(function (HelloAssoTier $tier) use ($minPrice, $maxPrice) {
             $price = $tier->getPriceAsFloat();
-            return $price !== null && $price >= $minPrice && $price <= $maxPrice;
+
+            return null !== $price && $price >= $minPrice && $price <= $maxPrice;
         });
     }
 
@@ -367,6 +634,6 @@ class HelloAssoFormNotification
 
     public function __toString(): string
     {
-        return $this->title ?? $this->formSlug ?? 'HelloAsso Notification #' . $this->id;
+        return $this->title ?? $this->formSlug ?? 'HelloAsso Notification #'.$this->id;
     }
 }

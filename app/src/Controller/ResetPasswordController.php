@@ -7,18 +7,18 @@ use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
 use App\Service\ResetPasswordEmailService;
 use Doctrine\ORM\EntityManagerInterface;
+use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
-use GuzzleHttp\Client;
 
 #[Route('/reset-password')]
 class ResetPasswordController extends AbstractController
@@ -32,7 +32,8 @@ class ResetPasswordController extends AbstractController
         private string $nocaptchaSiteKey,
         private string $appEnv,
         private ResetPasswordEmailService $resetPasswordEmailService,
-    ) {}
+    ) {
+    }
 
     /**
      * Display & process form to request a password reset.
@@ -109,7 +110,6 @@ class ResetPasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             // A password reset token should be used only once, remove it.
             $this->resetPasswordHelper->removeResetRequest($token);
 
@@ -120,45 +120,45 @@ class ResetPasswordController extends AbstractController
                 'form_params' => [
                     'secret' => $this->nocaptchaSecret,
                     'response' => $recaptchaResponse,
-                    'remoteip' => $request->getClientIp()
-                ]
+                    'remoteip' => $request->getClientIp(),
+                ],
             ]);
 
             $responseData = json_decode($response->getBody());
 
-            if ($this->appEnv === 'dev') {
+            if ('dev' === $this->appEnv) {
                 $responseData->score = 0.9;
                 $responseData->success = true;
             }
 
             if (!$responseData->success || $responseData->score < 0.5) {
                 $this->addFlash('danger', 'La vérification reCAPTCHA a échoué. Veuillez réessayer.');
+
                 return $this->render('reset_password/reset.html.twig', [
                     'resetForm' => $form,
-                    'site_key' => $this->nocaptchaSiteKey
+                    'site_key' => $this->nocaptchaSiteKey,
                 ]);
-            } else {
-                // Encode(hash) the plain password, and set it.
-                $encodedPassword = $passwordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                );
-
-                $user->setPassword($encodedPassword);
-                $this->entityManager->flush();
-
-                // The session is cleaned up after the password has been changed.
-                $this->cleanSessionAfterReset();
-
-                $this->addFlash('success', 'Votre mot de passe à étè modifier vous pouvez vous connecter avec.');
-
-                return $this->redirectToRoute('app_login');
             }
+            // Encode(hash) the plain password, and set it.
+            $encodedPassword = $passwordHasher->hashPassword(
+                $user,
+                $form->get('plainPassword')->getData()
+            );
+
+            $user->setPassword($encodedPassword);
+            $this->entityManager->flush();
+
+            // The session is cleaned up after the password has been changed.
+            $this->cleanSessionAfterReset();
+
+            $this->addFlash('success', 'Votre mot de passe à étè modifier vous pouvez vous connecter avec.');
+
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('reset_password/reset.html.twig', [
             'resetForm' => $form,
-            'site_key' => $this->nocaptchaSiteKey
+            'site_key' => $this->nocaptchaSiteKey,
         ]);
     }
 

@@ -34,7 +34,7 @@ class NotificationAdminTest extends WebTestCase
 
         $response = $this->client->getResponse();
         $this->assertTrue(
-            $response->getStatusCode() === 403 || $response->isRedirection(),
+            403 === $response->getStatusCode() || $response->isRedirection(),
             sprintf('Notification URL "%s" should deny regular user, got %d.', $url, $response->getStatusCode())
         );
     }
@@ -63,7 +63,7 @@ class NotificationAdminTest extends WebTestCase
             'data' => [
                 'formSlug' => 'stats-form',
                 'organizationSlug' => 'stats-org',
-                'organizationName' => 'Stats Org'
+                'organizationName' => 'Stats Org',
             ],
         ]);
         $this->em->persist($notification);
@@ -152,11 +152,10 @@ class NotificationAdminTest extends WebTestCase
 
         $response = $this->client->getResponse();
         $this->assertTrue(
-            $response->isSuccessful() || $response->getStatusCode() === 404,
+            $response->isSuccessful() || 404 === $response->getStatusCode(),
             sprintf('Notification URL "%s" should be accessible by admin, got %d.', $url, $response->getStatusCode())
         );
     }
-
 
     /**
      * @return iterable<array<int,string>>

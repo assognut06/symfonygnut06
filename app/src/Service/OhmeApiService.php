@@ -12,9 +12,10 @@ class OhmeApiService
     {
         $this->client = $client;
     }
-/**
- * @param array<mixed> $params
- */
+
+    /**
+     * @param array<mixed> $params
+     */
     public function getContacts(array $params, string $object, string $method = 'GET'): mixed
     {
         // La base_uri et les en-têtes d'authentification (client-name / client-secret)

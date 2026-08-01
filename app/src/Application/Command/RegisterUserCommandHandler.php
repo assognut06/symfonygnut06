@@ -16,7 +16,7 @@ class RegisterUserCommandHandler
     public function __construct(
         private readonly UserRepositoryInterface $userRepository,
         private readonly PasswordHasherInterface $passwordHasher,
-        private readonly EventDispatcherInterface $eventDispatcher
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -25,7 +25,7 @@ class RegisterUserCommandHandler
         // Create user with proper encapsulation
         $user = new User();
         $user->setEmail($command->getEmail());
-        
+
         $hashedPassword = $this->passwordHasher->hashPassword(
             $user,
             $command->getPlainPassword()

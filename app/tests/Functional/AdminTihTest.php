@@ -103,7 +103,7 @@ class AdminTihTest extends WebTestCase
     {
         $this->loginAsAdmin();
 
-        for ($i = 0; $i < 11; $i++) {
+        for ($i = 0; $i < 11; ++$i) {
             $this->createTihUser(sprintf('paginated-tih-%d@test.com', $i));
         }
 
@@ -121,7 +121,7 @@ class AdminTihTest extends WebTestCase
 
         $this->createStoredFile((string) static::getContainer()->getParameter('cv_tih_directory'), 'admin-cv.pdf', 'cv');
 
-        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/cv');
+        $this->client->request('GET', '/admin/tih/'.$tih->getId().'/cv');
 
         $this->assertInlineDownloadResponse('admin-cv.pdf');
     }
@@ -134,9 +134,9 @@ class AdminTihTest extends WebTestCase
         $this->em->flush();
 
         $projectDir = (string) static::getContainer()->getParameter('kernel.project_dir');
-        $this->createStoredFile($projectDir . '/public/uploads/tihcv', 'legacy-admin-cv.pdf', 'legacy-cv');
+        $this->createStoredFile($projectDir.'/public/uploads/tihcv', 'legacy-admin-cv.pdf', 'legacy-cv');
 
-        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/cv');
+        $this->client->request('GET', '/admin/tih/'.$tih->getId().'/cv');
 
         $this->assertInlineDownloadResponse('legacy-admin-cv.pdf');
     }
@@ -148,7 +148,7 @@ class AdminTihTest extends WebTestCase
         $tih->setCv('missing-admin-cv.pdf');
         $this->em->flush();
 
-        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/cv');
+        $this->client->request('GET', '/admin/tih/'.$tih->getId().'/cv');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -171,7 +171,7 @@ class AdminTihTest extends WebTestCase
 
         $this->createStoredFile((string) static::getContainer()->getParameter('attestation_tih_directory'), 'admin-attestation.pdf', 'attestation');
 
-        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/attestation');
+        $this->client->request('GET', '/admin/tih/'.$tih->getId().'/attestation');
 
         $this->assertInlineDownloadResponse('admin-attestation.pdf');
     }
@@ -181,7 +181,7 @@ class AdminTihTest extends WebTestCase
         $this->loginAsAdmin();
         $tih = $this->createSearchableTih(['email' => 'attestation-missing@example.com']);
 
-        $this->client->request('GET', '/admin/tih/' . $tih->getId() . '/attestation');
+        $this->client->request('GET', '/admin/tih/'.$tih->getId().'/attestation');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -194,7 +194,7 @@ class AdminTihTest extends WebTestCase
         $tih->setIsValidate(false);
         $this->em->flush();
 
-        $this->client->request('POST', '/admin/tih/validate/' . $tih->getId(), [
+        $this->client->request('POST', '/admin/tih/validate/'.$tih->getId(), [
             '_token' => 'invalid_token',
         ]);
 
@@ -212,7 +212,7 @@ class AdminTihTest extends WebTestCase
         $tih->setValidationMessage('Profil incomplet');
         $this->em->flush();
 
-        $this->client->request('POST', '/admin/tih/validate/' . $tih->getId(), [
+        $this->client->request('POST', '/admin/tih/validate/'.$tih->getId(), [
             '_token' => $this->getAdminTihCsrfToken('validate', $tih->getId()),
         ]);
 
@@ -231,7 +231,7 @@ class AdminTihTest extends WebTestCase
         $tih->setIsValidate(true);
         $this->em->flush();
 
-        $this->client->request('POST', '/admin/tih/refuse/' . $tih->getId(), [
+        $this->client->request('POST', '/admin/tih/refuse/'.$tih->getId(), [
             '_token' => $this->getAdminTihCsrfToken('refuse', $tih->getId()),
             'rejection_reason' => 'Documents manquants',
         ]);
@@ -269,7 +269,7 @@ class AdminTihTest extends WebTestCase
         $this->em->persist($initialApproval);
         $this->em->flush();
 
-        $this->client->request('POST', '/admin/tih/refuse/' . $tihId, [
+        $this->client->request('POST', '/admin/tih/refuse/'.$tihId, [
             '_token' => $this->getAdminTihCsrfToken('refuse', $tihId),
             'rejection_reason' => 'Merci de remplacer l’attestation.',
         ]);
@@ -277,7 +277,7 @@ class AdminTihTest extends WebTestCase
         $this->assertResponseRedirects('/admin/tih');
         self::assertEmailCount(1);
 
-        $this->client->request('POST', '/admin/tih/validate/' . $tihId, [
+        $this->client->request('POST', '/admin/tih/validate/'.$tihId, [
             '_token' => $this->getAdminTihCsrfToken('validate', $tihId),
         ]);
 
@@ -315,7 +315,7 @@ class AdminTihTest extends WebTestCase
         $this->em->persist($initialSubmission);
         $this->em->flush();
 
-        $this->client->request('POST', '/admin/tih/refuse/' . $tihId, [
+        $this->client->request('POST', '/admin/tih/refuse/'.$tihId, [
             '_token' => $this->getAdminTihCsrfToken('refuse', $tihId),
             'rejection_reason' => 'Un document complémentaire est nécessaire.',
         ]);
@@ -348,7 +348,7 @@ class AdminTihTest extends WebTestCase
         $admin = $this->em->getRepository(User::class)->find($adminId);
         $this->assertNotNull($admin);
         $this->loginAs($admin);
-        $this->client->request('POST', '/admin/tih/validate/' . $tihId, [
+        $this->client->request('POST', '/admin/tih/validate/'.$tihId, [
             '_token' => $this->getAdminTihCsrfToken('validate', $tihId),
         ]);
 
@@ -377,7 +377,7 @@ class AdminTihTest extends WebTestCase
         $tih->setIsValidate(true);
         $this->em->flush();
 
-        $this->client->request('POST', '/admin/tih/refuse/' . $tih->getId(), [
+        $this->client->request('POST', '/admin/tih/refuse/'.$tih->getId(), [
             '_token' => $this->getAdminTihCsrfToken('refuse', $tih->getId()),
             'rejection_reason' => '   ',
         ]);
@@ -397,10 +397,10 @@ class AdminTihTest extends WebTestCase
         $token = $this->getAdminTihCsrfToken('refuse', $tih->getId());
 
         $payload = ['_token' => $token, 'rejection_reason' => 'Merci de corriger le document.'];
-        $this->client->request('POST', '/admin/tih/refuse/' . $tih->getId(), $payload);
+        $this->client->request('POST', '/admin/tih/refuse/'.$tih->getId(), $payload);
         self::assertEmailCount(1);
 
-        $this->client->request('POST', '/admin/tih/refuse/' . $tih->getId(), $payload);
+        $this->client->request('POST', '/admin/tih/refuse/'.$tih->getId(), $payload);
 
         self::assertEmailCount(0);
         $this->assertCount(1, $this->em->getRepository(TihApplicationEvent::class)->findBy([
@@ -428,8 +428,8 @@ class AdminTihTest extends WebTestCase
         $this->em->flush();
 
         $eventId = $event->getId();
-        $token = $this->generateCsrfToken('retry_tih_rejection_email' . $eventId);
-        $this->client->request('POST', '/admin/tih/rejection/' . $eventId . '/retry-email', [
+        $token = $this->generateCsrfToken('retry_tih_rejection_email'.$eventId);
+        $this->client->request('POST', '/admin/tih/rejection/'.$eventId.'/retry-email', [
             '_token' => $token,
         ]);
 
@@ -451,7 +451,7 @@ class AdminTihTest extends WebTestCase
             'status' => TihApplicationEvent::STATUS_REFUSED,
         ]));
 
-        $this->client->request('POST', '/admin/tih/rejection/' . $eventId . '/retry-email', [
+        $this->client->request('POST', '/admin/tih/rejection/'.$eventId.'/retry-email', [
             '_token' => $token,
         ]);
 
@@ -474,7 +474,7 @@ class AdminTihTest extends WebTestCase
         $tih->setIsValidate(true);
         $this->em->flush();
 
-        $this->client->request('POST', '/admin/tih/refuse/' . $tih->getId(), [
+        $this->client->request('POST', '/admin/tih/refuse/'.$tih->getId(), [
             '_token' => 'invalid_token',
         ]);
 
@@ -490,7 +490,7 @@ class AdminTihTest extends WebTestCase
         $tih = $tihUser->getTih();
         $tihId = $tih->getId();
 
-        $this->client->request('POST', '/admin/tih/delete/' . $tihId, [
+        $this->client->request('POST', '/admin/tih/delete/'.$tihId, [
             '_method' => 'DELETE',
             '_token' => $this->getAdminTihCsrfToken('delete', $tihId),
         ]);
@@ -505,7 +505,7 @@ class AdminTihTest extends WebTestCase
         $tihUser = $this->createTihUser();
         $tih = $tihUser->getTih();
 
-        $this->client->request('POST', '/admin/tih/delete/' . $tih->getId(), [
+        $this->client->request('POST', '/admin/tih/delete/'.$tih->getId(), [
             '_method' => 'POST',
             '_token' => $this->getAdminTihCsrfToken('delete', $tih->getId()),
         ]);
@@ -520,7 +520,7 @@ class AdminTihTest extends WebTestCase
         $tihUser = $this->createTihUser();
         $tih = $tihUser->getTih();
 
-        $this->client->request('POST', '/admin/tih/delete/' . $tih->getId(), [
+        $this->client->request('POST', '/admin/tih/delete/'.$tih->getId(), [
             '_method' => 'DELETE',
             '_token' => 'invalid_token',
         ]);
@@ -540,7 +540,7 @@ class AdminTihTest extends WebTestCase
         $this->em->remove($tih);
         $this->em->flush();
 
-        $this->client->request('POST', '/admin/tih/validate/' . $id, ['_token' => $token]);
+        $this->client->request('POST', '/admin/tih/validate/'.$id, ['_token' => $token]);
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -556,7 +556,7 @@ class AdminTihTest extends WebTestCase
         $this->em->remove($tih);
         $this->em->flush();
 
-        $this->client->request('POST', '/admin/tih/refuse/' . $id, ['_token' => $token]);
+        $this->client->request('POST', '/admin/tih/refuse/'.$id, ['_token' => $token]);
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -572,7 +572,7 @@ class AdminTihTest extends WebTestCase
         $this->em->remove($tih);
         $this->em->flush();
 
-        $this->client->request('POST', '/admin/tih/delete/' . $id, [
+        $this->client->request('POST', '/admin/tih/delete/'.$id, [
             '_method' => 'DELETE',
             '_token' => $token,
         ]);
@@ -586,7 +586,7 @@ class AdminTihTest extends WebTestCase
             mkdir($directory, 0777, true);
         }
 
-        $path = rtrim($directory, '/') . '/' . $filename;
+        $path = rtrim($directory, '/').'/'.$filename;
         file_put_contents($path, $contents);
         $this->createdFiles[] = $path;
     }

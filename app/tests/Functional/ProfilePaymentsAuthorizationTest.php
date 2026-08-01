@@ -45,6 +45,7 @@ class ProfilePaymentsAuthorizationTest extends WebTestCase
 
     /**
      * @dataProvider malformedPaymentDataProvider
+     *
      * @param array<string, mixed> $response
      */
     public function testMalformedPaymentDataDisplaysAnEmptyList(array $response): void
@@ -85,7 +86,7 @@ class ProfilePaymentsAuthorizationTest extends WebTestCase
             ]);
         static::getContainer()->set(HelloAssoApiService::class, $helloAssoApi);
 
-        $this->client->request('GET', '/profil/payments/' . $page);
+        $this->client->request('GET', '/profil/payments/'.$page);
 
         $this->assertResponseIsSuccessful();
         $nav = 'nav[aria-label="Pagination des paiements"]';
@@ -95,19 +96,19 @@ class ProfilePaymentsAuthorizationTest extends WebTestCase
             return;
         }
 
-        $this->assertSelectorTextContains($nav . ' [aria-current="page"]', (string) $page);
+        $this->assertSelectorTextContains($nav.' [aria-current="page"]', (string) $page);
         $router = static::getContainer()->get('router');
         if (1 < $page) {
             $previousUrl = $router->generate('app_profil_page', ['donnees' => 'payments', 'page' => $page - 1]);
-            $this->assertSelectorExists($nav . ' a[rel="prev"][href="' . $previousUrl . '"]');
+            $this->assertSelectorExists($nav.' a[rel="prev"][href="'.$previousUrl.'"]');
         } else {
-            $this->assertSelectorNotExists($nav . ' a[rel="prev"]');
+            $this->assertSelectorNotExists($nav.' a[rel="prev"]');
         }
         if ($totalPages > $page) {
             $nextUrl = $router->generate('app_profil_page', ['donnees' => 'payments', 'page' => $page + 1]);
-            $this->assertSelectorExists($nav . ' a[rel="next"][href="' . $nextUrl . '"]');
+            $this->assertSelectorExists($nav.' a[rel="next"][href="'.$nextUrl.'"]');
         } else {
-            $this->assertSelectorNotExists($nav . ' a[rel="next"]');
+            $this->assertSelectorNotExists($nav.' a[rel="next"]');
         }
         if ($emptyPage) {
             $this->assertSelectorCount(0, '#profile-content [role="listitem"]');

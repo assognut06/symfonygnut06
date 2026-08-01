@@ -32,22 +32,27 @@ class SuperGlobalCall
     {
         return $this->value2;
     }
+
     public function getValue3(): string
     {
         return $this->value3;
     }
+
     public function getValue4(): string
     {
         return $this->value4;
     }
+
     public function getValue5(): string
     {
         return $this->value5;
     }
+
     public function getValue6(): string
     {
         return $this->value6;
     }
+
     public function getValue7(): string
     {
         return $this->value7;

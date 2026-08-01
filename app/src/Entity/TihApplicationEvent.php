@@ -83,28 +83,67 @@ class TihApplicationEvent
         $this->emailStatus = self::STATUS_REFUSED === $status ? self::EMAIL_PENDING : null;
     }
 
-    public function getId(): ?int { return $this->id; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getTih(): Tih { return $this->tih; }
-    public function setTih(Tih $tih): self { $this->tih = $tih; return $this; }
+    public function getTih(): Tih
+    {
+        return $this->tih;
+    }
 
-    public function getActor(): ?User { return $this->actor; }
+    public function setTih(Tih $tih): self
+    {
+        $this->tih = $tih;
 
-    public function getStatus(): string { return $this->status; }
+        return $this;
+    }
 
-    public function getReason(): ?string { return $this->reason; }
+    public function getActor(): ?User
+    {
+        return $this->actor;
+    }
 
-    public function getOccurredAt(): \DateTimeImmutable { return $this->occurredAt; }
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
 
-    public function getSource(): ?string { return $this->source; }
+    public function getReason(): ?string
+    {
+        return $this->reason;
+    }
 
-    public function getEmailStatus(): ?string { return $this->emailStatus; }
+    public function getOccurredAt(): \DateTimeImmutable
+    {
+        return $this->occurredAt;
+    }
 
-    public function getEmailSentAt(): ?\DateTimeImmutable { return $this->emailSentAt; }
+    public function getSource(): ?string
+    {
+        return $this->source;
+    }
 
-    public function getEmailError(): ?string { return $this->emailError; }
+    public function getEmailStatus(): ?string
+    {
+        return $this->emailStatus;
+    }
 
-    public function isRefusal(): bool { return self::STATUS_REFUSED === $this->status; }
+    public function getEmailSentAt(): ?\DateTimeImmutable
+    {
+        return $this->emailSentAt;
+    }
+
+    public function getEmailError(): ?string
+    {
+        return $this->emailError;
+    }
+
+    public function isRefusal(): bool
+    {
+        return self::STATUS_REFUSED === $this->status;
+    }
 
     public function markEmailPending(): self
     {

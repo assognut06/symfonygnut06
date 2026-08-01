@@ -15,7 +15,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @extends AbstractType<TihContactDTO>
  */
-
 class TihContactType extends AbstractType
 {
     private const NAME_MAX_LENGTH = 80;

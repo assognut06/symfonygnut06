@@ -40,6 +40,7 @@ class EntrepriseTihMessage
     public function setMessage(string $message): static
     {
         $this->message = $message;
+
         return $this;
     }
 
@@ -51,6 +52,7 @@ class EntrepriseTihMessage
     public function setDateCandidature(\DateTimeInterface $date): static
     {
         $this->dateCandidature = $date;
+
         return $this;
     }
 
@@ -62,6 +64,7 @@ class EntrepriseTihMessage
     public function setEntreprise(?Entreprise $entreprise): static
     {
         $this->entreprise = $entreprise;
+
         return $this;
     }
 
@@ -73,6 +76,7 @@ class EntrepriseTihMessage
     public function setTih(?Tih $tih): static
     {
         $this->tih = $tih;
+
         return $this;
     }
 }

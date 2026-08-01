@@ -79,9 +79,9 @@ class RecaptchaVerifierTest extends TestCase
                 'https://www.google.com/recaptcha/api/siteverify',
                 $this->callback(function ($options) {
                     return isset($options['body']['secret'])
-                        && $options['body']['secret'] === 'my-secret'
+                        && 'my-secret' === $options['body']['secret']
                         && isset($options['body']['response'])
-                        && $options['body']['response'] === 'test-token';
+                        && 'test-token' === $options['body']['response'];
                 })
             )
             ->willReturn($response);

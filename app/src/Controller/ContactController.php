@@ -1,17 +1,18 @@
 <?php
+
 // src/Controller/ContactController.php
 
 namespace App\Controller;
 
 use App\Form\ContactType;
+use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
-use GuzzleHttp\Client;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ContactController extends AbstractController
 {
@@ -21,7 +22,8 @@ class ContactController extends AbstractController
         private string $appEnv,
         private string $fromEmail,
         private string $adminEmail,
-    ) {}
+    ) {
+    }
 
     #[Route('/contact', name: 'app_contact')]
     public function contact(Request $request, MailerInterface $mailer): Response
@@ -39,7 +41,7 @@ class ContactController extends AbstractController
             if (empty($errors)) {
                 $recaptchaError = $this->verifyRecaptcha($request);
 
-                if ($recaptchaError !== null) {
+                if (null !== $recaptchaError) {
                     $errors[] = $recaptchaError;
                 }
             }
@@ -61,7 +63,7 @@ class ContactController extends AbstractController
                     ->to($this->adminEmail)
                     ->subject('Message du site Gnut06.org')
                     ->text($body);
- 
+
                 try {
                     $mailer->send($emailMessage);
                     $messageEnvoye = true;
@@ -81,6 +83,7 @@ class ContactController extends AbstractController
 
     /**
      * @param FormInterface<covariant array<mixed>|null> $form
+     *
      * @return string[]
      */
     private function getFormErrorMessages(FormInterface $form): array
@@ -102,11 +105,11 @@ class ContactController extends AbstractController
 
         $recaptchaResponse = trim((string) $request->request->get('g-recaptcha-response', ''));
 
-        if ($this->nocaptchaSecret === '') {
+        if ('' === $this->nocaptchaSecret) {
             return 'La vérification anti-spam est temporairement indisponible.';
         }
 
-        if ($recaptchaResponse === '') {
+        if ('' === $recaptchaResponse) {
             return 'La vérification reCAPTCHA a échoué. Veuillez réessayer.';
         }
 

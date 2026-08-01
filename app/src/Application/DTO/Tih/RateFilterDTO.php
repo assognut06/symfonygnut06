@@ -8,5 +8,6 @@ final readonly class RateFilterDTO
         public ?float $minRate,
         public ?float $maxRate,
         public ?string $rateType,
-    ) {}
+    ) {
+    }
 }

@@ -6,10 +6,10 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -40,7 +40,7 @@ class OutlookAuthenticator extends OAuth2Authenticator implements Authentication
 
     public function supports(Request $request): ?bool
     {
-        return $request->attributes->get('_route') === 'connect_outlook_check';
+        return 'connect_outlook_check' === $request->attributes->get('_route');
     }
 
     public function authenticate(Request $request): Passport
@@ -57,7 +57,7 @@ class OutlookAuthenticator extends OAuth2Authenticator implements Authentication
             $azureId = $azureUser->getId();
 
             // Log des données reçues pour debug
-            error_log('Azure user data: ' . json_encode($azureData));
+            error_log('Azure user data: '.json_encode($azureData));
 
             // Essayer différents champs pour récupérer l'email
             $email = $azureData['mail'] ??
@@ -69,8 +69,8 @@ class OutlookAuthenticator extends OAuth2Authenticator implements Authentication
                      null;
 
             if (!$email) {
-                error_log('Aucun email trouvé dans les données Azure: ' . json_encode($azureData));
-                throw new AuthenticationException('Impossible de récupérer l\'email depuis Microsoft Azure. Données reçues: ' . json_encode(array_keys($azureData)));
+                error_log('Aucun email trouvé dans les données Azure: '.json_encode($azureData));
+                throw new AuthenticationException('Impossible de récupérer l\'email depuis Microsoft Azure. Données reçues: '.json_encode(array_keys($azureData)));
             }
 
             // Chercher l'utilisateur par azureId d'abord, puis par email
@@ -86,12 +86,10 @@ class OutlookAuthenticator extends OAuth2Authenticator implements Authentication
                     $currentUser = $this->security->getUser();
 
                     if (!$currentUser instanceof User || $currentUser->getId() !== $user->getId()) {
-                        throw new CustomUserMessageAuthenticationException(
-                            'Un compte existe déjà avec cet email. Connectez-vous d’abord avec votre mot de passe, puis liez Microsoft depuis votre profil.'
-                        );
+                        throw new CustomUserMessageAuthenticationException('Un compte existe déjà avec cet email. Connectez-vous d’abord avec votre mot de passe, puis liez Microsoft depuis votre profil.');
                     }
 
-                    if ($user->getAzureId() !== null && $user->getAzureId() !== $azureId) {
+                    if (null !== $user->getAzureId() && $user->getAzureId() !== $azureId) {
                         throw new CustomUserMessageAuthenticationException('Ce compte Microsoft ne correspond pas au compte déjà lié à votre profil.');
                     }
 
@@ -124,7 +122,7 @@ class OutlookAuthenticator extends OAuth2Authenticator implements Authentication
         } catch (AuthenticationException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new AuthenticationException('Erreur lors de la connexion avec Outlook: ' . $e->getMessage());
+            throw new AuthenticationException('Erreur lors de la connexion avec Outlook: '.$e->getMessage());
         }
     }
 
@@ -132,20 +130,21 @@ class OutlookAuthenticator extends OAuth2Authenticator implements Authentication
     {
         // Rediriger vers le profil utilisateur après connexion réussie
         $targetUrl = $this->router->generate('app_profil');
+
         return new RedirectResponse($targetUrl);
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         // Log l'erreur pour le debug
-        error_log('Outlook authentication failed: ' . $exception->getMessage());
-        error_log('Request URI: ' . $request->getUri());
-        error_log('Request parameters: ' . json_encode($request->query->all()));
+        error_log('Outlook authentication failed: '.$exception->getMessage());
+        error_log('Request URI: '.$request->getUri());
+        error_log('Request parameters: '.json_encode($request->query->all()));
 
         // Ajouter un message flash pour l'utilisateur
         if ($request->hasSession()) {
             $session = $request->getSession();
-            $session->set('_flash_error', 'Erreur de connexion avec Microsoft: ' . $exception->getMessage());
+            $session->set('_flash_error', 'Erreur de connexion avec Microsoft: '.$exception->getMessage());
         }
 
         return new RedirectResponse($this->router->generate('app_login'));

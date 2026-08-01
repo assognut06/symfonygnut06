@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Service;
 
 use App\Entity\AssoRecommander;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 
 class AssoRecommanderService
 {
@@ -16,7 +16,7 @@ class AssoRecommanderService
         $this->entityManager = $entityManager;
     }
 
-    public function createdAssoRecommanderFromApi(string $organizationSlug) :?AssoRecommander
+    public function createdAssoRecommanderFromApi(string $organizationSlug): ?AssoRecommander
     {
         $url = "https://api.helloasso.com/v5/organizations/{$organizationSlug}";
         $data = $this->helloAssoApiService->makeApiCall($url);
@@ -38,58 +38,55 @@ class AssoRecommanderService
         return null;
     }
 
-    public function updateAssoRecommanderFromApi(AssoRecommander $assoRecommander) :AssoRecommander|string    {
+    public function updateAssoRecommanderFromApi(AssoRecommander $assoRecommander): AssoRecommander|string
+    {
         // $assos = $this->entityManager->getRepository(AssoRecommander::class)->findAll();
 
         // foreach ($assos as $asso) {
-            $url = "https://api.helloasso.com/v5/organizations/{$assoRecommander->getOrganizationSlug()}";
-            $data = $this->helloAssoApiService->makeApiCall($url);
+        $url = "https://api.helloasso.com/v5/organizations/{$assoRecommander->getOrganizationSlug()}";
+        $data = $this->helloAssoApiService->makeApiCall($url);
 
-            // $assoRecommander = $asso;
-            if ($data) {
-                if($this->isDataChanged($assoRecommander, $data) === true)
+        // $assoRecommander = $asso;
+        if ($data) {
+            if (true === $this->isDataChanged($assoRecommander, $data)) {
                 $assoRecommander->fillFromApiData($data);
-                $assoRecommander->setUpdatedAt(new \DateTime());
-               
-                // Ici, vous pouvez persister $assoRecommander avec EntityManager si nécessaire
-                // dd($assoRecommander);
-                $this->entityManager->persist($assoRecommander);
-                $this->entityManager->flush();
-                return $assoRecommander;
-            } else  if ($this->isDataChanged($assoRecommander, $data) === false) {
-                return "Pas de mise à jour requis pour le moment";
-            } else {
-                return "Pas de données à changés";
             }
-        // }
+            $assoRecommander->setUpdatedAt(new \DateTime());
 
+            // Ici, vous pouvez persister $assoRecommander avec EntityManager si nécessaire
+            // dd($assoRecommander);
+            $this->entityManager->persist($assoRecommander);
+            $this->entityManager->flush();
+
+            return $assoRecommander;
+        } elseif (false === $this->isDataChanged($assoRecommander, $data)) {
+            return 'Pas de mise à jour requis pour le moment';
+        }
+
+        return 'Pas de données à changés';
+
+        // }
 
         // return null;
     }
-    
-    /**
-     * @param AssoRecommander $assoRecommander
-     * @param array<mixed> $data
-     * @return bool|string
-     */
 
-    public function isDataChanged(AssoRecommander $assoRecommander, array $data) :bool|string
+    /**
+     * @param array<mixed> $data
+     */
+    public function isDataChanged(AssoRecommander $assoRecommander, array $data): bool|string
     {
-        try{
-            if(count($data) > 0 ){
-                if($assoRecommander->getName() !== $data["name"] || $assoRecommander->getDescription() !== $data["description"] || $assoRecommander->getBanner() !== $data["banner"] || $assoRecommander->getUrl() !== $data["url"] || $assoRecommander->getLogo() !== $data["logo"] || $assoRecommander->isFiscalReceiptEligibility() !== $data["fiscalReceiptEligibility"] || $assoRecommander->isFiscalReceiptIssuanceEnabled() !== $data["fiscalReceiptIssuanceEnabled"] || $assoRecommander->getType() !== $data["type"] || $assoRecommander->getCategory() !== $data["category"]) {
+        try {
+            if (count($data) > 0) {
+                if ($assoRecommander->getName() !== $data['name'] || $assoRecommander->getDescription() !== $data['description'] || $assoRecommander->getBanner() !== $data['banner'] || $assoRecommander->getUrl() !== $data['url'] || $assoRecommander->getLogo() !== $data['logo'] || $assoRecommander->isFiscalReceiptEligibility() !== $data['fiscalReceiptEligibility'] || $assoRecommander->isFiscalReceiptIssuanceEnabled() !== $data['fiscalReceiptIssuanceEnabled'] || $assoRecommander->getType() !== $data['type'] || $assoRecommander->getCategory() !== $data['category']) {
                     return true;
-                } else {
-                    return false;
                 }
 
-            } else {
-                return "Pas de données dans le tableau";
+                return false;
             }
-        } catch(Exception $e) {
+
+            return 'Pas de données dans le tableau';
+        } catch (\Exception $e) {
             return $e;
         }
-            
     }
-    
 }

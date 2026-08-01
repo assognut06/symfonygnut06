@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Application\Command\RegisterUserCommand;
@@ -9,8 +10,8 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Message\Notification;
 use App\Repository\UserRepository;
-use App\Service\RecaptchaVerifier;
 use App\Service\EmailService;
+use App\Service\RecaptchaVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,8 +28,9 @@ class RegistrationController extends AbstractController
     public function __construct(
         private LoggerInterface $logger,
         private MessageBusInterface $bus,
-        private readonly string $nocaptchaSiteKey
-    ) {}
+        private readonly string $nocaptchaSiteKey,
+    ) {
+    }
 
     #[Route('/register', name: 'app_register')]
     public function register(
@@ -36,7 +38,7 @@ class RegistrationController extends AbstractController
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager,
         RecaptchaVerifier $recaptchaVerifier,
-        EmailService $emailService
+        EmailService $emailService,
     ): Response {
         $dto = new RegisterUserDTO();
         $form = $this->createForm(RegistrationFormType::class, $dto);
@@ -45,9 +47,10 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if (!$recaptchaVerifier->verify($request)) {
                 $this->addFlash('danger', 'La vérification reCAPTCHA a échoué. Veuillez réessayer.');
+
                 return $this->render('registration/register.html.twig', [
                     'registrationForm' => $form,
-                    'site_key' => $this->nocaptchaSiteKey
+                    'site_key' => $this->nocaptchaSiteKey,
                 ]);
             }
 
@@ -64,13 +67,13 @@ class RegistrationController extends AbstractController
                 $userPasswordHasher->hashPassword($user, $dto->plainPassword)
             );
 
-            if($dto->isTih === true) {
+            if (true === $dto->isTih) {
                 $user->setTih(new Tih());
             }
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->bus->dispatch(new Notification("L'inscription a été effectuée: " . $user->getUserIdentifier()));
+            $this->bus->dispatch(new Notification("L'inscription a été effectuée: ".$user->getUserIdentifier()));
 
             try {
                 $emailService->sendConfirmationEmail($user);
@@ -85,7 +88,7 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
-            'site_key' => $this->nocaptchaSiteKey
+            'site_key' => $this->nocaptchaSiteKey,
         ]);
     }
 
@@ -102,6 +105,7 @@ class RegistrationController extends AbstractController
 
         if (!$user) {
             $this->addFlash('info', 'Utilisateur déjà connecté. Vérifiez vos emails pour confirmer.');
+
             return $this->redirectToRoute('app_home');
         }
 
@@ -127,6 +131,7 @@ class RegistrationController extends AbstractController
         }
 
         $this->addFlash('success', 'Votre adresse e-mail a été vérifiée.');
+
         return $this->redirectToRoute('app_home');
     }
 
@@ -148,6 +153,7 @@ class RegistrationController extends AbstractController
         $user = $userRepository->find($currentUser->getId());
         if (!$user) {
             $this->addFlash('info', 'Utilisateur non trouvé ou déjà vérifié.');
+
             return $this->redirectToRoute('app_home');
         }
 

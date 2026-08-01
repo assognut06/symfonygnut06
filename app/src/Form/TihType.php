@@ -2,8 +2,8 @@
 
 namespace App\Form;
 
-use App\Entity\Tih;
 use App\Entity\Competence;
+use App\Entity\Tih;
 use App\Repository\CompetenceRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -23,7 +23,6 @@ use Symfony\Component\Validator\Constraints\File;
 /**
  * @extends AbstractType<Tih>
  */
-
 class TihType extends AbstractType
 {
     private const MAX_FILE_SIZE = '5M';
@@ -268,7 +267,7 @@ class TihType extends AbstractType
                         'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp'],
                         'mimeTypesMessage' => 'Veuillez télécharger une image JPEG, PNG ou WebP.',
                         'maxSizeMessage' => 'La photo ne peut pas dépasser {{ limit }} {{ suffix }}.',
-                    ])
+                    ]),
                 ],
             ])
             ->add('cv', FileType::class, [
@@ -286,7 +285,7 @@ class TihType extends AbstractType
                         'mimeTypes' => ['application/pdf'],
                         'mimeTypesMessage' => 'Veuillez télécharger un fichier PDF valide.',
                         'maxSizeMessage' => 'Le CV ne peut pas dépasser {{ limit }} {{ suffix }}.',
-                    ])
+                    ]),
                 ],
             ])
             ->add('competences', EntityType::class, [
@@ -336,7 +335,7 @@ class TihType extends AbstractType
                         'mimeTypes' => ['application/pdf'],
                         'mimeTypesMessage' => 'Veuillez télécharger un fichier PDF valide.',
                         'maxSizeMessage' => 'L’attestation ne peut pas dépasser {{ limit }} {{ suffix }}.',
-                    ])
+                    ]),
                 ],
             ]);
     }

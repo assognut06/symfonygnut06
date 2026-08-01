@@ -9,8 +9,10 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 class SearchTihQueryHandler
 {
     public function __construct(
-        private TihRepository $tihRepository
-    ) {}
+        private TihRepository $tihRepository,
+    ) {
+    }
+
     /**
      * @return Paginator<Tih>
      */

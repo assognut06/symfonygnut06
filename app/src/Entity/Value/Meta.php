@@ -27,7 +27,6 @@ class Meta
 
     /**
      * @param array{createdAt:?string,updatedAt:?string,createdBy:?string,updatedBy:?string} $data
-     * 
      */
     public static function fromArray(array $data): self
     {
@@ -36,63 +35,69 @@ class Meta
         $self->updatedAt = isset($data['updatedAt']) ? new \DateTimeImmutable($data['updatedAt']) : null;
         $self->createdBy = $data['createdBy'] ?? null;
         $self->updatedBy = $data['updatedBy'] ?? null;
+
         return $self;
     }
 
     // Getters/Setters
-    public function getCreatedAt(): ?\DateTimeImmutable 
-    { 
-        return $this->createdAt; 
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): self 
-    { 
-        $this->createdAt = $createdAt; 
-        return $this; 
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable 
-    { 
-        return $this->updatedAt; 
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self 
-    { 
-        $this->updatedAt = $updatedAt; 
-        return $this; 
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
-    public function getCreatedBy(): ?string 
-    { 
-        return $this->createdBy; 
+    public function getCreatedBy(): ?string
+    {
+        return $this->createdBy;
     }
 
-    public function setCreatedBy(?string $createdBy): self 
-    { 
-        $this->createdBy = $createdBy; 
-        return $this; 
+    public function setCreatedBy(?string $createdBy): self
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
     }
 
-    public function getUpdatedBy(): ?string 
-    { 
-        return $this->updatedBy; 
+    public function getUpdatedBy(): ?string
+    {
+        return $this->updatedBy;
     }
 
-    public function setUpdatedBy(?string $updatedBy): self 
-    { 
-        $this->updatedBy = $updatedBy; 
-        return $this; 
+    public function setUpdatedBy(?string $updatedBy): self
+    {
+        $this->updatedBy = $updatedBy;
+
+        return $this;
     }
 
     /**
-     * Met à jour les métadonnées de modification
+     * Met à jour les métadonnées de modification.
      */
     public function touch(?string $updatedBy = null): self
     {
         $this->updatedAt = new \DateTimeImmutable();
-        if ($updatedBy !== null) {
+        if (null !== $updatedBy) {
             $this->updatedBy = $updatedBy;
         }
+
         return $this;
     }
 }

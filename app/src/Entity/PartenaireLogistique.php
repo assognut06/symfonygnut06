@@ -3,8 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PartenaireLogistiqueRepository;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PartenaireLogistiqueRepository::class)]
 class PartenaireLogistique
@@ -42,6 +42,7 @@ class PartenaireLogistique
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -53,6 +54,7 @@ class PartenaireLogistique
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -64,6 +66,7 @@ class PartenaireLogistique
     public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
+
         return $this;
     }
 
@@ -75,6 +78,7 @@ class PartenaireLogistique
     public function setDateCreation(\DateTimeImmutable $date_creation): static
     {
         $this->date_creation = $date_creation;
+
         return $this;
     }
 
@@ -86,6 +90,7 @@ class PartenaireLogistique
     public function setDateMiseAJour(\DateTimeInterface $date_mise_a_jour): static
     {
         $this->date_mise_a_jour = $date_mise_a_jour;
+
         return $this;
     }
 }

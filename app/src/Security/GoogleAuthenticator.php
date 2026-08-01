@@ -3,19 +3,19 @@
 namespace App\Security;
 
 use App\Entity\User; // Assurez-vous que le chemin vers votre entité User est correct
+use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use League\OAuth2\Client\Provider\GoogleUser;
-use App\Service\EmailService;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -24,7 +24,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationEntrypointInterface
+class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
     private ClientRegistry $clientRegistry;
     private EntityManagerInterface $entityManager;
@@ -33,7 +33,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     private EmailService $emailService;
     private LoggerInterface $logger;
     private Security $security;
-  
+
     public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, EmailService $emailService, LoggerInterface $logger, Security $security)
     {
         $this->clientRegistry = $clientRegistry;
@@ -51,7 +51,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
      */
     public function supports(Request $request): ?bool
     {
-        return $request->attributes->get('_route') === 'connect_google_check';
+        return 'connect_google_check' === $request->attributes->get('_route');
     }
 
     /**
@@ -87,12 +87,10 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                     $currentUser = $this->security->getUser();
 
                     if (!$currentUser instanceof User || $currentUser->getId() !== $existingUser->getId()) {
-                        throw new CustomUserMessageAuthenticationException(
-                            'Un compte existe déjà avec cet email. Connectez-vous d’abord avec votre mot de passe, puis liez Google depuis votre profil.'
-                        );
+                        throw new CustomUserMessageAuthenticationException('Un compte existe déjà avec cet email. Connectez-vous d’abord avec votre mot de passe, puis liez Google depuis votre profil.');
                     }
 
-                    if ($existingUser->getGoogleId() !== null && $existingUser->getGoogleId() !== $googleId) {
+                    if (null !== $existingUser->getGoogleId() && $existingUser->getGoogleId() !== $googleId) {
                         throw new CustomUserMessageAuthenticationException('Ce compte Google ne correspond pas au compte déjà lié à votre profil.');
                     }
 
@@ -107,7 +105,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 $newUser = new User();
                 $newUser->setEmail($email);
                 $newUser->setGoogleId($googleId);
-                
+
                 // Le mot de passe n'est pas nécessaire pour une connexion sociale,
                 // mais notre entité User en requiert un. On lui assigne donc
                 // une longue chaîne de caractères aléatoire et sécurisée.
@@ -116,7 +114,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                     bin2hex(random_bytes(32))
                 );
                 $newUser->setPassword($hashedPassword);
-                
+
                 // Vous pouvez définir d'autres propriétés ici
                 // Par exemple, si vous avez une propriété `fullName` :
                 // $newUser->setFullName($googleUser->getName());
@@ -173,18 +171,20 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         $message = strtr($exception->getMessageKey(), $exception->getMessageData());
 
         if ($request->hasSession()) {
-            $session= $request->getSession();
-           if (!$session instanceof FlashBagAwareSessionInterface) {
-                throw new \LogicException(sprintf('You cannot use the getFlashBag method because class "%s" doesn\'t implement "%s".', get_debug_type($session), FlashBagAwareSessionInterface::class));            }
+            $session = $request->getSession();
+            if (!$session instanceof FlashBagAwareSessionInterface) {
+                throw new \LogicException(sprintf('You cannot use the getFlashBag method because class "%s" doesn\'t implement "%s".', get_debug_type($session), FlashBagAwareSessionInterface::class));
+            }
 
             $session->getFlashBag()->add('error', $message);
         }
-        
+
         return new RedirectResponse(
             $this->router->generate('app_login')
         );
     }
-     public function __toString(): string
+
+    public function __toString(): string
     {
         return self::class;
     }

@@ -16,6 +16,7 @@ class BoutiqueController extends AbstractController
             'controller_name' => 'BoutiqueController',
         ]);
     }
+
     #[Route('/innova', name: 'app_innova')]
     public function innova(): Response
     {

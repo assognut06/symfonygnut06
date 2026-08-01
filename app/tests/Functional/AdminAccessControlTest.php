@@ -33,7 +33,7 @@ class AdminAccessControlTest extends WebTestCase
 
         $response = $this->client->getResponse();
         $this->assertTrue(
-            $response->getStatusCode() === 403 || $response->isRedirection(),
+            403 === $response->getStatusCode() || $response->isRedirection(),
             sprintf('Admin URL "%s" should deny regular user, got %d.', $url, $response->getStatusCode())
         );
     }
@@ -85,7 +85,7 @@ class AdminAccessControlTest extends WebTestCase
         $tih->setIsValidate(false);
         $this->em->flush();
 
-        $this->client->request('POST', '/admin/tih/validate/' . $tih->getId(), [
+        $this->client->request('POST', '/admin/tih/validate/'.$tih->getId(), [
             '_token' => 'invalid_csrf_token',
         ]);
 

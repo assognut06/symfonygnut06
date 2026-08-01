@@ -1,9 +1,10 @@
 <?php
+
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HelloAssoAuthService
 {
@@ -48,7 +49,7 @@ class HelloAssoAuthService
             $dataToken = $response->toArray();
 
             $session->set('bearer_token', $dataToken['access_token']);
-            $session->set('expiration_token', (new \DateTime())->modify('+' . $dataToken['expires_in'] . ' seconds'));
+            $session->set('expiration_token', (new \DateTime())->modify('+'.$dataToken['expires_in'].' seconds'));
             if (isset($dataToken['refresh_token'])) {
                 $session->set('refresh_token', $dataToken['refresh_token']);
                 // Assuming the refresh token expires in 14 days

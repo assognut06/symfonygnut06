@@ -18,8 +18,8 @@ class SitemapController extends AbstractController
     #[Route('/sitemap.xml', name: 'sitemap', defaults: ['_format' => 'xml'])]
     public function index(): Response
     {
-         // Liste des URLs à inclure dans le sitemap
-         $urls = [
+        // Liste des URLs à inclure dans le sitemap
+        $urls = [
             ['loc' => $this->generateUrl('app_home', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '1.0'],
             ['loc' => $this->generateUrl('app_adhesion', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.9'],
             ['loc' => $this->generateUrl('app_don', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.9'],
@@ -37,7 +37,6 @@ class SitemapController extends AbstractController
             ['loc' => $this->generateUrl('app_plan_site', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.2'],
             ['loc' => $this->generateUrl('app_login', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.8'],
             ['loc' => $this->generateUrl('app_tih_search', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.8'],
-            
 
             // Ajoutez d'autres URLs ici
         ];

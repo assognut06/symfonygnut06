@@ -30,7 +30,8 @@ abstract class AbstractTihSearchController extends AbstractController
         protected CommandBus $commandBus,
         protected GeocodeService $geocodeService,
         protected string $googleMapsApiKey,
-    ) {}
+    ) {
+    }
 
     /**
      * @return array<string, mixed>
@@ -46,27 +47,27 @@ abstract class AbstractTihSearchController extends AbstractController
             'availability' => array_filter((array) ($queryParams['availability'] ?? [])),
         ];
 
-        if (isset($queryParams['minRate']) && $queryParams['minRate'] !== '') {
+        if (isset($queryParams['minRate']) && '' !== $queryParams['minRate']) {
             $filters['minRate'] = (float) $queryParams['minRate'];
         }
 
-        if (isset($queryParams['maxRate']) && $queryParams['maxRate'] !== '') {
+        if (isset($queryParams['maxRate']) && '' !== $queryParams['maxRate']) {
             $filters['maxRate'] = (float) $queryParams['maxRate'];
         }
 
-        if (isset($queryParams['rateType']) && $queryParams['rateType'] !== '' && $queryParams['rateType'] !== 'all') {
+        if (isset($queryParams['rateType']) && '' !== $queryParams['rateType'] && 'all' !== $queryParams['rateType']) {
             $filters['rateType'] = $queryParams['rateType'];
         }
 
-        if (isset($queryParams['availabilityPeriod']) && $queryParams['availabilityPeriod'] !== '') {
+        if (isset($queryParams['availabilityPeriod']) && '' !== $queryParams['availabilityPeriod']) {
             $period = $queryParams['availabilityPeriod'];
             $now = new \DateTime();
 
-            if ($period === '1') {
+            if ('1' === $period) {
                 $filters['availabilityDate'] = (clone $now)->modify('+1 month');
-            } elseif ($period === '3') {
+            } elseif ('3' === $period) {
                 $filters['availabilityDate'] = (clone $now)->modify('+3 months');
-            } elseif ($period === '3+') {
+            } elseif ('3+' === $period) {
                 $filters['availabilityDateAfter'] = (clone $now)->modify('+3 months');
             }
 
@@ -217,13 +218,13 @@ abstract class AbstractTihSearchController extends AbstractController
         string $storedFilename,
         string $uploadDirectory,
         string $legacyDirectory,
-        string $notFoundMessage
+        string $notFoundMessage,
     ): BinaryFileResponse {
         $fileName = basename($storedFilename);
-        $filePath = rtrim($uploadDirectory, '/') . '/' . $fileName;
+        $filePath = rtrim($uploadDirectory, '/').'/'.$fileName;
 
         if (!is_file($filePath)) {
-            $legacyPath = rtrim((string) $this->getParameter('kernel.project_dir'), '/') . '/' . trim($legacyDirectory, '/') . '/' . $fileName;
+            $legacyPath = rtrim((string) $this->getParameter('kernel.project_dir'), '/').'/'.trim($legacyDirectory, '/').'/'.$fileName;
 
             if (is_file($legacyPath)) {
                 $filePath = $legacyPath;

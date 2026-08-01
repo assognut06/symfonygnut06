@@ -15,24 +15,25 @@ class GeocodeService
         private readonly HttpClientInterface $httpClient,
         private readonly CacheInterface $cache,
         private readonly LoggerInterface $logger,
-        private readonly string $googleMapsApiKey
+        private readonly string $googleMapsApiKey,
     ) {
     }
 
     /**
      * Get coordinates for a city in France
-     * Uses cache to avoid repeated API calls
+     * Uses cache to avoid repeated API calls.
+     *
      * @return array{lat:mixed,lng:mixed}
      */
     public function getCityCoordinates(string $city): ?array
     {
-        $cacheKey = 'geocode_' . md5(strtolower($city) . '_france');
+        $cacheKey = 'geocode_'.md5(strtolower($city).'_france');
 
         try {
             return $this->cache->get($cacheKey, function (ItemInterface $item) use ($city) {
                 $item->expiresAfter(self::CACHE_TTL);
 
-                $address = urlencode($city . ', France');
+                $address = urlencode($city.', France');
                 $url = sprintf(
                     'https://maps.googleapis.com/maps/api/geocode/json?address=%s&key=%s',
                     $address,
@@ -42,24 +43,24 @@ class GeocodeService
                 $response = $this->httpClient->request('GET', $url);
                 $data = $response->toArray();
 
-                if ($data['status'] === 'OK' && !empty($data['results'][0])) {
+                if ('OK' === $data['status'] && !empty($data['results'][0])) {
                     $location = $data['results'][0]['geometry']['location'];
-                    
+
                     $this->logger->info('Geocoded city', [
                         'city' => $city,
                         'lat' => $location['lat'],
-                        'lng' => $location['lng']
+                        'lng' => $location['lng'],
                     ]);
 
                     return [
                         'lat' => $location['lat'],
-                        'lng' => $location['lng']
+                        'lng' => $location['lng'],
                     ];
                 }
 
                 $this->logger->warning('Geocoding failed', [
                     'city' => $city,
-                    'status' => $data['status']
+                    'status' => $data['status'],
                 ]);
 
                 return null;
@@ -67,22 +68,25 @@ class GeocodeService
         } catch (\Exception $e) {
             $this->logger->error('Geocoding error', [
                 'city' => $city,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }
 
     /**
      * Get coordinates for multiple cities at once
-     * Returns an associative array: ['CityName' => ['lat' => x, 'lng' => y]]
+     * Returns an associative array: ['CityName' => ['lat' => x, 'lng' => y]].
+     *
      * @param array<string> $cities
+     *
      * @return array<string,array{lat:mixed,lng:mixed}>
      */
     public function getCitiesCoordinates(array $cities): array
     {
         $coordinates = [];
-        
+
         foreach ($cities as $city) {
             if ($coords = $this->getCityCoordinates($city)) {
                 $coordinates[$city] = $coords;

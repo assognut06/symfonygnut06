@@ -15,7 +15,8 @@ class TihApplicationWorkflowService
         private EntityManagerInterface $entityManager,
         private TihEmailService $emailService,
         private LoggerInterface $logger,
-    ) {}
+    ) {
+    }
 
     /**
      * @return array{event: TihApplicationEvent, created: bool}|null

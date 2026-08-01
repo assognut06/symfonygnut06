@@ -44,7 +44,7 @@ class AdminDashboardXssTest extends WebTestCase
             {
             }
 
-            public function makeApiCall(string $url, array $headers = [], string $method = 'GET') :mixed
+            public function makeApiCall(string $url, array $headers = [], string $method = 'GET'): mixed
             {
                 $this->requestedUrls[] = $url;
 

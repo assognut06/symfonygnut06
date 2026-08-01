@@ -7,13 +7,13 @@ final readonly class CityFilterDTO
     public function __construct(
         public string $city,
         public string $postalCode,
-        public int $count
+        public int $count,
     ) {
     }
 
-/**
- * @param array{city:string,postalCode:string,count:int} $data
- */
+    /**
+     * @param array{city:string,postalCode:string,count:int} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(

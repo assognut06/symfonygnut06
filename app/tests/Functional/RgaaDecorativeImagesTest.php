@@ -127,7 +127,7 @@ class RgaaDecorativeImagesTest extends WebTestCase
         $images = $crawler->filter($selector);
 
         // La valeur -1 autorise un nombre variable d’occurrences, mais exige qu’au moins une image soit présente.
-        if ($expectedCount === -1) {
+        if (-1 === $expectedCount) {
             self::assertGreaterThan(0, $images->count(), sprintf('Au moins une image décorative est attendue pour le sélecteur "%s".', $selector));
         } else {
             self::assertCount($expectedCount, $images, sprintf('%d image(s) décorative(s) attendue(s) pour le sélecteur "%s".', $expectedCount, $selector));
@@ -161,7 +161,7 @@ class RgaaDecorativeImagesTest extends WebTestCase
         $image = $crawler->filter($selector);
 
         self::assertCount(1, $image, sprintf('L’image informative "%s" doit être présente.', $filename));
-        if ($expectedAlternative === null) {
+        if (null === $expectedAlternative) {
             self::assertNotSame('', $image->attr('alt'), sprintf('L’image informative "%s" doit conserver son alternative.', $filename));
         } else {
             self::assertSame($expectedAlternative, $image->attr('alt'), sprintf('L’alternative de l’image informative "%s" doit être exacte.', $filename));

@@ -137,7 +137,7 @@ class TihSearchTest extends WebTestCase
             'region' => 'PACA',
         ]);
 
-        $this->client->request('GET', '/tih/tih/' . $tih->getId());
+        $this->client->request('GET', '/tih/tih/'.$tih->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('body', 'Marie');
@@ -153,7 +153,7 @@ class TihSearchTest extends WebTestCase
             'lastName' => 'Me',
         ]);
 
-        $crawler = $this->client->request('GET', '/tih/tih/' . $tih->getId() . '/contact');
+        $crawler = $this->client->request('GET', '/tih/tih/'.$tih->getId().'/contact');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('body', 'Contact Me');

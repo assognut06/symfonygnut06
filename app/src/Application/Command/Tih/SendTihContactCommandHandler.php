@@ -11,8 +11,9 @@ final readonly class SendTihContactCommandHandler
 {
     public function __construct(
         private TihRepository $tihRepository,
-        private TihEmailService $emailService
-    ) {}
+        private TihEmailService $emailService,
+    ) {
+    }
 
     /**
      * @throws EntityNotFoundException
@@ -21,11 +22,9 @@ final readonly class SendTihContactCommandHandler
     public function __invoke(SendTihContactCommand $command): void
     {
         $tih = $this->tihRepository->find($command->tihId);
-        
+
         if (!$tih) {
-            throw new EntityNotFoundException(
-                sprintf('TIH with ID %d not found', $command->tihId)
-            );
+            throw new EntityNotFoundException(sprintf('TIH with ID %d not found', $command->tihId));
         }
 
         $this->emailService->sendContactEmail($tih, $command->contactData);

@@ -11,7 +11,8 @@ final readonly class TihContactViewModel
         public string $firstName,
         public string $lastName,
         public string $fullName,
-    ) {}
+    ) {
+    }
 
     public static function fromEntity(Tih $tih): self
     {
@@ -19,7 +20,7 @@ final readonly class TihContactViewModel
             id: $tih->getId(),
             firstName: $tih->getFirstName() ?? '',
             lastName: $tih->getLastName() ?? '',
-            fullName: trim(($tih->getFirstName() ?? '') . ' ' . ($tih->getLastName() ?? ''))
+            fullName: trim(($tih->getFirstName() ?? '').' '.($tih->getLastName() ?? ''))
         );
     }
 }

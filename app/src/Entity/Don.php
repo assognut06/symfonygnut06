@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Donateur;
 
 #[ORM\Entity(repositoryClass: DonRepository::class)]
 class Don
@@ -34,7 +33,7 @@ class Don
     private ?Donateur $donateur = null;
 
     /**
-     *  @var Collection<int,Casque>
+     * @var Collection<int,Casque>
      */
     #[ORM\OneToMany(mappedBy: 'don', targetEntity: Casque::class, cascade: ['persist', 'remove'])]
     private Collection $casques;
@@ -71,6 +70,7 @@ class Don
     public function setDateCreation(\DateTimeImmutable $date_creation): static
     {
         $this->date_creation = $date_creation;
+
         return $this;
     }
 
@@ -82,6 +82,7 @@ class Don
     public function setDateMiseAJour(\DateTimeInterface $date_mise_a_jour): static
     {
         $this->date_mise_a_jour = $date_mise_a_jour;
+
         return $this;
     }
 
@@ -93,6 +94,7 @@ class Don
     public function setStatut(string $statut): static
     {
         $this->statut = $statut;
+
         return $this;
     }
 
@@ -104,6 +106,7 @@ class Don
     public function setMessage(?string $message): static
     {
         $this->message = $message;
+
         return $this;
     }
 
@@ -115,6 +118,7 @@ class Don
     public function setDonateur(?Donateur $donateur): static
     {
         $this->donateur = $donateur;
+
         return $this;
     }
 
@@ -132,6 +136,7 @@ class Don
             $this->casques->add($casque);
             $casque->setDon($this);
         }
+
         return $this;
     }
 
@@ -142,6 +147,7 @@ class Don
                 $casque->setDon(null);
             }
         }
+
         return $this;
     }
 
@@ -153,6 +159,7 @@ class Don
     public function setModeLivraison(?ModeLivraison $modeLivraison): static
     {
         $this->modeLivraison = $modeLivraison;
+
         return $this;
     }
 
@@ -164,6 +171,7 @@ class Don
     public function setPartenaireLogistique(?PartenaireLogistique $partenaireLogistique): static
     {
         $this->partenaireLogistique = $partenaireLogistique;
+
         return $this;
     }
 
@@ -175,6 +183,7 @@ class Don
     public function setNumeroSuivi(?string $numero_suivi): static
     {
         $this->numero_suivi = $numero_suivi;
+
         return $this;
     }
 

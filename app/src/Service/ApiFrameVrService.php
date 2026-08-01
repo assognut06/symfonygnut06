@@ -1,4 +1,5 @@
 <?php
+
 // src/Service/ApiFrameVrService.php
 
 namespace App\Service;
@@ -22,10 +23,8 @@ class ApiFrameVrService
     }
 
     /**
-     * @param string $id
-     * @param string $object
-     * @param string $method
      * @return array<mixed>
+     *
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
      * @throws RedirectionExceptionInterface
@@ -34,11 +33,11 @@ class ApiFrameVrService
      */
     public function getSomeData(string $id, string $object, string $method = 'GET'): array
     {
-        $urlBaseApi = "https://api.framevr.io/automate/v1/";
-        $url =  $urlBaseApi . $object . '/' . $id;
+        $urlBaseApi = 'https://api.framevr.io/automate/v1/';
+        $url = $urlBaseApi.$object.'/'.$id;
         $headers = [
             'accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $this->apiKey,
+            'Authorization' => 'Bearer '.$this->apiKey,
         ];
         $response = $this->client->request(
             $method,

@@ -17,7 +17,8 @@ class HelloAssoTierRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve les tiers par formulaire
+     * Trouve les tiers par formulaire.
+     *
      * @return array<HelloAssoTier>
      */
     public function findByForm(string $formId): array
@@ -31,7 +32,7 @@ class HelloAssoTierRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve un tier par son ID externe
+     * Trouve un tier par son ID externe.
      */
     public function findByExternalId(int $externalId): ?HelloAssoTier
     {
@@ -39,7 +40,8 @@ class HelloAssoTierRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve les tiers favoris d'un formulaire
+     * Trouve les tiers favoris d'un formulaire.
+     *
      * @return array<HelloAssoTier>
      */
     public function findFavoritesByForm(string $formId): array
@@ -55,7 +57,8 @@ class HelloAssoTierRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve les tiers dans une gamme de prix
+     * Trouve les tiers dans une gamme de prix.
+     *
      * @return array<HelloAssoTier>
      */
     public function findByPriceRange(string $minPrice, string $maxPrice): array
@@ -71,7 +74,8 @@ class HelloAssoTierRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve les tiers éligibles au reçu fiscal
+     * Trouve les tiers éligibles au reçu fiscal.
+     *
      * @return array<HelloAssoTier>
      */
     public function findTaxReceiptEligible(): array

@@ -15,7 +15,8 @@ class OAuthTestController extends AbstractController
     public function __construct(
         private ?string $azureClientId,
         private ?string $googleClientId,
-    ) {}
+    ) {
+    }
 
     #[Route('/', name: 'oauth_test')]
     public function index(ClientRegistry $clientRegistry): Response
@@ -55,6 +56,7 @@ class OAuthTestController extends AbstractController
     {
         try {
             $client = $clientRegistry->getClient('azure');
+
             return $client->redirect([
                 'https://graph.microsoft.com/User.Read',
                 'https://graph.microsoft.com/profile',
@@ -64,7 +66,8 @@ class OAuthTestController extends AbstractController
                 'email',
             ], []);
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Erreur Azure: ' . $e->getMessage());
+            $this->addFlash('error', 'Erreur Azure: '.$e->getMessage());
+
             return $this->redirectToRoute('oauth_test');
         }
     }
@@ -89,14 +92,14 @@ class OAuthTestController extends AbstractController
                     'mail' => $userData['mail'] ?? 'NON TROUVÉ',
                     'userPrincipalName' => $userData['userPrincipalName'] ?? 'NON TROUVÉ',
                     'email' => $userData['email'] ?? 'NON TROUVÉ',
-                    'preferred_username' => $userData['preferred_username'] ?? 'NON TROUVÉ'
-                ]
+                    'preferred_username' => $userData['preferred_username'] ?? 'NON TROUVÉ',
+                ],
             ]);
         } catch (\Exception $e) {
             return $this->json([
                 'success' => false,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -107,9 +110,10 @@ class OAuthTestController extends AbstractController
         try {
             $client = $clientRegistry->getClient('google');
 
-            return $client->redirect([],[]);
+            return $client->redirect([], []);
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Erreur Google: ' . $e->getMessage());
+            $this->addFlash('error', 'Erreur Google: '.$e->getMessage());
+
             return $this->redirectToRoute('oauth_test');
         }
     }

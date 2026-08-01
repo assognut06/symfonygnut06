@@ -12,6 +12,7 @@ class Media
 
     #[ORM\Column(length: 2048, nullable: true)]
     private ?string $publicUrl = null;
+
     /**
      * @param array{fileName:?string,publicUrl:?string} $data
      */
@@ -20,13 +21,32 @@ class Media
         $self = new self();
         $self->fileName = $data['fileName'] ?? null;
         $self->publicUrl = $data['publicUrl'] ?? null;
+
         return $self;
     }
 
     // Getters/Setters
-    public function getFileName(): ?string { return $this->fileName; }
-    public function setFileName(?string $fileName): self { $this->fileName = $fileName; return $this; }
+    public function getFileName(): ?string
+    {
+        return $this->fileName;
+    }
 
-    public function getPublicUrl(): ?string { return $this->publicUrl; }
-    public function setPublicUrl(?string $publicUrl): self { $this->publicUrl = $publicUrl; return $this; }
+    public function setFileName(?string $fileName): self
+    {
+        $this->fileName = $fileName;
+
+        return $this;
+    }
+
+    public function getPublicUrl(): ?string
+    {
+        return $this->publicUrl;
+    }
+
+    public function setPublicUrl(?string $publicUrl): self
+    {
+        $this->publicUrl = $publicUrl;
+
+        return $this;
+    }
 }

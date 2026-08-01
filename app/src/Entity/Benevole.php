@@ -3,8 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BenevoleRepository;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BenevoleRepository::class)]
 class Benevole
@@ -25,7 +25,7 @@ class Benevole
 
     #[ORM\Column(type: 'string', length: 180)]
     protected ?string $email = null;
-    
+
     #[ORM\Column(length: 150, nullable: true)]
     private ?string $email_pro = null;
 
@@ -65,7 +65,6 @@ class Benevole
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $commentaire = null;
 
-
     public function getId(): ?int
     {
         return $this->id;
@@ -79,6 +78,7 @@ class Benevole
     public function setCivilite(string $civilite): static
     {
         $this->civilite = $civilite;
+
         return $this;
     }
 
@@ -90,6 +90,7 @@ class Benevole
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -101,6 +102,7 @@ class Benevole
     public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
+
         return $this;
     }
 
@@ -112,9 +114,10 @@ class Benevole
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
-    
+
     public function getEmailPro(): ?string
     {
         return $this->email_pro;
@@ -135,6 +138,7 @@ class Benevole
     public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
+
         return $this;
     }
 
@@ -146,6 +150,7 @@ class Benevole
     public function setAdresse1(string $adresse_1): static
     {
         $this->adresse_1 = $adresse_1;
+
         return $this;
     }
 
@@ -157,6 +162,7 @@ class Benevole
     public function setAdresse2(string $adresse_2): static
     {
         $this->adresse_2 = $adresse_2;
+
         return $this;
     }
 
@@ -168,6 +174,7 @@ class Benevole
     public function setCodePostal(string $code_postal): static
     {
         $this->code_postal = $code_postal;
+
         return $this;
     }
 
@@ -179,6 +186,7 @@ class Benevole
     public function setVille(string $ville): static
     {
         $this->ville = $ville;
+
         return $this;
     }
 
@@ -190,6 +198,7 @@ class Benevole
     public function setPays(string $pays): static
     {
         $this->pays = $pays;
+
         return $this;
     }
 
@@ -264,5 +273,4 @@ class Benevole
 
         return $this;
     }
-
 }

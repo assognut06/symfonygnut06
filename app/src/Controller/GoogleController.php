@@ -1,25 +1,24 @@
 <?php
- 
+
 namespace App\Controller;
- 
+
+use App\Entity\User;
+use App\Service\EmailService;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\User;
-use App\Service\EmailService;
-use Symfony\Bundle\SecurityBundle\Security;
-use Psr\Log\LoggerInterface;
 
- 
 class GoogleController extends AbstractController
 {
     private LoggerInterface $logger;
 
-    public function __construct( LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger)
     {
-        $this->logger = $logger;    
+        $this->logger = $logger;
     }
 
     #[Route('/connect/google', name: 'connect_google_start')]
@@ -28,29 +27,29 @@ class GoogleController extends AbstractController
         return $clientRegistry
             ->getClient('google')
             ->redirect([
-                'profile', 'email'
+                'profile', 'email',
             ], []);
     }
- 
+
     #[Route('/connect/google/check', name: 'connect_google_check')]
-    public function connectCheckAction(Request $request, Security $security, EmailService $emailService) : RedirectResponse
+    public function connectCheckAction(Request $request, Security $security, EmailService $emailService): RedirectResponse
     {
         $user = $this->getUser();
         if (($user instanceof User) && (!$user->isVerified())) {
             // Si l'utilisateur n'est pas encore vérifié, on envoie l'email de confirmation
-             try {
+            try {
                 $emailService->sendConfirmationEmail($user);
                 $this->addFlash('success', 'Un email de confirmation a été envoyé. Veuillez consulter votre boîte mail.');
             } catch (\Exception $e) {
                 $this->logger->error('Erreur envoi email de confirmation', ['exception' => $e]);
                 $this->addFlash('danger', 'Problème lors de l\'envoi du mail. Veuillez réessayer.');
             }
+
             return $this->redirectToRoute('app_profil');
         }
-        else{
-            $this->addFlash('danger', "Erreur lors de l'authentification Google. Veuillez réessayer ou contacter l'administrateur.");
-            return $this->redirectToRoute('app_login');
-        }
 
+        $this->addFlash('danger', "Erreur lors de l'authentification Google. Veuillez réessayer ou contacter l'administrateur.");
+
+        return $this->redirectToRoute('app_login');
     }
 }

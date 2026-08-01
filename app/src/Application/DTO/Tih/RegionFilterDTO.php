@@ -6,17 +6,18 @@ final readonly class RegionFilterDTO
 {
     public function __construct(
         public string $region,
-        public int $count
+        public int $count,
     ) {
     }
-/**
- * @param array{region:string,count:int} $data
- */
+
+    /**
+     * @param array{region:string,count:int} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
             region: $data['region'],
-            count: (int)$data['count']
+            count: (int) $data['count']
         );
     }
 }

@@ -23,8 +23,8 @@ class Place
     private ?string $country = null; // ex: FRA
 
     /**
-    * @param array{address:?string,name:?string,city:?string,zipCode:?string,country:?string} $data
-    */
+     * @param array{address:?string,name:?string,city:?string,zipCode:?string,country:?string} $data
+     */
     public static function fromArray(array $data): self
     {
         $self = new self();
@@ -33,22 +33,68 @@ class Place
         $self->city = $data['city'] ?? null;
         $self->zipCode = $data['zipCode'] ?? null;
         $self->country = $data['country'] ?? null;
+
         return $self;
     }
 
     // Getters/Setters
-    public function getAddress(): ?string { return $this->address; }
-    public function setAddress(?string $address): self { $this->address = $address; return $this; }
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
 
-    public function getName(): ?string { return $this->name; }
-    public function setName(?string $name): self { $this->name = $name; return $this; }
+    public function setAddress(?string $address): self
+    {
+        $this->address = $address;
 
-    public function getCity(): ?string { return $this->city; }
-    public function setCity(?string $city): self { $this->city = $city; return $this; }
+        return $this;
+    }
 
-    public function getZipCode(): ?string { return $this->zipCode; }
-    public function setZipCode(?string $zipCode): self { $this->zipCode = $zipCode; return $this; }
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
 
-    public function getCountry(): ?string { return $this->country; }
-    public function setCountry(?string $country): self { $this->country = $country; return $this; }
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getZipCode(): ?string
+    {
+        return $this->zipCode;
+    }
+
+    public function setZipCode(?string $zipCode): self
+    {
+        $this->zipCode = $zipCode;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): self
+    {
+        $this->country = $country;
+
+        return $this;
+    }
 }

@@ -6,12 +6,13 @@ final readonly class AvailabilityFilterDTO
 {
     public function __construct(
         public string $availability,
-        public int $count
+        public int $count,
     ) {
     }
-/**
- * @param array{availability:string,count:int} $data
- */
+
+    /**
+     * @param array{availability:string,count:int} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(

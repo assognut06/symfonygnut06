@@ -17,7 +17,8 @@ class HelloAssoTierCustomFieldRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve les champs par tier
+     * Trouve les champs par tier.
+     *
      * @return array<HelloAssoTierCustomField>
      */
     public function findByTier(string $tierId): array
@@ -31,7 +32,8 @@ class HelloAssoTierCustomFieldRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve les champs requis par tier
+     * Trouve les champs requis par tier.
+     *
      * @return array<HelloAssoTierCustomField>
      */
     public function findRequiredByTier(string $tierId): array
@@ -47,7 +49,7 @@ class HelloAssoTierCustomFieldRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve par ID externe
+     * Trouve par ID externe.
      */
     public function findByExternalId(int $externalId): ?HelloAssoTierCustomField
     {
@@ -55,7 +57,8 @@ class HelloAssoTierCustomFieldRepository extends ServiceEntityRepository
     }
 
     /**
-     * Trouve les champs par type
+     * Trouve les champs par type.
+     *
      * @return array<HelloAssoTierCustomField>
      */
     public function findByType(string $type): array
@@ -69,7 +72,7 @@ class HelloAssoTierCustomFieldRepository extends ServiceEntityRepository
     }
 
     /**
-     * Compte les champs obligatoires par tier
+     * Compte les champs obligatoires par tier.
      */
     public function countRequiredFieldsByTier(string $tierId): int
     {

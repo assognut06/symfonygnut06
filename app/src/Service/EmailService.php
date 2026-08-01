@@ -1,14 +1,15 @@
 <?php
+
 // src/Service/EmailService.php
+
 namespace App\Service;
 
 use App\Entity\User;
+use App\Security\EmailVerifier;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mime\Address;
-use App\Security\EmailVerifier;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class EmailService
 {
@@ -17,7 +18,8 @@ class EmailService
         private string $fromEmail,
         private ?LoggerInterface $logger = null,
         private ?string $logoPath = null,
-    ) {}
+    ) {
+    }
 
     public function sendConfirmationEmail(User $user): void
     {

@@ -22,6 +22,7 @@ class Societe extends Donateur
     public function setNomSociete(?string $nom_societe): static
     {
         $this->nom_societe = $nom_societe;
+
         return $this;
     }
 
@@ -33,6 +34,7 @@ class Societe extends Donateur
     public function setSiren(?string $siren): static
     {
         $this->siren = $siren;
+
         return $this;
     }
 }

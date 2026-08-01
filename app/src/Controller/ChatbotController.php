@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Throwable;
 
 final class ChatbotController extends AbstractController
 {
@@ -15,7 +14,8 @@ final class ChatbotController extends AbstractController
         private readonly HttpClientInterface $httpClient,
         private readonly string $openAiApiKey,
         private readonly string $openAiModel,
-    ) {}
+    ) {
+    }
 
     #[Route('/api/chatbot/ask', name: 'chatbot_ask', methods: ['POST'])]
     public function ask(Request $request): JsonResponse
@@ -38,7 +38,7 @@ final class ChatbotController extends AbstractController
 
         $message = trim((string) ($payload['message'] ?? ''));
 
-        if ($message === '') {
+        if ('' === $message) {
             return $this->json([
                 'error' => 'Le message est vide.',
             ], 400);
@@ -80,7 +80,7 @@ TXT;
         try {
             $response = $this->httpClient->request('POST', 'https://api.openai.com/v1/responses', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $this->openAiApiKey,
+                    'Authorization' => 'Bearer '.$this->openAiApiKey,
                 ],
                 'json' => [
                     'model' => $this->openAiModel,
@@ -103,23 +103,22 @@ TXT;
 
             $reply = $this->cleanBotReply($this->extractOutputText($data));
 
-            if ($reply === '') {
-                $reply = "Je suis désolé, je n’ai pas réussi à générer une réponse. Vous pouvez reformuler votre question.";
+            if ('' === $reply) {
+                $reply = 'Je suis désolé, je n’ai pas réussi à générer une réponse. Vous pouvez reformuler votre question.';
             }
 
             return $this->json([
                 'reply' => $reply,
             ]);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             return $this->json([
                 'error' => 'Le chatbot est momentanément indisponible.',
             ], 500);
         }
     }
 
-
     /**
-     * @return list<array{role:string,content:string}> 
+     * @return list<array{role:string,content:string}>
      */
     private function cleanHistory(mixed $history): array
     {
@@ -141,7 +140,7 @@ TXT;
                 continue;
             }
 
-            if ($content === '') {
+            if ('' === $content) {
                 continue;
             }
 

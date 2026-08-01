@@ -54,6 +54,7 @@ class SecurityHeadersTest extends WebTestCase
             sprintf('X-Frame-Options missing on %s', $route)
         );
     }
+
     /**
      * @return iterable<array<int,string>>
      */

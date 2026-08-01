@@ -89,7 +89,7 @@ abstract class WebTestCase extends BaseWebTestCase
         string $email = 'user@test.com',
         string $password = 'Test1234!',
         array $roles = [],
-        bool $verified = true
+        bool $verified = true,
     ): User {
         $hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
 
@@ -107,14 +107,14 @@ abstract class WebTestCase extends BaseWebTestCase
 
     protected function createAdmin(
         string $email = 'admin@test.com',
-        string $password = 'Admin1234!'
+        string $password = 'Admin1234!',
     ): User {
         return $this->createUser($email, $password, ['ROLE_ADMIN']);
     }
 
     protected function createTihUser(
         string $email = 'tih@test.com',
-        string $password = 'Tih1234!'
+        string $password = 'Tih1234!',
     ): User {
         $this->createSearchableTih([
             'email' => $email,
@@ -217,6 +217,7 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         $user = $this->createUser();
         $this->loginAs($user);
+
         return $user;
     }
 
@@ -224,6 +225,7 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         $admin = $this->createAdmin();
         $this->loginAs($admin);
+
         return $admin;
     }
 
@@ -237,21 +239,21 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function getAdminTihCsrfToken(string $action, int $tihId): string
     {
         return match ($action) {
-            'validate' => $this->generateCsrfToken('validate_tih' . $tihId),
-            'refuse' => $this->generateCsrfToken('refuse_tih' . $tihId),
-            'delete' => $this->generateCsrfToken('delete_tih' . $tihId),
+            'validate' => $this->generateCsrfToken('validate_tih'.$tihId),
+            'refuse' => $this->generateCsrfToken('refuse_tih'.$tihId),
+            'delete' => $this->generateCsrfToken('delete_tih'.$tihId),
             default => throw new \InvalidArgumentException(sprintf('Unknown TIH admin action "%s".', $action)),
         };
     }
 
     protected function getAdminUserPromoteCsrfToken(int $userId): string
     {
-        return $this->generateCsrfToken('promote_user' . $userId);
+        return $this->generateCsrfToken('promote_user'.$userId);
     }
 
     protected function getAdminUserDeleteCsrfToken(int $userId): string
     {
-        return $this->generateCsrfToken('delete' . $userId);
+        return $this->generateCsrfToken('delete'.$userId);
     }
 
     protected function submitLogin(string $email, string $password): void
@@ -331,7 +333,7 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function submitDeleteProfilePicture(int $userId): void
     {
         $this->client->request('POST', '/profile/delete-picture', [
-            '_token' => $this->generateCsrfToken('delete_profile_picture' . $userId),
+            '_token' => $this->generateCsrfToken('delete_profile_picture'.$userId),
         ]);
     }
 

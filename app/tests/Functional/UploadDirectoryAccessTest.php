@@ -35,7 +35,7 @@ final class UploadDirectoryAccessTest extends TestCase
      */
     public function testUploadDirectoryListingIsForbidden(string $directory): void
     {
-        $response = $this->httpClient->request('GET', $this->baseUrl . $directory, [
+        $response = $this->httpClient->request('GET', $this->baseUrl.$directory, [
             'max_redirects' => 0,
         ]);
 
