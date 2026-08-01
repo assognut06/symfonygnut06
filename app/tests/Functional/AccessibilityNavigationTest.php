@@ -8,6 +8,8 @@ final class AccessibilityNavigationTest extends WebTestCase
 {
     /**
      * @dataProvider auditedPageProvider
+     *
+     * @param list<string> $skipTargets
      */
     public function testAuditedPageHasExpectedLandmarksAndTabOrder(string $url, array $skipTargets): void
     {
@@ -46,6 +48,9 @@ final class AccessibilityNavigationTest extends WebTestCase
         $this->assertSkipTargetsAreFunctional($crawler, $skipTargets);
     }
 
+    /**
+     * @return iterable<string, array{0: string, 1: list<string>}>
+     */
     public static function auditedPageProvider(): iterable
     {
         yield 'Home' => ['/', ['#main-content']];
@@ -57,6 +62,9 @@ final class AccessibilityNavigationTest extends WebTestCase
         yield 'Events' => ['/evenements', ['#main-content']];
     }
 
+    /**
+     * @param list<string> $skipTargets
+     */
     private function assertSkipTargetsAreFunctional(Crawler $crawler, array $skipTargets): void
     {
         foreach ($skipTargets as $targetSelector) {
