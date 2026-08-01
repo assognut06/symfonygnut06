@@ -3,6 +3,14 @@
 {% block title %}Accueil - GNUT 06 : L'inclusion par la technologie
 {% endblock %}
 
+{% block skip_links %}
+	{% include '_partials/skip_links.html.twig' with {
+		links: [
+			{ href: '#main-content', label: 'Aller au contenu principal' }
+		]
+	} only %}
+{% endblock %}
+
 {% block stylesheets %}
 	{{ parent() }}
 	<style>
@@ -239,7 +247,7 @@
 
 	<!-- ✅ Main principal obligatoire -->
 	<main
-		role="main">
+		id="main-content" role="main" tabindex="-1">
 
 		<!-- ✅ Section Hero accessible -->
 		<section class="bg-main w-100 py-5" role="region" aria-labelledby="hero-title">

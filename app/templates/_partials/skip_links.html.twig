@@ -1,0 +1,5 @@
+<nav class="skip-links" aria-label="Navigation rapide">
+    {% for link in links %}
+        <a href="{{ link.href }}" class="skip-link">{{ link.label }}</a>
+    {% endfor %}
+</nav>

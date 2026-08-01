@@ -20,9 +20,14 @@
 		{% include '_partials/analytics.html.twig' %}
 	</head>
 	<body class="site-layout">
+		{% block skip_links %}{% endblock %}
+
 		<script defer data-cfasync='false' src='https://s.clickiocdn.com/t/243913_wv.js'></script>
 		<!-- Include navbar -->
 		{% include '_partials/navbar.html.twig' %}
+
+		{# Include agent AI immediately after the main navigation #}
+		{% include '_partials/chatbot.html.twig' %}
 
 		<div class="site-content">
 			<!-- Include main content -->
@@ -44,9 +49,5 @@
 
 		<!-- Include scripts -->
 		{% include '_partials/scripts.html.twig' %}
-
-
-		{# Include agent AI #}
-		{% include '_partials/chatbot.html.twig' %}
 	</body>
 </html>

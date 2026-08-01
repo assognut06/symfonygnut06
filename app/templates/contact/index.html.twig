@@ -2,6 +2,15 @@
 
 {% block title %}Contactez-nous - GNUT 06{% endblock %}
 
+{% block skip_links %}
+{% include '_partials/skip_links.html.twig' with {
+    links: [
+        { href: '#main-content', label: 'Aller au contenu principal' },
+        { href: '#services', label: 'Aller au formulaire' }
+    ]
+} only %}
+{% endblock %}
+
 {% block stylesheets %}
 {{ parent() }}
 <style>
@@ -149,23 +158,11 @@ textarea:focus,
     color: #ffffff !important;
 }
 
-/* ✅ CORRECTION - Skip links */
-.skip-link {
-    position: absolute;
-    top: -40px;
-    left: 6px;
-    background: #000000;
-    color: #ffffff;
-    padding: 8px 12px;
-    text-decoration: none;
-    border-radius: 0 0 4px 4px;
-    z-index: 1000;
-    font-weight: bold;
-}
-
-.skip-link:focus {
-    top: 0;
-    outline: 3px solid #F86CF8;
+/* ✅ CORRECTION - Lien externe */
+.external-link::after {
+    content: " (nouvelle fenêtre)";
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 /* ✅ CORRECTION - Messages d'erreur accessibles */
@@ -257,13 +254,7 @@ textarea:focus,
 {% endblock %}
 
 {% block body %}
-    <!-- ✅ CORRECTION - Skip links ajoutés -->
-    <nav aria-label="Navigation rapide" class="visually-hidden-focusable">
-        <a href="#main-content" class="skip-link">Aller au contenu principal</a>
-        <a href="#services" class="skip-link">Aller au formulaire</a>
-    </nav>
-
-    <main id="main-content" role="main" aria-labelledby="contact-title">
+    <main id="main-content" role="main" aria-labelledby="contact-title" tabindex="-1">
 
         <!-- ✅ CORRECTION - Section Contact avec H1 -->
         <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="contact-title">
@@ -377,7 +368,7 @@ textarea:focus,
         </section>
 
         <!-- ✅ CORRECTION - Section Formulaire accessible -->
-        <section id="services" class="bg-main pt-2" role="region" aria-labelledby="form-title">
+        <section id="services" class="bg-main pt-2" role="region" aria-labelledby="form-title" tabindex="-1">
             <div class="container py-5">
                 <h2 id="form-title" class="text-center mb-4">Besoin d'un projet ? Demandez un devis</h2>
                 <p class="text text-center">

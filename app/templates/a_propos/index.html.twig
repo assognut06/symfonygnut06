@@ -3,6 +3,14 @@
 {% block title %}Notre Mission - GNUT 06 : Inclusion par la technologie
 {% endblock %}
 
+{% block skip_links %}
+	{% include '_partials/skip_links.html.twig' with {
+		links: [
+			{ href: '#main-content', label: 'Aller au contenu principal' }
+		]
+	} only %}
+{% endblock %}
+
 {% block stylesheets %}
 	{{ parent() }}
 	<style>
@@ -64,7 +72,7 @@
 
 {% block body %}
 	<main
-		id="main-content" role="main">
+		id="main-content" role="main" tabindex="-1">
 
 		<!-- ✅ Section présentation accessible -->
 		<section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="qui-sommes-nous">

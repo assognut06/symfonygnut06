@@ -3,6 +3,17 @@
 {% block title %}Faire un don à Gnut 06
 {% endblock %}
 
+{% block skip_links %}
+	{% include '_partials/skip_links.html.twig' with {
+		links: [
+			{ href: '#main-content', label: 'Aller au contenu principal' },
+			{ href: '#appel-don', label: 'Aller à l’appel aux dons' },
+			{ href: '#pourquoi-donner', label: 'Aller aux raisons de donner' },
+			{ href: '#form-don', label: 'Aller au formulaire de don' }
+		]
+	} only %}
+{% endblock %}
+
 {% block stylesheets %}
 	{{ parent() }}
 	<style>
@@ -19,25 +30,6 @@
 		.text {
 			color: #ffffff !important;
 			line-height: 1.6 !important;
-		}
-
-		/* ✅ CORRECTION - Skip links */
-		.skip-link {
-			position: absolute;
-			top: -40px;
-			left: 6px;
-			background: #000000;
-			color: #ffffff;
-			padding: 8px 12px;
-			text-decoration: none;
-			border-radius: 0 0 4px 4px;
-			z-index: 1000;
-			font-weight: bold;
-		}
-
-		.skip-link:focus {
-			top: 0;
-			outline: 3px solid #F86CF8;
 		}
 
 		/* ✅ CORRECTION - Iframe pleine largeur */
@@ -109,19 +101,11 @@
 {% endblock %}
 
 {% block body %}
-	<!-- ✅ CORRECTION - Skip links ajoutés -->
-	<nav aria-label="Navigation rapide" class="visually-hidden-focusable">
-		<a href="#main-content" class="skip-link">Aller au contenu principal</a>
-		<a href="#appel-don" class="skip-link">Aller à l'appel aux dons</a>
-		<a href="#pourquoi-donner" class="skip-link">Aller aux raisons de donner</a>
-		<a href="#form-don" class="skip-link">Aller au formulaire de don</a>
-	</nav>
-
 	<main
-		id="main-content" role="main" aria-labelledby="don-title">
+		id="main-content" role="main" aria-labelledby="don-title" tabindex="-1">
 
 		<!-- ✅ CORRECTION - Section 1 : appel aux dons avec H1 visible -->
-		<section id="appel-don" class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="don-title">
+		<section id="appel-don" class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="don-title" tabindex="-1">
 			<div
 				class="container row align-items-center g-5">
 
@@ -152,7 +136,7 @@
 		</section>
 
 		<!-- ✅ CORRECTION - Section 2 : pourquoi donner -->
-		<section id="pourquoi-donner" class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="pourquoi-donner-title">
+		<section id="pourquoi-donner" class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="pourquoi-donner-title" tabindex="-1">
 			<div
 				class="container row align-items-center g-5">
 
@@ -199,7 +183,7 @@
 
 		<!-- ✅ CORRECTION - Section 3 : formulaire HelloAsso en pleine largeur -->
 		<section
-			id="form-don" class="pt-5 bg-main" role="region" aria-labelledby="form-don-title">
+			id="form-don" class="pt-5 bg-main" role="region" aria-labelledby="form-don-title" tabindex="-1">
 			<!-- Header avec container pour le titre -->
 			<div class="container">
 				<header class="text-center mb-5">
