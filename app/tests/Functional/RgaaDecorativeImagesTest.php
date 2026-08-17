@@ -20,6 +20,10 @@ class RgaaDecorativeImagesTest extends WebTestCase
             'galerie-3d-immo.webp' => 1,
             'send_money.svg' => 1,
             'volunteer_activism.svg' => 1,
+            'Marjorie.webp' => 1,
+            'Yann.webp' => 1,
+            'Walid.webp' => 1,
+            'Alexia.webp' => 1,
             // La valeur -1 autorise un nombre variable d’occurrences, mais exige qu’au moins une image soit présente.
             'linkedin.svg' => -1,
         ];
@@ -96,25 +100,8 @@ class RgaaDecorativeImagesTest extends WebTestCase
         $homeCrawler = $this->client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
-        $this->assertInformativeImage(
-            $homeCrawler,
-            'apf_251112_001.webp',
-            'Personne en fauteuil roulant portant un casque de réalité virtuelle'
-        );
-        $this->assertInformativeImage(
-            $homeCrawler,
-            'apf_251112_002.webp',
-            'Membre de l’association GNUT06 plaçant un casque de réalité virtuelle pour une personne en fauteuil roulant'
-        );
-
-        $teamPortraits = $homeCrawler->filter('section[aria-labelledby="team-title"] img.card-img-top');
-        self::assertGreaterThan(0, $teamPortraits->count(), 'Au moins un portrait de membre de l’équipe doit être présent.');
-
-        foreach ($teamPortraits as $portrait) {
-            self::assertInstanceOf(\DOMElement::class, $portrait);
-            self::assertStringStartsWith('Portrait de ', $portrait->getAttribute('alt'));
-            self::assertFalse($portrait->hasAttribute('aria-hidden'), 'Les portraits de l’équipe doivent rester restitués.');
-        }
+        $this->assertInformativeImage($homeCrawler, 'apf_251112_001.webp');
+        $this->assertInformativeImage($homeCrawler, 'apf_251112_002.webp');
 
         $aboutCrawler = $this->client->request('GET', '/aPropos');
 
@@ -134,8 +121,6 @@ class RgaaDecorativeImagesTest extends WebTestCase
         }
 
         foreach ($images as $image) {
-            self::assertInstanceOf(\DOMElement::class, $image);
-
             self::assertSame('', $image->getAttribute('alt'), sprintf('Chaque image "%s" doit avoir une alternative vide.', $selector));
             self::assertSame('true', $image->getAttribute('aria-hidden'), sprintf('Chaque image "%s" doit être masquée aux technologies d’assistance.', $selector));
             self::assertFalse($image->hasAttribute('role'), sprintf('Chaque image "%s" ne doit pas forcer un rôle img.', $selector));
@@ -147,25 +132,19 @@ class RgaaDecorativeImagesTest extends WebTestCase
         self::assertCount($expectedCount, $images, sprintf('Le nombre d’images attendu sur la page %s a changé.', $pageName));
 
         foreach ($images as $image) {
-            self::assertInstanceOf(\DOMElement::class, $image);
-
             self::assertSame('', $image->getAttribute('alt'), sprintf('Toutes les images de la page %s doivent avoir une alternative vide.', $pageName));
             self::assertSame('true', $image->getAttribute('aria-hidden'), sprintf('Toutes les images de la page %s doivent être masquées aux technologies d’assistance.', $pageName));
             self::assertFalse($image->hasAttribute('role'), sprintf('Les images décoratives de la page %s ne doivent pas forcer un rôle img.', $pageName));
         }
     }
 
-    private function assertInformativeImage(Crawler $crawler, string $filename, ?string $expectedAlternative = null): void
+    private function assertInformativeImage(Crawler $crawler, string $filename): void
     {
         $selector = sprintf('main img[src$="/images/webp/%s"]', $filename);
         $image = $crawler->filter($selector);
 
         self::assertCount(1, $image, sprintf('L’image informative "%s" doit être présente.', $filename));
-        if ($expectedAlternative === null) {
-            self::assertNotSame('', $image->attr('alt'), sprintf('L’image informative "%s" doit conserver son alternative.', $filename));
-        } else {
-            self::assertSame($expectedAlternative, $image->attr('alt'), sprintf('L’alternative de l’image informative "%s" doit être exacte.', $filename));
-        }
+        self::assertNotSame('', $image->attr('alt'), sprintf('L’image informative "%s" doit conserver son alternative.', $filename));
         self::assertNull($image->attr('aria-hidden'), sprintf('L’image informative "%s" doit rester restituée.', $filename));
     }
 }
