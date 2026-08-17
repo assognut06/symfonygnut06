@@ -65,6 +65,16 @@ class PublicRouteSmokeTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    public function testKeyFiguresUseListAndParagraphSemantics(): void
+    {
+        $crawler = $this->client->request('GET', '/aPropos');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorNotExists('#nos-chiffres + ul h3');
+        $this->assertCount(6, $crawler->filter('#nos-chiffres + ul > li'));
+        $this->assertCount(6, $crawler->filter('#nos-chiffres + ul .js-counter'));
+    }
+
     public function testLoginPageHasForm(): void
     {
         $crawler = $this->client->request('GET', '/login');
