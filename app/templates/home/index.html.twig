@@ -219,7 +219,7 @@
 			<div class="container">
 				<div class="row align-items-center gx-5">
 				<figure class="col-md-6 text-center mb-4 mb-md-0 order-2 order-md-1 mt-3 mt-md-0">
-					<img src="{{ asset('images/webp/immersion-group.webp') }}" class="img-fluid" alt="Groupe de personnes de différents âges vivant une expérience immersive en réalité virtuelle ensemble" role="img">
+					<img src="{{ asset('images/webp/immersion-group.webp') }}" class="img-fluid" alt="" aria-hidden="true">
 				</figure>
 				<article class="col-md-6 text-center text-md-start order-1 order-md-2">
 					<h2 id="immersive-title" class="text-main text-start">
@@ -257,7 +257,7 @@
 				<ul class="row g-4 justify-content-center list-unstyled" aria-label="Liste de nos hubs numériques">
 					<li class="col-sm-6 col-md-4">
 						<div class="card text-center text-white bg-black h-100" tabindex="0">
-							<img src="{{ asset('images/webp/galerie-3d-GNUT.webp') }}" class="card-img-top img-fluid" alt="Vue immersive de la galerie d'art virtuelle GNUT avec œuvres exposées" role="img">
+							<img src="{{ asset('images/webp/galerie-3d-GNUT.webp') }}" class="card-img-top img-fluid" alt="" aria-hidden="true">
 							<div class="card-body d-flex flex-column">
 								<h3 class="card-title">Galerie d'art GNUT</h3>
 								<p class="card-text flex-grow-1">
@@ -273,7 +273,7 @@
 					</li>
 					<li class="col-sm-6 col-md-4">
 						<div class="card text-center text-white bg-black h-100" tabindex="0">
-							<img src="{{ asset('images/webp/meteo3D.webp') }}" class="card-img-top img-fluid" alt="Interface de l'application météo 3D GNUT montrant des données météorologiques" role="img">
+							<img src="{{ asset('images/webp/meteo3D.webp') }}" class="card-img-top img-fluid" alt="" aria-hidden="true">
 							<div class="card-body d-flex flex-column">
 								<h3 class="card-title">Météo 3D GNUT</h3>
 								<p class="card-text flex-grow-1">
@@ -289,7 +289,7 @@
 					</li>
 					<li class="col-sm-6 col-md-4">
 						<div class="card text-center text-white bg-black h-100" tabindex="0">
-							<img src="{{ asset('images/webp/galerie-3d-immo.webp') }}" class="card-img-top img-fluid" alt="Modélisation 3D d'un projet immobilier avec architecture moderne" role="img">
+							<img src="{{ asset('images/webp/galerie-3d-immo.webp') }}" class="card-img-top img-fluid" alt="" aria-hidden="true">
 							<div class="card-body d-flex flex-column">
 								<h3 class="card-title">3D Immo</h3>
 								<p class="card-text flex-grow-1">
@@ -392,9 +392,9 @@
 					<p class="text">
 						Votre soutien est essentiel pour notre mission. Découvrez comment vous pouvez faire une différence.
 					</p>
-					<ul class="row g-4 list-unstyled" aria-label="Façons de nous soutenir">
-						<li class="col-6 text-center text-md-start">
-							<img src="{{ asset ('images/webp/send_money.svg') }}" style="width:64px;" alt="Icône représentant un don financier" role="img"/>
+					<div class="row g-4" role="list" aria-label="Façons de nous soutenir">
+						<article class="col-6 text-center text-md-start" role="listitem">
+							<img src="{{ asset ('images/webp/send_money.svg') }}" style="width:64px;" alt="" aria-hidden="true"/>
 							<h3>Faites un don</h3>
 							<p class="text">
 								Aidez-nous à financer nos projets et initiatives.
@@ -402,9 +402,9 @@
 							<a href="{{ path('app_don') }}" class="btn-neon" role="button" aria-label="Faire un don pour soutenir GNUT 06">
 								Je donne
 							</a>
-						</li>
-						<li class="col-6 text-center text-md-start">
-							<img src="{{ asset ('images/webp/volunteer_activism.svg') }}" style="width:64px;" alt="Icône représentant l'engagement bénévole" role="img"/>
+						</article>
+						<article class="col-6 text-center text-md-start" role="listitem">
+							<img src="{{ asset ('images/webp/volunteer_activism.svg') }}" style="width:64px;" alt="" aria-hidden="true"/>
 							<h3>Devenez adhérent.e</h3>
 							<p class="text">
 								Participez activement à nos activités et évènements.
@@ -476,7 +476,7 @@
 					{% for key, member in team_members %}
 						<li class="col d-flex">
 							<div class="card text-center h-100 bg-dark border-secondary" tabindex="0">
-								<img src="{{ asset('images/webp/' ~ member.image) }}" class="card-img-top img-fluid" alt="Portrait de {{ member.name }}, {{ member.role }} chez GNUT 06" role="img">
+								<img src="{{ asset('images/webp/' ~ member.image) }}" class="card-img-top img-fluid" alt="" aria-hidden="true">
 								<div class="card-body d-flex flex-column bg-dark">
 									<h4 class="card-title text-white mb-2">{{ member.name }}</h4>
 									<p class="team-role flex-grow-1 mb-3">{{ member.role }}</p>

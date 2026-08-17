@@ -220,8 +220,8 @@
                 <figure>
                     <img src="{{ asset('images/webp/immersion-3.webp') }}" 
                          class="img-fluid" 
-                         alt="Illustration d'une immersion dans un monde virtuel accessible pour l'inclusion numérique"
-                         role="img">
+                         alt=""
+                         aria-hidden="true">
                 </figure>
             </div>
         </div>
@@ -260,16 +260,15 @@
                                     <li class="col-12 col-sm-6 col-lg-4 d-flex px-3 px-sm-2"
                                         aria-labelledby="event-title-{{ loop.parent.loop.index }}-{{ loop.index }}">
 
-                                        <article class="d-flex flex-fill">
-                                            <div class="card h-100 flex-fill"
-                                                 tabindex="0"
-                                                 aria-describedby="event-desc-{{ loop.parent.loop.index }}-{{ loop.index }}">
-                                                <figure class="m-0">
-                                                    <img src="{{ asset(randomImage('/images/news/')) }}"
-                                                         class="card-img-top"
-                                                         alt="Illustration de l'événement {{ item.title }}"
-                                                         role="img">
-                                                </figure>
+                                        <div class="card h-100 flex-fill" 
+                                             tabindex="0"
+                                             aria-describedby="event-desc-{{ loop.parent.loop.index }}-{{ loop.index }}">
+                                            <figure class="m-0">
+                                                <img src="{{ asset(randomImage('/images/news/')) }}" 
+                                                     class="card-img-top" 
+                                                     alt=""
+                                                     aria-hidden="true">
+                                            </figure>
 
                                                 <div class="card-body d-flex flex-column bg-main p-3">
                                                     <h3 id="event-title-{{ loop.parent.loop.index }}-{{ loop.index }}"
