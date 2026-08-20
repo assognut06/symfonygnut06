@@ -129,6 +129,8 @@ class RgaaDecorativeImagesTest extends WebTestCase
         }
 
         foreach ($images as $image) {
+            self::assertInstanceOf(\DOMElement::class, $image);
+
             self::assertSame('', $image->getAttribute('alt'), sprintf('Chaque image "%s" doit avoir une alternative vide.', $selector));
             self::assertSame('true', $image->getAttribute('aria-hidden'), sprintf('Chaque image "%s" doit être masquée aux technologies d’assistance.', $selector));
             self::assertFalse($image->hasAttribute('role'), sprintf('Chaque image "%s" ne doit pas forcer un rôle img.', $selector));
@@ -140,6 +142,8 @@ class RgaaDecorativeImagesTest extends WebTestCase
         self::assertCount($expectedCount, $images, sprintf('Le nombre d’images attendu sur la page %s a changé.', $pageName));
 
         foreach ($images as $image) {
+            self::assertInstanceOf(\DOMElement::class, $image);
+
             self::assertSame('', $image->getAttribute('alt'), sprintf('Toutes les images de la page %s doivent avoir une alternative vide.', $pageName));
             self::assertSame('true', $image->getAttribute('aria-hidden'), sprintf('Toutes les images de la page %s doivent être masquées aux technologies d’assistance.', $pageName));
             self::assertFalse($image->hasAttribute('role'), sprintf('Les images décoratives de la page %s ne doivent pas forcer un rôle img.', $pageName));
