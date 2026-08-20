@@ -69,31 +69,78 @@
 			transform: scale(1.1) !important;
 		}
 
-		/* ✅ Amélioration des indicateurs carousel */
-		.carousel-indicators button {
-			background-color: rgba(255, 255, 255, 0.5) !important;
-			border: 2px solid rgba(255, 255, 255, 0.3) !important;
-			transition: all 0.3s ease !important;
+		/* RGAA 3.1 et 3.3 - Indicateurs perceptibles sans la couleur */
+		#carouselExampleIndicators .carousel-indicators [data-bs-target] {
+			box-sizing: content-box;
+			width: 16px;
+			height: 16px;
+			margin: 0 8px;
+			background-color: #ffffff !important;
+			border: 2px solid #010101 !important;
+			border-radius: 50%;
+			opacity: 1 !important;
+			transform: none;
+			transition: transform 0.2s ease, background-color 0.2s ease !important;
 		}
 
-		.carousel-indicators button.active {
-			background-color: #F86CF8 !important;
-			border-color: #F86CF8 !important;
+		#carouselExampleIndicators .carousel-indicators [data-bs-target].active {
+			width: 18px;
+			height: 18px;
+			background-color: #f86cf8 !important;
+			border-radius: 2px;
+			transform: rotate(45deg) scale(1.1);
 		}
 
-		.carousel-indicators button:hover {
-			background-color: rgba(248, 108, 248, 0.7) !important;
+		#carouselExampleIndicators .carousel-indicators [data-bs-target]:hover:not(.active) {
+			background-color: #f86cf8 !important;
+			transform: scale(1.2);
 		}
 
-		/* ✅ Amélioration des contrôles carousel */
-		.carousel-control-prev,
-		.carousel-control-next {
-			transition: all 0.3s ease !important;
+		#carouselExampleIndicators .carousel-indicators [data-bs-target].active:hover {
+			transform: rotate(45deg) scale(1.2);
 		}
 
-		.carousel-control-prev:hover,
-		.carousel-control-next:hover {
-			background-color: rgba(0, 0, 0, 0.3) !important;
+		#carouselExampleIndicators .carousel-indicators [data-bs-target]:focus,
+		#carouselExampleIndicators .carousel-indicators [data-bs-target]:focus-visible {
+			outline: 3px solid #ffffff !important;
+			outline-offset: 2px !important;
+			box-shadow: 0 0 0 5px #010101 !important;
+		}
+
+		/* RGAA 3.3 - Flèches contrastées sur toutes les images */
+		#carouselExampleIndicators .carousel-control-prev,
+		#carouselExampleIndicators .carousel-control-next {
+			opacity: 1 !important;
+			transition: background-color 0.2s ease !important;
+		}
+
+		#carouselExampleIndicators .carousel-control-prev-icon,
+		#carouselExampleIndicators .carousel-control-next-icon {
+			width: 48px;
+			height: 48px;
+			background-color: #010101;
+			background-size: 55% 55%;
+			border: 2px solid #ffffff;
+			border-radius: 50%;
+		}
+
+		#carouselExampleIndicators .carousel-control-prev:hover,
+		#carouselExampleIndicators .carousel-control-next:hover {
+			background-color: rgba(1, 1, 1, 0.35) !important;
+		}
+
+		#carouselExampleIndicators .carousel-control-prev:focus,
+		#carouselExampleIndicators .carousel-control-next:focus,
+		#carouselExampleIndicators .carousel-control-prev:focus-visible,
+		#carouselExampleIndicators .carousel-control-next:focus-visible {
+			outline: 3px solid #ffffff !important;
+			outline-offset: -3px !important;
+			box-shadow: inset 0 0 0 6px #010101 !important;
+		}
+
+		#carouselExampleIndicators .carousel-control-prev:focus .carousel-control-prev-icon,
+		#carouselExampleIndicators .carousel-control-next:focus .carousel-control-next-icon {
+			box-shadow: 0 0 0 3px #010101, 0 0 0 6px #ffffff;
 		}
 
 		/* ✅ Style des images carousel */
@@ -136,8 +183,13 @@
 
 		/* ✅ Accessibilité - Mode contraste élevé */
 		@media(prefers-contrast: high) {
-			.carousel-indicators button {
+			#carouselExampleIndicators .carousel-indicators [data-bs-target] {
 				border-width: 3px !important;
+			}
+
+			#carouselExampleIndicators .carousel-control-prev-icon,
+			#carouselExampleIndicators .carousel-control-next-icon {
+				border-width: 3px;
 			}
 		}
 
