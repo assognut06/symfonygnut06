@@ -1,0 +1,115 @@
+Image;Fichier;Ligne;Fonction
+images/agent_ai2.png;app/templates/_partials/agent_ai.html.twig;2;Fonctionnelle — ouverture de l’assistant IA
+images/IA_new.png;app/templates/_partials/chatbot.html.twig;8;Décorative
+images/webp/linkedin-white.svg;app/templates/_partials/footer.html.twig;182;Fonctionnelle — lien vers un réseau social
+images/webp/instagram.svg;app/templates/_partials/footer.html.twig;188;Fonctionnelle — lien vers un réseau social
+images/webp/facebook.svg;app/templates/_partials/footer.html.twig;191;Fonctionnelle — lien vers un réseau social
+images/webp/youtube.svg;app/templates/_partials/footer.html.twig;194;Fonctionnelle — lien vers un réseau social
+logoFile dynamique de l’entreprise;app/templates/_partials/logos_entreprises.html.twig;13;Identification — logo d’une entreprise partenaire
+images/webp/person-circle.svg;app/templates/_partials/navbar.html.twig;182;Décorative
+images/webp/immersion-decouverte.webp;app/templates/a_propos/index.html.twig;73;Décorative
+images/webp/mask.svg;app/templates/a_propos/index.html.twig;104;Décorative
+images/webp/benevoles-3.webp;app/templates/a_propos/index.html.twig;142;Décorative
+images/webp/benevoles-2.webp;app/templates/a_propos/index.html.twig;159;Décorative
+images/webp/benevoles-1.webp;app/templates/a_propos/index.html.twig;176;Décorative
+images/webp/gerald.webp;app/templates/a_propos/index.html.twig;299;Identification — portrait du président de GNUT 06
+images/webp/handicapworksquare.webp;app/templates/adhesion/index.html.twig;177;Décorative
+images/webp/volunteer_activism.svg;app/templates/adhesion/index.html.twig;192;Décorative
+images/logo_trans-min.webp;app/templates/admin/_partials/navbar.html.twig;4;Identification — logo de GNUT 06
+logo dynamique de l’association;app/templates/admin/asso_recommander/index.html.twig;36;Identification — logo de l’association
+logo HelloAsso dynamique;app/templates/admin/dashbord/dashboard.html.twig;12;Identification — logo de l’association HelloAsso
+https://api.helloasso.com/v5/DocAssets/logo-ha.svg;app/templates/admin/dashbord/dashboard.html.twig;25;Décorative
+images/no-data.png;app/templates/admin_benevole/index.html.twig;46;Information — absence d’adresse principale
+images/no-data.png;app/templates/admin_benevole/index.html.twig;53;Information — absence de complément d’adresse
+images/no-data.png;app/templates/admin_benevole/index.html.twig;60;Information — absence de ville
+images/no-data.png;app/templates/admin_benevole/index.html.twig;67;Information — absence de source de découverte de l’association
+images/no-data.png;app/templates/admin_benevole/index.html.twig;84;Information — absence de CV
+images/no-data.png;app/templates/admin_don_casque/dons.html.twig;63;Information — absence de partenaire
+images/no-data.png;app/templates/admin_don_casque/dons.html.twig;100;Information — absence de partenaire
+https://www.gnut06.org/images/logo_trans-min.png;app/templates/admin_don_casque/email_bordereau.html.twig;61;Identification — logo de GNUT 06
+images/no-data.png;app/templates/admin_donateur/donateurs.html.twig;57;Information — champ société non applicable
+images/no-data.png;app/templates/admin_donateur/donateurs.html.twig;58;Information — champ SIREN non applicable
+images/no-data.png;app/templates/admin_donateur/donateurs.html.twig;68;Information — absence de complément d’adresse
+logoFile dynamique de l’entreprise;app/templates/admin_entreprise/index.html.twig;40;Identification — logo de l’entreprise
+bannière dynamique de l’événement;app/templates/asso_recommander/detailsEvent.html.twig;16;Information — visuel de présentation de l’événement
+logo dynamique de l’événement;app/templates/asso_recommander/detailsEvent.html.twig;30;Identification — logo de l’événement
+bannière dynamique de l’événement;app/templates/asso_recommander/events.html.twig;45;Information — visuel de présentation de l’événement
+logo dynamique de l’organisation;app/templates/asso_recommander/events.html.twig;56;Identification — logo de l’organisation
+bannière dynamique de l’association;app/templates/asso_recommander/fiche.html.twig;39;Information — visuel de présentation de l’association
+logo dynamique de l’association;app/templates/asso_recommander/fiche.html.twig;54;Identification — logo de l’association
+bannière dynamique de l’association;app/templates/asso_recommander/index.html.twig;93;Information — visuel de présentation de l’association
+logo dynamique de l’association;app/templates/asso_recommander/index.html.twig;99;Identification — logo de l’association
+https://azuroxalis.fr/wp-content/uploads/2023/05/Azur-Oxalis-logo-sans-slogan.png;app/templates/associations_nice/index.html.twig;13;Identification — logo d’Azur Oxalis
+https://www.apf-francehandicap.org/themes/custom/customer/images/logo.svg;app/templates/associations_nice/index.html.twig;24;Identification — logo d’APF France handicap
+https://www.francealzheimer.org/alpesmaritimes/wp-content/uploads/sites/44/2018/01/visuel-tmp.png;app/templates/associations_nice/index.html.twig;35;Identification — logo de France Alzheimer 06
+https://autismepaca.yj.fr/data/img/logo-ceraa-provence.jpg;app/templates/associations_nice/index.html.twig;46;Identification — logo d’Autisme PACA
+https://gnut06.org/images/tableau/Logo_Handisport_Nice.PNG;app/templates/associations_nice/index.html.twig;57;Identification — logo de Handisport Nice
+https://www.unadev.com/wp-content/themes/unadev/img/logo-nouveau-blanc.png;app/templates/associations_nice/index.html.twig;68;Identification — logo de l’UNADEV
+photo CKEditor de la Journée nationale des aidants;app/templates/benevole_jna/index.html.twig;129;Information — photographie d’une activité associative
+images/webp/immersion-3.webp;app/templates/billetteries/detail.html.twig;266;Décorative
+bannière dynamique de l’événement;app/templates/billetteries/detail.html.twig;284;Information — visuel de présentation de l’événement
+images/webp/immersion-3.webp;app/templates/billetteries/index.html.twig;222;Décorative
+image aléatoire de images/news;app/templates/billetteries/index.html.twig;269;Décorative
+images/webp/envelope.svg;app/templates/contact/index.html.twig;188;Décorative
+images/webp/phone.svg;app/templates/contact/index.html.twig;207;Décorative
+images/webp/camera-reels.svg;app/templates/contact/index.html.twig;226;Décorative
+images/webp/map.svg;app/templates/contact/index.html.twig;247;Décorative
+images/Meta_quest_3_devis.png;app/templates/crowdfundings/index.html.twig;31;Information — justificatif du devis du casque VR
+images/webp/consulting.webp;app/templates/digital_consulting/index.html.twig;188;Décorative
+images/webp/audit.webp;app/templates/digital_consulting/index.html.twig;215;Décorative
+images/webp/strategie.webp;app/templates/digital_consulting/index.html.twig;237;Décorative
+images/webp/conception.webp;app/templates/digital_consulting/index.html.twig;259;Décorative
+images/webp/help.webp;app/templates/don/index.html.twig;148;Décorative
+images/webp/send_money.svg;app/templates/don/index.html.twig;164;Décorative
+https://www.gnut06.org/images/logo_trans-min.png;app/templates/don_casque/email_donateur.html.twig;59;Identification — logo de GNUT 06
+https://www.gnut06.org/images/logo_trans-min.png;app/templates/don_casque/email_gnut_notification.html.twig;55;Identification — logo de GNUT 06
+images/donDeCasque.webp;app/templates/donateur/form_donateur.html.twig;43;Décorative
+https://www.gnut06.org/images/LogoNew.png;app/templates/email/_footer.html.twig;6;Identification — logo de GNUT 06
+images/webp/GNUT_06-participe_a_la_Journee_Nationale_des_Aidants.webp;app/templates/gnut06_participe_ala_journee_nationale_des_aidants/index.html.twig;136;Information — photographie de la participation à l’événement
+images/webp/hnadi-3D.png;app/templates/hand_3d/index.html.twig;111;Information — aperçu du projet Handi-3D
+images/webp/handi-3D.png;app/templates/hand_3d/index.html.twig;275;Information — aperçu du projet Handi-3D
+images/webp/apf_251112_001.webp;app/templates/home/index.html.twig;198;Information — personne en fauteuil roulant utilisant un casque VR
+images/webp/immersion-group.webp;app/templates/home/index.html.twig;222;Décorative
+images/webp/galerie-3d-GNUT.webp;app/templates/home/index.html.twig;260;Décorative
+images/webp/meteo3D.webp;app/templates/home/index.html.twig;274;Décorative
+images/webp/galerie-3d-immo.webp;app/templates/home/index.html.twig;288;Décorative
+images/webp/IMG_0216.webp;app/templates/home/index.html.twig;345;Information — photographie d’un événement GNUT 06
+images/webp/20251001_085759.webp;app/templates/home/index.html.twig;348;Information — photographie d’un événement GNUT 06
+images/webp/20251001_121028.webp;app/templates/home/index.html.twig;351;Information — photographie de l’équipe lors d’un événement
+images/webp/APF_nov2025.webp;app/templates/home/index.html.twig;354;Information — photographie d’une activité avec APF France handicap
+images/webp/APF_oct2025.webp;app/templates/home/index.html.twig;357;Information — photographie d’un atelier de réalité virtuelle
+images/webp/LSCA_mars2025.webp;app/templates/home/index.html.twig;360;Information — photographie d’un atelier de réalité virtuelle
+images/webp/LSCA_mars2025-02.webp;app/templates/home/index.html.twig;363;Information — photographie d’un atelier de réalité virtuelle
+images/webp/send_money.svg;app/templates/home/index.html.twig;391;Décorative
+images/webp/volunteer_activism.svg;app/templates/home/index.html.twig;401;Décorative
+images/webp/apf_251112_002.webp;app/templates/home/index.html.twig;414;Information — membre de GNUT 06 aidant une personne en fauteuil roulant
+images/webp/[member.image];app/templates/home/index.html.twig;473;Décorative
+images/webp/linkedin.svg;app/templates/home/index.html.twig;479;Décorative
+cid:logo-new;app/templates/mailjet/contact_tih.html.twig;17;Identification — logo de GNUT 06
+images/webp/immersion-2.webp;app/templates/metavers/index.html.twig;210;Décorative
+images/webp/handi-3D.png;app/templates/metavers/index.html.twig;228;Information — aperçu du projet Handi-3D
+images/webp/avatars.webp;app/templates/metavers/index.html.twig;289;Information — capture de l’interface de création d’avatar
+images/webp/hub.webp;app/templates/metavers/index.html.twig;313;Information — capture d’un hub virtuel
+images/webp/openspace.webp;app/templates/metavers/index.html.twig;337;Information — capture d’un espace virtuel collaboratif
+images/webp/star.svg;app/templates/metavers/index.html.twig;392;Décorative
+images/logo_trans_Gnut_06.svg;app/templates/newsletter/confirmation.html.twig;135;Identification — logo de GNUT 06
+images/webp/NiceFeteSaRentree.webp;app/templates/nice_fete_sa_rentree/index.html.twig;93;Information — visuel de présentation de l’événement
+images/ste-rita_1.png;app/templates/presse/index.html.twig;52;Information — reproduction d’une publication de presse
+images/ste-rita_2.png;app/templates/presse/index.html.twig;55;Information — reproduction d’une publication de presse
+images/webp/apf_1.webp;app/templates/presse/index.html.twig;117;Information — photographie illustrant l’article de presse
+images/webp/apf_2.webp;app/templates/presse/index.html.twig;123;Information — photographie illustrant l’article de presse
+images/webp/element-4.svg;app/templates/profil/index.html.twig;59;Décorative
+images/webp/cart-frame.svg;app/templates/profil/index.html.twig;74;Décorative
+images/webp/cash.svg;app/templates/profil/index.html.twig;89;Décorative
+uploads/profilePictures/[user.profilePicture];app/templates/profil/index.html.twig;128;Identification — photo de profil de l’utilisateur
+images/user_profil.jpg;app/templates/profil/index.html.twig;159;Information — absence de photo de profil personnalisée
+https://www.gnut06.org/images/logo_trans-min.png;app/templates/registration/confirmation_email.html.twig;2;Identification — logo de GNUT 06
+https://www.gnut06.org/images/logo_trans-min.png;app/templates/reset_password/email.html.twig;2;Identification — logo de GNUT 06
+uploads/tih/[tih.photo];app/templates/tih_search/details.html.twig;26;Identification — photo du profil TIH
+images/user_profil.jpg;app/templates/tih_search/details.html.twig;31;Information — absence de photo de profil personnalisée
+uploads/tih/[tih.photo];app/templates/tih_search/index.html.twig;242;Identification — photo du profil TIH
+images/user_profil.jpg;app/templates/tih_search/index.html.twig;247;Information — absence de photo de profil personnalisée
+uploads/tih/[tih.photo];app/templates/tih_search/intranet/details.html.twig;26;Identification — photo du profil TIH
+images/user_profil.jpg;app/templates/tih_search/intranet/details.html.twig;31;Information — absence de photo de profil personnalisée
+uploads/tih/[tih.photo];app/templates/tih_search/intranet/index.html.twig;242;Identification — photo du profil TIH
+images/user_profil.jpg;app/templates/tih_search/intranet/index.html.twig;247;Information — absence de photo de profil personnalisée
