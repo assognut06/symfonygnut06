@@ -77,24 +77,50 @@
             color: #721c24 !important;
         }
 
-        /* ✅ CORRECTION - Amélioration des boutons */
+        /* RGAA 3.2 et 3.3 - Contrastes du bouton de connexion */
         .btn-asso {
-            background-color: #F86CF8 !important;
-            border: 2px solid #F86CF8 !important;
+            background-color: #7f29ff !important;
+            border: 2px solid #5a189a !important;
             color: #ffffff !important;
-            font-weight: 500 !important;
+            font-weight: 700 !important;
             padding: 0.75rem 1rem !important;
             transition: all 0.3s ease !important;
         }
 
-        .btn-asso:hover {
-            background-color: #e055d6 !important;
-            border-color: #e055d6 !important;
+        .btn-asso::before {
+            content: none !important;
+        }
+
+        .btn-asso:hover:not(:disabled) {
+            background-color: #5a189a !important;
+            border-color: #3d0a75 !important;
+            color: #ffffff !important;
             transform: translateY(-1px) !important;
         }
 
-        .btn-asso:active {
+        .btn-asso:focus,
+        .btn-asso:focus-visible {
+            background-color: #7f29ff !important;
+            border-color: #3d0a75 !important;
+            color: #ffffff !important;
+            outline: 3px solid #3d0a75 !important;
+            outline-offset: 2px !important;
+            box-shadow: none !important;
+        }
+
+        .btn-asso:active:not(:disabled) {
+            background-color: #3d0a75 !important;
+            border-color: #260549 !important;
+            color: #ffffff !important;
             transform: translateY(0) !important;
+        }
+
+        .btn-asso:disabled {
+            background-color: #5c636a !important;
+            border-color: #343a40 !important;
+            color: #ffffff !important;
+            cursor: not-allowed;
+            opacity: 1 !important;
         }
 
         /* ✅ CORRECTION - Amélioration des labels */
@@ -167,7 +193,7 @@
             }
 
             .btn-asso {
-                border: 3px solid #F86CF8 !important;
+                border: 3px solid #3d0a75 !important;
                 font-weight: 700 !important;
             }
         }
