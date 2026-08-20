@@ -100,8 +100,16 @@ class RgaaDecorativeImagesTest extends WebTestCase
         $homeCrawler = $this->client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
-        $this->assertInformativeImage($homeCrawler, 'apf_251112_001.webp');
-        $this->assertInformativeImage($homeCrawler, 'apf_251112_002.webp');
+        $this->assertInformativeImage(
+            $homeCrawler,
+            'apf_251112_001.webp',
+            'Personne en fauteuil roulant portant un casque de réalité virtuelle'
+        );
+        $this->assertInformativeImage(
+            $homeCrawler,
+            'apf_251112_002.webp',
+            'Membre de l’association GNUT06 plaçant un casque de réalité virtuelle pour une personne en fauteuil roulant'
+        );
 
         $aboutCrawler = $this->client->request('GET', '/aPropos');
 
@@ -138,13 +146,17 @@ class RgaaDecorativeImagesTest extends WebTestCase
         }
     }
 
-    private function assertInformativeImage(Crawler $crawler, string $filename): void
+    private function assertInformativeImage(Crawler $crawler, string $filename, ?string $expectedAlternative = null): void
     {
         $selector = sprintf('main img[src$="/images/webp/%s"]', $filename);
         $image = $crawler->filter($selector);
 
         self::assertCount(1, $image, sprintf('L’image informative "%s" doit être présente.', $filename));
-        self::assertNotSame('', $image->attr('alt'), sprintf('L’image informative "%s" doit conserver son alternative.', $filename));
+        if ($expectedAlternative === null) {
+            self::assertNotSame('', $image->attr('alt'), sprintf('L’image informative "%s" doit conserver son alternative.', $filename));
+        } else {
+            self::assertSame($expectedAlternative, $image->attr('alt'), sprintf('L’alternative de l’image informative "%s" doit être exacte.', $filename));
+        }
         self::assertNull($image->attr('aria-hidden'), sprintf('L’image informative "%s" doit rester restituée.', $filename));
     }
 }
