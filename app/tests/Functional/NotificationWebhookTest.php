@@ -397,11 +397,15 @@ class NotificationWebhookTest extends WebTestCase
             'eventId' => 'payment-' . uniqid('', true),
             'eventType' => 'Payment',
             'data' => [
-                'organizationSlug' => $slug,
-                'organizationName' => 'Payment Org',
-                'formSlug' => 'don-form',
+                'id' => 91570615,
                 'state' => 'Authorized',
                 'amount' => 2500,
+                'order' => [
+                    'id' => 189658318,
+                    'organizationSlug' => $slug,
+                    'organizationName' => 'Payment Org',
+                    'formSlug' => 'don-form',
+                ],
                 'payer' => [
                     'email' => 'payment-payer@test.com',
                     'firstName' => 'Paul',
@@ -417,6 +421,8 @@ class NotificationWebhookTest extends WebTestCase
 
         $this->assertNotNull($notification);
         $this->assertSame('Payment', $notification->getEventType());
+        $this->assertSame('Payment Org', $notification->getOrganizationName());
+        $this->assertSame('don-form', $notification->getFormSlug());
     }
 
     public function testCallbackProcessesOrderItems(): void
