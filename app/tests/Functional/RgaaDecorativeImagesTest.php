@@ -20,10 +20,6 @@ class RgaaDecorativeImagesTest extends WebTestCase
             'galerie-3d-immo.webp' => 1,
             'send_money.svg' => 1,
             'volunteer_activism.svg' => 1,
-            'Marjorie.webp' => 1,
-            'Yann.webp' => 1,
-            'Walid.webp' => 1,
-            'Alexia.webp' => 1,
             // La valeur -1 autorise un nombre variable d’occurrences, mais exige qu’au moins une image soit présente.
             'linkedin.svg' => -1,
         ];
@@ -110,6 +106,15 @@ class RgaaDecorativeImagesTest extends WebTestCase
             'apf_251112_002.webp',
             'Membre de l’association GNUT06 plaçant un casque de réalité virtuelle pour une personne en fauteuil roulant'
         );
+
+        $teamPortraits = $homeCrawler->filter('section[aria-labelledby="team-title"] img.card-img-top');
+        self::assertGreaterThan(0, $teamPortraits->count(), 'Au moins un portrait de membre de l’équipe doit être présent.');
+
+        foreach ($teamPortraits as $portrait) {
+            self::assertInstanceOf(\DOMElement::class, $portrait);
+            self::assertStringStartsWith('Portrait de ', $portrait->getAttribute('alt'));
+            self::assertFalse($portrait->hasAttribute('aria-hidden'), 'Les portraits de l’équipe doivent rester restitués.');
+        }
 
         $aboutCrawler = $this->client->request('GET', '/aPropos');
 
