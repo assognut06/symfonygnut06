@@ -16,6 +16,44 @@ class ContactFormTest extends WebTestCase
         $this->assertResponseHtmlContainsForm();
     }
 
+    public function testProjectTypeUsesAnAccessibleRadiogroup(): void
+    {
+        $this->client->request('GET', '/contact');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('#project_type_label', 'Type de projet');
+        $this->assertSelectorExists(
+            '[role="radiogroup"][aria-labelledby="project_type_label"][aria-required="true"]'
+        );
+        $this->assertSelectorCount(5, '[role="radiogroup"] input[type="radio"][name="project_type"]');
+        $this->assertSelectorNotExists('fieldset input[name="project_type"]');
+    }
+
+    public function testMapIframePresentationIsHandledByCss(): void
+    {
+        $this->client->request('GET', '/contact');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('iframe.contact-map-frame');
+        $this->assertSelectorNotExists(
+            'iframe.contact-map-frame[width], '
+            . 'iframe.contact-map-frame[height], '
+            . 'iframe.contact-map-frame[frameborder], '
+            . 'iframe.contact-map-frame[style]'
+        );
+    }
+
+    public function testVisioLinkIncludesNewWindowNoticeInHtml(): void
+    {
+        $this->client->request('GET', '/contact');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains(
+            'a.visio-booking-link[target="_blank"]',
+            'Réserver un créneau Visio dès maintenant (nouvelle fenêtre)'
+        );
+    }
+
     public function testSuccessfulContactSubmissionShowsSuccessMessage(): void
     {
         $this->submitContactForm($this->validContactPayload());

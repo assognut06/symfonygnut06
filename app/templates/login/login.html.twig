@@ -198,7 +198,7 @@
                           method="post"
                           class="needs-validation"
                           novalidate
-                          aria-describedby="connexion-infos"
+                          aria-describedby="connexion-infos required-fields-info"
                           aria-label="Formulaire de connexion sécurisé GNUT 06"
                           role="form">
 
@@ -284,6 +284,10 @@
                             
                             <fieldset>
                                 <legend class="visually-hidden">Identifiants de connexion</legend>
+
+                                <p id="required-fields-info" class="text-dark bg-white mb-3">
+                                    Toutes les informations sont obligatoires.
+                                </p>
                                 
                                 <!-- ✅ CORRECTION - Champ email amélioré -->
                                 <div class="form-floating mb-3">
