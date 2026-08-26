@@ -80,6 +80,10 @@ class NotificationController extends AbstractController
                 ]);
             }
 
+            // Les événements Payment imbriquent les informations du formulaire
+            // et de l'organisation dans data.order, contrairement aux événements Order.
+            $data = $this->normalizeHelloAssoPayload($data);
+
             // ✅ LOG DE LA NOTIFICATION REÇUE
             $this->logger->info('HelloAsso notification received', [
                 'eventType' => $data['eventType'] ?? 'unknown',
@@ -325,6 +329,31 @@ class NotificationController extends AbstractController
         }
 
         return is_string($value) && $value !== '' ? $value : null;
+    }
+
+    /**
+     * Normalise les champs communs lorsque HelloAsso les imbrique dans data.order.
+     * Les valeurs propres au paiement restent prioritaires (id, état, montant, etc.).
+     *
+     * @param array{eventType?: string, data?: array<string, mixed>} $payload
+     * @return array{eventType?: string, data?: array<string, mixed>}
+     */
+    private function normalizeHelloAssoPayload(array $payload): array
+    {
+        if (($payload['eventType'] ?? null) !== 'Payment') {
+            return $payload;
+        }
+
+        $eventData = $payload['data'] ?? null;
+        $orderData = is_array($eventData) ? ($eventData['order'] ?? null) : null;
+
+        if (!is_array($eventData) || !is_array($orderData)) {
+            return $payload;
+        }
+
+        $payload['data'] = array_replace($orderData, $eventData);
+
+        return $payload;
     }
 
     private function reserveIdempotencyKey(string $idempotencyKey): bool
