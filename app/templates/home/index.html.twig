@@ -476,7 +476,7 @@
 					{% for key, member in team_members %}
 						<li class="col d-flex">
 							<div class="card text-center h-100 bg-dark border-secondary" tabindex="0">
-								<img src="{{ asset('images/webp/' ~ member.image) }}" class="card-img-top img-fluid" alt="" aria-hidden="true">
+								<img src="{{ asset('images/webp/' ~ member.image) }}" class="card-img-top img-fluid" alt="Portrait de {{ member.name }}, {{ member.role }} chez GNUT 06">
 								<div class="card-body d-flex flex-column bg-dark">
 									<h4 class="card-title text-white mb-2">{{ member.name }}</h4>
 									<p class="team-role flex-grow-1 mb-3">{{ member.role }}</p>
