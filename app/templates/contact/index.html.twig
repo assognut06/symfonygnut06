@@ -71,13 +71,6 @@ textarea:focus,
     outline: 3px solid #F86CF8;
 }
 
-/* ✅ CORRECTION - Lien externe */
-.external-link::after {
-    content: " (nouvelle fenêtre)";
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
 /* ✅ CORRECTION - Messages d'erreur accessibles */
 .alert {
     padding: 1rem !important;
@@ -97,19 +90,27 @@ textarea:focus,
     color: #ffffff !important;
 }
 
-/* ✅ CORRECTION - Fieldset accessible */
-fieldset {
+/* Regroupement visuel du type de projet */
+.project-type-group {
     border: 2px solid rgba(255, 255, 255, 0.3) !important;
     border-radius: 0.375rem !important;
     padding: 1rem !important;
     margin-bottom: 1rem !important;
 }
 
-legend {
+.project-type-label {
     font-size: 1rem !important;
     font-weight: 600 !important;
-    padding: 0 0.5rem !important;
+    margin-bottom: 0 !important;
     color: #ffffff !important;
+}
+
+/* Dimensions et bordures des contenus embarqués */
+.contact-map-frame {
+    display: block;
+    width: 100%;
+    height: clamp(18.75rem, 50vw, 28.125rem);
+    border: 0;
 }
 
 /* ✅ CORRECTION - Responsive mobile */
@@ -232,11 +233,10 @@ legend {
                             <h2 class="contact-title">Visio</h2>
                             <p class="text">
                                 <a href="https://outlook.office.com/bookwithme/user/c2263f462357476d857beeb43b542bc5@gnut06.org/meetingtype/_x-b5BhbV0ymFVtF1yRmMA2?anonymous&amp;ismsaljsauthenabled&amp;ep=mlink"
-                                   class="text-white text-decoration-none external-link"
+                                   class="text-white text-decoration-none visio-booking-link"
                                    target="_blank"
-                                   rel="noopener noreferrer"
-                                   aria-label="Réserver un créneau Visio - s'ouvre dans un nouvel onglet">
-                                    Réserver un créneau Visio dès maintenant
+                                   rel="noopener noreferrer">
+                                    Réserver un créneau Visio dès maintenant (nouvelle fenêtre)
                                 </a>
                             </p>
                         </div>
@@ -267,11 +267,8 @@ legend {
             <div class="container">
                 <h2 id="map-title" class="visually-hidden">Localisation de nos bureaux</h2>
                 <div class="map-responsive">
-                    <iframe
+                    <iframe class="contact-map-frame"
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2879.535153559595!2d7.27434047682833!3d43.69735505091502!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cddab64640f7c7%3A0x7287fa7d41d32db9!2s9%20Rue%20du%20Pont%20Vieux%2C%2006300%20Nice!5e0!3m2!1sfr!2sfr!4v1731240000000!5m2!1sfr!2sfr"
-                        width="100%"
-                        height="450"
-                        style="border:0;"
                         allowfullscreen=""
                         loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"
@@ -435,13 +432,17 @@ legend {
                             </div>
                         </div>
 
-                         <!-- ✅ CORRECTION - Type de projet avec décalage plus important -->
-                        <fieldset class="col-12" aria-required="true">
-                            <legend class="form-label text">
+                        <!-- Type de projet regroupé par un unique radiogroup -->
+                        <div class="col-12 project-type-group">
+                            <p id="project_type_label" class="form-label text project-type-label">
                                 Type de projet <span class="text-danger" aria-label="obligatoire">*</span>
-                            </legend>
+                            </p>
                             
-                            <div role="radiogroup" aria-describedby="project_type_error project_type_help" class="ps-5">
+                            <div role="radiogroup"
+                                 aria-labelledby="project_type_label"
+                                 aria-required="true"
+                                 aria-describedby="project_type_help{{ not form.project_type.vars.valid ? ' project_type_error' : '' }}"
+                                 class="ps-5">
                                 <div id="project_type_help" class="form-text text mb-3">
                                     Sélectionnez le type de projet qui correspond à vos besoins
                                 </div>
@@ -547,7 +548,7 @@ legend {
                                     {% endfor %}
                                 </div>
                             {% endif %}
-                        </fieldset>
+                        </div>
 
                         <!-- Message -->
                         <div class="col-12">
