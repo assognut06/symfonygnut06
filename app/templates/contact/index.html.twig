@@ -97,18 +97,18 @@ textarea:focus,
     color: #ffffff !important;
 }
 
-/* ✅ CORRECTION - Fieldset accessible */
-fieldset {
+/* Regroupement visuel du type de projet */
+.project-type-group {
     border: 2px solid rgba(255, 255, 255, 0.3) !important;
     border-radius: 0.375rem !important;
     padding: 1rem !important;
     margin-bottom: 1rem !important;
 }
 
-legend {
+.project-type-label {
     font-size: 1rem !important;
     font-weight: 600 !important;
-    padding: 0 0.5rem !important;
+    margin-bottom: 0 !important;
     color: #ffffff !important;
 }
 
@@ -435,13 +435,17 @@ legend {
                             </div>
                         </div>
 
-                         <!-- ✅ CORRECTION - Type de projet avec décalage plus important -->
-                        <fieldset class="col-12" aria-required="true">
-                            <legend class="form-label text">
+                        <!-- Type de projet regroupé par un unique radiogroup -->
+                        <div class="col-12 project-type-group">
+                            <p id="project_type_label" class="form-label text project-type-label">
                                 Type de projet <span class="text-danger" aria-label="obligatoire">*</span>
-                            </legend>
+                            </p>
                             
-                            <div role="radiogroup" aria-describedby="project_type_error project_type_help" class="ps-5">
+                            <div role="radiogroup"
+                                 aria-labelledby="project_type_label"
+                                 aria-required="true"
+                                 aria-describedby="project_type_help{{ not form.project_type.vars.valid ? ' project_type_error' : '' }}"
+                                 class="ps-5">
                                 <div id="project_type_help" class="form-text text mb-3">
                                     Sélectionnez le type de projet qui correspond à vos besoins
                                 </div>
@@ -547,7 +551,7 @@ legend {
                                     {% endfor %}
                                 </div>
                             {% endif %}
-                        </fieldset>
+                        </div>
 
                         <!-- Message -->
                         <div class="col-12">
