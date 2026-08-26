@@ -71,13 +71,6 @@ textarea:focus,
     outline: 3px solid #F86CF8;
 }
 
-/* ✅ CORRECTION - Lien externe */
-.external-link::after {
-    content: " (nouvelle fenêtre)";
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
 /* ✅ CORRECTION - Messages d'erreur accessibles */
 .alert {
     padding: 1rem !important;
@@ -240,11 +233,10 @@ textarea:focus,
                             <h2 class="contact-title">Visio</h2>
                             <p class="text">
                                 <a href="https://outlook.office.com/bookwithme/user/c2263f462357476d857beeb43b542bc5@gnut06.org/meetingtype/_x-b5BhbV0ymFVtF1yRmMA2?anonymous&amp;ismsaljsauthenabled&amp;ep=mlink"
-                                   class="text-white text-decoration-none external-link"
+                                   class="text-white text-decoration-none visio-booking-link"
                                    target="_blank"
                                    rel="noopener noreferrer">
-                                    Réserver un créneau Visio dès maintenant
-                                    <span class="visually-hidden">(ouvre dans un nouvel onglet)</span>
+                                    Réserver un créneau Visio dès maintenant (nouvelle fenêtre)
                                 </a>
                             </p>
                         </div>

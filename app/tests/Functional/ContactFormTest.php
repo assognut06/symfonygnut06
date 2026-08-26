@@ -43,6 +43,17 @@ class ContactFormTest extends WebTestCase
         );
     }
 
+    public function testVisioLinkIncludesNewWindowNoticeInHtml(): void
+    {
+        $this->client->request('GET', '/contact');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains(
+            'a.visio-booking-link[target="_blank"]',
+            'Réserver un créneau Visio dès maintenant (nouvelle fenêtre)'
+        );
+    }
+
     public function testSuccessfulContactSubmissionShowsSuccessMessage(): void
     {
         $this->submitContactForm($this->validContactPayload());
