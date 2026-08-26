@@ -29,6 +29,20 @@ class ContactFormTest extends WebTestCase
         $this->assertSelectorNotExists('fieldset input[name="project_type"]');
     }
 
+    public function testMapIframePresentationIsHandledByCss(): void
+    {
+        $this->client->request('GET', '/contact');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('iframe.contact-map-frame');
+        $this->assertSelectorNotExists(
+            'iframe.contact-map-frame[width], '
+            . 'iframe.contact-map-frame[height], '
+            . 'iframe.contact-map-frame[frameborder], '
+            . 'iframe.contact-map-frame[style]'
+        );
+    }
+
     public function testSuccessfulContactSubmissionShowsSuccessMessage(): void
     {
         $this->submitContactForm($this->validContactPayload());
