@@ -1,39 +1,144 @@
 <!-- Alliés / Partenaires -->
-<!-- RGAA 13.8 : liste statique des partenaires, aucun défilement automatique -->
+<!-- RGAA 13.8 : défilement conservé, mais sans déclenchement automatique et navigable au clavier -->
 <section class="bg-main w-100 py-5" aria-labelledby="partenaires-gnut06">
     <div class="container-fluid text-center text-white">
         <h2 id="partenaires-gnut06" class="mb-4">Nos alliés dans nos actions</h2>
 
-        <!-- Liste statique : tous les partenaires visibles et accessibles au clavier, disposés sur plusieurs lignes -->
-        <ul class="partenaires-list">
-            {% for entreprise in entreprises %}
-                {% if entreprise.logo %}
-                    <li class="partenaire-item">
-                        <a href="{{ entreprise.url }}" target="_blank" rel="noopener noreferrer" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ entreprise.nom }}">
-                            <img src="{{ vich_uploader_asset(entreprise, 'logoFile') | imagine_filter('logo_thumbnail') }}" alt="Logo {{ entreprise.nom }}" class="carrousel-img">
-                        </a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+        <!-- Commandes de défilement manuel, accessibles au clavier (aucun déclenchement automatique) -->
+        <div class="partenaires-nav">
+            <button type="button" class="partenaires-nav-btn" id="partenairesScrollLeft"
+                    aria-label="Faire défiler les partenaires vers la gauche" aria-controls="partenairesWrapper">
+                <span aria-hidden="true">&lsaquo;</span>
+                <span class="visually-hidden">Partenaires précédents</span>
+            </button>
+            <button type="button" class="partenaires-nav-btn" id="partenairesScrollRight"
+                    aria-label="Faire défiler les partenaires vers la droite" aria-controls="partenairesWrapper">
+                <span aria-hidden="true">&rsaquo;</span>
+                <span class="visually-hidden">Partenaires suivants</span>
+            </button>
+        </div>
 
-        <p class="text mt-4">
-            Chez Gnut 06, nous croyons en la force du collectif. C'est pourquoi nous avons la chance d'être accompagnés par des structures variées — entreprises, associations, collectifs citoyens — qui partagent nos valeurs et soutiennent nos initiatives. Ces alliés, chacun à leur manière, contribuent à faire vivre nos projets, à enrichir nos actions sur le terrain et à renforcer notre impact local. Leur engagement à nos côtés est une source d'inspiration et de motivation au quotidien.
-        </p>
+        <!-- Défilement horizontal manuel : tous les partenaires présents et accessibles au clavier -->
+        <div class="partenaires-wrapper" id="partenairesWrapper" tabindex="0" role="region"
+             aria-label="Liste des partenaires. Pour défiler, utilisez les boutons précédent et suivant, l'ascenseur de la souris ou les flèches gauche et droite du clavier quand la liste a le focus.">
+            <ul class="partenaires-list">
+                {% for entreprise in entreprises %}
+                    {% if entreprise.logo %}
+                        <li class="partenaire-item">
+                            <a href="{{ entreprise.url }}" target="_blank" rel="noopener noreferrer" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ entreprise.nom }}">
+                                <img src="{{ vich_uploader_asset(entreprise, 'logoFile') | imagine_filter('logo_thumbnail') }}" alt="Logo {{ entreprise.nom }}" class="partenaire-img">
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Défilement horizontal manuel du texte : flèches à gauche et à droite sur la même ligne, sans déclenchement automatique et navigable au clavier -->
+        <div class="partenaires-text-row">
+            <button type="button" class="partenaires-nav-btn" id="partenairesTextScrollLeft"
+                    aria-label="Faire défiler le texte vers la gauche" aria-controls="partenairesTextWrapper">
+                <span aria-hidden="true">&lsaquo;</span>
+            </button>
+
+            <div class="partenaires-text-wrapper" id="partenairesTextWrapper" tabindex="0" role="region"
+                 aria-label="Description des partenaires. Pour défiler, utilisez les boutons précédent et suivant, l'ascenseur de la souris ou les flèches gauche et droite du clavier quand la liste a le focus.">
+                <p class="partenaires-text">
+                    Chez Gnut 06, nous croyons en la force du collectif. C'est pourquoi nous avons la chance d'être accompagnés par des structures variées — entreprises, associations, collectifs citoyens — qui partagent nos valeurs et soutiennent nos initiatives. Ces alliés, chacun à leur manière, contribuent à faire vivre nos projets, à enrichir nos actions sur le terrain et à renforcer notre impact local. Leur engagement à nos côtés est une source d'inspiration et de motivation au quotidien.
+                </p>
+            </div>
+
+            <button type="button" class="partenaires-nav-btn" id="partenairesTextScrollRight"
+                    aria-label="Faire défiler le texte vers la droite" aria-controls="partenairesTextWrapper">
+                <span aria-hidden="true">&rsaquo;</span>
+            </button>
+        </div>
     </div>
 </section>
 
 <style>
-    /* Liste statique des logos partenaires : affichage sur plusieurs lignes, sans défilement */
-    .partenaires-list {
-        list-style: none;
-        margin: 0 auto;
-        padding: 0;
+    /* Commandes de défilement */
+    .partenaires-nav {
         display: flex;
-        flex-wrap: wrap;
         justify-content: center;
         gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .partenaires-nav-btn {
+        width: 48px;
+        height: 48px;
+        border: 2px solid #F86CF8;
+        background: transparent;
+        color: #fff;
+        font-size: 1.6rem;
+        line-height: 1;
+        border-radius: 50%;
+        cursor: pointer;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
+    }
+
+    .partenaires-nav-btn:hover:not(:disabled),
+    .partenaires-nav-btn:focus-visible {
+        background: rgba(248, 108, 248, 0.25);
+        outline: 3px solid #F86CF8;
+        outline-offset: 2px;
+    }
+
+    .partenaires-nav-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    /* Texte : simples flèches, sans cercle (les cercles restent sur les logos partenaires) */
+    .partenaires-text-row .partenaires-nav-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: transparent;
+        color: #F86CF8;
+        font-size: 1.8rem;
+        line-height: 1;
+        padding: 0;
+    }
+
+    .partenaires-text-row .partenaires-nav-btn:hover:not(:disabled),
+    .partenaires-text-row .partenaires-nav-btn:focus-visible {
+        color: #fff;
+        background: transparent;
+        outline: 2px solid #F86CF8;
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
+    /* Conteneur de défilement horizontal manuel (pas d'animation automatique) */
+    .partenaires-wrapper {
+        overflow-x: auto;
+        scroll-behavior: smooth;
         max-width: 1200px;
+        margin: 0 auto;
+        padding-bottom: 12px;
+        scrollbar-width: thin;
+        scrollbar-color: #F86CF8 #0f0f1a;
+        outline-offset: 4px;
+    }
+
+    .partenaires-wrapper:focus-visible {
+        outline: 3px solid #F86CF8;
+        outline-offset: 4px;
+    }
+
+    .partenaires-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 15px;
+        flex-wrap: nowrap;
     }
 
     .partenaire-item {
@@ -45,20 +150,125 @@
         justify-content: center;
         align-items: center;
         transition: background 0.3s ease;
+        flex-shrink: 0;
     }
 
     .partenaire-item:hover {
         background: rgba(255, 255, 255, 0.05);
     }
 
-    .carrousel-img {
+    .partenaire-img {
         max-width: 120px;
         max-height: 100px;
         object-fit: contain;
         transition: transform 0.3s ease;
     }
 
-    .partenaire-item:hover .carrousel-img {
+    .partenaire-item:hover .partenaire-img {
         transform: scale(1.1);
     }
+
+    /* Texte défilant horizontal manuel : flèches à gauche et à droite du texte sur la même ligne */
+    .partenaires-text-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        width: 80%;
+        margin: 20px auto 0 auto;
+    }
+
+    .partenaires-text-wrapper {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        padding: 12px 20px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 8px;
+        scrollbar-width: thin;
+        scrollbar-color: #F86CF8 #0f0f1a;
+        outline-offset: 4px;
+    }
+
+    .partenaires-text-wrapper:focus-visible {
+        outline: 3px solid #F86CF8;
+        outline-offset: 4px;
+    }
+
+    .partenaires-text {
+        display: inline-block;
+        white-space: nowrap;
+        color: #fff;
+        font-size: 19px;
+        line-height: 1.5;
+        margin: 0;
+    }
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const initScroll = (wrapperId, leftId, rightId, step) => {
+        const wrapper = document.getElementById(wrapperId);
+        const btnLeft = document.getElementById(leftId);
+        const btnRight = document.getElementById(rightId);
+
+        if (!wrapper || !btnLeft || !btnRight) {
+            return;
+        }
+
+        let autoTimer = null;
+
+        const updateButtons = () => {
+            const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
+            btnLeft.disabled = wrapper.scrollLeft <= 0;
+            btnRight.disabled = wrapper.scrollLeft >= maxScroll - 1;
+        };
+
+        const maxScroll = () => wrapper.scrollWidth - wrapper.clientWidth;
+
+        // Défilement automatique au survol de la souris (arrêté dès qu'on la quitte)
+        const startAutoScroll = () => {
+            if (autoTimer) {
+                return;
+            }
+            autoTimer = setInterval(() => {
+                wrapper.scrollLeft += 4; // vitesse de défilement automatique (px par tick)
+                if (wrapper.scrollLeft >= maxScroll() - 1) {
+                    wrapper.scrollLeft = 0; // boucle
+                }
+                updateButtons();
+            }, 16);
+        };
+
+        const stopAutoScroll = () => {
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+            }
+        };
+
+        wrapper.addEventListener("mouseenter", startAutoScroll);
+        wrapper.addEventListener("mouseleave", stopAutoScroll);
+
+        btnLeft.addEventListener("click", () => {
+            stopAutoScroll();
+            wrapper.scrollBy({ left: -step, behavior: "smooth" });
+        });
+
+        btnRight.addEventListener("click", () => {
+            stopAutoScroll();
+            wrapper.scrollBy({ left: step, behavior: "smooth" });
+        });
+
+        wrapper.addEventListener("scroll", updateButtons);
+        window.addEventListener("resize", updateButtons);
+        updateButtons();
+    };
+
+    // Logos partenaires et texte descriptif : défilement manuel (boutons + flèches clavier)
+    // et défilement automatique au survol de la souris.
+    initScroll("partenairesWrapper", "partenairesScrollLeft", "partenairesScrollRight", 300);
+    initScroll("partenairesTextWrapper", "partenairesTextScrollLeft", "partenairesTextScrollRight", 300);
+});
+</script>
