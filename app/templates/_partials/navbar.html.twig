@@ -94,46 +94,33 @@
 
             <!-- ✅ Menu principal -->
             <div class="collapse navbar-collapse fs-5" id="navbarNavDropdown">
-                <ul class="navbar-nav ms-auto mb-2 mb-xl-0 text-navbar w-100 justify-content-xl-evenly"
-                    role="menubar">
+                <ul class="navbar-nav ms-auto mb-2 mb-xl-0 text-navbar w-100 justify-content-xl-evenly">
 
-                    <li class="nav-item" role="none">
+                    <li class="nav-item">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_a_propos' ? 'active' : '' }}"
                            href="{{ path('app_a_propos') }}"
-                           role="menuitem"
                            {% if app.request.attributes.get('_route') == 'app_a_propos' %}
                                aria-current="page"
-                               aria-label="Notre Mission - Page courante"
-                           {% else %}
-                               aria-label="Découvrir notre mission d'inclusion numérique"
                            {% endif %}>
                             Notre Mission
                         </a>
                     </li>
 
-                    <li class="nav-item" role="none">
+                    <li class="nav-item">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}"
                            href="{{ path('app_billetteries') }}"
-                           role="menuitem"
                            {% if app.request.attributes.get('_route') == 'app_billetteries' %}
                                aria-current="page"
-                               aria-label="Réserver une activité - Page courante"
-                           {% else %}
-                               aria-label="Réserver une activité ou un événement"
                            {% endif %}>
                             Réserver une activité
                         </a>
                     </li>
 
-                    <li class="nav-item" role="none">
+                    <li class="nav-item">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_metavers' ? 'active' : '' }}"
                            href="{{ path('app_metavers') }}"
-                           role="menuitem"
                            {% if app.request.attributes.get('_route') == 'app_metavers' %}
                                aria-current="page"
-                               aria-label="Salles 3D immersives - Page courante"
-                           {% else %}
-                               aria-label="Découvrir nos salles 3D immersives"
                            {% endif %}>
                             Salles 3D immersives
                         </a>
@@ -153,15 +140,11 @@
                         </a>
                     </li>
 
-                    <li class="nav-item" role="none">
+                    <li class="nav-item">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_don' ? 'active' : '' }}"
                            href="{{ path('app_don') }}"
-                           role="menuitem"
                            {% if app.request.attributes.get('_route') == 'app_don' %}
                                aria-current="page"
-                               aria-label="Nous Soutenir - Page courante"
-                           {% else %}
-                               aria-label="Soutenir notre association par un don"
                            {% endif %}>
                             Nous Soutenir
                         </a>
@@ -170,15 +153,13 @@
                     {% if app.user %}
 
                         <!-- ✅ Desktop : menu déroulant Profil accessible -->
-                        <li class="nav-item dropdown d-none d-xl-block" role="none">
+                        <li class="nav-item dropdown d-none d-xl-block">
                             <a class="nav-link dropdown-toggle text-light {{ app.request.attributes.get('_route') starts with 'app_profil' ? 'active' : '' }}"
                                href="#"
                                id="navbarProfilDropdown"
-                               role="menuitem"
                                data-bs-toggle="dropdown"
                                aria-expanded="false"
-                               aria-haspopup="true"
-                               aria-label="Menu du profil utilisateur">
+                               aria-haspopup="true">
                                 <img src="{{ asset('../images/webp/person-circle.svg') }}"
                                      alt="Icône de profil utilisateur"
                                      width="20"
@@ -187,12 +168,10 @@
                                 <span>Profil</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end bg-navbar border-0"
-                                aria-labelledby="navbarProfilDropdown"
-                                role="menu">
-                                <li role="none">
+                                aria-labelledby="navbarProfilDropdown">
+                                <li>
                                     <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'app_profil' ? 'active' : '' }}"
                                        href="{{ path('app_profil') }}"
-                                       role="menuitem"
                                        {% if app.request.attributes.get('_route') == 'app_profil' %}
                                            aria-current="page"
                                        {% endif %}>
@@ -200,10 +179,9 @@
                                     </a>
                                 </li>
                                 {% if is_granted('ROLE_ADMIN') %}
-                                    <li role="none">
+                                    <li>
                                         <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
                                            href="{{ path('admin_dashboard') }}"
-                                           role="menuitem"
                                            {% if app.request.attributes.get('_route') == 'admin_dashboard' %}
                                                aria-current="page"
                                            {% endif %}>
@@ -212,10 +190,9 @@
                                     </li>
                                 {% endif %}
                                 {% if app.user and is_granted('ROLE_ENTREPRISE') %}
-                                    <li role="none">
+                                    <li>
                                         <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'app_tih_search' ? 'active' : '' }}"
                                            href="{{ path('app_tih_search') }}"
-                                           role="menuitem"
                                                 {% if app.request.attributes.get('_route') == 'app_tih_search' %}
                                             aria-current="page"
                                                 {% endif %}>
@@ -223,14 +200,12 @@
                                         </a>
                                     </li>
                                 {% endif %}
-                                <li role="separator">
+                                <li>
                                     <hr class="dropdown-divider text-light" aria-hidden="true">
                                 </li>
-                                <li role="none">
+                                <li>
                                     <a class="dropdown-item text-light"
-                                       href="{{ path('app_logout') }}"
-                                       role="menuitem"
-                                       aria-label="Se déconnecter du compte">
+                                       href="{{ path('app_logout') }}">
                                         Déconnexion
                                     </a>
                                 </li>
@@ -238,66 +213,48 @@
                         </li>
 
                         <!-- ✅ Mobile : liens simples accessibles -->
-                        <li class="nav-item d-block d-xl-none" role="none">
+                        <li class="nav-item d-block d-xl-none">
                             <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_profil' ? 'active' : '' }}"
                                href="{{ path('app_profil') }}"
-                               role="menuitem"
                                {% if app.request.attributes.get('_route') == 'app_profil' %}
                                    aria-current="page"
-                                   aria-label="Tableau de bord - Page courante"
-                               {% else %}
-                                   aria-label="Accéder au tableau de bord"
                                {% endif %}>
                                 Tableau de bord
                             </a>
                         </li>
 
                         {% if is_granted('ROLE_ADMIN') %}
-                            <li class="nav-item d-block d-xl-none" role="none">
+                            <li class="nav-item d-block d-xl-none">
                                 <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
                                    href="{{ path('admin_dashboard') }}"
-                                   role="menuitem"
                                    {% if app.request.attributes.get('_route') == 'admin_dashboard' %}
                                        aria-current="page"
-                                       aria-label="Administration - Page courante"
-                                   {% else %}
-                                       aria-label="Accéder à l'administration"
                                    {% endif %}>
                                     Administration
                                 </a>
                             </li>
                         {% endif %}
 
-                        <li class="nav-item d-block d-xl-none" role="none">
+                        <li class="nav-item d-block d-xl-none">
                             <a class="nav-link text-light"
-                               href="{{ path('app_logout') }}"
-                               role="menuitem"
-                               aria-label="Se déconnecter du compte">
+                               href="{{ path('app_logout') }}">
                                 Déconnexion
                             </a>
                         </li>
 
                     {% else %}
-                        <li class="nav-item d-flex flex-column flex-xl-row gap-2 mt-2 mt-xl-0" role="none">
+                        <li class="nav-item d-flex flex-column flex-xl-row gap-2 mt-2 mt-xl-0">
                             <a href="{{ path('app_register') }}"
                                class="btn-outline-gradient btn-sm text-white {{ app.request.attributes.get('_route') == 'app_register' ? ' active' }}"
-                               role="menuitem"
                                {% if app.request.attributes.get('_route') == 'app_register' %}
                                    aria-current="page"
-                                   aria-label="Inscription - Page courante"
-                               {% else %}
-                                   aria-label="S'inscrire sur le site"
                                {% endif %}>
                                 Inscription
                             </a>
                             <a href="{{ path('app_login') }}"
                                class="btn-neon btn-sm text-white {{ app.request.attributes.get('_route') == 'app_login' ? ' active' }}"
-                               role="menuitem"
                                {% if app.request.attributes.get('_route') == 'app_login' %}
                                    aria-current="page"
-                                   aria-label="Connexion - Page courante"
-                               {% else %}
-                                   aria-label="Se connecter au site"
                                {% endif %}>
                                 Connexion
                             </a>

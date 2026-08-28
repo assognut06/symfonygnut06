@@ -15,6 +15,27 @@ class AuthenticationTest extends WebTestCase
         $this->assertSelectorExists('#connexion-form');
     }
 
+    public function testRequiredLoginFieldsAreIdentifiedAndKeepTheirErrorsAssociated(): void
+    {
+        $this->client->request('GET', '/login');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains(
+            '#required-fields-info',
+            'Toutes les informations sont obligatoires.'
+        );
+        $this->assertSelectorExists(
+            '#connexion-form[aria-describedby~="required-fields-info"] '
+            . '#username[required][aria-required="true"][aria-describedby~="username-error"]'
+        );
+        $this->assertSelectorExists(
+            '#connexion-form[aria-describedby~="required-fields-info"] '
+            . '#password[required][aria-required="true"][aria-describedby~="password-error"]'
+        );
+        $this->assertSelectorExists('#username-error.invalid-feedback[role="alert"]');
+        $this->assertSelectorExists('#password-error.invalid-feedback[role="alert"]');
+    }
+
     public function testLoginWithValidCredentialsRedirectsToProfile(): void
     {
         $this->createUser('login@test.com', 'MyPassword1!');
