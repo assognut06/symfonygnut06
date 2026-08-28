@@ -135,9 +135,9 @@
 			<div class="container d-flex flex-column gap-5 mt-5 mb-5">
 				<h2 id="nos-actions" class="section-title text-center">Nos actions</h2>
 
-				<div class="row g-4 justify-content-center" role="list" aria-label="Liste de nos actions pour l'inclusion numérique">
+				<ul class="row g-4 justify-content-center list-unstyled" aria-label="Liste de nos actions pour l'inclusion numérique">
 
-					<article class="col-lg-4 col-md-6 col-12 d-flex" role="listitem" aria-labelledby="action-aines">
+					<li class="col-lg-4 col-md-6 col-12 d-flex" aria-labelledby="action-aines">
 						<div class="card text-center text-white bg-black flex-fill action-card" tabindex="0">
 							<img src="{{ asset('images/webp/benevoles-3.webp') }}" class="card-img-top" alt="Atelier immersif avec des personnes âgées découvrant la réalité virtuelle, accompagnées par nos bénévoles" role="img">
 							<div class="card-body bg-black">
@@ -152,9 +152,9 @@
 								</p>
 							</div>
 						</div>
-					</article>
+					</li>
 
-					<article class="col-lg-4 col-md-6 col-12 d-flex" role="listitem" aria-labelledby="action-hopitaux">
+					<li class="col-lg-4 col-md-6 col-12 d-flex" aria-labelledby="action-hopitaux">
 						<div class="card text-center text-white bg-black flex-fill action-card" tabindex="0">
 							<img src="{{ asset('images/webp/benevoles-2.webp') }}" class="card-img-top" alt="Bénévoles GNUT 06 en intervention à l'hôpital, proposant des expériences de réalité virtuelle aux patients" role="img">
 							<div class="card-body bg-black">
@@ -169,9 +169,9 @@
 								</p>
 							</div>
 						</div>
-					</article>
+					</li>
 
-					<article class="col-lg-4 col-md-6 col-12 d-flex" role="listitem" aria-labelledby="action-immersion">
+					<li class="col-lg-4 col-md-6 col-12 d-flex" aria-labelledby="action-immersion">
 						<div class="card text-center text-white bg-black flex-fill action-card" tabindex="0">
 							<img src="{{ asset('images/webp/benevoles-1.webp') }}" class="card-img-top" alt="Séance d'immersion personnalisée avec casque de réalité virtuelle, adaptée aux besoins de chaque participant" role="img">
 							<div class="card-body bg-black">
@@ -185,9 +185,9 @@
 								</p>
 							</div>
 						</div>
-					</article>
+					</li>
 
-				</div>
+				</ul>
 			</div>
 		</section>
 
@@ -195,59 +195,69 @@
 		<section class="bg-main w-100 py-5" role="region" aria-labelledby="nos-chiffres">
 			<div class="container mt-5 mb-5">
 				<h2 id="nos-chiffres" class="section-title text-center">Chiffres clés</h2>
-				<div class="row g-4 text-center mt-4">
-					<div class="col-md-4">
+				<ul class="row g-4 text-center mt-4 list-unstyled">
+					<li class="col-md-4">
 						<div class="p-4 rounded-4 action-card bg-black border border-secondary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center">
-							<i class="bi bi-people-fill display-4 association-name mb-3"></i>
-							<h3><i class="display-3 fw-bold text js-counter mb-0" data-target="38">0</i></h3>
+							<span class="bi bi-people-fill display-4 association-name mb-3" aria-hidden="true"></span>
+							<p class="mb-0">
+								<span class="display-3 fw-bold text js-counter" data-target="38">0</span>
+							</p>
 							<p class="card-text fs-5">Adhérents depuis la création</p>
 						</div>
-					</div>
+					</li>
 
-					<div class="col-md-4">
+					<li class="col-md-4">
 						<div class="p-4 rounded-4 action-card bg-black border border-secondary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center">
-							<i class="bi bi-gift-fill display-4 association-name mb-3"></i>
-							<h3><i class="display-3 fw-bold text js-counter mb-0" data-target="6948">0</i>
-							<i class="display-3 fw-bold text">€</i></h3>
+							<span class="bi bi-gift-fill display-4 association-name mb-3" aria-hidden="true"></span>
+							<p class="mb-0">
+								<span class="display-3 fw-bold text js-counter" data-target="6948">0</span>
+								<span class="display-3 fw-bold text">€</span>
+							</p>
 							<p class="card-text fs-5">De dons</p>
 						</div>
-					</div>
+					</li>
 
-					<div class="col-md-4">
+					<li class="col-md-4">
 						<div class="p-4 rounded-4 action-card bg-black border border-secondary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center">
-							<i class="bi bi-person-hearts display-4 association-name mb-3"></i>
-							<h3><i class="display-3 fw-bold text js-counter mb-0" data-target="21">0</i></h3>
+							<span class="bi bi-person-hearts display-4 association-name mb-3" aria-hidden="true"></span>
+							<p class="mb-0">
+								<span class="display-3 fw-bold text js-counter" data-target="21">0</span>
+							</p>
 							<p class="card-text fs-5">Bénévoles actifs</p>
 						</div>
-					</div>
-				</div>
+					</li>
 
-				<div class="row g-4 text-center mt-4">
-					<div class="col-md-4">
+					<li class="col-md-4">
 						<div class="p-4 rounded-4 action-card bg-black border border-secondary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center">
-							<i class="bi bi-cash-stack display-4 association-name mb-3"></i>
-							<h3><i class="display-3 fw-bold text js-counter mb-0" data-target="4608">0</i>
-							<i class="display-3 fw-bold text">€</i></h3>
+							<span class="bi bi-cash-stack display-4 association-name mb-3" aria-hidden="true"></span>
+							<p class="mb-0">
+								<span class="display-3 fw-bold text js-counter" data-target="4608">0</span>
+								<span class="display-3 fw-bold text">€</span>
+							</p>
 							<p class="card-text fs-5">Prestations consulting</p>
 						</div>
-					</div>
+					</li>
 
-					<div class="col-md-4">
+					<li class="col-md-4">
 						<div class="p-4 rounded-4 action-card bg-black border border-secondary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center">
-							<i class="bi bi-headset-vr display-4 association-name mb-3"></i>
-							<h3><i class="display-3 fw-bold text js-counter mb-0" data-target="23">0</i></h3>
+							<span class="bi bi-headset-vr display-4 association-name mb-3" aria-hidden="true"></span>
+							<p class="mb-0">
+								<span class="display-3 fw-bold text js-counter" data-target="23">0</span>
+							</p>
 							<p class="card-text fs-5">Ateliers d'immersion</p>
 						</div>
-					</div>
+					</li>
 
-					<div class="col-md-4">
+					<li class="col-md-4">
 						<div class="p-4 rounded-4 action-card bg-black border border-secondary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center">
-							<i class="bi bi-diagram-3-fill display-4 association-name mb-3"></i>
-							<h3><i class="display-3 fw-bold text js-counter mb-0" data-target="16">0</i></h3>
+							<span class="bi bi-diagram-3-fill display-4 association-name mb-3" aria-hidden="true"></span>
+							<p class="mb-0">
+								<span class="display-3 fw-bold text js-counter" data-target="16">0</span>
+							</p>
 							<p class="card-text fs-5">Partenaires</p>
 						</div>
-					</div>
-				</div>
+					</li>
+				</ul>
 			</div>
 		</section>
 
