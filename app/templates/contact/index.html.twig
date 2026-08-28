@@ -44,6 +44,103 @@ textarea:focus,
     line-height: 1.6 !important;
 }
 
+/* RGAA 3.2 - Contrastes du formulaire de contact */
+#services .required-marker {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+#services .invalid-feedback {
+    color: #ffb3c1 !important;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+#services .alert-danger {
+    background-color: #6f1425 !important;
+    border-color: #ff8fa3 !important;
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+#services .form-control {
+    background-color: #ffffff;
+    border: 2px solid #bfc5cc;
+    color: #1f2328;
+}
+
+#services .form-control::placeholder {
+    color: #5c636a;
+    opacity: 1;
+}
+
+#services .form-control:hover:not(:disabled) {
+    border-color: #f86cf8;
+}
+
+#services .form-control:focus {
+    background-color: #ffffff;
+    border-color: #f86cf8;
+    color: #1f2328;
+}
+
+#services .form-control:disabled {
+    background-color: #e9ecef;
+    border-color: #bfc5cc;
+    color: #343a40;
+    opacity: 1;
+}
+
+#services .form-check-input {
+    background-color: #ffffff;
+    border: 2px solid #bfc5cc;
+}
+
+#services .form-check-input:hover:not(:disabled) {
+    border-color: #f86cf8;
+}
+
+#services .form-check-input:checked {
+    background-color: #7f29ff;
+    border-color: #ffffff;
+}
+
+#services .form-check-input:disabled {
+    background-color: #e9ecef;
+    border-color: #bfc5cc;
+    opacity: 1;
+}
+
+#services .form-check-input:disabled + .flex-grow-1,
+#services .form-check-input:disabled + .flex-grow-1 .text {
+    color: #c9cdd2 !important;
+}
+
+#services .btn-neon {
+    background: #7f29ff;
+    border: 2px solid #bfc5cc;
+    color: #ffffff;
+}
+
+#services .btn-neon:hover:not(:disabled) {
+    background: #010101;
+    border-color: #f86cf8;
+    color: #ffffff;
+}
+
+#services .btn-neon:focus {
+    background: #7f29ff;
+    border-color: #ffffff;
+    color: #ffffff;
+}
+
+#services .btn-neon:disabled {
+    background: #4b5563;
+    border-color: #c9cdd2;
+    color: #ffffff;
+    opacity: 1;
+}
+
 /* ✅ CORRECTION - Titres coordonnées plus petits */
 .contact-title {
     font-size: 20px !important;
@@ -330,7 +427,7 @@ textarea:focus,
                         <!-- Prénom -->
                         <div class="col-lg-6">
                             <label for="first_name" class="form-label text">
-                                Prénom <span class="text-danger" aria-label="obligatoire">*</span>
+                                Prénom <span class="required-marker" aria-label="obligatoire">*</span>
                             </label>
                             <input type="text"
                                    id="first_name"
@@ -355,7 +452,7 @@ textarea:focus,
                         <!-- Nom -->
                         <div class="col-lg-6">
                             <label for="last_name" class="form-label text">
-                                Nom <span class="text-danger" aria-label="obligatoire">*</span>
+                                Nom <span class="required-marker" aria-label="obligatoire">*</span>
                             </label>
                             <input type="text"
                                    id="last_name"
@@ -380,7 +477,7 @@ textarea:focus,
                         <!-- Email -->
                         <div class="col-lg-6">
                             <label for="email" class="form-label text">
-                                Email <span class="text-danger" aria-label="obligatoire">*</span>
+                                Email <span class="required-marker" aria-label="obligatoire">*</span>
                             </label>
                             <input type="email"
                                    id="email"
@@ -435,7 +532,7 @@ textarea:focus,
                         <!-- Type de projet regroupé par un unique radiogroup -->
                         <div class="col-12 project-type-group">
                             <p id="project_type_label" class="form-label text project-type-label">
-                                Type de projet <span class="text-danger" aria-label="obligatoire">*</span>
+                                Type de projet <span class="required-marker" aria-label="obligatoire">*</span>
                             </p>
                             
                             <div role="radiogroup"
@@ -553,7 +650,7 @@ textarea:focus,
                         <!-- Message -->
                         <div class="col-12">
                             <label for="message" class="form-label text">
-                                Message <span class="text-danger" aria-label="obligatoire">*</span>
+                                Message <span class="required-marker" aria-label="obligatoire">*</span>
                             </label>
                             <textarea id="message"
                                       name="message"
@@ -584,8 +681,8 @@ textarea:focus,
 
                         <!-- ✅ CORRECTION - Infos sur les champs obligatoires -->
                         <div class="col-12">
-                            <p id="form-required" class="text mt-2" style="color: #FF1DBB;">
-                                <span class="text-danger">*</span> Champs obligatoires
+                            <p id="form-required" class="text mt-2">
+                                <span class="required-marker" aria-hidden="true">*</span> Champs obligatoires
                             </p>
                         </div>
 
