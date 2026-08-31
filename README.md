@@ -211,6 +211,45 @@ docker compose build symfony
 docker compose up -d symfony
 After rebuild, php -i | grep xdebug.mode should show debug,coverage (or at least coverage).
 
+## Résoudre des conflits après la création d'une Pull Request
+
+Au cours de la vie du projet, une Pull Request déjà ouverte peut entrer en conflit avec sa branche cible. Ces conflits sont résolus en rebasant la branche de travail sur la branche cible. Les branches `feature/*` et `fix/*` ciblent d'abord `develop`, tandis que les branches `hotfix/*` ciblent d'abord `main`.
+
+Exemple pour une branche `feature/*` ou `fix/*` :
+
+```bash
+git fetch origin
+git switch <nom-de-la-branche>
+git rebase origin/main
+```
+
+En cas de conflit, corrigez les fichiers concernés, ajoutez-les à l'index, puis poursuivez le rebase :
+
+```bash
+git add <fichier-corrige>
+git rebase --continue
+```
+
+Pour annuler l'opération et revenir à l'état précédent :
+
+```bash
+git rebase --abort
+```
+
+Une fois le rebase terminé et les tests validés, mettez à jour la branche distante :
+
+```bash
+git push --force-with-lease origin <nom-de-la-branche>
+```
+
+Utilisez `--force-with-lease` plutôt que `--force` : Git refuse ainsi d'écraser des modifications distantes que vous n'avez pas récupérées. Prévenez les autres contributeurs avant de rebaser une branche partagée.
+
+### Approbations après le rebase
+
+Un comportement particulier a été constaté sur GitHub : même lorsque les relecteurs approuvent la Pull Request après le rebase, leurs approbations peuvent être considérées comme antérieures au dernier commit. La fusion reste alors bloquée, car GitHub ne reconnaît pas ces approbations comme portant sur la dernière version de la branche.
+
+Le contournement consiste, après avoir terminé, validé et poussé le rebase, à fermer puis à rouvrir la Pull Request. Cette opération permet à GitHub de prendre en compte le dernier état de la branche pour les approbations.
+
 ## Trouble shoot
 
 Sur Mac, il peut y avoir une erreur avec l'extension opcache.so
