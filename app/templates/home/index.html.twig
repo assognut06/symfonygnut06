@@ -69,31 +69,78 @@
 			transform: scale(1.1) !important;
 		}
 
-		/* ✅ Amélioration des indicateurs carousel */
-		.carousel-indicators button {
-			background-color: rgba(255, 255, 255, 0.5) !important;
-			border: 2px solid rgba(255, 255, 255, 0.3) !important;
-			transition: all 0.3s ease !important;
+		/* RGAA 3.1 et 3.3 - Indicateurs perceptibles sans la couleur */
+		#carouselExampleIndicators .carousel-indicators [data-bs-target] {
+			box-sizing: content-box;
+			width: 16px;
+			height: 16px;
+			margin: 0 8px;
+			background-color: #ffffff !important;
+			border: 2px solid #010101 !important;
+			border-radius: 50%;
+			opacity: 1 !important;
+			transform: none;
+			transition: transform 0.2s ease, background-color 0.2s ease !important;
 		}
 
-		.carousel-indicators button.active {
-			background-color: #F86CF8 !important;
-			border-color: #F86CF8 !important;
+		#carouselExampleIndicators .carousel-indicators [data-bs-target].active {
+			width: 18px;
+			height: 18px;
+			background-color: #f86cf8 !important;
+			border-radius: 2px;
+			transform: rotate(45deg) scale(1.1);
 		}
 
-		.carousel-indicators button:hover {
-			background-color: rgba(248, 108, 248, 0.7) !important;
+		#carouselExampleIndicators .carousel-indicators [data-bs-target]:hover:not(.active) {
+			background-color: #f86cf8 !important;
+			transform: scale(1.2);
 		}
 
-		/* ✅ Amélioration des contrôles carousel */
-		.carousel-control-prev,
-		.carousel-control-next {
-			transition: all 0.3s ease !important;
+		#carouselExampleIndicators .carousel-indicators [data-bs-target].active:hover {
+			transform: rotate(45deg) scale(1.2);
 		}
 
-		.carousel-control-prev:hover,
-		.carousel-control-next:hover {
-			background-color: rgba(0, 0, 0, 0.3) !important;
+		#carouselExampleIndicators .carousel-indicators [data-bs-target]:focus,
+		#carouselExampleIndicators .carousel-indicators [data-bs-target]:focus-visible {
+			outline: 3px solid #ffffff !important;
+			outline-offset: 2px !important;
+			box-shadow: 0 0 0 5px #010101 !important;
+		}
+
+		/* RGAA 3.3 - Flèches contrastées sur toutes les images */
+		#carouselExampleIndicators .carousel-control-prev,
+		#carouselExampleIndicators .carousel-control-next {
+			opacity: 1 !important;
+			transition: background-color 0.2s ease !important;
+		}
+
+		#carouselExampleIndicators .carousel-control-prev-icon,
+		#carouselExampleIndicators .carousel-control-next-icon {
+			width: 48px;
+			height: 48px;
+			background-color: #010101;
+			background-size: 55% 55%;
+			border: 2px solid #ffffff;
+			border-radius: 50%;
+		}
+
+		#carouselExampleIndicators .carousel-control-prev:hover,
+		#carouselExampleIndicators .carousel-control-next:hover {
+			background-color: rgba(1, 1, 1, 0.35) !important;
+		}
+
+		#carouselExampleIndicators .carousel-control-prev:focus,
+		#carouselExampleIndicators .carousel-control-next:focus,
+		#carouselExampleIndicators .carousel-control-prev:focus-visible,
+		#carouselExampleIndicators .carousel-control-next:focus-visible {
+			outline: 3px solid #ffffff !important;
+			outline-offset: -3px !important;
+			box-shadow: inset 0 0 0 6px #010101 !important;
+		}
+
+		#carouselExampleIndicators .carousel-control-prev:focus .carousel-control-prev-icon,
+		#carouselExampleIndicators .carousel-control-next:focus .carousel-control-next-icon {
+			box-shadow: 0 0 0 3px #010101, 0 0 0 6px #ffffff;
 		}
 
 		/* ✅ Style des images carousel */
@@ -136,8 +183,13 @@
 
 		/* ✅ Accessibilité - Mode contraste élevé */
 		@media(prefers-contrast: high) {
-			.carousel-indicators button {
+			#carouselExampleIndicators .carousel-indicators [data-bs-target] {
 				border-width: 3px !important;
+			}
+
+			#carouselExampleIndicators .carousel-control-prev-icon,
+			#carouselExampleIndicators .carousel-control-next-icon {
+				border-width: 3px;
 			}
 		}
 
@@ -195,7 +247,7 @@
 				<div class="row align-items-center gx-5">
 				<div class="col-md-6 text-center order-1 order-md-2">
 				<figure class="rounded-4 filtre-gnut06">
-					<img src="{{ asset('images/webp/apf_251112_001.webp') }}" class="img-fluid" alt="Personne utilisant une technologie immersive GNUT 06 pour l'inclusion numérique" role="img">
+					<img src="{{ asset('images/webp/apf_251112_001.webp') }}" class="img-fluid" alt="Personne en fauteuil roulant portant un casque de réalité virtuelle" role="img">
 				</figure>
 				</div>
 
@@ -206,7 +258,7 @@
 					<p class="text text-start">
 						GNUT 06 est une association engagée pour l'inclusion des personnes en situation de handicap à travers l'innovation numérique. Découvrez nos actions, nos projets en réalité virtuelle et rejoignez-nous pour construire un impact social durable.
 					</p>
-					<a href="{{ path('app_a_propos') }}" class="btn-neon text-white mt-3" role="button" aria-label="Découvrir la mission et les actions de GNUT 06">
+					<a href="{{ path('app_a_propos') }}" class="btn-neon text-white mt-3" role="button">
 						Découvrez GNUT 06
 					</a>
 				</header>
@@ -219,7 +271,7 @@
 			<div class="container">
 				<div class="row align-items-center gx-5">
 				<figure class="col-md-6 text-center mb-4 mb-md-0 order-2 order-md-1 mt-3 mt-md-0">
-					<img src="{{ asset('images/webp/immersion-group.webp') }}" class="img-fluid" alt="Groupe de personnes de différents âges vivant une expérience immersive en réalité virtuelle ensemble" role="img">
+					<img src="{{ asset('images/webp/immersion-group.webp') }}" class="img-fluid" alt="" aria-hidden="true">
 				</figure>
 				<article class="col-md-6 text-center text-md-start order-1 order-md-2">
 					<h2 id="immersive-title" class="text-main text-start">
@@ -234,9 +286,9 @@
 						<a href="{{ path('app_billetteries') }}" class="btn-outline-gradient text-white" role="button" aria-label="Réserver une séance de réalité virtuelle">
 							Réserver une séance
 						</a>
-						<a href="{{ path('handi_3d_index') }}" class="btn-outline-gradient text-white position-relative" role="button" rel="noopener noreferrer" aria-label="Découvrir Handi-3D, notre espace virtuel inclusif (ouvre dans un nouvel onglet)">
-							Découvrez ♿ Handi-3D
-							<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger" style="transform: translate(-50%, -50%) rotate(23deg); transform-origin: center;" aria-label="Nouveau">
+						<a href="{{ path('handi_3d_index') }}" class="btn-outline-gradient text-white position-relative" role="button">
+							Découvrez <span aria-hidden="true">♿</span> Handi-3D
+							<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger" style="transform: translate(-50%, -50%) rotate(23deg); transform-origin: center;" aria-hidden="true">
 								New
 							</span>
 						</a>
@@ -254,50 +306,56 @@
 					Nos activités sont conçues pour être accessibles à toutes et à tous.<br>
 					Explorez notre large éventail d'options adaptées à chaque besoin.
 				</p>
-				<div class="row g-4 justify-content-center" role="list" aria-label="Liste de nos hubs numériques">
-					<article class="col-sm-6 col-md-4" role="listitem">
+				<ul class="row g-4 justify-content-center list-unstyled" aria-label="Liste de nos hubs numériques">
+					<li class="col-sm-6 col-md-4">
 						<div class="card text-center text-white bg-black h-100" tabindex="0">
-							<img src="{{ asset('images/webp/galerie-3d-GNUT.webp') }}" class="card-img-top img-fluid" alt="Vue immersive de la galerie d'art virtuelle GNUT avec œuvres exposées" role="img">
+							<img src="{{ asset('images/webp/galerie-3d-GNUT.webp') }}" class="card-img-top img-fluid" alt="" aria-hidden="true">
 							<div class="card-body d-flex flex-column">
 								<h3 class="card-title">Galerie d'art GNUT</h3>
 								<p class="card-text flex-grow-1">
 									Profitez d'une immersion totale dans notre galerie d'art virtuelle !
 								</p>
-								<a href="https://gnut.eu/galerie_art_by_gnut/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer" aria-label="Visiter la galerie d'art GNUT (ouvre dans un nouvel onglet)">
-									Visiter maintenant
+								<a href="https://gnut.eu/galerie_art_by_gnut/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer">
+									Visiter la galerie d'art GNUT
+									<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+									<span class="visually-hidden">(ouvre dans un nouvel onglet)</span>
 								</a>
 							</div>
 						</div>
-					</article>
-					<article class="col-sm-6 col-md-4" role="listitem">
+					</li>
+					<li class="col-sm-6 col-md-4">
 						<div class="card text-center text-white bg-black h-100" tabindex="0">
-							<img src="{{ asset('images/webp/meteo3D.webp') }}" class="card-img-top img-fluid" alt="Interface de l'application météo 3D GNUT montrant des données météorologiques" role="img">
+							<img src="{{ asset('images/webp/meteo3D.webp') }}" class="card-img-top img-fluid" alt="" aria-hidden="true">
 							<div class="card-body d-flex flex-column">
 								<h3 class="card-title">Météo 3D GNUT</h3>
 								<p class="card-text flex-grow-1">
 									Découvrez la météo en temps réel partout dans le monde !
 								</p>
-								<a href="https://gnut.eu/3d_meteo/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer" aria-label="Accéder à l'application météo 3D (ouvre dans un nouvel onglet)">
-									Visiter maintenant
+								<a href="https://gnut.eu/3d_meteo/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer">
+									Accéder à l'application Météo3D GNUT
+									<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+									<span class="visually-hidden">(ouvre dans un nouvel onglet)</span>
 								</a>
 							</div>
 						</div>
-					</article>
-					<article class="col-sm-6 col-md-4" role="listitem">
+					</li>
+					<li class="col-sm-6 col-md-4">
 						<div class="card text-center text-white bg-black h-100" tabindex="0">
-							<img src="{{ asset('images/webp/galerie-3d-immo.webp') }}" class="card-img-top img-fluid" alt="Modélisation 3D d'un projet immobilier avec architecture moderne" role="img">
+							<img src="{{ asset('images/webp/galerie-3d-immo.webp') }}" class="card-img-top img-fluid" alt="" aria-hidden="true">
 							<div class="card-body d-flex flex-column">
 								<h3 class="card-title">3D Immo</h3>
 								<p class="card-text flex-grow-1">
 									Visitez notre construction 3D !
 								</p>
-								<a href="https://gnut.eu/3d_immo/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer" aria-label="Explorer le projet 3D Immo (ouvre dans un nouvel onglet)">
-									Visiter maintenant
+								<a href="https://gnut.eu/3d_immo/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer">
+									Explorer le projet 3D Immo
+									<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+									<span class="visually-hidden">(ouvre dans un nouvel onglet)</span>
 								</a>
 							</div>
 						</div>
-					</article>
-				</div>
+					</li>
+				</ul>
 			</div>
 		</section>
 
@@ -388,7 +446,7 @@
 					</p>
 					<div class="row g-4" role="list" aria-label="Façons de nous soutenir">
 						<article class="col-6 text-center text-md-start" role="listitem">
-							<img src="{{ asset ('images/webp/send_money.svg') }}" style="width:64px;" alt="Icône représentant un don financier" role="img"/>
+							<img src="{{ asset ('images/webp/send_money.svg') }}" style="width:64px;" alt="" aria-hidden="true"/>
 							<h3>Faites un don</h3>
 							<p class="text">
 								Aidez-nous à financer nos projets et initiatives.
@@ -398,7 +456,7 @@
 							</a>
 						</article>
 						<article class="col-6 text-center text-md-start" role="listitem">
-							<img src="{{ asset ('images/webp/volunteer_activism.svg') }}" style="width:64px;" alt="Icône représentant l'engagement bénévole" role="img"/>
+							<img src="{{ asset ('images/webp/volunteer_activism.svg') }}" style="width:64px;" alt="" aria-hidden="true"/>
 							<h3>Devenez adhérent.e</h3>
 							<p class="text">
 								Participez activement à nos activités et évènements.
@@ -409,11 +467,13 @@
 						</article>
 					</div>
 				</article>
-				<div class="col-md-6 text-center">
-				<figure class="rounded-4 filtre-gnut06">
-					<img src="{{ asset('images/webp/apf_251112_002.webp') }}" class="img-fluid" alt="Illustration montrant des personnes soutenant ensemble l'association GNUT 06" role="img">
-				</figure>
-				</div>
+				<article class="col-md-6">
+					<div class="text-center">
+						<figure class="rounded-4 filtre-gnut06">
+							<img src="{{ asset('images/webp/apf_251112_002.webp') }}" class="img-fluid" alt="Membre de l’association GNUT06 plaçant un casque de réalité virtuelle pour une personne en fauteuil roulant" role="img">
+						</figure>
+					</div>
+				</article>
 				</div>
 			</div>
 		</section>
@@ -466,11 +526,11 @@
                 }
             } %}
 
-				<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" role="list" aria-label="Membres de notre équipe technique">
+				<ul class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 list-unstyled" aria-label="Membres de notre équipe technique">
 					{% for key, member in team_members %}
-						<article class="col d-flex" role="listitem">
+						<li class="col d-flex">
 							<div class="card text-center h-100 bg-dark border-secondary" tabindex="0">
-								<img src="{{ asset('images/webp/' ~ member.image) }}" class="card-img-top img-fluid" alt="Portrait de {{ member.name }}, {{ member.role }} chez GNUT 06" role="img">
+								<img src="{{ asset('images/webp/' ~ member.image) }}" class="card-img-top img-fluid" alt="Portrait de {{ member.name }}, {{ member.role }} chez GNUT 06">
 								<div class="card-body d-flex flex-column bg-dark">
 									<h4 class="card-title text-white mb-2">{{ member.name }}</h4>
 									<p class="team-role flex-grow-1 mb-3">{{ member.role }}</p>
@@ -481,9 +541,9 @@
 									</div>
 								</div>
 							</div>
-						</article>
+						</li>
 					{% endfor %}
-				</div>
+				</ul>
 			</div>
 		</section>
 

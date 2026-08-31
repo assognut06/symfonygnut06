@@ -77,24 +77,50 @@
             color: #721c24 !important;
         }
 
-        /* ✅ CORRECTION - Amélioration des boutons */
+        /* RGAA 3.2 et 3.3 - Contrastes du bouton de connexion */
         .btn-asso {
-            background-color: #F86CF8 !important;
-            border: 2px solid #F86CF8 !important;
+            background-color: #7f29ff !important;
+            border: 2px solid #5a189a !important;
             color: #ffffff !important;
-            font-weight: 500 !important;
+            font-weight: 700 !important;
             padding: 0.75rem 1rem !important;
             transition: all 0.3s ease !important;
         }
 
-        .btn-asso:hover {
-            background-color: #e055d6 !important;
-            border-color: #e055d6 !important;
+        .btn-asso::before {
+            content: none !important;
+        }
+
+        .btn-asso:hover:not(:disabled) {
+            background-color: #5a189a !important;
+            border-color: #3d0a75 !important;
+            color: #ffffff !important;
             transform: translateY(-1px) !important;
         }
 
-        .btn-asso:active {
+        .btn-asso:focus,
+        .btn-asso:focus-visible {
+            background-color: #7f29ff !important;
+            border-color: #3d0a75 !important;
+            color: #ffffff !important;
+            outline: 3px solid #3d0a75 !important;
+            outline-offset: 2px !important;
+            box-shadow: none !important;
+        }
+
+        .btn-asso:active:not(:disabled) {
+            background-color: #3d0a75 !important;
+            border-color: #260549 !important;
+            color: #ffffff !important;
             transform: translateY(0) !important;
+        }
+
+        .btn-asso:disabled {
+            background-color: #5c636a !important;
+            border-color: #343a40 !important;
+            color: #ffffff !important;
+            cursor: not-allowed;
+            opacity: 1 !important;
         }
 
         /* ✅ CORRECTION - Amélioration des labels */
@@ -167,7 +193,7 @@
             }
 
             .btn-asso {
-                border: 3px solid #F86CF8 !important;
+                border: 3px solid #3d0a75 !important;
                 font-weight: 700 !important;
             }
         }
@@ -198,7 +224,7 @@
                           method="post"
                           class="needs-validation"
                           novalidate
-                          aria-describedby="connexion-infos"
+                          aria-describedby="connexion-infos required-fields-info"
                           aria-label="Formulaire de connexion sécurisé GNUT 06"
                           role="form">
 
@@ -284,6 +310,10 @@
                             
                             <fieldset>
                                 <legend class="visually-hidden">Identifiants de connexion</legend>
+
+                                <p id="required-fields-info" class="text-dark bg-white mb-3">
+                                    Toutes les informations sont obligatoires.
+                                </p>
                                 
                                 <!-- ✅ CORRECTION - Champ email amélioré -->
                                 <div class="form-floating mb-3">
@@ -302,12 +332,12 @@
                                     <label for="username">
                                         Adresse e-mail <span class="text-danger" aria-hidden="true">*</span>
                                     </label>
-                                    <div id="username-help" class="form-text">
+                                    <p id="username-help" class="form-text mb-0">
                                         Format attendu : nom@domaine.com
-                                    </div>
-                                    <div id="username-error" class="invalid-feedback" role="alert">
+                                    </p>
+                                    <p id="username-error" class="invalid-feedback mb-0" role="alert">
                                         Veuillez saisir une adresse e-mail valide.
-                                    </div>
+                                    </p>
                                 </div>
 
                                 <!-- ✅ CORRECTION - Champ mot de passe amélioré -->
@@ -326,12 +356,12 @@
                                     <label for="password">
                                         Mot de passe <span class="text-danger" aria-hidden="true">*</span>
                                     </label>
-                                    <div id="password-help" class="form-text">
+                                    <p id="password-help" class="form-text mb-0">
                                         Votre mot de passe reste confidentiel et sécurisé.
-                                    </div>
-                                    <div id="password-error" class="invalid-feedback" role="alert">
+                                    </p>
+                                    <p id="password-error" class="invalid-feedback mb-0" role="alert">
                                         Le mot de passe est requis (minimum 8 caractères).
-                                    </div>
+                                    </p>
                                 </div>
                             </fieldset>
 
@@ -349,17 +379,16 @@
                                 Se connecter
                             </button>
                             
-                            <div id="connexion-button-help" class="form-text text-center">
+                            <p id="connexion-button-help" class="form-text text-center mb-0">
                                 En vous connectant, vous acceptez nos conditions d'utilisation.
-                            </div>
+                            </p>
                         </section>
                     </form>
 
                     <!-- ✅ CORRECTION - Lien mot de passe oublié amélioré -->
                     <nav class="my-4 text-center" aria-label="Aide à la connexion">
                         <a href="{{ path('app_forgot_password_request') }}"
-                           class="text-white"
-                           aria-label="Réinitialiser votre mot de passe si vous l'avez oublié">
+                           class="text-white">
                             <i class="bi bi-question-circle me-1" aria-hidden="true"></i>
                             Réinitialiser votre mot de passe
                         </a>
@@ -378,16 +407,14 @@
                         <div class="d-grid gap-2">
                             <a href="{{ path('connect_google_start') }}"
                                class="btn-neon text d-flex align-items-center justify-content-center"
-                               role="button"
-                               aria-label="Se connecter rapidement avec votre compte Google">
+                               role="button">
                                 <i class="bi bi-google me-2" aria-hidden="true"></i>
                                 Se connecter avec Google
                             </a>
 
                             <a href="{{ path('connect_outlook_start') }}"
                                class="btn-outline-gradient text d-flex align-items-center justify-content-center"
-                               role="button"
-                               aria-label="Se connecter rapidement avec votre compte Microsoft">
+                               role="button">
                                 <i class="bi bi-microsoft me-2" aria-hidden="true"></i>
                                 Se connecter avec Microsoft
                             </a>

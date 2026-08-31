@@ -39,6 +39,7 @@ class PublicRouteSmokeTest extends WebTestCase
         yield 'Reset password request' => ['/reset-password'];
         yield 'TIH Search' => ['/tih/tih_search'];
         yield 'Accompagnement digital' => ['/digital/consulting'];
+        yield 'Plan du site' => ['/plan-du-site'];
         yield 'Newsletter confirmation' => ['/newsletter/confirmation'];
     }
 
@@ -81,12 +82,35 @@ class PublicRouteSmokeTest extends WebTestCase
         $this->assertSelectorExists('a[href="/"]');
     }
 
+    public function testKeyFiguresUseListAndParagraphSemantics(): void
+    {
+        $crawler = $this->client->request('GET', '/aPropos');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorNotExists('#nos-chiffres + ul h3');
+        $this->assertCount(6, $crawler->filter('#nos-chiffres + ul > li'));
+        $this->assertCount(6, $crawler->filter('#nos-chiffres + ul .js-counter'));
+    }
+
     public function testLoginPageHasForm(): void
     {
         $crawler = $this->client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
+    }
+
+    public function testLoginHelpAndErrorTextsUseParagraphs(): void
+    {
+        $this->client->request('GET', '/login');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('p#username-help');
+        $this->assertSelectorExists('p#username-error');
+        $this->assertSelectorExists('p#password-help');
+        $this->assertSelectorExists('p#password-error');
+        $this->assertSelectorExists('p#connexion-button-help');
+        $this->assertSelectorNotExists('div.form-text');
     }
 
     public function testRegisterPageHasForm(): void
@@ -106,6 +130,15 @@ class PublicRouteSmokeTest extends WebTestCase
             $response->isSuccessful() || $response->getStatusCode() === 404,
             'Sitemap should return 200 or 404'
         );
+    }
+
+    public function testSiteMapPageProvidesASecondNavigationSystem(): void
+    {
+        $crawler = $this->client->request('GET', '/plan-du-site');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Plan du site');
+        $this->assertGreaterThanOrEqual(10, $crawler->filter('main nav a')->count());
     }
 
     public function test404ReturnsProperStatusCode(): void

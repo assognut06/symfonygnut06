@@ -70,7 +70,7 @@
 		<section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="qui-sommes-nous">
 			<div class="container row align-items-center justify-content-center g-5">
 				<figure class="col-lg-6 col-12 order-1 order-md-2">
-					<img src="{{ asset('images/webp/immersion-decouverte.webp') }}" class="img-fluid rounded shadow-lg" alt="Personne découvrant une expérience immersive en réalité virtuelle avec casque VR, illustration de notre approche inclusive" role="img">
+					<img src="{{ asset('images/webp/immersion-decouverte.webp') }}" class="img-fluid rounded shadow-lg" alt="" aria-hidden="true">
 				</figure>
 				<article class="col-lg-6 col-12 order-2 order-md-1">
 					<h1 id="qui-sommes-nous" class="section-title">Qui sommes-nous ?</h1>
@@ -101,7 +101,7 @@
 		<section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" role="region" aria-labelledby="technologies-innovantes">
 			<div class="container row align-items-center justify-content-center g-5">
 				<figure class="col-lg-6 col-12 text-center">
-					<img src="{{ asset('images/webp/mask.svg') }}" class="img-fluid mb-4" alt="Illustration symbolisant les technologies immersives : casque de réalité virtuelle stylisé" style="max-width: 300px;" role="img">
+					<img src="{{ asset('images/webp/mask.svg') }}" class="img-fluid mb-4" alt="" aria-hidden="true" style="max-width: 300px;">
 					<h2 id="technologies-innovantes" class="section-title text-center">
 						Technologies innovantes
 					</h2>
@@ -135,11 +135,11 @@
 			<div class="container d-flex flex-column gap-5 mt-5 mb-5">
 				<h2 id="nos-actions" class="section-title text-center">Nos actions</h2>
 
-				<div class="row g-4 justify-content-center" role="list" aria-label="Liste de nos actions pour l'inclusion numérique">
+				<ul class="row g-4 justify-content-center list-unstyled" aria-label="Liste de nos actions pour l'inclusion numérique">
 
-					<article class="col-lg-4 col-md-6 col-12 d-flex" role="listitem" aria-labelledby="action-aines">
+					<li class="col-lg-4 col-md-6 col-12 d-flex" aria-labelledby="action-aines">
 						<div class="card text-center text-white bg-black flex-fill action-card" tabindex="0">
-							<img src="{{ asset('images/webp/benevoles-3.webp') }}" class="card-img-top" alt="Atelier immersif avec des personnes âgées découvrant la réalité virtuelle, accompagnées par nos bénévoles" role="img">
+							<img src="{{ asset('images/webp/benevoles-3.webp') }}" class="card-img-top" alt="" aria-hidden="true">
 							<div class="card-body bg-black">
 								<h3 id="action-aines" class="card-title text-start">
 									Rencontres avec les personnes âgées
@@ -152,11 +152,11 @@
 								</p>
 							</div>
 						</div>
-					</article>
+					</li>
 
-					<article class="col-lg-4 col-md-6 col-12 d-flex" role="listitem" aria-labelledby="action-hopitaux">
+					<li class="col-lg-4 col-md-6 col-12 d-flex" aria-labelledby="action-hopitaux">
 						<div class="card text-center text-white bg-black flex-fill action-card" tabindex="0">
-							<img src="{{ asset('images/webp/benevoles-2.webp') }}" class="card-img-top" alt="Bénévoles GNUT 06 en intervention à l'hôpital, proposant des expériences de réalité virtuelle aux patients" role="img">
+							<img src="{{ asset('images/webp/benevoles-2.webp') }}" class="card-img-top" alt="" aria-hidden="true">
 							<div class="card-body bg-black">
 								<h3 id="action-hopitaux" class="card-title text-start">
 									Visite des hôpitaux
@@ -169,11 +169,11 @@
 								</p>
 							</div>
 						</div>
-					</article>
+					</li>
 
-					<article class="col-lg-4 col-md-6 col-12 d-flex" role="listitem" aria-labelledby="action-immersion">
+					<li class="col-lg-4 col-md-6 col-12 d-flex" aria-labelledby="action-immersion">
 						<div class="card text-center text-white bg-black flex-fill action-card" tabindex="0">
-							<img src="{{ asset('images/webp/benevoles-1.webp') }}" class="card-img-top" alt="Séance d'immersion personnalisée avec casque de réalité virtuelle, adaptée aux besoins de chaque participant" role="img">
+							<img src="{{ asset('images/webp/benevoles-1.webp') }}" class="card-img-top" alt="" aria-hidden="true">
 							<div class="card-body bg-black">
 								<h3 id="action-immersion" class="card-title text-start">
 									Séances d'immersion
@@ -185,9 +185,9 @@
 								</p>
 							</div>
 						</div>
-					</article>
+					</li>
 
-				</div>
+				</ul>
 			</div>
 		</section>
 
@@ -195,59 +195,69 @@
 		<section class="bg-main w-100 py-5" role="region" aria-labelledby="nos-chiffres">
 			<div class="container mt-5 mb-5">
 				<h2 id="nos-chiffres" class="section-title text-center">Chiffres clés</h2>
-				<div class="row g-4 text-center mt-4">
-					<div class="col-md-4">
+				<ul class="row g-4 text-center mt-4 list-unstyled">
+					<li class="col-md-4">
 						<div class="p-4 rounded-4 action-card bg-black border border-secondary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center">
-							<i class="bi bi-people-fill display-4 association-name mb-3"></i>
-							<h3><i class="display-3 fw-bold text js-counter mb-0" data-target="38">0</i></h3>
+							<span class="bi bi-people-fill display-4 association-name mb-3" aria-hidden="true"></span>
+							<p class="mb-0">
+								<span class="display-3 fw-bold text js-counter" data-target="38">0</span>
+							</p>
 							<p class="card-text fs-5">Adhérents depuis la création</p>
 						</div>
-					</div>
+					</li>
 
-					<div class="col-md-4">
+					<li class="col-md-4">
 						<div class="p-4 rounded-4 action-card bg-black border border-secondary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center">
-							<i class="bi bi-gift-fill display-4 association-name mb-3"></i>
-							<h3><i class="display-3 fw-bold text js-counter mb-0" data-target="6948">0</i>
-							<i class="display-3 fw-bold text">€</i></h3>
+							<span class="bi bi-gift-fill display-4 association-name mb-3" aria-hidden="true"></span>
+							<p class="mb-0">
+								<span class="display-3 fw-bold text js-counter" data-target="6948">0</span>
+								<span class="display-3 fw-bold text">€</span>
+							</p>
 							<p class="card-text fs-5">De dons</p>
 						</div>
-					</div>
+					</li>
 
-					<div class="col-md-4">
+					<li class="col-md-4">
 						<div class="p-4 rounded-4 action-card bg-black border border-secondary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center">
-							<i class="bi bi-person-hearts display-4 association-name mb-3"></i>
-							<h3><i class="display-3 fw-bold text js-counter mb-0" data-target="21">0</i></h3>
+							<span class="bi bi-person-hearts display-4 association-name mb-3" aria-hidden="true"></span>
+							<p class="mb-0">
+								<span class="display-3 fw-bold text js-counter" data-target="21">0</span>
+							</p>
 							<p class="card-text fs-5">Bénévoles actifs</p>
 						</div>
-					</div>
-				</div>
+					</li>
 
-				<div class="row g-4 text-center mt-4">
-					<div class="col-md-4">
+					<li class="col-md-4">
 						<div class="p-4 rounded-4 action-card bg-black border border-secondary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center">
-							<i class="bi bi-cash-stack display-4 association-name mb-3"></i>
-							<h3><i class="display-3 fw-bold text js-counter mb-0" data-target="4608">0</i>
-							<i class="display-3 fw-bold text">€</i></h3>
+							<span class="bi bi-cash-stack display-4 association-name mb-3" aria-hidden="true"></span>
+							<p class="mb-0">
+								<span class="display-3 fw-bold text js-counter" data-target="4608">0</span>
+								<span class="display-3 fw-bold text">€</span>
+							</p>
 							<p class="card-text fs-5">Prestations consulting</p>
 						</div>
-					</div>
+					</li>
 
-					<div class="col-md-4">
+					<li class="col-md-4">
 						<div class="p-4 rounded-4 action-card bg-black border border-secondary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center">
-							<i class="bi bi-headset-vr display-4 association-name mb-3"></i>
-							<h3><i class="display-3 fw-bold text js-counter mb-0" data-target="23">0</i></h3>
+							<span class="bi bi-headset-vr display-4 association-name mb-3" aria-hidden="true"></span>
+							<p class="mb-0">
+								<span class="display-3 fw-bold text js-counter" data-target="23">0</span>
+							</p>
 							<p class="card-text fs-5">Ateliers d'immersion</p>
 						</div>
-					</div>
+					</li>
 
-					<div class="col-md-4">
+					<li class="col-md-4">
 						<div class="p-4 rounded-4 action-card bg-black border border-secondary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center">
-							<i class="bi bi-diagram-3-fill display-4 association-name mb-3"></i>
-							<h3><i class="display-3 fw-bold text js-counter mb-0" data-target="16">0</i></h3>
+							<span class="bi bi-diagram-3-fill display-4 association-name mb-3" aria-hidden="true"></span>
+							<p class="mb-0">
+								<span class="display-3 fw-bold text js-counter" data-target="16">0</span>
+							</p>
 							<p class="card-text fs-5">Partenaires</p>
 						</div>
-					</div>
-				</div>
+					</li>
+				</ul>
 			</div>
 		</section>
 
@@ -312,7 +322,7 @@
 					Ensemble, construisons un monde plus inclusif grâce à la technologie.
 				</p>
 				<nav class="d-flex flex-column flex-sm-row gap-3 justify-content-center" aria-label="Actions pour soutenir notre association">
-					<a href="{{ path('app_adhesion') }}" class="btn-neon text-white" role="button" aria-label="Adhérer à l'association GNUT 06">
+					<a href="{{ path('app_adhesion') }}" class="btn-neon text-white" role="button">
 						Devenir adhérent·e
 					</a>
 					<a href="{{ path('app_don') }}" class="btn-outline-gradient text-white" role="button" aria-label="Faire un don pour soutenir nos actions">
@@ -329,12 +339,12 @@
 		<nav class="bg-main w-100 py-3" role="navigation" aria-label="Navigation de retour">
 			<div class="container text-center">
 				{% if app.request.headers.get('Referer') %}
-					<a href="{{ app.request.headers.get('Referer')|e('html_attr') }}" class="text text-decoration-underline" aria-label="Retourner à la page précédente">
+					<a href="{{ app.request.headers.get('Referer')|e('html_attr') }}" class="text text-decoration-underline">
 						<i class="bi bi-arrow-left" aria-hidden="true"></i>
-						Retour à la page précédente
+						Retourner à la page précédente
 					</a>
 				{% else %}
-					<a href="{{ path('app_home') }}" class="text text-decoration-underline" aria-label="Retourner à l'accueil">
+					<a href="{{ path('app_home') }}" class="text text-decoration-underline">
 						<i class="bi bi-house" aria-hidden="true"></i>
 						Retour à l'accueil
 					</a>
