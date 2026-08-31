@@ -1,15 +1,25 @@
 <!-- Alliés / Partenaires -->
-<!-- RGAA 13.8 : défilement conservé, mais sans déclenchement automatique et navigable au clavier -->
+<!-- RGAA 13.8 : défilement automatique contrôlable (bouton pause/relance) et navigable au clavier -->
 <section class="bg-main w-100 py-5" aria-labelledby="partenaires-gnut06">
     <div class="container-fluid text-center text-white">
         <h2 id="partenaires-gnut06" class="mb-4">Nos alliés dans nos actions</h2>
 
-        <!-- Commandes de défilement manuel, accessibles au clavier (aucun déclenchement automatique) -->
+        <!-- Commandes : flèches de défilement manuel et bouton pause/relance du défilement automatique -->
         <div class="partenaires-nav">
             <button type="button" class="partenaires-nav-btn" id="partenairesScrollLeft"
                     aria-label="Faire défiler les partenaires vers la gauche" aria-controls="partenairesWrapper">
                 <span aria-hidden="true">&lsaquo;</span>
                 <span class="visually-hidden">Partenaires précédents</span>
+            </button>
+            <button type="button" class="partenaires-nav-btn" id="partenairesPlayPause"
+                    aria-label="Mettre en pause le défilement automatique" aria-pressed="false"
+                    aria-controls="partenairesWrapper partenairesTextWrapper">
+                <span class="play-pause-pause" aria-hidden="true">
+                    <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="4" height="14" rx="0.5" fill="currentColor"/><rect x="9" y="1" width="4" height="14" rx="0.5" fill="currentColor"/></svg>
+                </span>
+                <span class="play-pause-play" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 2.5l9 5.5-9 5.5V2.5z" fill="currentColor"/></svg>
+                </span>
             </button>
             <button type="button" class="partenaires-nav-btn" id="partenairesScrollRight"
                     aria-label="Faire défiler les partenaires vers la droite" aria-controls="partenairesWrapper">
@@ -18,9 +28,9 @@
             </button>
         </div>
 
-        <!-- Défilement horizontal manuel : tous les partenaires présents et accessibles au clavier -->
+        <!-- Défilement automatique (contrôlable via le bouton pause/relance) + défilement manuel au clavier -->
         <div class="partenaires-wrapper" id="partenairesWrapper" tabindex="0" role="region"
-             aria-label="Liste des partenaires. Pour défiler, utilisez les boutons précédent et suivant, l'ascenseur de la souris ou les flèches gauche et droite du clavier quand la liste a le focus.">
+             aria-label="Liste des partenaires. Le défilement automatique est contrôlé par le bouton pause/relance. Pour défiler manuellement, utilisez les flèches ou les touches gauche et droite du clavier quand la liste a le focus.">
             <ul class="partenaires-list">
                 {% for entreprise in entreprises %}
                     {% if entreprise.logo %}
@@ -34,7 +44,7 @@
             </ul>
         </div>
 
-        <!-- Défilement horizontal manuel du texte : flèches à gauche et à droite sur la même ligne, sans déclenchement automatique et navigable au clavier -->
+        <!-- Défilement automatique du texte (contrôlable) + flèches de défilement manuel sur la même ligne -->
         <div class="partenaires-text-row">
             <button type="button" class="partenaires-nav-btn" id="partenairesTextScrollLeft"
                     aria-label="Faire défiler le texte vers la gauche" aria-controls="partenairesTextWrapper">
@@ -42,7 +52,7 @@
             </button>
 
             <div class="partenaires-text-wrapper" id="partenairesTextWrapper" tabindex="0" role="region"
-                 aria-label="Description des partenaires. Pour défiler, utilisez les boutons précédent et suivant, l'ascenseur de la souris ou les flèches gauche et droite du clavier quand la liste a le focus.">
+                 aria-label="Description des partenaires. Le défilement automatique est contrôlé par le bouton pause/relance. Pour défiler manuellement, utilisez les flèches ou les touches gauche et droite du clavier quand la liste a le focus.">
                 <p class="partenaires-text">
                     Chez Gnut 06, nous croyons en la force du collectif. C'est pourquoi nous avons la chance d'être accompagnés par des structures variées — entreprises, associations, collectifs citoyens — qui partagent nos valeurs et soutiennent nos initiatives. Ces alliés, chacun à leur manière, contribuent à faire vivre nos projets, à enrichir nos actions sur le terrain et à renforcer notre impact local. Leur engagement à nos côtés est une source d'inspiration et de motivation au quotidien.
                 </p>
@@ -94,6 +104,23 @@
         cursor: not-allowed;
     }
 
+    /* Symboles pause/lecture : icônes SVG sans fond, en harmonie avec les flèches */
+    .play-pause-pause,
+    .play-pause-play {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        color: inherit;
+        line-height: 0;
+        padding: 0;
+    }
+
+    .play-pause-pause svg,
+    .play-pause-play svg {
+        display: block;
+    }
+
     /* Texte : simples flèches, sans cercle (les cercles restent sur les logos partenaires) */
     .partenaires-text-row .partenaires-nav-btn {
         width: 32px;
@@ -115,10 +142,9 @@
         border-radius: 4px;
     }
 
-    /* Conteneur de défilement horizontal manuel (pas d'animation automatique) */
+    /* Conteneur de défilement horizontal (les flèches utilisent behavior:smooth en JS) */
     .partenaires-wrapper {
         overflow-x: auto;
-        scroll-behavior: smooth;
         max-width: 1200px;
         margin: 0 auto;
         padding-bottom: 12px;
@@ -182,7 +208,6 @@
         flex: 1 1 auto;
         min-width: 0;
         overflow-x: auto;
-        scroll-behavior: smooth;
         padding: 12px 20px;
         background: rgba(0, 0, 0, 0.7);
         border-radius: 8px;
@@ -208,67 +233,146 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    const initScroll = (wrapperId, leftId, rightId, step) => {
-        const wrapper = document.getElementById(wrapperId);
-        const btnLeft = document.getElementById(leftId);
-        const btnRight = document.getElementById(rightId);
+    const SPEED = 1;  // px par tick
+    const TICK = 16;  // ms
 
-        if (!wrapper || !btnLeft || !btnRight) {
-            return;
+    // Les deux zones défilantes : logos partenaires et texte descriptif
+    const zones = [
+        {
+            wrapper: document.getElementById("partenairesWrapper"),
+            btnLeft: document.getElementById("partenairesScrollLeft"),
+            btnRight: document.getElementById("partenairesScrollRight"),
+            step: 300
+        },
+        {
+            wrapper: document.getElementById("partenairesTextWrapper"),
+            btnLeft: document.getElementById("partenairesTextScrollLeft"),
+            btnRight: document.getElementById("partenairesTextScrollRight"),
+            step: 300
         }
+    ].filter((z) => z.wrapper && z.btnLeft && z.btnRight);
 
-        let autoTimer = null;
+    const btnPause = document.getElementById("partenairesPlayPause");
 
-        const updateButtons = () => {
-            const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
-            btnLeft.disabled = wrapper.scrollLeft <= 0;
-            btnRight.disabled = wrapper.scrollLeft >= maxScroll - 1;
-        };
+    let timers = [];
+    let isPlaying = false;
+    let userPaused = false;
 
-        const maxScroll = () => wrapper.scrollWidth - wrapper.clientWidth;
+    const maxScroll = (wrapper) => wrapper.scrollWidth - wrapper.clientWidth;
 
-        // Défilement automatique au survol de la souris (arrêté dès qu'on la quitte)
-        const startAutoScroll = () => {
-            if (autoTimer) {
-                return;
-            }
-            autoTimer = setInterval(() => {
-                wrapper.scrollLeft += 4; // vitesse de défilement automatique (px par tick)
-                if (wrapper.scrollLeft >= maxScroll() - 1) {
-                    wrapper.scrollLeft = 0; // boucle
-                }
-                updateButtons();
-            }, 16);
-        };
-
-        const stopAutoScroll = () => {
-            if (autoTimer) {
-                clearInterval(autoTimer);
-                autoTimer = null;
-            }
-        };
-
-        wrapper.addEventListener("mouseenter", startAutoScroll);
-        wrapper.addEventListener("mouseleave", stopAutoScroll);
-
-        btnLeft.addEventListener("click", () => {
-            stopAutoScroll();
-            wrapper.scrollBy({ left: -step, behavior: "smooth" });
-        });
-
-        btnRight.addEventListener("click", () => {
-            stopAutoScroll();
-            wrapper.scrollBy({ left: step, behavior: "smooth" });
-        });
-
-        wrapper.addEventListener("scroll", updateButtons);
-        window.addEventListener("resize", updateButtons);
-        updateButtons();
+    const updateButtons = (zone) => {
+        const max = maxScroll(zone.wrapper);
+        zone.btnLeft.disabled = zone.wrapper.scrollLeft <= 0;
+        zone.btnRight.disabled = zone.wrapper.scrollLeft >= max - 1;
     };
 
-    // Logos partenaires et texte descriptif : défilement manuel (boutons + flèches clavier)
-    // et défilement automatique au survol de la souris.
-    initScroll("partenairesWrapper", "partenairesScrollLeft", "partenairesScrollRight", 300);
-    initScroll("partenairesTextWrapper", "partenairesTextScrollLeft", "partenairesTextScrollRight", 300);
+    const updatePlayPauseUI = () => {
+        if (!btnPause) return;
+        const pauseEl = btnPause.querySelector(".play-pause-pause");
+        const playEl = btnPause.querySelector(".play-pause-play");
+        btnPause.setAttribute("aria-label", isPlaying
+            ? "Mettre en pause le défilement automatique"
+            : "Relancer le défilement automatique");
+        btnPause.setAttribute("aria-pressed", String(!isPlaying));
+        if (pauseEl) pauseEl.style.display = isPlaying ? "inline" : "none";
+        if (playEl) playEl.style.display = isPlaying ? "none" : "inline";
+    };
+
+    const startAuto = () => {
+        if (isPlaying) return;
+        isPlaying = true;
+        zones.forEach((zone) => {
+            timers.push(setInterval(() => {
+                const max = maxScroll(zone.wrapper);
+                zone.wrapper.scrollLeft += SPEED;
+                if (zone.wrapper.scrollLeft >= max - 1) {
+                    zone.wrapper.scrollLeft = 0; // boucle
+                }
+                updateButtons(zone);
+            }, TICK));
+        });
+        updatePlayPauseUI();
+    };
+
+    const stopAuto = () => {
+        timers.forEach((t) => clearInterval(t));
+        timers = [];
+        isPlaying = false;
+        updatePlayPauseUI();
+    };
+
+    if (btnPause) {
+        btnPause.addEventListener("click", () => {
+            if (isPlaying) {
+                userPaused = true;
+                stopAuto();
+            } else {
+                userPaused = false;
+                startAuto();
+            }
+        });
+    }
+
+    // Pause pendant le glisser au doigt (mobile) : le défilement auto reprend
+    // après le relâchement, sauf si l'utilisateur a mis en pause manuellement.
+    let touchPause = false;
+    let touchResumeTimer = null;
+    zones.forEach((zone) => {
+        zone.wrapper.addEventListener("touchstart", () => {
+            if (isPlaying) {
+                touchPause = true;
+                timers.forEach((t) => clearInterval(t));
+                timers = [];
+                isPlaying = false;
+                updatePlayPauseUI();
+            }
+            if (touchResumeTimer) {
+                clearTimeout(touchResumeTimer);
+                touchResumeTimer = null;
+            }
+        }, { passive: true });
+        zone.wrapper.addEventListener("touchend", () => {
+            if (touchPause) {
+                touchResumeTimer = setTimeout(() => {
+                    touchPause = false;
+                    if (!userPaused) {
+                        startAuto();
+                    }
+                }, 2000);
+            }
+        }, { passive: true });
+    });
+
+    // Défilement manuel (flèches) : toujours disponible, y compris en mode
+    // lecture — l'auto-défilement est suspendu le temps du déplacement, puis repris.
+    zones.forEach((zone) => {
+        const manualScroll = (delta) => {
+            if (isPlaying) {
+                timers.forEach((t) => clearInterval(t));
+                timers = [];
+                isPlaying = false;
+                updatePlayPauseUI();
+                if (touchResumeTimer) {
+                    clearTimeout(touchResumeTimer);
+                }
+                touchResumeTimer = setTimeout(() => {
+                    touchResumeTimer = null;
+                    if (!userPaused) {
+                        startAuto();
+                    }
+                }, 2000);
+            }
+            zone.wrapper.scrollBy({ left: delta, behavior: "smooth" });
+        };
+        zone.btnLeft.addEventListener("click", () => manualScroll(-zone.step));
+        zone.btnRight.addEventListener("click", () => manualScroll(zone.step));
+        zone.wrapper.addEventListener("scroll", () => updateButtons(zone));
+        window.addEventListener("resize", () => updateButtons(zone));
+        updateButtons(zone);
+    });
+
+    // Défilement automatique lancé dès le chargement ;
+    // contrôlable via le bouton pause/relance (RGAA 13.8).
+    startAuto();
 });
 </script>
