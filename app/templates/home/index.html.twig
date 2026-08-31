@@ -258,7 +258,7 @@
 					<p class="text text-start">
 						GNUT 06 est une association engagée pour l'inclusion des personnes en situation de handicap à travers l'innovation numérique. Découvrez nos actions, nos projets en réalité virtuelle et rejoignez-nous pour construire un impact social durable.
 					</p>
-					<a href="{{ path('app_a_propos') }}" class="btn-neon text-white mt-3" role="button">
+					<a href="{{ path('app_a_propos') }}" class="btn-neon text-white mt-3">
 						Découvrez GNUT 06
 					</a>
 				</header>
@@ -283,10 +283,10 @@
 						Réservez votre séance de réalité virtuelle de 30 minutes à partir de 19€
 					</p>
 					<nav class="d-flex flex-column flex-sm-row gap-3 mt-3 justify-content-center justify-content-md-start" aria-label="Actions pour réservation et découverte">
-						<a href="{{ path('app_billetteries') }}" class="btn-outline-gradient text-white" role="button" aria-label="Réserver une séance de réalité virtuelle">
+						<a href="{{ path('app_billetteries') }}" class="btn-outline-gradient text-white" aria-label="Réserver une séance de réalité virtuelle">
 							Réserver une séance
 						</a>
-						<a href="{{ path('handi_3d_index') }}" class="btn-outline-gradient text-white position-relative" role="button">
+						<a href="{{ path('handi_3d_index') }}" class="btn-outline-gradient text-white position-relative">
 							Découvrez <span aria-hidden="true">♿</span> Handi-3D
 							<span class="position-absolute top-0 start-100 badge rounded-pill bg-danger" style="transform: translate(-50%, -50%) rotate(23deg); transform-origin: center;" aria-hidden="true">
 								New
@@ -315,7 +315,7 @@
 								<p class="card-text flex-grow-1">
 									Profitez d'une immersion totale dans notre galerie d'art virtuelle !
 								</p>
-								<a href="https://gnut.eu/galerie_art_by_gnut/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer">
+								<a href="https://gnut.eu/galerie_art_by_gnut/" class="btn-outline-gradient mt-auto" target="_blank" rel="noopener noreferrer">
 									Visiter la galerie d'art GNUT
 									<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
 									<span class="visually-hidden">(ouvre dans un nouvel onglet)</span>
@@ -331,7 +331,7 @@
 								<p class="card-text flex-grow-1">
 									Découvrez la météo en temps réel partout dans le monde !
 								</p>
-								<a href="https://gnut.eu/3d_meteo/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer">
+								<a href="https://gnut.eu/3d_meteo/" class="btn-outline-gradient mt-auto" target="_blank" rel="noopener noreferrer">
 									Accéder à l'application Météo3D GNUT
 									<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
 									<span class="visually-hidden">(ouvre dans un nouvel onglet)</span>
@@ -347,7 +347,7 @@
 								<p class="card-text flex-grow-1">
 									Visitez notre construction 3D !
 								</p>
-								<a href="https://gnut.eu/3d_immo/" class="btn-outline-gradient mt-auto" role="button" target="_blank" rel="noopener noreferrer">
+								<a href="https://gnut.eu/3d_immo/" class="btn-outline-gradient mt-auto" target="_blank" rel="noopener noreferrer">
 									Explorer le projet 3D Immo
 									<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
 									<span class="visually-hidden">(ouvre dans un nouvel onglet)</span>
@@ -367,7 +367,7 @@
 					Plongez dans une expérience immersive unique qui transforme votre vision du monde numérique. 
 																														                Explorez les possibilités infinies et connectez-vous avec d'autres utilisateurs dans notre espace virtuel.
 				</p>
-				<a href="{{ path('app_metavers') }}" class="btn-neon text-white mt-3" role="button" aria-label="Explorer nos salles 3D immersives et leurs fonctionnalités">
+				<a href="{{ path('app_metavers') }}" class="btn-neon text-white mt-3" aria-label="Explorer nos salles 3D immersives et leurs fonctionnalités">
 					Explorer nos Salles 3D
 				</a>
 			</div>
@@ -451,7 +451,7 @@
 							<p class="text">
 								Aidez-nous à financer nos projets et initiatives.
 							</p>
-							<a href="{{ path('app_don') }}" class="btn-neon" role="button" aria-label="Faire un don pour soutenir GNUT 06">
+							<a href="{{ path('app_don') }}" class="btn-neon" aria-label="Faire un don pour soutenir GNUT 06">
 								Je donne
 							</a>
 						</article>
@@ -461,7 +461,7 @@
 							<p class="text">
 								Participez activement à nos activités et évènements.
 							</p>
-							<a href="{{ path('app_adhesion') }}" class="btn-outline-gradient" role="button" aria-label="Devenir adhérent de l'association GNUT 06">
+							<a href="{{ path('app_adhesion') }}" class="btn-outline-gradient" aria-label="Devenir adhérent de l'association GNUT 06">
 								J'adhère
 							</a>
 						</li>
@@ -492,7 +492,7 @@
 																																				                    le développement et la communication de nos projets web.
 																																				                    Comme eux, venez contribuer à une cause engageante et épanouissante.
 					</p>
-					<a href="{{ path('app_adhesion') }}" class="btn-outline-gradient mb-5 m-auto" role="button" aria-label="Adhérer pour rejoindre notre équipe bénévole">
+					<a href="{{ path('app_adhesion') }}" class="btn-outline-gradient mb-5 m-auto" aria-label="Adhérer pour rejoindre notre équipe bénévole">
 						J'adhère
 					</a>
 				</div>
@@ -550,7 +550,7 @@
 			<div class="container text-white text-center">
 				<h2 id="contact-title">Vous avez des questions ?</h2>
 				<p class="text">Nous sommes là pour vous aider.</p>
-				<a href="{{ path('app_contact') }}" class="btn-outline-gradient {{ app.request.attributes.get('_route') == 'app_contact' ? 'active' : '' }}" role="button" aria-label="Nous contacter pour poser vos questions">
+				<a href="{{ path('app_contact') }}" class="btn-outline-gradient {{ app.request.attributes.get('_route') == 'app_contact' ? 'active' : '' }}" aria-label="Nous contacter pour poser vos questions">
 					Nous contacter
 				</a>
 			</div>
