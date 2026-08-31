@@ -313,55 +313,57 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Suspension temporaire de l'auto-défilement (flèches, scrollbar, tactile) :
+    // reprise après le délai, sauf si l'utilisateur a mis en pause manuellement.
+    let touchResumeTimer = null;
+    const suspendAuto = (resumeDelay) => {
+        if (isPlaying) {
+            timers.forEach((t) => clearInterval(t));
+            timers = [];
+            isPlaying = false;
+            updatePlayPauseUI();
+        }
+        if (touchResumeTimer) {
+            clearTimeout(touchResumeTimer);
+        }
+        touchResumeTimer = setTimeout(() => {
+            touchResumeTimer = null;
+            if (!userPaused) {
+                startAuto();
+            }
+        }, resumeDelay);
+    };
+
     // Pause pendant le glisser au doigt (mobile) : le défilement auto reprend
     // après le relâchement, sauf si l'utilisateur a mis en pause manuellement.
     let touchPause = false;
-    let touchResumeTimer = null;
     zones.forEach((zone) => {
         zone.wrapper.addEventListener("touchstart", () => {
             if (isPlaying) {
                 touchPause = true;
-                timers.forEach((t) => clearInterval(t));
-                timers = [];
-                isPlaying = false;
-                updatePlayPauseUI();
-            }
-            if (touchResumeTimer) {
-                clearTimeout(touchResumeTimer);
-                touchResumeTimer = null;
+                suspendAuto(0); // pas de reprise ici : gérée au touchend
+                if (touchResumeTimer) {
+                    clearTimeout(touchResumeTimer);
+                    touchResumeTimer = null;
+                }
             }
         }, { passive: true });
         zone.wrapper.addEventListener("touchend", () => {
             if (touchPause) {
-                touchResumeTimer = setTimeout(() => {
-                    touchPause = false;
-                    if (!userPaused) {
-                        startAuto();
-                    }
-                }, 2000);
+                suspendAuto(2000);
             }
         }, { passive: true });
+        // Interaction souris sur le wrapper (glisser du contenu ou de la
+        // barre de défilement violette) : suspension de l'auto-défilement.
+        zone.wrapper.addEventListener("mousedown", () => suspendAuto(2000));
+        zone.wrapper.addEventListener("wheel", () => suspendAuto(2000), { passive: true });
     });
 
     // Défilement manuel (flèches) : toujours disponible, y compris en mode
     // lecture — l'auto-défilement est suspendu le temps du déplacement, puis repris.
     zones.forEach((zone) => {
         const manualScroll = (delta) => {
-            if (isPlaying) {
-                timers.forEach((t) => clearInterval(t));
-                timers = [];
-                isPlaying = false;
-                updatePlayPauseUI();
-                if (touchResumeTimer) {
-                    clearTimeout(touchResumeTimer);
-                }
-                touchResumeTimer = setTimeout(() => {
-                    touchResumeTimer = null;
-                    if (!userPaused) {
-                        startAuto();
-                    }
-                }, 2000);
-            }
+            suspendAuto(2000);
             zone.wrapper.scrollBy({ left: delta, behavior: "smooth" });
         };
         zone.btnLeft.addEventListener("click", () => manualScroll(-zone.step));
