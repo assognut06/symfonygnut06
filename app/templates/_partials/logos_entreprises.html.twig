@@ -373,6 +373,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Défilement automatique lancé dès le chargement ;
     // contrôlable via le bouton pause/relance (RGAA 13.8).
-    startAuto();
+    // Respect de prefers-reduced-motion : démarrage en pause pour les
+    // utilisateurs sensibles au mouvement (accessibilité).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        updatePlayPauseUI();
+    } else {
+        startAuto();
+    }
 });
 </script>
