@@ -4,6 +4,10 @@
     type="button"
     class="shadow-lg position-fixed bottom-0 end-0 m-4 floating-icon chatbot-open-button"
     aria-label="Ouvrir l'assistant IA handicap"
+    aria-controls="chatBox"
+    aria-haspopup="dialog"
+    data-bs-toggle="modal"
+    data-bs-target="#chatBox"
 >
     <img
         src="{{ asset('images/IA_new.png') }}"
@@ -14,16 +18,21 @@
 </button>
 
 {# Bulle de chat moderne #}
-<section
-    class="card chat-box position-fixed bottom-0 end-0 m-3 d-none shadow-lg rounded-4"
+<div
+    class="modal fade chatbot-modal"
     id="chatBox"
-    aria-label="Agent IA handicap"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="chatbotTitle"
+    aria-hidden="true"
 >
+<div class="modal-dialog chatbot-dialog">
+<section class="modal-content chat-box shadow-lg rounded-4">
     <div
         class="card-header text-white d-flex justify-content-between align-items-center rounded-top-4 px-4 py-3"
         style="background-image: linear-gradient(135deg, #4a90e2, rgb(140, 0, 255));"
     >
-        <span class="fw-semibold fs-5">Agent IA</span>
+        <h2 class="fw-semibold fs-5 mb-0" id="chatbotTitle">Agent IA handicap</h2>
 
         <button
             class="btn btn-sm btn-light rounded-circle d-flex align-items-center justify-content-center"
@@ -31,6 +40,7 @@
             type="button"
             style="width: 28px; height: 28px;"
             aria-label="Fermer le chatbot"
+            data-bs-dismiss="modal"
         >
             <span aria-hidden="true">&times;</span>
         </button>
@@ -92,6 +102,8 @@
         </div>
     </form>
 </section>
+</div>
+</div>
 
 <style>
     .chatbot-open-button {
@@ -115,12 +127,19 @@
     }
 
     .chat-box {
-        width: min(370px, calc(100vw - 2rem));
         height: min(610px, calc(100vh - 2rem));
-        z-index: 1051;
         background: #ffffff;
         border: 1px solid #90cff6;
         overflow: hidden;
+    }
+
+    .chatbot-modal .chatbot-dialog {
+        display: flex;
+        align-items: flex-end;
+        width: min(370px, calc(100vw - 2rem));
+        max-width: none;
+        min-height: calc(100% - 2rem);
+        margin: 1rem 1rem 1rem auto;
     }
 
     .chat-messages {
@@ -188,10 +207,14 @@
     }
 
     @media (max-width: 576px) {
+        .chatbot-modal .chatbot-dialog {
+            width: calc(100vw - 1rem);
+            min-height: calc(100% - 1rem);
+            margin: 0.5rem;
+        }
+
         .chat-box {
-            width: calc(95vw - 1rem);
             height: calc(80vh - 1rem);
-            margin: 0.5rem !important;
         }
 
         .chat-messages {
@@ -209,25 +232,16 @@
     document.addEventListener('DOMContentLoaded', function () {
         const openBtn = document.getElementById('openChat');
         const chatBox = document.getElementById('chatBox');
-        const closeBtn = document.getElementById('closeChat');
         const form = document.getElementById('chatForm');
         const input = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendChat');
         const messages = document.getElementById('chatMessages');
-        const quickButtons = document.querySelectorAll('.quick-question');
+        const quickButtons = chatBox.querySelectorAll('.quick-question');
 
         let history = [];
 
-        function openChat() {
-            chatBox.classList.remove('d-none');
-            openBtn.classList.add('d-none');
-            setTimeout(() => input.focus(), 100);
-        }
-
-        function closeChat() {
-            chatBox.classList.add('d-none');
-            openBtn.classList.remove('d-none');
-            openBtn.focus();
+        function isChatOpen() {
+            return chatBox.classList.contains('show');
         }
 
         function addMessage(role, text) {
@@ -241,13 +255,16 @@
             return message;
         }
 
-        openBtn.addEventListener('click', openChat);
-        closeBtn.addEventListener('click', closeChat);
+        chatBox.addEventListener('show.bs.modal', function () {
+            openBtn.classList.add('d-none');
+        });
 
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape' && !chatBox.classList.contains('d-none')) {
-                closeChat();
-            }
+        chatBox.addEventListener('shown.bs.modal', function () {
+            input.focus();
+        });
+
+        chatBox.addEventListener('hidden.bs.modal', function () {
+            openBtn.classList.remove('d-none');
         });
 
         quickButtons.forEach(function (button) {
@@ -323,7 +340,10 @@
                 loadingMessage.textContent = 'Désolé, le chatbot est momentanément indisponible. Vous pouvez réessayer dans quelques instants.';
             } finally {
                 sendBtn.disabled = false;
-                input.focus();
+
+                if (isChatOpen()) {
+                    input.focus();
+                }
             }
         });
 

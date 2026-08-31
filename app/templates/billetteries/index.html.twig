@@ -235,7 +235,8 @@
                  data-bs-interval="false"
                  role="region"
                  aria-label="Nos événements disponibles" 
-                 aria-roledescription="carousel">
+                 aria-roledescription="carousel"
+                 aria-describedby="carousel-live-region">
 
             <!-- ✅ Instructions complètes pour lecteurs d'écran -->
             <h2 class="visually-hidden">Nos événements disponibles</h2>
@@ -245,7 +246,7 @@
                 ou utilisez Tab pour accéder directement aux événements.
             </div>
 
-            <div class="carousel-inner" role="listbox" aria-describedby="carousel-live-region">
+            <div class="carousel-inner">
                 {% for group in data_forms|batch(3) %}
                     <div class="carousel-item {% if loop.first %}active{% endif %}" 
                          role="group" 
@@ -260,7 +261,7 @@
                                     <li class="col-12 col-sm-6 col-lg-4 d-flex px-3 px-sm-2"
                                         aria-labelledby="event-title-{{ loop.parent.loop.index }}-{{ loop.index }}">
 
-                                        <div class="card h-100 flex-fill" 
+                                        <article class="card h-100 flex-fill"
                                              tabindex="0"
                                              aria-describedby="event-desc-{{ loop.parent.loop.index }}-{{ loop.index }}">
                                             <figure class="m-0">
@@ -313,8 +314,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </article>
+                                            </article>
 
                                         <!-- ✅ Modal avec accessibilité complète -->
                                         <div class="modal fade modal-lg"
@@ -383,15 +383,13 @@
 
             <!-- ✅ Indicateurs accessibles avec instructions -->
             {% if (data_forms|length / 3)|round(0, 'ceil') > 1 %}
-                <div class="carousel-indicators d-md-none" 
-                     role="tablist" 
+                <div class="carousel-indicators d-md-none"
                      aria-label="Navigation par groupes d'événements">
                     {% for group in data_forms|batch(3) %}
                         <button type="button" 
                                 data-bs-target="#evenements" 
                                 data-bs-slide-to="{{ loop.index0 }}" 
                                 {% if loop.first %} class="active" aria-current="true" {% endif %}
-                                role="tab"
                                 aria-controls="carousel-slide-{{ loop.index0 }}"
                                 aria-label="Afficher le groupe d'événements {{ loop.index }} sur {{ (data_forms|length / 3)|round(0, 'ceil') }}"></button>
                     {% endfor %}
