@@ -23,8 +23,27 @@
 		color: inherit !important;
 	}
 
+	.section_footer .footer-partners-toggle {
+		padding: 0;
+		border: 0;
+		background: none;
+		font-family: Poppins, sans-serif;
+		font-size: 16px;
+		font-style: normal;
+		font-weight: 600;
+		line-height: 150%;
+		text-align: left;
+		text-decoration: none;
+		cursor: pointer;
+	}
+
 	.section_footer .dropdown-toggle:hover {
 		color: #F86CF8 !important;
+	}
+
+	.section_footer .footer-partners-toggle:focus-visible {
+		outline: 3px solid #F86CF8;
+		outline-offset: 3px;
 	}
 
 	/* ✅ Style pour le lien "Mentions légales" */
@@ -123,38 +142,51 @@
 				<ul class="list-unstyled">
 					<li>
 						<div class="btn-group dropup">
-							<a href="#" class="dropdown-toggle text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false" role="button" style="color: inherit; background: none; border: none; padding: 0;">
+							<button
+								type="button"
+								id="footerPartnersMenuButton"
+								class="dropdown-toggle text-decoration-none footer-partners-toggle"
+								data-bs-toggle="dropdown"
+								aria-haspopup="menu"
+								aria-expanded="false"
+								aria-controls="footerPartnersMenu"
+							>
 								Vivre avec un handicap
-							</a>
-							<ul class="dropdown-menu">
-								<li>
-									<a class="dropdown-item " href="{{ path('app_asso_recommander') }}">Associations recommandées</a>
+							</button>
+							<ul
+								id="footerPartnersMenu"
+								class="dropdown-menu"
+								role="menu"
+								aria-labelledby="footerPartnersMenuButton"
+							>
+								<li role="none">
+									<a class="dropdown-item" role="menuitem" href="{{ path('app_asso_recommander') }}">Associations recommandées</a>
 								</li>
 
-								<li>
-									<a class="dropdown-item" href="https://mda.departement06.fr/annuaire-general/maison-de-lautonomie-de-nice" target="_blank" rel="noopener noreferrer">Maison de l’autonomie de Nice</a>
+								<li role="none">
+									<a class="dropdown-item" role="menuitem" href="https://mda.departement06.fr/annuaire-general/maison-de-lautonomie-de-nice" target="_blank" rel="noopener noreferrer">Maison de l’autonomie de Nice</a>
 								</li>
-								<li>
-									<a class="dropdown-item" href="https://www.apf-francehandicap.org/" target="_blank" rel="noopener noreferrer">APF France handicap</a>
+								<li role="none">
+									<a class="dropdown-item" role="menuitem" href="https://www.apf-francehandicap.org/" target="_blank" rel="noopener noreferrer">APF France handicap</a>
 								</li>
 
-								<li>
-									<a class="dropdown-item" href="https://www.ladapt.net/" target="_blank" rel="noopener noreferrer">ADAPT Alpes-Maritimes</a>
+								<li role="none">
+									<a class="dropdown-item" role="menuitem" href="https://www.ladapt.net/" target="_blank" rel="noopener noreferrer">ADAPT Alpes-Maritimes</a>
 								</li>
-								<li>
-									<a class="dropdown-item" href="https://www.service-public.gouv.fr/particuliers/vosdroits/F12242" target="_blank" rel="noopener noreferrer">AAH</a>
+								<li role="none">
+									<a class="dropdown-item" role="menuitem" href="https://www.service-public.gouv.fr/particuliers/vosdroits/F12242" target="_blank" rel="noopener noreferrer">AAH</a>
 								</li>
-								<li>
-									<a class="dropdown-item" href="https://www.agefiph.fr/" target="_blank" rel="noopener noreferrer">AGEFIPH</a>
+								<li role="none">
+									<a class="dropdown-item" role="menuitem" href="https://www.agefiph.fr/" target="_blank" rel="noopener noreferrer">AGEFIPH</a>
 								</li>
-								<li>
-									<a class="dropdown-item" href="https://www.handicap.gouv.fr/" target="_blank" rel="noopener noreferrer">handicap.gouv.fr</a>
+								<li role="none">
+									<a class="dropdown-item" role="menuitem" href="https://www.handicap.gouv.fr/" target="_blank" rel="noopener noreferrer">handicap.gouv.fr</a>
 								</li>
-								<li>
-									<a class="dropdown-item" href="https://www.fiphfp.fr/" target="_blank" rel="noopener noreferrer">FIPHFP</a>
+								<li role="none">
+									<a class="dropdown-item" role="menuitem" href="https://www.fiphfp.fr/" target="_blank" rel="noopener noreferrer">FIPHFP</a>
 								</li>
-								<li>
-									<a class="dropdown-item" href="https://www.unapei.org/" target="_blank" rel="noopener noreferrer">Unapei</a>
+								<li role="none">
+									<a class="dropdown-item" role="menuitem" href="https://www.unapei.org/" target="_blank" rel="noopener noreferrer">Unapei</a>
 								</li>
 							</ul>
 						</div>
@@ -224,6 +256,26 @@
 		</div>
 	</div>
 </footer>
+<script>
+(function () {
+	var menuButton = document.getElementById('footerPartnersMenuButton');
+	var menu = document.getElementById('footerPartnersMenu');
+
+	if (!menuButton || !menu) {
+		return;
+	}
+
+	menuButton.addEventListener('shown.bs.dropdown', function () {
+		menu.querySelector('[role="menuitem"]')?.focus();
+	});
+
+	menu.addEventListener('keydown', function (event) {
+		if (event.key === 'Tab') {
+			menuButton.click();
+		}
+	});
+})();
+</script>
 <script>
 (function () {
 	function isConsentUiVisible() {
