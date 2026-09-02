@@ -156,24 +156,83 @@
     }
 }
 
-/* Style pour les indicateurs */
-.carousel-indicators {
+/* Navigation du carousel harmonisee avec celle de la page d'accueil */
+#evenements .carousel-indicators {
     bottom: 10px;
     margin-bottom: 0;
     z-index: 25;
 }
 
-.carousel-indicators button {
-    width: 12px;
-    height: 12px;
+#evenements .carousel-indicators [data-bs-target] {
+    box-sizing: content-box;
+    width: 16px;
+    height: 16px;
+    margin: 0 8px;
+    background-color: #ffffff !important;
+    border: 2px solid #010101 !important;
     border-radius: 50%;
-    margin: 0 5px;
-    background-color: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.8);
+    opacity: 1 !important;
+    transform: none;
+    transition: transform 0.2s ease, background-color 0.2s ease !important;
 }
 
-.carousel-indicators button.active {
-    background-color: white;
+#evenements .carousel-indicators [data-bs-target].active {
+    width: 18px;
+    height: 18px;
+    background-color: #f86cf8 !important;
+    border-radius: 2px;
+    transform: rotate(45deg) scale(1.1);
+}
+
+#evenements .carousel-indicators [data-bs-target]:hover:not(.active) {
+    background-color: #f86cf8 !important;
+    transform: scale(1.2);
+}
+
+#evenements .carousel-indicators [data-bs-target].active:hover {
+    transform: rotate(45deg) scale(1.2);
+}
+
+#evenements .carousel-indicators [data-bs-target]:focus,
+#evenements .carousel-indicators [data-bs-target]:focus-visible {
+    outline: 3px solid #ffffff !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 5px #010101 !important;
+}
+
+#evenements .carousel-control-prev,
+#evenements .carousel-control-next {
+    opacity: 1 !important;
+    transition: background-color 0.2s ease !important;
+}
+
+#evenements .carousel-control-prev-icon,
+#evenements .carousel-control-next-icon {
+    width: 48px;
+    height: 48px;
+    background-color: #010101;
+    background-size: 55% 55%;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+}
+
+#evenements .carousel-control-prev:hover,
+#evenements .carousel-control-next:hover {
+    background-color: rgba(1, 1, 1, 0.35) !important;
+}
+
+#evenements .carousel-control-prev:focus,
+#evenements .carousel-control-next:focus,
+#evenements .carousel-control-prev:focus-visible,
+#evenements .carousel-control-next:focus-visible {
+    outline: 3px solid #ffffff !important;
+    outline-offset: -3px !important;
+    box-shadow: inset 0 0 0 6px #010101 !important;
+}
+
+#evenements .carousel-control-prev:focus .carousel-control-prev-icon,
+#evenements .carousel-control-next:focus .carousel-control-next-icon {
+    box-shadow: 0 0 0 3px #010101, 0 0 0 6px #ffffff;
 }
 
 /* Retirer la marge sur #evenements */
@@ -190,9 +249,23 @@
 /* ✅ Animation respectueuse des préférences utilisateur */
 @media (prefers-reduced-motion: reduce) {
     .card,
-    .carousel-item {
+    .carousel-item,
+    #evenements .carousel-indicators button,
+    #evenements .carousel-control-prev,
+    #evenements .carousel-control-next {
         transition: none !important;
         animation: none !important;
+    }
+}
+
+@media (prefers-contrast: high) {
+    #evenements .carousel-indicators [data-bs-target] {
+        border-width: 3px !important;
+    }
+
+    #evenements .carousel-control-prev-icon,
+    #evenements .carousel-control-next-icon {
+        border-width: 3px;
     }
 }
 </style>
@@ -383,7 +456,7 @@
 
             <!-- ✅ Indicateurs accessibles avec instructions -->
             {% if (data_forms|length / 3)|round(0, 'ceil') > 1 %}
-                <div class="carousel-indicators d-md-none"
+                <div class="carousel-indicators"
                      aria-label="Navigation par groupes d'événements">
                     {% for group in data_forms|batch(3) %}
                         <button type="button" 
