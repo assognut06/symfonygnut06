@@ -126,10 +126,9 @@
                         </a>
                     </li>
 
-                    <li class="nav-item" role="none">
+                    <li class="nav-item">
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'handi_3d_index' ? 'active' : '' }}"
                            href="{{ path('handi_3d_index') }}"
-                           role="menuitem"
                            {% if app.request.attributes.get('_route') == 'handi_3d_index' %}
                                aria-current="page"
                                aria-label="Handi-3D - Page courante"

@@ -259,6 +259,7 @@
 
                                 {% for item in group %}
                                     <li class="col-12 col-sm-6 col-lg-4 d-flex px-3 px-sm-2"
+                                        data-event-index="{{ loop.parent.loop.index0 * 3 + loop.index0 }}"
                                         aria-labelledby="event-title-{{ loop.parent.loop.index }}-{{ loop.index }}">
 
                                         <article class="card h-100 flex-fill"
@@ -437,4 +438,118 @@
     </nav>
 
 </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        /* ✅ Carrousel des billetteries : regroupement responsive des slides.
+           Le serveur rend les slides par groupes de 3 (adapté au desktop ≥768px).
+           En mobile (<768px), une slide de 3 cartes empilées est trop haute pour
+           être parcourue au doigt : ce script regroupe alors les cartes en
+           slides de 1, reconstruit les indicateurs, et réinitialise l'instance
+           Bootstrap. Le basculement se refait automatiquement au franchissement
+           du breakpoint (rotation, redimensionnement). */
+        (function () {
+            'use strict';
+
+            var mdQuery = window.matchMedia('(min-width: 768px)');
+
+            function buildResponsiveSlides() {
+                var carousel = document.getElementById('evenements');
+                if (!carousel) { return; }
+
+                var inner = carousel.querySelector('.carousel-inner');
+                var indicators = carousel.querySelector('.carousel-indicators');
+                if (!inner) { return; }
+
+                var cards = Array.prototype.slice.call(inner.querySelectorAll('li[data-event-index]'))
+                    .sort(function (a, b) {
+                        return parseInt(a.dataset.eventIndex, 10) - parseInt(b.dataset.eventIndex, 10);
+                    });
+                if (!cards.length) { return; } /* état vide : rien à regrouper */
+
+                var groupSize = mdQuery.matches ? 3 : 1;
+                var groups = [];
+                for (var i = 0; i < cards.length; i += groupSize) {
+                    groups.push(cards.slice(i, i + groupSize));
+                }
+                if (groups.length < 2 && groupSize > 1) { return; } /* déjà conforme */
+
+                /* Supprime l'instance Bootstrap existante avant reconstruction */
+                if (window.bootstrap && window.bootstrap.Carousel) {
+                    var instance = window.bootstrap.Carousel.getInstance(carousel);
+                    if (instance) { instance.dispose(); }
+                }
+
+                inner.textContent = '';
+                groups.forEach(function (group, gi) {
+                    var slide = document.createElement('div');
+                    slide.className = 'carousel-item' + (gi === 0 ? ' active' : '');
+                    slide.id = 'carousel-slide-' + gi;
+                    slide.setAttribute('role', 'group');
+                    slide.setAttribute('aria-roledescription', 'slide');
+                    slide.setAttribute('aria-label',
+                        'Groupe d\u2019événements ' + (gi + 1) + ' sur ' + groups.length);
+
+                    var wrapper = document.createElement('div');
+                    wrapper.className = 'container py-4';
+                    var list = document.createElement('ul');
+                    list.className = 'row g-4 justify-content-center list-unstyled';
+                    group.forEach(function (card) { list.appendChild(card); });
+
+                    wrapper.appendChild(list);
+                    slide.appendChild(wrapper);
+                    inner.appendChild(slide);
+                });
+
+                /* Reconstruit les indicateurs (masqués en desktop via d-md-none) */
+                if (indicators) {
+                    indicators.textContent = '';
+                    if (groups.length > 1) {
+                        groups.forEach(function (group, gi) {
+                            var dot = document.createElement('button');
+                            dot.type = 'button';
+                            dot.setAttribute('data-bs-target', '#evenements');
+                            dot.setAttribute('data-bs-slide-to', String(gi));
+                            if (gi === 0) {
+                                dot.className = 'active';
+                                dot.setAttribute('aria-current', 'true');
+                            }
+                            dot.setAttribute('aria-controls', 'carousel-slide-' + gi);
+                            dot.setAttribute('aria-label',
+                                'Afficher le groupe d\u2019événements ' + (gi + 1) + ' sur ' + groups.length);
+                            indicators.appendChild(dot);
+                        });
+                    }
+                }
+            }
+
+            function initCarouselInstance() {
+                /* Le data-API de Bootstrap (data-bs-ride="false") ne crée
+                   l'instance qu'au premier clic sur un contrôle : on déclenche
+                   ce clic sur l'indicateur de la slide courante, ce qui crée
+                   l'instance sans changer de slide. */
+                var carousel = document.getElementById('evenements');
+                if (!carousel) { return; }
+                var current = carousel.querySelector('.carousel-indicators button[data-bs-slide-to="0"]');
+                if (current) { current.click(); }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                buildResponsiveSlides();
+                initCarouselInstance();
+
+                var onChange = function () {
+                    buildResponsiveSlides();
+                    initCarouselInstance();
+                };
+                if (typeof mdQuery.addEventListener === 'function') {
+                    mdQuery.addEventListener('change', onChange);
+                } else if (typeof mdQuery.addListener === 'function') {
+                    mdQuery.addListener(onChange); /* anciens navigateurs */
+                }
+            });
+        })();
+    </script>
 {% endblock %}
