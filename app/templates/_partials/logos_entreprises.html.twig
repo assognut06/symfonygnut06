@@ -400,6 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
         zones.forEach((zone) => {
             timers.push(setInterval(() => {
                 const max = maxScroll(zone.wrapper);
+                if (max <= 0) return; // rien à faire défiler (zone sans débordement)
                 zone.wrapper.scrollLeft += SPEED;
                 const cycleWidth = zone.cycleWidth ? zone.cycleWidth() : 0;
 
@@ -497,6 +498,31 @@ document.addEventListener("DOMContentLoaded", () => {
     // contrôlable via le bouton pause/relance (RGAA 13.8).
     // Respect de prefers-reduced-motion : démarrage en pause pour les
     // utilisateurs sensibles au mouvement (accessibilité).
+    // Option B : si tous les partenaires tiennent à l'écran (pas de débordement),
+    // duplication de la liste pour garantir un défilement en boucle permanente.
+    // Les clones sont aria-hidden et hors tabulation (RGAA-07).
+    zones.forEach((zone) => {
+        const list = zone.wrapper.querySelector("ul.partenaires-list");
+        if (!list) return; // la zone texte n'a pas de <ul>, rien à cloner
+
+        // Copie pristine de la liste d'origine : on clone toujours à partir
+        // d'elle pour éviter une croissance exponentielle des duplications.
+        const original = list.cloneNode(true);
+        let guard = 0;
+        while (zone.wrapper.scrollWidth <= zone.wrapper.clientWidth && guard < 5) {
+            // On clone les <li> dans la MÊME liste (pas une nouvelle <ul>) :
+            // sinon chaque clone formerait une rangée sous la première.
+            const clone = original.cloneNode(true);
+            clone.setAttribute("aria-hidden", "true");
+            clone.querySelectorAll("a").forEach((a) => {
+                a.tabIndex = -1;
+                a.removeAttribute("data-bs-toggle");
+            });
+            Array.from(clone.children).forEach((li) => list.appendChild(li));
+            guard++;
+        }
+    });
+
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         updatePlayPauseUI();
     } else {
