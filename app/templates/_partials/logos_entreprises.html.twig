@@ -385,15 +385,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const list = zone.wrapper.querySelector("ul.partenaires-list");
         if (!list) return; // la zone texte n'a pas de <ul>, rien à cloner
 
+        // Copie pristine de la liste d'origine : on clone toujours à partir
+        // d'elle pour éviter une croissance exponentielle des duplications.
+        const original = list.cloneNode(true);
         let guard = 0;
         while (zone.wrapper.scrollWidth <= zone.wrapper.clientWidth && guard < 5) {
-            const clone = list.cloneNode(true);
+            // On clone les <li> dans la MÊME liste (pas une nouvelle <ul>) :
+            // sinon chaque clone formerait une rangée sous la première.
+            const clone = original.cloneNode(true);
             clone.setAttribute("aria-hidden", "true");
             clone.querySelectorAll("a").forEach((a) => {
                 a.tabIndex = -1;
                 a.removeAttribute("data-bs-toggle");
             });
-            zone.wrapper.appendChild(clone);
+            Array.from(clone.children).forEach((li) => list.appendChild(li));
             guard++;
         }
     });
