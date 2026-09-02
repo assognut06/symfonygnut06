@@ -284,6 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
         zones.forEach((zone) => {
             timers.push(setInterval(() => {
                 const max = maxScroll(zone.wrapper);
+                if (max <= 0) return; // rien à faire défiler (zone sans débordement)
                 zone.wrapper.scrollLeft += SPEED;
                 if (zone.wrapper.scrollLeft >= max - 1) {
                     zone.wrapper.scrollLeft = 0; // boucle
@@ -377,6 +378,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // contrôlable via le bouton pause/relance (RGAA 13.8).
     // Respect de prefers-reduced-motion : démarrage en pause pour les
     // utilisateurs sensibles au mouvement (accessibilité).
+    // Option B : si tous les partenaires tiennent à l'écran (pas de débordement),
+    // duplication de la liste pour garantir un défilement en boucle permanente.
+    // Les clones sont aria-hidden et hors tabulation (RGAA-07).
+    zones.forEach((zone) => {
+        const list = zone.wrapper.querySelector("ul.partenaires-list");
+        if (!list) return; // la zone texte n'a pas de <ul>, rien à cloner
+
+        let guard = 0;
+        while (zone.wrapper.scrollWidth <= zone.wrapper.clientWidth && guard < 5) {
+            const clone = list.cloneNode(true);
+            clone.setAttribute("aria-hidden", "true");
+            clone.querySelectorAll("a").forEach((a) => {
+                a.tabIndex = -1;
+                a.removeAttribute("data-bs-toggle");
+            });
+            zone.wrapper.appendChild(clone);
+            guard++;
+        }
+    });
+
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         updatePlayPauseUI();
     } else {
