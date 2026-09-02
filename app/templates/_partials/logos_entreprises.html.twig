@@ -145,12 +145,16 @@
     /* Conteneur de défilement horizontal (les flèches utilisent behavior:smooth en JS) */
     .partenaires-wrapper {
         overflow-x: auto;
-        width: 100%;
+        max-width: 100%;
         margin: 0 auto;
         padding-bottom: 12px;
-        scrollbar-width: thin;
-        scrollbar-color: #F86CF8 #0f0f1a;
+        scrollbar-width: none;
         outline-offset: 4px;
+    }
+
+    .partenaires-wrapper::-webkit-scrollbar,
+    .partenaires-text-wrapper::-webkit-scrollbar {
+        display: none;
     }
 
     .partenaires-wrapper:focus-visible {
@@ -165,6 +169,8 @@
         display: flex;
         gap: 15px;
         flex-wrap: nowrap;
+        width: max-content;
+        min-width: 100%;
     }
 
     .partenaire-item {
@@ -181,6 +187,10 @@
 
     .partenaire-item:hover {
         background: rgba(255, 255, 255, 0.05);
+    }
+
+    .partenaire-clone {
+        pointer-events: none;
     }
 
     .partenaire-img {
@@ -207,12 +217,14 @@
     .partenaires-text-wrapper {
         flex: 1 1 auto;
         min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 48px;
         overflow-x: auto;
         padding: 12px 20px;
         background: rgba(0, 0, 0, 0.7);
         border-radius: 8px;
-        scrollbar-width: thin;
-        scrollbar-color: #F86CF8 #0f0f1a;
+        scrollbar-width: none;
         outline-offset: 4px;
     }
 
@@ -222,12 +234,17 @@
     }
 
     .partenaires-text {
-        display: inline-block;
+        display: block;
+        flex: 0 0 auto;
         white-space: nowrap;
         color: #fff;
         font-size: 19px;
         line-height: 1.5;
         margin: 0;
+    }
+
+    .partenaires-text-clone {
+        pointer-events: none;
     }
 </style>
 
@@ -236,19 +253,118 @@ document.addEventListener("DOMContentLoaded", () => {
     const SPEED = 1;  // px par tick
     const TICK = 16;  // ms
 
+    const logosList = document.querySelector(".partenaires-list");
+    const logosWrapper = document.getElementById("partenairesWrapper");
+    let originalLogos = [];
+    let logosCycleWidth = 0;
+    let textCycleWidth = 0;
+
+    if (logosList) {
+        originalLogos = Array.from(logosList.children)
+            .filter((item) => !item.classList.contains("partenaire-clone"));
+
+        const appendVisualCopy = () => {
+            const visualCopy = document.createDocumentFragment();
+
+            originalLogos.forEach((item) => {
+                const clone = item.cloneNode(true);
+                clone.classList.add("partenaire-clone");
+                clone.setAttribute("aria-hidden", "true");
+                clone.setAttribute("inert", "");
+
+                clone.querySelectorAll("a, button").forEach((element) => {
+                    element.tabIndex = -1;
+                });
+
+                visualCopy.appendChild(clone);
+            });
+
+            logosList.appendChild(visualCopy);
+        };
+
+        if (originalLogos.length > 0 && !logosList.querySelector(".partenaire-clone")) {
+            appendVisualCopy();
+        }
+
+        const firstOriginal = originalLogos[0];
+        const firstClone = logosList.querySelector(".partenaire-clone");
+
+        if (firstOriginal && firstClone) {
+            logosCycleWidth = firstClone.offsetLeft - firstOriginal.offsetLeft;
+        }
+
+        const ensureScrollableLogoCoverage = () => {
+            if (!logosWrapper || logosCycleWidth <= 0) return;
+
+            const requiredWidth = logosCycleWidth + logosWrapper.clientWidth;
+            let addedCopies = 0;
+
+            while (logosList.scrollWidth < requiredWidth && addedCopies < 20) {
+                appendVisualCopy();
+                addedCopies += 1;
+            }
+        };
+
+        ensureScrollableLogoCoverage();
+        window.addEventListener("resize", ensureScrollableLogoCoverage);
+    }
+
+    const textWrapper = document.getElementById("partenairesTextWrapper");
+
+    if (textWrapper) {
+        const originalText = textWrapper.querySelector(".partenaires-text:not(.partenaires-text-clone)");
+
+        const appendVisualTextCopy = () => {
+            if (!originalText) return;
+
+            const clone = originalText.cloneNode(true);
+            clone.classList.add("partenaires-text-clone");
+            clone.setAttribute("aria-hidden", "true");
+            clone.setAttribute("inert", "");
+            textWrapper.appendChild(clone);
+        };
+
+        if (originalText && !textWrapper.querySelector(".partenaires-text-clone")) {
+            appendVisualTextCopy();
+        }
+
+        const firstTextClone = textWrapper.querySelector(".partenaires-text-clone");
+
+        if (originalText && firstTextClone) {
+            textCycleWidth = firstTextClone.offsetLeft - originalText.offsetLeft;
+        }
+
+        const ensureScrollableTextCoverage = () => {
+            if (textCycleWidth <= 0) return;
+
+            const requiredWidth = textCycleWidth + textWrapper.clientWidth;
+            let addedCopies = 0;
+
+            while (textWrapper.scrollWidth < requiredWidth && addedCopies < 20) {
+                appendVisualTextCopy();
+                addedCopies += 1;
+            }
+        };
+
+        ensureScrollableTextCoverage();
+        window.addEventListener("resize", ensureScrollableTextCoverage);
+    }
+
     // Les deux zones défilantes : logos partenaires et texte descriptif
     const zones = [
         {
             wrapper: document.getElementById("partenairesWrapper"),
             btnLeft: document.getElementById("partenairesScrollLeft"),
             btnRight: document.getElementById("partenairesScrollRight"),
-            step: 300
+            step: 300,
+            cycleWidth: () => logosCycleWidth
         },
         {
             wrapper: document.getElementById("partenairesTextWrapper"),
             btnLeft: document.getElementById("partenairesTextScrollLeft"),
             btnRight: document.getElementById("partenairesTextScrollRight"),
-            step: 300
+            step: 300,
+            cycleWidth: () => textCycleWidth
         }
     ].filter((z) => z.wrapper && z.btnLeft && z.btnRight);
 
@@ -285,7 +401,11 @@ document.addEventListener("DOMContentLoaded", () => {
             timers.push(setInterval(() => {
                 const max = maxScroll(zone.wrapper);
                 zone.wrapper.scrollLeft += SPEED;
-                if (zone.wrapper.scrollLeft >= max - 1) {
+                const cycleWidth = zone.cycleWidth ? zone.cycleWidth() : 0;
+
+                if (cycleWidth > 0 && zone.wrapper.scrollLeft >= cycleWidth) {
+                    zone.wrapper.scrollLeft -= cycleWidth;
+                } else if (cycleWidth === 0 && zone.wrapper.scrollLeft >= max - 1) {
                     zone.wrapper.scrollLeft = 0; // boucle
                 }
                 updateButtons(zone);
