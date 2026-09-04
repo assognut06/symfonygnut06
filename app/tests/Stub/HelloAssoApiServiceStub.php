@@ -16,7 +16,7 @@ class HelloAssoApiServiceStub extends HelloAssoApiService
 
     public function makeApiCall(string $url, array $headers = [], string $method = 'GET') :mixed
     {
-        if (str_contains($url, '/organizations/') && !str_contains($url, '/items') && !str_contains($url, '/payments') && !str_contains($url, '/forms/')) {
+        if (str_contains($url, '/organizations/') && !str_contains($url, '/items') && !str_contains($url, '/payments') && !str_contains($url, '/forms')) {
             return [
                 'name' => 'Test Association',
                 'logo' => 'https://example.com/logo.png',
