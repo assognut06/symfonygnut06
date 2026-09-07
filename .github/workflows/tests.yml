@@ -31,7 +31,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: ctype, iconv, pdo_mysql, mysqli, intl, zip, mbstring, gd, opcache
           coverage: none
 
@@ -139,7 +139,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: ctype, iconv, pdo_mysql, mysqli, intl, zip, mbstring, gd, opcache
           coverage: none
 
@@ -228,7 +228,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: ctype, iconv, pdo_mysql, mysqli, intl, zip, mbstring, gd, opcache
           coverage: pcov
 
