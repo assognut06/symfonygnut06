@@ -192,7 +192,7 @@
     }
 
     .partenaire-clone {
-        pointer-events: none;
+        pointer-events: fill;
     }
 
     .partenaire-img {
@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const clone = item.cloneNode(true);
                 clone.classList.add("partenaire-clone");
                 clone.setAttribute("aria-hidden", "true");
-                clone.setAttribute("inert", "");
+                
 
                 clone.querySelectorAll("a, button").forEach((element) => {
                     element.tabIndex = -1;
