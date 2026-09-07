@@ -72,7 +72,9 @@ abstract class WebTestCase extends BaseWebTestCase
             $token = $container->get('security.csrf.token_manager')
                 ->getToken($tokenId)
                 ->getValue();
-            $session->save();
+            if ($session->isStarted()) {
+                $session->save();
+            }
 
             return $token;
         } finally {
