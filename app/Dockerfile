@@ -27,7 +27,7 @@ libwebp-dev \
 libssl-dev \
 libkrb5-dev \
 openssl \
-nodejs \
+nodejs=22.23.2-1nodesource1 \
 curl \
 ca-certificates
 
@@ -58,15 +58,8 @@ install-php-extensions amqp
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
-
-# Install Node.js and npm
-RUN npm install -g n && \
-n 20.17.0  && \
-# Install a compatible version of Node.js
-npm install -g npm@11.2.0
-#RUN npm install npm@latest -g && \
-#npm install n -g && \
-#n latest
+# Install the latest stable npm version compatible with Node.js 22.23.2
+RUN npm install -g npm@12.0.2
 
 # SSL : Génération du certificat et configuration Apache
 EXPOSE 443
