@@ -18,6 +18,33 @@ $(function (){
     initCounters()
 })
 
+document.addEventListener('click', (event) => {
+    const skipLink = event.target.closest('.skip-link[href^="#"]');
+
+    if (!skipLink) {
+        return;
+    }
+
+    let targetId;
+
+    try {
+        targetId = decodeURIComponent(skipLink.hash.slice(1));
+    } catch (error) {
+        return;
+    }
+
+    const target = document.getElementById(targetId);
+
+    if (!target) {
+        return;
+    }
+
+    event.preventDefault();
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ block: 'start' });
+    window.history.pushState(null, '', skipLink.hash);
+});
+
 // ✅ Tooltips Bootstrap
 document.addEventListener('DOMContentLoaded', function () {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
