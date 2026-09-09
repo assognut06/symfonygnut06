@@ -1,47 +1,181 @@
 <!-- Alliés / Partenaires -->
+<!-- RGAA 13.8 : défilement automatique contrôlable (bouton pause/relance) et navigable au clavier -->
 <section class="bg-main w-100 py-5" aria-labelledby="partenaires-gnut06">
     <div class="container-fluid text-center text-white">
         <h2 id="partenaires-gnut06" class="mb-4">Nos alliés dans nos actions</h2>
 
-        <div class="carrousel-container">
-            <div class="carrousel-wrapper" id="carrouselWrapper">
-                {% for i in 1..2 %}
-                    {% for entreprise in entreprises %}
-                        {% if entreprise.logo %}
-                            <div class="carrousel-slide">
-                                <a href="{{ entreprise.url }}" target="_blank" rel="noopener noreferrer" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ entreprise.nom }}">
-                                    <img src="{{ vich_uploader_asset(entreprise, 'logoFile') | imagine_filter('logo_thumbnail') }}" alt="Logo {{ entreprise.nom }}" class="carrousel-img">
-                                </a>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
-            </div>
+        <!-- Commandes : flèches de défilement manuel et bouton pause/relance du défilement automatique -->
+        <div class="partenaires-nav">
+            <button type="button" class="partenaires-nav-btn" id="partenairesScrollLeft"
+                    aria-label="Faire défiler les partenaires vers la gauche" aria-controls="partenairesWrapper">
+                <span aria-hidden="true">&lsaquo;</span>
+                <span class="visually-hidden">Partenaires précédents</span>
+            </button>
+            <button type="button" class="partenaires-nav-btn" id="partenairesPlayPause"
+                    aria-label="Mettre en pause le défilement automatique" aria-pressed="false"
+                    aria-controls="partenairesWrapper partenairesTextWrapper">
+                <span class="play-pause-pause" aria-hidden="true">
+                    <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="4" height="14" rx="0.5" fill="currentColor"/><rect x="9" y="1" width="4" height="14" rx="0.5" fill="currentColor"/></svg>
+                </span>
+                <span class="play-pause-play" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 2.5l9 5.5-9 5.5V2.5z" fill="currentColor"/></svg>
+                </span>
+            </button>
+            <button type="button" class="partenaires-nav-btn" id="partenairesScrollRight"
+                    aria-label="Faire défiler les partenaires vers la droite" aria-controls="partenairesWrapper">
+                <span aria-hidden="true">&rsaquo;</span>
+                <span class="visually-hidden">Partenaires suivants</span>
+            </button>
         </div>
-        
-        <div class="marquee-container">
-            <div class="marquee" id="marqueeText">
-                Chez Gnut 06, nous croyons en la force du collectif. C'est pourquoi nous avons la chance d'être accompagnés par des structures variées — entreprises, associations, collectifs citoyens — qui partagent nos valeurs et soutiennent nos initiatives. Ces alliés, chacun à leur manière, contribuent à faire vivre nos projets, à enrichir nos actions sur le terrain et à renforcer notre impact local. Leur engagement à nos côtés est une source d'inspiration et de motivation au quotidien.
+
+        <!-- Défilement automatique (contrôlable via le bouton pause/relance) + défilement manuel au clavier -->
+        <div class="partenaires-wrapper" id="partenairesWrapper" tabindex="0" role="region"
+             aria-label="Liste des partenaires. Le défilement automatique est contrôlé par le bouton pause/relance. Pour défiler manuellement, utilisez les flèches ou les touches gauche et droite du clavier quand la liste a le focus.">
+            <ul class="partenaires-list">
+                {% for entreprise in entreprises %}
+                    {% if entreprise.logo %}
+                        <li class="partenaire-item">
+                            <a href="{{ entreprise.url }}" target="_blank" rel="noopener noreferrer" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ entreprise.nom }}">
+                                <img src="{{ vich_uploader_asset(entreprise, 'logoFile') | imagine_filter('logo_thumbnail') }}" alt="Logo {{ entreprise.nom }}" class="partenaire-img">
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Défilement automatique du texte (contrôlable) + flèches de défilement manuel sur la même ligne -->
+        <div class="partenaires-text-row">
+            <button type="button" class="partenaires-nav-btn" id="partenairesTextScrollLeft"
+                    aria-label="Faire défiler le texte vers la gauche" aria-controls="partenairesTextWrapper">
+                <span aria-hidden="true">&lsaquo;</span>
+            </button>
+
+            <div class="partenaires-text-wrapper" id="partenairesTextWrapper" tabindex="0" role="region"
+                 aria-label="Description des partenaires. Le défilement automatique est contrôlé par le bouton pause/relance. Pour défiler manuellement, utilisez les flèches ou les touches gauche et droite du clavier quand la liste a le focus.">
+                <p class="partenaires-text">
+                    Chez Gnut 06, nous croyons en la force du collectif. C'est pourquoi nous avons la chance d'être accompagnés par des structures variées — entreprises, associations, collectifs citoyens — qui partagent nos valeurs et soutiennent nos initiatives. Ces alliés, chacun à leur manière, contribuent à faire vivre nos projets, à enrichir nos actions sur le terrain et à renforcer notre impact local. Leur engagement à nos côtés est une source d'inspiration et de motivation au quotidien.
+                </p>
             </div>
+
+            <button type="button" class="partenaires-nav-btn" id="partenairesTextScrollRight"
+                    aria-label="Faire défiler le texte vers la droite" aria-controls="partenairesTextWrapper">
+                <span aria-hidden="true">&rsaquo;</span>
+            </button>
         </div>
     </div>
 </section>
 
 <style>
-    /* Carousel des logos */
-    .carrousel-container {
-        width: 100%;
-        overflow: hidden;
-        margin-bottom: 30px;
-    }
-
-    .carrousel-wrapper {
+    /* Commandes de défilement */
+    .partenaires-nav {
         display: flex;
-        width: max-content;
-        animation: scrollInfini 120s linear infinite;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    
+    
+    .partenaires-nav-btn {
+        width: 48px;
+        height: 48px;
+        border: 2px solid #F86CF8;
+        background: transparent;
+        color: #fff;
+        font-size: 1.6rem;
+        line-height: 1;
+        border-radius: 50%;
+        cursor: pointer;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
     }
 
-    .carrousel-slide {
+
+    .partenaires-nav-btn:hover:not(:disabled),
+    .partenaires-nav-btn:focus-visible {
+        background: rgba(248, 108, 248, 0.25);
+        outline: 3px solid #F86CF8;
+        outline-offset: 2px;
+    }
+
+    .partenaires-nav-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    /* Symboles pause/lecture : icônes SVG sans fond, en harmonie avec les flèches */
+    .play-pause-pause,
+    .play-pause-play {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        color: inherit;
+        line-height: 0;
+        padding: 0;
+    }
+
+    .play-pause-pause svg,
+    .play-pause-play svg {
+        display: block;
+    }
+
+    /* Texte : simples flèches, sans cercle (les cercles restent sur les logos partenaires) */
+    .partenaires-text-row .partenaires-nav-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: transparent;
+        color: #F86CF8;
+        font-size: 1.8rem;
+        line-height: 1;
+        padding: 0;
+    }
+
+    .partenaires-text-row .partenaires-nav-btn:hover:not(:disabled),
+    .partenaires-text-row .partenaires-nav-btn:focus-visible {
+        color: #fff;
+        background: transparent;
+        outline: 2px solid #F86CF8;
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
+    /* Conteneur de défilement horizontal (les flèches utilisent behavior:smooth en JS) */
+    .partenaires-wrapper {
+        overflow-x: auto;
+        max-width: 100%;
+        margin: 0 auto;
+        padding-bottom: 12px;
+        scrollbar-width: none;
+        outline-offset: 4px;
+    }
+
+    .partenaires-wrapper::-webkit-scrollbar,
+    .partenaires-text-wrapper::-webkit-scrollbar {
+        display: none;
+    }
+
+    .partenaires-wrapper:focus-visible {
+        outline: 3px solid #F86CF8;
+        outline-offset: 4px;
+    }
+
+    .partenaires-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 15px;
+        flex-wrap: nowrap;
+        width: max-content;
+        min-width: 100%;
+    }
+
+    .partenaire-item {
         min-width: 150px;
         height: 120px;
         background: #0f0f1a;
@@ -49,99 +183,352 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: 0 15px;
         transition: background 0.3s ease;
         flex-shrink: 0;
     }
 
-    .carrousel-slide:hover {
+    .partenaire-item:hover {
         background: rgba(255, 255, 255, 0.05);
     }
 
-    .carrousel-img {
+    .partenaire-clone {
+        pointer-events: none;
+    }
+
+    .partenaire-img {
         max-width: 120px;
         max-height: 100px;
         object-fit: contain;
         transition: transform 0.3s ease;
     }
 
-    .carrousel-slide:hover .carrousel-img {
+    .partenaire-item:hover .partenaire-img {
         transform: scale(1.1);
     }
 
-    /* Animation du carousel */
-    @keyframes scrollInfini {
-        from {
-            transform: translateX(0);
-        }
-        to {
-            transform: translateX(-50%);
-        }
-    }
-
-    /* Texte défilant */
-    .marquee-container {
+    /* Texte défilant horizontal manuel : flèches à gauche et à droite du texte sur la même ligne */
+    .partenaires-text-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
         width: 80%;
-        overflow: hidden;
-        background: rgba(0, 0, 0, 0.7);
         margin: 20px auto 0 auto;
-        padding: 12px 0;
-        border-radius: 8px;
     }
 
-    .marquee {
-        display: inline-block;
+    .partenaires-text-wrapper {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 48px;
+        overflow-x: auto;
+        padding: 12px 20px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 8px;
+        scrollbar-width: none;
+        outline-offset: 4px;
+    }
+
+    .partenaires-text-wrapper:focus-visible {
+        outline: 3px solid #F86CF8;
+        outline-offset: 4px;
+    }
+
+    .partenaires-text {
+        display: block;
+        flex: 0 0 auto;
         white-space: nowrap;
         color: #fff;
-        font-family: 'Poppins', sans-serif;
         font-size: 19px;
-        font-weight: 400;
-        line-height: 1.4;
-        padding-left: 100%;
-        animation: none;
+        line-height: 1.5;
+        margin: 0;
     }
 
-    .marquee.active {
-        animation: marquee-scroll 75s linear infinite;
-    }
-
-    @keyframes marquee-scroll {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-100%);
-        }
-    }
+    .partenaires-text-clone {
+        pointer-events: none;
     }
 </style>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    const marquee = document.getElementById("marqueeText");
-    const triggerElement = document.querySelector(".marquee-container");
+    const SPEED = 1;  // px par tick
+    const TICK = 16;  // ms
 
-    if (!marquee || !triggerElement) {
-        console.warn("Éléments marquee non trouvés");
-        return;
+    const logosList = document.querySelector(".partenaires-list");
+    const logosWrapper = document.getElementById("partenairesWrapper");
+    let originalLogos = [];
+    let logosCycleWidth = 0;
+    let textCycleWidth = 0;
+
+    if (logosList) {
+        originalLogos = Array.from(logosList.children)
+            .filter((item) => !item.classList.contains("partenaire-clone"));
+
+        const appendVisualCopy = () => {
+            const visualCopy = document.createDocumentFragment();
+
+            originalLogos.forEach((item) => {
+                const clone = item.cloneNode(true);
+                clone.classList.add("partenaire-clone");
+                clone.setAttribute("aria-hidden", "true");
+                clone.setAttribute("inert", "");
+
+                clone.querySelectorAll("a, button").forEach((element) => {
+                    element.tabIndex = -1;
+                });
+
+                visualCopy.appendChild(clone);
+            });
+
+            logosList.appendChild(visualCopy);
+        };
+
+        if (originalLogos.length > 0 && !logosList.querySelector(".partenaire-clone")) {
+            appendVisualCopy();
+        }
+
+        const firstOriginal = originalLogos[0];
+        const firstClone = logosList.querySelector(".partenaire-clone");
+
+        if (firstOriginal && firstClone) {
+            logosCycleWidth = firstClone.offsetLeft - firstOriginal.offsetLeft;
+        }
+
+        const ensureScrollableLogoCoverage = () => {
+            if (!logosWrapper || logosCycleWidth <= 0) return;
+
+            const requiredWidth = logosCycleWidth + logosWrapper.clientWidth;
+            let addedCopies = 0;
+
+            while (logosList.scrollWidth < requiredWidth && addedCopies < 20) {
+                appendVisualCopy();
+                addedCopies += 1;
+            }
+        };
+
+        ensureScrollableLogoCoverage();
+        window.addEventListener("resize", ensureScrollableLogoCoverage);
     }
 
-    if ("IntersectionObserver" in window) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    marquee.classList.add("active");
-                } else {
-                    marquee.classList.remove("active");
-                }
-            });
-        }, {
-            threshold: 0.3
-        });
+    const textWrapper = document.getElementById("partenairesTextWrapper");
 
-        observer.observe(triggerElement);
+    if (textWrapper) {
+        const originalText = textWrapper.querySelector(".partenaires-text:not(.partenaires-text-clone)");
+
+        const appendVisualTextCopy = () => {
+            if (!originalText) return;
+
+            const clone = originalText.cloneNode(true);
+            clone.classList.add("partenaires-text-clone");
+            clone.setAttribute("aria-hidden", "true");
+            clone.setAttribute("inert", "");
+            textWrapper.appendChild(clone);
+        };
+
+        if (originalText && !textWrapper.querySelector(".partenaires-text-clone")) {
+            appendVisualTextCopy();
+        }
+
+        const firstTextClone = textWrapper.querySelector(".partenaires-text-clone");
+
+        if (originalText && firstTextClone) {
+            textCycleWidth = firstTextClone.offsetLeft - originalText.offsetLeft;
+        }
+
+        const ensureScrollableTextCoverage = () => {
+            if (textCycleWidth <= 0) return;
+
+            const requiredWidth = textCycleWidth + textWrapper.clientWidth;
+            let addedCopies = 0;
+
+            while (textWrapper.scrollWidth < requiredWidth && addedCopies < 20) {
+                appendVisualTextCopy();
+                addedCopies += 1;
+            }
+        };
+
+        ensureScrollableTextCoverage();
+        window.addEventListener("resize", ensureScrollableTextCoverage);
+    }
+
+    // Les deux zones défilantes : logos partenaires et texte descriptif
+    const zones = [
+        {
+            wrapper: document.getElementById("partenairesWrapper"),
+            btnLeft: document.getElementById("partenairesScrollLeft"),
+            btnRight: document.getElementById("partenairesScrollRight"),
+            step: 300,
+            cycleWidth: () => logosCycleWidth
+        },
+        {
+            wrapper: document.getElementById("partenairesTextWrapper"),
+            btnLeft: document.getElementById("partenairesTextScrollLeft"),
+            btnRight: document.getElementById("partenairesTextScrollRight"),
+            step: 300,
+            cycleWidth: () => textCycleWidth
+        }
+    ].filter((z) => z.wrapper && z.btnLeft && z.btnRight);
+
+    const btnPause = document.getElementById("partenairesPlayPause");
+
+    let timers = [];
+    let isPlaying = false;
+    let userPaused = false;
+
+    const maxScroll = (wrapper) => wrapper.scrollWidth - wrapper.clientWidth;
+
+    const updateButtons = (zone) => {
+        const max = maxScroll(zone.wrapper);
+        zone.btnLeft.disabled = zone.wrapper.scrollLeft <= 0;
+        zone.btnRight.disabled = zone.wrapper.scrollLeft >= max - 1;
+    };
+
+    const updatePlayPauseUI = () => {
+        if (!btnPause) return;
+        const pauseEl = btnPause.querySelector(".play-pause-pause");
+        const playEl = btnPause.querySelector(".play-pause-play");
+        btnPause.setAttribute("aria-label", isPlaying
+            ? "Mettre en pause le défilement automatique"
+            : "Relancer le défilement automatique");
+        btnPause.setAttribute("aria-pressed", String(!isPlaying));
+        if (pauseEl) pauseEl.style.display = isPlaying ? "inline" : "none";
+        if (playEl) playEl.style.display = isPlaying ? "none" : "inline";
+    };
+
+    const startAuto = () => {
+        if (isPlaying) return;
+        isPlaying = true;
+        zones.forEach((zone) => {
+            timers.push(setInterval(() => {
+                const max = maxScroll(zone.wrapper);
+                if (max <= 0) return; // rien à faire défiler (zone sans débordement)
+                zone.wrapper.scrollLeft += SPEED;
+                const cycleWidth = zone.cycleWidth ? zone.cycleWidth() : 0;
+
+                if (cycleWidth > 0 && zone.wrapper.scrollLeft >= cycleWidth) {
+                    zone.wrapper.scrollLeft -= cycleWidth;
+                } else if (cycleWidth === 0 && zone.wrapper.scrollLeft >= max - 1) {
+                    zone.wrapper.scrollLeft = 0; // boucle
+                }
+                updateButtons(zone);
+            }, TICK));
+        });
+        updatePlayPauseUI();
+    };
+
+    const stopAuto = () => {
+        timers.forEach((t) => clearInterval(t));
+        timers = [];
+        isPlaying = false;
+        updatePlayPauseUI();
+    };
+
+    if (btnPause) {
+        btnPause.addEventListener("click", () => {
+            if (isPlaying) {
+                userPaused = true;
+                stopAuto();
+            } else {
+                userPaused = false;
+                startAuto();
+            }
+        });
+    }
+
+    // Suspension temporaire de l'auto-défilement (flèches, scrollbar, tactile) :
+    // reprise après le délai, sauf si l'utilisateur a mis en pause manuellement.
+    let touchResumeTimer = null;
+    const suspendAuto = (resumeDelay) => {
+        if (isPlaying) {
+            timers.forEach((t) => clearInterval(t));
+            timers = [];
+            isPlaying = false;
+            updatePlayPauseUI();
+        }
+        if (touchResumeTimer) {
+            clearTimeout(touchResumeTimer);
+        }
+        touchResumeTimer = setTimeout(() => {
+            touchResumeTimer = null;
+            if (!userPaused) {
+                startAuto();
+            }
+        }, resumeDelay);
+    };
+
+    // Pause pendant le glisser au doigt (mobile) : le défilement auto reprend
+    // après le relâchement, sauf si l'utilisateur a mis en pause manuellement.
+    let touchPause = false;
+    zones.forEach((zone) => {
+        zone.wrapper.addEventListener("touchstart", () => {
+            if (isPlaying) {
+                touchPause = true;
+                suspendAuto(0); // pas de reprise ici : gérée au touchend
+                if (touchResumeTimer) {
+                    clearTimeout(touchResumeTimer);
+                    touchResumeTimer = null;
+                }
+            }
+        }, { passive: true });
+        zone.wrapper.addEventListener("touchend", () => {
+            if (touchPause) {
+                suspendAuto(2000);
+            }
+        }, { passive: true });
+        // Interaction souris sur le wrapper (glisser du contenu ou de la
+        // barre de défilement violette) : suspension de l'auto-défilement.
+        zone.wrapper.addEventListener("mousedown", () => suspendAuto(2000));
+        zone.wrapper.addEventListener("wheel", () => suspendAuto(2000), { passive: true });
+    });
+
+    // Défilement manuel (flèches) : toujours disponible, y compris en mode
+    // lecture — l'auto-défilement est suspendu le temps du déplacement, puis repris.
+    zones.forEach((zone) => {
+        const manualScroll = (delta) => {
+            suspendAuto(2000);
+            zone.wrapper.scrollBy({ left: delta, behavior: "smooth" });
+        };
+        zone.btnLeft.addEventListener("click", () => manualScroll(-zone.step));
+        zone.btnRight.addEventListener("click", () => manualScroll(zone.step));
+        zone.wrapper.addEventListener("scroll", () => updateButtons(zone));
+        window.addEventListener("resize", () => updateButtons(zone));
+        updateButtons(zone);
+    });
+
+    // Défilement automatique lancé dès le chargement ;
+    // contrôlable via le bouton pause/relance (RGAA 13.8).
+    // Respect de prefers-reduced-motion : démarrage en pause pour les
+    // utilisateurs sensibles au mouvement (accessibilité).
+    // Option B : si tous les partenaires tiennent à l'écran (pas de débordement),
+    // duplication de la liste pour garantir un défilement en boucle permanente.
+    // Les clones sont aria-hidden et hors tabulation (RGAA-07).
+    zones.forEach((zone) => {
+        const list = zone.wrapper.querySelector("ul.partenaires-list");
+        if (!list) return; // la zone texte n'a pas de <ul>, rien à cloner
+
+        // Copie pristine de la liste d'origine : on clone toujours à partir
+        // d'elle pour éviter une croissance exponentielle des duplications.
+        const original = list.cloneNode(true);
+        let guard = 0;
+        while (zone.wrapper.scrollWidth <= zone.wrapper.clientWidth && guard < 5) {
+            // On clone les <li> dans la MÊME liste (pas une nouvelle <ul>) :
+            // sinon chaque clone formerait une rangée sous la première.
+            const clone = original.cloneNode(true);
+            clone.setAttribute("aria-hidden", "true");
+            clone.querySelectorAll("a").forEach((a) => {
+                a.tabIndex = -1;
+                a.removeAttribute("data-bs-toggle");
+            });
+            Array.from(clone.children).forEach((li) => list.appendChild(li));
+            guard++;
+        }
+    });
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        updatePlayPauseUI();
     } else {
-        marquee.classList.add("active");
+        startAuto();
     }
 });
 </script>
