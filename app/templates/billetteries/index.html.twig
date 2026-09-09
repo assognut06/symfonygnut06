@@ -584,11 +584,15 @@
                 var instance = window.bootstrap.Carousel.getInstance(carousel);
                 if (instance) { instance.dispose(); }
 
-                window.bootstrap.Carousel.getOrCreateInstance(carousel, {
-                    interval: false,
-                    ride: false,
-                    touch: true
-                });
+                // ✅ Attendre que le DOM reconstruit soit stable
+                setTimeout(function () {
+                    new window.bootstrap.Carousel(carousel, {
+                        interval: false,
+                        ride: false,
+                        touch: true,
+                        wrap: true
+                    });
+                }, 1000);
             }
 
             document.addEventListener('DOMContentLoaded', function () {
