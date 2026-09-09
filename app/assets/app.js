@@ -8,7 +8,7 @@ import * as bootstrap from 'bootstrap';
 import './styles/app.scss';
 
 import $ from 'jquery';
-import 'bootstrap';
+// import 'bootstrap';
 import 'select2';
 import 'select2/dist/css/select2.min.css'; // ✅ CSS Select2
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -17,6 +17,8 @@ import { initCounters } from "./js/counters.js";
 $(function (){
     initCounters()
 })
+
+window.bootstrap = bootstrap;
 
 // ✅ Tooltips Bootstrap
 document.addEventListener('DOMContentLoaded', function () {
