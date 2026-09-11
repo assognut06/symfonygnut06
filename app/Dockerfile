@@ -59,7 +59,7 @@ RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
 # Install the latest stable npm version compatible with Node.js 22.23.2
-RUN npm install -g npm@12.0.2
+RUN npm install -g npm@11.12.1
 
 # SSL : Génération du certificat et configuration Apache
 EXPOSE 443

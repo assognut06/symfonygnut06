@@ -58,7 +58,7 @@ jobs:
             PROJECT_DIR="/var/www/html/gnut06_dev"
             APP_DIR="${PROJECT_DIR}/app"
             APPENV=prod
-            REQUIRED_NPM_VERSION="11.2.0"
+            REQUIRED_NPM_VERSION="11.12.1"
             export APP_ENV="$APPENV"
             export APP_DEBUG="${APP_DEBUG:-0}"
 
