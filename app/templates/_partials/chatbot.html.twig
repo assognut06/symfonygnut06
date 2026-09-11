@@ -52,7 +52,7 @@
         </div>
     </div>
 
-    <div class="px-3 pb-2">
+    <div class="px-3 pb-2 chatbot-quick-questions">
         <div class="small text-muted mb-2">Questions rapides :</div>
 
         <div class="d-flex flex-wrap gap-2">
@@ -128,6 +128,7 @@
 
     .chat-box {
         height: min(610px, calc(100vh - 2rem));
+        height: min(610px, calc(100dvh - 2rem));
         background: #ffffff;
         border: 1px solid #90cff6;
         overflow: hidden;
@@ -206,24 +207,45 @@
         }
     }
 
-    @media (max-width: 576px) {
+    @media (max-width: 1199.98px) {
+        .chatbot-modal {
+            top: var(--chatbot-header-offset, 0px);
+            height: calc(100% - var(--chatbot-header-offset, 0px));
+        }
+
         .chatbot-modal .chatbot-dialog {
-            width: calc(100vw - 1rem);
-            min-height: calc(100% - 1rem);
-            margin: 0.5rem;
+            height: calc(100vh - var(--chatbot-header-offset, 0px) - 1rem);
+            height: calc(100dvh - var(--chatbot-header-offset, 0px) - 1rem);
+            min-height: 0;
+            margin: 0.5rem 1rem 0.5rem auto;
         }
 
         .chat-box {
-            height: calc(80vh - 1rem);
+            height: min(610px, 100%);
         }
 
         .chat-messages {
-            height: calc(100vh - 260px);
+            flex: 1 1 auto;
+            min-height: 0;
+            height: auto;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .chatbot-modal .chatbot-dialog {
+            width: calc(100vw - 1rem);
+            margin: 0.5rem;
         }
 
         .chatbot-open-button {
             width: 76px;
             height: 76px;
+        }
+    }
+
+    @media (max-width: 1199.98px) and (orientation: landscape) and (max-height: 500px) {
+        .chatbot-quick-questions {
+            display: none;
         }
     }
 </style>
@@ -237,8 +259,26 @@
         const sendBtn = document.getElementById('sendChat');
         const messages = document.getElementById('chatMessages');
         const quickButtons = chatBox.querySelectorAll('.quick-question');
+        const siteHeader = document.querySelector('body > header');
+        const compactChat = window.matchMedia('(max-width: 1199.98px)');
 
         let history = [];
+
+        function syncChatViewport() {
+            const headerHeight = siteHeader && compactChat.matches
+                ? Math.ceil(siteHeader.getBoundingClientRect().height)
+                : 0;
+
+            chatBox.style.setProperty('--chatbot-header-offset', `${headerHeight}px`);
+        }
+
+        window.addEventListener('resize', syncChatViewport);
+        compactChat.addEventListener('change', syncChatViewport);
+        syncChatViewport();
+
+        if (siteHeader && 'ResizeObserver' in window) {
+            new ResizeObserver(syncChatViewport).observe(siteHeader);
+        }
 
         function isChatOpen() {
             return chatBox.classList.contains('show');
