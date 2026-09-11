@@ -35,7 +35,7 @@ public/build/*
 public/bundles/*
 
 # Composer vendor (we'll install fresh)
-# vendor/
+vendor/
 
 # Environment files (should be set via docker-compose)
 .env.local

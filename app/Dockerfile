@@ -36,7 +36,7 @@ echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen && \
 locale-gen
 
 # install curl and git
-RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
+RUN curl -fsSL https://getcomposer.org/installer | php && \
 mv composer.phar /usr/local/bin/composer
 
 # Install Symfony CLI
@@ -80,6 +80,12 @@ RUN mkdir -p /etc/apache2/ssl && \
 COPY ./config/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
 RUN a2ensite default-ssl
 
+# Configuration du VirtualHost du port 80
+# Désactive le site par défaut (DocumentRoot /var/www/html) du port 80
+RUN a2dissite 000-default.conf || true
+COPY ./vhosts.conf /etc/apache2/sites-available/000-default.conf
+RUN a2ensite 000-default
+
 # Configuration de Xdebug
 COPY ./config/xdebug.ini /usr/local/etc/php/conf.d//xdebug.ini
 
@@ -87,15 +93,35 @@ RUN addgroup --gid 1000 user && usermod -aG user www-data
 RUN chown -R www-data:user /var/www && \
 chmod -R 755 /etc/apache2 && \
 chmod -R 775 /var/www/app && \
-chmod +x /var/www/app/
-COPY . /var/www/app
+chmod +x /var/www/app/ && \
+# La clé privée SSL ne doit PAS être lisible par tous.
+# Apache (processus maître, lancé en root) lit la clé au démarrage/rechargement
+# avant de baisser ses privilèges vers les workers www-data.
+# => orifice : seul root peut lire la clé, seul root peut accéder au dossier.
+chmod 700 /etc/apache2/ssl && \
+chmod 600 /etc/apache2/ssl/apache.key && \
+chmod 644 /etc/apache2/ssl/apache.crt && \
+chown -R root:root /etc/apache2/ssl
+COPY --chown=www-data:user . /var/www/app
+
+# Gestion des permissions des dossiers montés (var/, public/uploads)
+# Le script tourne au démarrage pour rendre ces dossiers inscriptibles par
+# www-data, indépendamment de l'UID/GID du poste hôte.
+COPY --chown=www-data:user ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 USER www-data:user
 # Ensure the composer.json file exists
 RUN composer install --no-scripts
 # RUN composer install
+# Retour au root pour l'exécution : le script du démarrage a besoin de
+# changer les propriétaires des volumes montés, et Apache est lancé en root
+# (les workers nginx/apache baissent ensuite vers www-data).
+USER root
+
 EXPOSE 8000
 # CMD ["symfony", "serve","--no-tls"]
 
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
 #ENTRYPOINT ["/bin/bash", "/var/www/app/run.sh"]
