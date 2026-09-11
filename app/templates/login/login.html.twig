@@ -2,6 +2,16 @@
 
 {% block title %}Connexion - GNUT 06{% endblock %}
 
+{% block skip_links %}
+    {% include '_partials/skip_links.html.twig' with {
+        links: [
+            { href: '#main-content', label: 'Aller au contenu principal' },
+            { href: '#connexion-form', label: 'Aller au formulaire de connexion' },
+            { href: '#alt-login', label: 'Aller aux connexions alternatives' }
+        ]
+    } only %}
+{% endblock %}
+
 {% block stylesheets %}
     {{ parent() }}
     <style>
@@ -25,25 +35,6 @@
         #connexion-subtitle {
             color: #ffffff !important;
             font-weight: 500 !important;
-        }
-
-        /* ✅ CORRECTION - Skip links */
-        .skip-link {
-            position: absolute;
-            top: -40px;
-            left: 6px;
-            background: #000000;
-            color: #ffffff;
-            padding: 8px 12px;
-            text-decoration: none;
-            border-radius: 0 0 4px 4px;
-            z-index: 1000;
-            font-weight: bold;
-        }
-
-        .skip-link:focus {
-            top: 0;
-            outline: 3px solid #F86CF8;
         }
 
         /* ✅ CORRECTION - Amélioration formulaire */
@@ -206,14 +197,7 @@
 {% endblock %}
 
 {% block body %}
-    <!-- ✅ CORRECTION - Skip links ajoutés -->
-    <nav aria-label="Navigation rapide" class="visually-hidden-focusable">
-        <a href="#main-content" class="skip-link">Aller au contenu principal</a>
-        <a href="#connexion-form" class="skip-link">Aller au formulaire de connexion</a>
-        <a href="#alt-login" class="skip-link">Aller aux connexions alternatives</a>
-    </nav>
-
-    <main id="main-content" class="bg-main" role="main" aria-labelledby="connexion-title">
+    <main id="main-content" class="bg-main" role="main" aria-labelledby="connexion-title" tabindex="-1">
         <div class="container mt-5">
             <div class="row justify-content-center text">
 
@@ -223,6 +207,7 @@
                     <form id="connexion-form" 
                           method="post"
                           class="needs-validation"
+                          tabindex="-1"
                           novalidate
                           aria-describedby="connexion-infos required-fields-info"
                           aria-label="Formulaire de connexion sécurisé GNUT 06"
@@ -325,7 +310,6 @@
                                            placeholder="nom@domaine.com"
                                            autocomplete="email"
                                            required
-                                           autofocus
                                            aria-required="true"
                                            aria-describedby="username-help username-error"
                                            aria-invalid="false">
@@ -397,6 +381,7 @@
                     <!-- ✅ CORRECTION - Connexion via services externes améliorée -->
                     <section id="alt-login" 
                              class="text-center pb-5" 
+                             tabindex="-1"
                              aria-labelledby="alt-login-title"
                              role="group">
                         

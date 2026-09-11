@@ -1,5 +1,13 @@
 {% extends 'base.html.twig' %}
 
+{% block skip_links %}
+    {% include '_partials/skip_links.html.twig' with {
+        links: [
+            { href: '#main-content', label: 'Aller au contenu principal' }
+        ]
+    } only %}
+{% endblock %}
+
 {% block title %}Réservation - GNUT 06
 {% endblock %}
 
@@ -102,18 +110,18 @@
     .carousel-container {
         padding: 0 20px 60px 20px;
     }
-    
+
     .carousel-control-prev,
     .carousel-control-next {
         width: 3%;
         top: 35%;
         height: 30%;
     }
-    
+
     .carousel-control-prev {
         left: 5px;
     }
-    
+
     .carousel-control-next {
         right: 5px;
     }
@@ -123,21 +131,23 @@
     .carousel-container {
         padding: 0 15px 60px 15px;
     }
-    
+
+    /* ✅ Contrôles réactivés en mobile : nécessaires quand il y a
+       plusieurs slides d'une seule carte (regroupement JS) */
     .carousel-control-prev,
     .carousel-control-next {
-        width: 8%;
-        top: 25%;
-        height: 30%;
-        z-index: 5;
+        width: 12%;
+        top: 40%;
+        height: 20%;
+        z-index: 30;
     }
-    
+
     .carousel-control-prev {
-        left: 5px;
+        left: 0;
     }
-    
+
     .carousel-control-next {
-        right: 5px;
+        right: 0;
     }
 
     .card-body {
@@ -149,9 +159,12 @@
     .carousel-container {
         padding: 0 0 60px 0;
     }
-    
-    .carousel-control-prev,
-    .carousel-control-next {
+
+    /* ✅ On ne masque plus les flèches en mobile : elles sont
+       indispensables tant qu'il y a plus d'une slide générée par le JS.
+       Le JS ajoute lui-même la classe .nav-hidden si une seule slide. */
+    .carousel-control-prev.nav-hidden,
+    .carousel-control-next.nav-hidden {
         display: none !important;
     }
 }
@@ -174,6 +187,10 @@
 
 .carousel-indicators button.active {
     background-color: white;
+}
+
+.carousel-indicators.nav-hidden {
+    display: none !important;
 }
 
 /* Retirer la marge sur #evenements */
@@ -200,17 +217,17 @@
 
 {% block body %}
 <!-- ✅ Main principal pour structure -->
-<main role="main">
+<main id="main-content" role="main" tabindex="-1">
 
     <!-- ✅ Section Intro avec H1 principal -->
-    <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5" 
-             role="region" 
+    <section class="bg-main w-100 d-flex justify-content-center pt-5 pb-5"
+             role="region"
              aria-labelledby="main-title">
         <div class="container row align-items-center justify-content-center g-5">
             <header class="col-lg-6 col-12">
                 <h1 id="main-title">Mondes Virtuels, Liens Réels : L'Inclusion à Portée de main</h1>
                 <p class="text">Venez découvrir nos actions sur place !</p>
-                <a href="{{ path('app_a_propos') }}" 
+                <a href="{{ path('app_a_propos') }}"
                    class="btn-neon text-white">
                     Découvrez GNUT 06
                 </a>
@@ -218,8 +235,8 @@
 
             <div class="col-lg-6 col-12">
                 <figure>
-                    <img src="{{ asset('images/webp/immersion-3.webp') }}" 
-                         class="img-fluid" 
+                    <img src="{{ asset('images/webp/immersion-3.webp') }}"
+                         class="img-fluid"
                          alt=""
                          aria-hidden="true">
                 </figure>
@@ -229,28 +246,28 @@
 
     <!-- ✅ Section Carousel avec structure WCAG complète -->
     <div class="carousel-container bg-main">
-        <section id="evenements" 
-                 class="carousel slide bg-main pb-5" 
+        <section id="evenements"
+                 class="carousel slide bg-main pb-5"
                  data-bs-ride="false"
                  data-bs-interval="false"
                  role="region"
-                 aria-label="Nos événements disponibles" 
+                 aria-label="Nos événements disponibles"
                  aria-roledescription="carousel"
                  aria-describedby="carousel-live-region">
 
             <!-- ✅ Instructions complètes pour lecteurs d'écran -->
             <h2 class="visually-hidden">Nos événements disponibles</h2>
             <div class="visually-hidden" aria-live="polite" id="carousel-live-region">
-                Carousel contenant {{ data_forms|length }} événements répartis en {{ (data_forms|length / 3)|round(0, 'ceil') }} groupes. 
-                Utilisez les boutons suivant et précédent pour naviguer entre les groupes d'événements, 
+                Carousel contenant {{ data_forms|length }} événements répartis en {{ (data_forms|length / 3)|round(0, 'ceil') }} groupes.
+                Utilisez les boutons suivant et précédent pour naviguer entre les groupes d'événements,
                 ou utilisez Tab pour accéder directement aux événements.
             </div>
 
             <div class="carousel-inner">
                 {% for group in data_forms|batch(3) %}
-                    <div class="carousel-item {% if loop.first %}active{% endif %}" 
-                         role="group" 
-                         aria-roledescription="slide" 
+                    <div class="carousel-item {% if loop.first %}active{% endif %}"
+                         role="group"
+                         aria-roledescription="slide"
                          aria-label="Groupe d'événements {{ loop.index }} sur {{ (data_forms|length / 3)|round(0, 'ceil') }}"
                          id="carousel-slide-{{ loop.index0 }}">
 
@@ -259,14 +276,15 @@
 
                                 {% for item in group %}
                                     <li class="col-12 col-sm-6 col-lg-4 d-flex px-3 px-sm-2"
+                                        data-event-index="{{ loop.parent.loop.index0 * 3 + loop.index0 }}"
                                         aria-labelledby="event-title-{{ loop.parent.loop.index }}-{{ loop.index }}">
 
                                         <article class="card h-100 flex-fill"
                                              tabindex="0"
                                              aria-describedby="event-desc-{{ loop.parent.loop.index }}-{{ loop.index }}">
                                             <figure class="m-0">
-                                                <img src="{{ asset(randomImage('/images/news/')) }}" 
-                                                     class="card-img-top" 
+                                                <img src="{{ asset(randomImage('/images/news/')) }}"
+                                                     class="card-img-top"
                                                      alt=""
                                                      aria-hidden="true">
                                             </figure>
@@ -318,45 +336,45 @@
 
                                         <!-- ✅ Modal avec accessibilité complète -->
                                         <div class="modal fade modal-lg"
-                                         id="modal_{{ loop.parent.loop.index }}_{{ loop.index }}" 
-                                         tabindex="-1" 
-                                         role="dialog" 
-                                         aria-labelledby="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}" 
-                                         aria-modal="true" 
+                                         id="modal_{{ loop.parent.loop.index }}_{{ loop.index }}"
+                                         tabindex="-1"
+                                         role="dialog"
+                                         aria-labelledby="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}"
+                                         aria-modal="true"
                                          aria-hidden="true"
                                          aria-describedby="modal-desc-{{ loop.parent.loop.index }}-{{ loop.index }}">
-                                        
+
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
                                                 <header class="modal-header">
                                                     <h2 class="modal-title fs-5" id="ModalLabel_{{ loop.parent.loop.index }}_{{ loop.index }}">
                                                         Réservation : {{ item.title }}
                                                     </h2>
-                                                    <button type="button" 
-                                                            class="btn-close" 
-                                                            data-bs-dismiss="modal" 
+                                                    <button type="button"
+                                                            class="btn-close"
+                                                            data-bs-dismiss="modal"
                                                             aria-label="Fermer la fenêtre de réservation pour {{ item.title }}"></button>
                                                 </header>
 
                                                 <div class="modal-body" id="modal-desc-{{ loop.parent.loop.index }}-{{ loop.index }}">
                                                     <div class="visually-hidden">
-                                                        Formulaire de réservation pour {{ item.title }}. 
+                                                        Formulaire de réservation pour {{ item.title }}.
                                                         Utilisez Tab pour naviguer dans le formulaire.
                                                         Appuyez sur Échap pour fermer cette fenêtre.
                                                     </div>
-                                                    <iframe id="haWidget_{{ loop.parent.loop.index }}_{{ loop.index }}" 
-                                                            allowtransparency="true" 
-                                                            scrolling="auto" 
-                                                            title="Formulaire de réservation pour {{ item.title }}" 
-                                                            src="{{ item.widgetFullUrl }}" 
+                                                    <iframe id="haWidget_{{ loop.parent.loop.index }}_{{ loop.index }}"
+                                                            allowtransparency="true"
+                                                            scrolling="auto"
+                                                            title="Formulaire de réservation pour {{ item.title }}"
+                                                            src="{{ item.widgetFullUrl }}"
                                                             style="width: 100%; min-height: 750px; border: none;"
                                                             aria-label="Formulaire interactif de réservation HelloAsso"
                                                             onload="this.focus()"></iframe>
                                                 </div>
 
                                                 <footer class="modal-footer">
-                                                    <button type="button" 
-                                                            class="btn-asso" 
+                                                    <button type="button"
+                                                            class="btn-asso"
                                                             data-bs-dismiss="modal"
                                                             aria-label="Fermer la fenêtre de réservation">
                                                         <i class="bi bi-x-circle" aria-hidden="true"></i>
@@ -381,39 +399,46 @@
                 {% endfor %}
             </div>
 
-            <!-- ✅ Indicateurs accessibles avec instructions -->
-            {% if (data_forms|length / 3)|round(0, 'ceil') > 1 %}
-                <div class="carousel-indicators d-md-none"
-                     aria-label="Navigation par groupes d'événements">
-                    {% for group in data_forms|batch(3) %}
-                        <button type="button" 
-                                data-bs-target="#evenements" 
-                                data-bs-slide-to="{{ loop.index0 }}" 
-                                {% if loop.first %} class="active" aria-current="true" {% endif %}
-                                aria-controls="carousel-slide-{{ loop.index0 }}"
-                                aria-label="Afficher le groupe d'événements {{ loop.index }} sur {{ (data_forms|length / 3)|round(0, 'ceil') }}"></button>
-                    {% endfor %}
-                </div>
+            <!--
+                ✅ CORRECTIF : les indicateurs et les flèches sont désormais
+                TOUJOURS rendus côté serveur, quel que soit le nombre de
+                groupes desktop (3 par slide). En effet, le JS reconstruit
+                les slides par paquets de 1 en mobile (voir buildResponsiveSlides),
+                et il a besoin que ces éléments existent dans le DOM pour :
+                  1) initialiser l'instance Bootstrap Carousel
+                  2) permettre la navigation tactile/clic
+                Le JS masque lui-même (classe .nav-hidden) ces éléments
+                s'il n'y a réellement qu'une seule slide après regroupement.
+            -->
+            <div class="carousel-indicators d-md-none"
+                 aria-label="Navigation par groupes d'événements">
+                {% for group in data_forms|batch(3) %}
+                    <button type="button"
+                            data-bs-target="#evenements"
+                            data-bs-slide-to="{{ loop.index0 }}"
+                            {% if loop.first %} class="active" aria-current="true" {% endif %}
+                            aria-controls="carousel-slide-{{ loop.index0 }}"
+                            aria-label="Afficher le groupe d'événements {{ loop.index }} sur {{ (data_forms|length / 3)|round(0, 'ceil') }}"></button>
+                {% endfor %}
+            </div>
 
-                <!-- ✅ Contrôles accessibles avec contexte -->
-                <button class="carousel-control-prev d-none d-md-flex" 
-                        type="button" 
-                        data-bs-target="#evenements" 
-                        data-bs-slide="prev" 
-                        aria-label="Afficher le groupe d'événements précédent">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Précédent</span>
-                </button>
+            <button class="carousel-control-prev"
+                    type="button"
+                    data-bs-target="#evenements"
+                    data-bs-slide="prev"
+                    aria-label="Afficher le groupe d'événements précédent">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Précédent</span>
+            </button>
 
-                <button class="carousel-control-next d-none d-md-flex" 
-                        type="button" 
-                        data-bs-target="#evenements" 
-                        data-bs-slide="next" 
-                        aria-label="Afficher le groupe d'événements suivant">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Suivant</span>
-                </button>
-            {% endif %}
+            <button class="carousel-control-next"
+                    type="button"
+                    data-bs-target="#evenements"
+                    data-bs-slide="next"
+                    aria-label="Afficher le groupe d'événements suivant">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Suivant</span>
+            </button>
         </section>
     </div>
 
@@ -421,13 +446,13 @@
     <nav class="bg-main w-100 py-3" role="navigation" aria-label="Navigation de retour">
         <div class="container text-center">
             {% if app.request.headers.get('Referer') %}
-                <a href="{{ app.request.headers.get('Referer')|e('html_attr') }}" 
+                <a href="{{ app.request.headers.get('Referer')|e('html_attr') }}"
                    class="text text-decoration-underline">
                     <i class="bi bi-arrow-left" aria-hidden="true"></i>
                     Retourner à la page précédente
                 </a>
             {% else %}
-                <a href="{{ path('app_home') }}" 
+                <a href="{{ path('app_home') }}"
                    class="text text-decoration-underline">
                     <i class="bi bi-house" aria-hidden="true"></i>
                     Retour à l'accueil
@@ -437,4 +462,153 @@
     </nav>
 
 </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        /* ✅ Carrousel des billetteries : regroupement responsive des slides.
+           Le serveur rend les slides par groupes de 3 (adapté au desktop ≥768px).
+           En mobile (<768px), une slide de 3 cartes empilées est trop haute pour
+           être parcourue au doigt : ce script regroupe alors les cartes en
+           slides de 1, reconstruit les indicateurs, et réinitialise l'instance
+           Bootstrap. Le basculement se refait automatiquement au franchissement
+           du breakpoint (rotation, redimensionnement).
+
+           ✅ CORRECTIFS apportés (carousel qui ne fonctionnait pas en mobile) :
+           1. Les indicateurs/flèches sont maintenant TOUJOURS présents dans le
+              DOM (rendus côté Twig sans condition), donc le JS peut toujours
+              les manipuler, même avec peu d'événements.
+           2. initCarouselInstance() n'initialise plus l'instance Bootstrap en
+              simulant un clic sur un indicateur (qui pouvait être absent) :
+              elle utilise directement l'API bootstrap.Carousel.getOrCreateInstance().
+           3. Ajout de la gestion de visibilité (.nav-hidden) des indicateurs
+              et des flèches lorsqu'il n'y a qu'une seule slide après regroupement,
+              pour éviter d'afficher une navigation inutile.
+        */
+        (function () {
+            'use strict';
+
+            var mdQuery = window.matchMedia('(min-width: 768px)');
+
+            function buildResponsiveSlides() {
+                var carousel = document.getElementById('evenements');
+                if (!carousel) { return; }
+
+                var inner = carousel.querySelector('.carousel-inner');
+                var indicators = carousel.querySelector('.carousel-indicators');
+                var prevBtn = carousel.querySelector('.carousel-control-prev');
+                var nextBtn = carousel.querySelector('.carousel-control-next');
+                if (!inner) { return; }
+
+                var cards = Array.prototype.slice.call(inner.querySelectorAll('li[data-event-index]'))
+                    .sort(function (a, b) {
+                        return parseInt(a.dataset.eventIndex, 10) - parseInt(b.dataset.eventIndex, 10);
+                    });
+
+                if (!cards.length) {
+                    /* état vide : pas de cartes, on masque toute navigation */
+                    if (indicators) { indicators.classList.add('nav-hidden'); }
+                    if (prevBtn) { prevBtn.classList.add('nav-hidden'); }
+                    if (nextBtn) { nextBtn.classList.add('nav-hidden'); }
+                    return;
+                }
+
+                var groupSize = mdQuery.matches ? 3 : 1;
+                var groups = [];
+                for (var i = 0; i < cards.length; i += groupSize) {
+                    groups.push(cards.slice(i, i + groupSize));
+                }
+
+                /* Supprime l'instance Bootstrap existante avant reconstruction */
+                if (window.bootstrap && window.bootstrap.Carousel) {
+                    var instance = window.bootstrap.Carousel.getInstance(carousel);
+                    if (instance) { instance.dispose(); }
+                }
+
+                inner.textContent = '';
+                groups.forEach(function (group, gi) {
+                    var slide = document.createElement('div');
+                    slide.className = 'carousel-item' + (gi === 0 ? ' active' : '');
+                    slide.id = 'carousel-slide-' + gi;
+                    slide.setAttribute('role', 'group');
+                    slide.setAttribute('aria-roledescription', 'slide');
+                    slide.setAttribute('aria-label',
+                        'Groupe d\u2019événements ' + (gi + 1) + ' sur ' + groups.length);
+
+                    var wrapper = document.createElement('div');
+                    wrapper.className = 'container py-4';
+                    var list = document.createElement('ul');
+                    list.className = 'row g-4 justify-content-center list-unstyled';
+                    group.forEach(function (card) { list.appendChild(card); });
+
+                    wrapper.appendChild(list);
+                    slide.appendChild(wrapper);
+                    inner.appendChild(slide);
+                });
+
+                /* Reconstruit les indicateurs (masqués en desktop via d-md-none) */
+                if (indicators) {
+                    indicators.textContent = '';
+                    groups.forEach(function (group, gi) {
+                        var dot = document.createElement('button');
+                        dot.type = 'button';
+                        dot.setAttribute('data-bs-target', '#evenements');
+                        dot.setAttribute('data-bs-slide-to', String(gi));
+                        if (gi === 0) {
+                            dot.className = 'active';
+                            dot.setAttribute('aria-current', 'true');
+                        }
+                        dot.setAttribute('aria-controls', 'carousel-slide-' + gi);
+                        dot.setAttribute('aria-label',
+                            'Afficher le groupe d\u2019événements ' + (gi + 1) + ' sur ' + groups.length);
+                        indicators.appendChild(dot);
+                    });
+                }
+
+                /* ✅ Masque la navigation s'il n'y a qu'une seule slide */
+                var needsNav = groups.length > 1;
+                if (indicators) { indicators.classList.toggle('nav-hidden', !needsNav); }
+                if (prevBtn) { prevBtn.classList.toggle('nav-hidden', !needsNav); }
+                if (nextBtn) { nextBtn.classList.toggle('nav-hidden', !needsNav); }
+            }
+
+            function initCarouselInstance() {
+                /* ✅ Initialisation directe via l'API Bootstrap, sans dépendre
+                   de la présence d'un indicateur cliquable (correctif du bug
+                   qui empêchait toute navigation quand les indicateurs
+                   n'étaient pas rendus par Twig). */
+                var carousel = document.getElementById('evenements');
+                if (!carousel || !window.bootstrap || !window.bootstrap.Carousel) { return; }
+
+                var instance = window.bootstrap.Carousel.getInstance(carousel);
+                if (instance) { instance.dispose(); }
+
+                // ✅ Attendre que le DOM reconstruit soit stable
+                setTimeout(function () {
+                    new window.bootstrap.Carousel(carousel, {
+                        interval: false,
+                        ride: false,
+                        touch: true,
+                        wrap: true
+                    });
+                }, 100);
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                buildResponsiveSlides();
+                initCarouselInstance();
+
+                var onChange = function () {
+                    buildResponsiveSlides();
+                    initCarouselInstance();
+                };
+                if (typeof mdQuery.addEventListener === 'function') {
+                    mdQuery.addEventListener('change', onChange);
+                } else if (typeof mdQuery.addListener === 'function') {
+                    mdQuery.addListener(onChange); /* anciens navigateurs */
+                }
+            });
+        })();
+    </script>
 {% endblock %}

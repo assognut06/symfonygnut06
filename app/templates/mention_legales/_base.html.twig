@@ -2,6 +2,14 @@
 
 {% block title %}{{ title }}{% endblock %}
 
+{% block skip_links %}
+{% include '_partials/skip_links.html.twig' with {
+    links: [
+        { href: '#main-content', label: 'Aller au contenu principal' }
+    ]
+} only %}
+{% endblock %}
+
 {% block stylesheets %}
 {{ parent() }}
 <style>
@@ -9,8 +17,6 @@
 .legal-page a { color: white !important; text-decoration: underline !important; text-decoration-color: white !important; text-underline-offset: 2px !important; transition: all 0.3s ease !important; font-weight: 500 !important; }
 .legal-page a:hover { color: rgba(255, 255, 255, 0.8) !important; text-decoration-color: rgba(255, 255, 255, 0.8) !important; text-decoration-thickness: 2px !important; }
 .legal-page a[target="_blank"]::after { content: " (nouvelle fenêtre)"; font-size: 0.875rem; color: rgba(255, 255, 255, 0.8); font-weight: normal; }
-.skip-link { position: absolute; top: -40px; left: 6px; background: #000000; color: #ffffff; padding: 8px 12px; text-decoration: none; border-radius: 0 0 4px 4px; z-index: 1000; font-weight: bold; }
-.skip-link:focus { top: 0; outline: 3px solid #F86CF8; }
 .text { color: #ffffff !important; line-height: 1.6 !important; }
 h1, h2, h3 { margin-top: 2rem !important; margin-bottom: 1rem !important; }
 h1 { margin-top: 0 !important; }
@@ -27,11 +33,7 @@ p { margin-bottom: 1rem !important; }
 {% endblock %}
 
 {% block body %}
-<nav aria-label="Navigation rapide" class="visually-hidden-focusable">
-    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
-</nav>
-
-<main id="main-content" role="main" aria-labelledby="legal-title">
+<main id="main-content" role="main" aria-labelledby="legal-title" tabindex="-1">
     <div class="container pt-5 mx-auto legal-page mentions-legales-page">
         <div class="my-5 text">
             {% block legal_content %}{% endblock %}
