@@ -13,7 +13,7 @@ concurrency:
 
 jobs:  
   phpstan:
-    name: PHPStan
+    name: PHPStan and Composer Audit
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -31,7 +31,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: ctype, iconv, pdo_mysql, mysqli, intl, zip, mbstring, gd, opcache
           coverage: none
 
@@ -51,6 +51,34 @@ jobs:
 
       - name: Run PHPStan
         run: vendor/bin/phpstan analyse --memory-limit 256M
+
+      - name: Verify Composer audit has no vulnerabilities
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          set +e
+          composer audit --format=json --abandoned=report > composer-audit.json
+          audit_status=$?
+          set -e
+
+          jq . composer-audit.json
+
+          jq -r '
+            (.abandoned // {})
+            | to_entries[]
+            | "::warning title=Abandoned Composer package::\(.key) is abandoned\(if (.value | type) == "string" then "; use \(.value) instead" else "" end)"
+          ' composer-audit.json
+
+          if ! jq -e 'has("advisories") and (.advisories | length == 0)' composer-audit.json > /dev/null; then
+            echo "::error::Composer audit found security vulnerabilities."
+            exit 1
+          fi
+
+          if [ "$audit_status" -ne 0 ]; then
+            echo "::error::Composer audit failed with exit code $audit_status."
+            exit "$audit_status"
+          fi
+
   phpunit:
     name: PHPUnit (${{ matrix.suite }})
     runs-on: ubuntu-latest
@@ -111,7 +139,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: ctype, iconv, pdo_mysql, mysqli, intl, zip, mbstring, gd, opcache
           coverage: none
 
@@ -200,7 +228,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: ctype, iconv, pdo_mysql, mysqli, intl, zip, mbstring, gd, opcache
           coverage: pcov
 

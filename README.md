@@ -14,7 +14,7 @@ Parallèlement, nous proposons des stages d'initiation aux nouvelles technologie
 
 Ce projet utilise les technologies suivantes :
 
-- **Symfony 7.1** : Un framework PHP pour construire des applications web robustes.
+- **Symfony 7.4** : Un framework PHP pour construire des applications web robustes.
 - **Webpack Encore** : Une abstraction sur Webpack pour une gestion simplifiée des assets (CSS, JavaScript).
 - **Docker** : Pour la containerisation de l'application, assurant un environnement de développement et de production cohérent.
 
@@ -191,9 +191,9 @@ Then open app/var/coverage/index.html in a browser (or the equivalent path insid
 
 Run coverage now (no rebuild)
 Enable coverage for that command only:
-
+```bash
 docker exec symfony_asso php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-text
-
+```
 HTML report:
 
 docker exec symfony_asso php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-html var/coverage
@@ -206,10 +206,18 @@ In app/config/xdebug.ini, include coverage, e.g.:
 
 xdebug.mode=debug,coverage
 Then rebuild and restart:
-
+```bash
 docker compose build symfony
 docker compose up -d symfony
+```
 After rebuild, php -i | grep xdebug.mode should show debug,coverage (or at least coverage).
+
+## Audit des package composer ##  
+Un suivi des vulnérabilités des packages est intégré dans le workflow de test lors des pull request.  
+La commande peut être exécuée localement en amont:  
+```bash
+docker compose exec symfony composer audit --format=table --ansi
+```
 
 ## Résoudre des conflits après la création d'une Pull Request
 
