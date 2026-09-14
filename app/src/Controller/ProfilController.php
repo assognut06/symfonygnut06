@@ -182,8 +182,9 @@ class ProfilController extends AbstractController
     private function filterPaymentsByConnectedUser(array $dataItems, string $userIdentifier): array
     {
         $normalizedUserEmail = mb_strtolower(trim($userIdentifier));
+        $payments = $dataItems['data'] ?? [];
         $filteredPayments = array_filter(
-            $dataItems['data'] ?? [],
+            is_array($payments) ? $payments : [],
             static function (mixed $payment) use ($normalizedUserEmail): bool {
                 if (!is_array($payment)) {
                     return false;
@@ -194,7 +195,12 @@ class ProfilController extends AbstractController
                     return false;
                 }
 
-                $payerEmail = mb_strtolower(trim((string) ($payer['email'] ?? '')));
+                $payerEmail = $payer['email'] ?? null;
+                if (!is_string($payerEmail)) {
+                    return false;
+                }
+
+                $payerEmail = mb_strtolower(trim($payerEmail));
 
                 return '' !== $payerEmail && hash_equals($normalizedUserEmail, $payerEmail);
             }
