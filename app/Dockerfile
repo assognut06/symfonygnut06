@@ -4,6 +4,7 @@ WORKDIR /var/www/app
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
+# Install Node.js 22.23.2 from NodeSource.
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 RUN apt-get update \
 && apt-get install -qq -y --no-install-recommends \
@@ -27,9 +28,10 @@ libwebp-dev \
 libssl-dev \
 libkrb5-dev \
 openssl \
-nodejs \
+nodejs=22.23.2-1nodesource1 \
 curl \
-ca-certificates
+ca-certificates \
+&& rm -rf /var/lib/apt/lists/*
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
 echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen && \
@@ -59,17 +61,10 @@ RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
 
-# Install Node.js and npm
-RUN npm install -g n && \
-n 20.17.0  && \
-# Install a compatible version of Node.js
-npm install -g npm@11.2.0
-#RUN npm install npm@latest -g && \
-#npm install n -g && \
-#n latest
+# npm 11.12.1 supports Node.js 22.23.2.
+RUN npm install -g npm@11.12.1
 
-# SSL : Génération du certificat et configuration Apache
-EXPOSE 443
+# SSL: certificate generation and Apache configuration
 RUN mkdir -p /etc/apache2/ssl && \
     openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
     -keyout /etc/apache2/ssl/apache.key \
@@ -80,8 +75,8 @@ RUN mkdir -p /etc/apache2/ssl && \
 COPY ./config/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
 RUN a2ensite default-ssl
 
-# Configuration du VirtualHost du port 80
-# Désactive le site par défaut (DocumentRoot /var/www/html) du port 80
+# Configuration of the HTTP VirtualHost on port 80
+# Disable the default HTTP site (DocumentRoot /var/www/html).
 RUN a2dissite 000-default.conf || true
 COPY ./vhosts.conf /etc/apache2/sites-available/000-default.conf
 RUN a2ensite 000-default
@@ -94,10 +89,8 @@ RUN chown -R www-data:user /var/www && \
 chmod -R 755 /etc/apache2 && \
 chmod -R 775 /var/www/app && \
 chmod +x /var/www/app/ && \
-# La clé privée SSL ne doit PAS être lisible par tous.
-# Apache (processus maître, lancé en root) lit la clé au démarrage/rechargement
-# avant de baisser ses privilèges vers les workers www-data.
-# => orifice : seul root peut lire la clé, seul root peut accéder au dossier.
+# The SSL private key must only be readable by root.
+# Apache runs as root while loading it, before its workers drop to www-data.
 chmod 700 /etc/apache2/ssl && \
 chmod 600 /etc/apache2/ssl/apache.key && \
 chmod 644 /etc/apache2/ssl/apache.crt && \
@@ -114,14 +107,11 @@ USER www-data:user
 # Ensure the composer.json file exists
 RUN composer install --no-scripts
 # RUN composer install
-# Retour au root pour l'exécution : le script du démarrage a besoin de
-# changer les propriétaires des volumes montés, et Apache est lancé en root
-# (les workers nginx/apache baissent ensuite vers www-data).
+# Switch back to root: the entrypoint adjusts mounted-volume ownership and
+# Apache starts as root before its workers drop to www-data.
 USER root
 
-EXPOSE 8000
-# CMD ["symfony", "serve","--no-tls"]
+EXPOSE 80 443
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
-#ENTRYPOINT ["/bin/bash", "/var/www/app/run.sh"]
