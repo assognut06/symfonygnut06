@@ -114,6 +114,9 @@ class ProfilePaymentsAuthorizationTest extends WebTestCase
         }
     }
 
+    /**
+     * @return iterable<string, array{int, int, bool}>
+     */
     public static function paymentPaginationProvider(): iterable
     {
         yield 'first page' => [1, 3, false];
@@ -123,6 +126,9 @@ class ProfilePaymentsAuthorizationTest extends WebTestCase
         yield 'single page' => [1, 1, false];
     }
 
+    /**
+     * @return iterable<string, array{array<string, mixed>}>
+     */
     public static function malformedPaymentDataProvider(): iterable
     {
         yield 'missing data' => [[]];
