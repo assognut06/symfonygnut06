@@ -64,6 +64,65 @@ class ProfilePaymentsAuthorizationTest extends WebTestCase
         $this->assertSelectorCount(0, '#profile-content [role="listitem"]');
     }
 
+    /**
+     * @dataProvider paymentPaginationProvider
+     */
+    public function testPaymentsPagination(int $page, int $totalPages, bool $emptyPage): void
+    {
+        $this->loginAs($this->createUser('member@example.test'));
+        $helloAssoApi = $this->createMock(HelloAssoApiService::class);
+        $helloAssoApi->expects($this->once())
+            ->method('makeApiCall')
+            ->with($this->callback(static function (string $url) use ($page): bool {
+                parse_str((string) parse_url($url, PHP_URL_QUERY), $query);
+
+                return (string) $page === ($query['pageIndex'] ?? null)
+                    && 'member@example.test' === ($query['userSearchKey'] ?? null);
+            }))
+            ->willReturn([
+                'data' => [$this->payment('payment', $emptyPage ? 'victim@example.test' : 'member@example.test')],
+                'pagination' => ['pageIndex' => $page, 'totalPages' => $totalPages, 'totalCount' => 9],
+            ]);
+        static::getContainer()->set(HelloAssoApiService::class, $helloAssoApi);
+
+        $this->client->request('GET', '/profil/payments/' . $page);
+
+        $this->assertResponseIsSuccessful();
+        $nav = 'nav[aria-label="Pagination des paiements"]';
+        if (1 === $totalPages) {
+            $this->assertSelectorNotExists($nav);
+
+            return;
+        }
+
+        $this->assertSelectorTextContains($nav . ' [aria-current="page"]', (string) $page);
+        $router = static::getContainer()->get('router');
+        if (1 < $page) {
+            $previousUrl = $router->generate('app_profil_page', ['donnees' => 'payments', 'page' => $page - 1]);
+            $this->assertSelectorExists($nav . ' a[rel="prev"][href="' . $previousUrl . '"]');
+        } else {
+            $this->assertSelectorNotExists($nav . ' a[rel="prev"]');
+        }
+        if ($totalPages > $page) {
+            $nextUrl = $router->generate('app_profil_page', ['donnees' => 'payments', 'page' => $page + 1]);
+            $this->assertSelectorExists($nav . ' a[rel="next"][href="' . $nextUrl . '"]');
+        } else {
+            $this->assertSelectorNotExists($nav . ' a[rel="next"]');
+        }
+        if ($emptyPage) {
+            $this->assertSelectorCount(0, '#profile-content [role="listitem"]');
+        }
+    }
+
+    public static function paymentPaginationProvider(): iterable
+    {
+        yield 'first page' => [1, 3, false];
+        yield 'middle page' => [2, 3, false];
+        yield 'last page' => [3, 3, false];
+        yield 'empty filtered page' => [2, 3, true];
+        yield 'single page' => [1, 1, false];
+    }
+
     public static function malformedPaymentDataProvider(): iterable
     {
         yield 'missing data' => [[]];
