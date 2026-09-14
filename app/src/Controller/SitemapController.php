@@ -36,6 +36,7 @@ class SitemapController extends AbstractController
             ['loc' => $this->generateUrl('app_charte_chatbot_ia', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.2'],
             ['loc' => $this->generateUrl('app_plan_site', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.2'],
             ['loc' => $this->generateUrl('app_login', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.8'],
+            ['loc' => $this->generateUrl('app_tih_search', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.8'],
             
 
             // Ajoutez d'autres URLs ici
