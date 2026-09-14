@@ -108,10 +108,13 @@ class ProfilController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $userEmail = urlencode($user->getUserIdentifier());
-        $base = $donnees === 'orders' ? "items" : "payments";
+        $base = 'orders' === $donnees ? "items" : "payments";
         $url = $this->buildHelloAssoUrl($base, $userEmail, $page, $donnees);
 
         $data_items = $this->makeSafeHelloAssoCall($url);
+        if ('payments' === $donnees) {
+            $data_items = $this->filterPaymentsByConnectedUser($data_items, $user->getUserIdentifier());
+        }
         // dump($user);
         // exit;
         // Renvoyer à la vue Twig, en passant l'utilisateur comme variable
@@ -130,9 +133,9 @@ class ProfilController extends AbstractController
         $sortField = "Date";
         $url = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}/$base?userSearchKey=$userEmail&pageIndex=$page&pageSize=$pageSize&withDetails=false&sortOrder=$sortOrder&sortField=$sortField&withCount=true";
     
-        if ($type === 'orders') {
+        if ('orders' === $type) {
             $url .= "&itemStates=Processed";
-        } elseif ($type === 'payments') {
+        } elseif ('payments' === $type) {
             $url .= "&states=Authorized";
         }
     
@@ -169,5 +172,40 @@ class ProfilController extends AbstractController
         }
 
         return is_array($data) ? $data : ['data' => []];
+    }
+
+    /**
+     * @param array<mixed> $dataItems
+     *
+     * @return array<mixed>
+     */
+    private function filterPaymentsByConnectedUser(array $dataItems, string $userIdentifier): array
+    {
+        $normalizedUserEmail = mb_strtolower(trim($userIdentifier));
+        $filteredPayments = array_filter(
+            $dataItems['data'] ?? [],
+            static function (mixed $payment) use ($normalizedUserEmail): bool {
+                if (!is_array($payment)) {
+                    return false;
+                }
+
+                $payer = $payment['payer'] ?? null;
+                if (!is_array($payer)) {
+                    return false;
+                }
+
+                $payerEmail = mb_strtolower(trim((string) ($payer['email'] ?? '')));
+
+                return '' !== $payerEmail && hash_equals($normalizedUserEmail, $payerEmail);
+            }
+        );
+
+        $dataItems['data'] = array_values($filteredPayments);
+
+        if (isset($dataItems['pagination']) && is_array($dataItems['pagination'])) {
+            $dataItems['pagination']['totalCount'] = count($filteredPayments);
+        }
+
+        return $dataItems;
     }
 }
