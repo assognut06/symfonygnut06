@@ -1,9 +1,12 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Rediriger tout le trafic HTTP vers HTTPS (optionnel)
-    # RewriteCond %{HTTPS} !=on
-    # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    # Imposer HTTPS sur les domaines déployés, y compris les fichiers statiques.
+    # Valider l'hôte et retirer le port HTTP avant de construire la destination.
+    # Ne pas utiliser X-Forwarded-Proto : Apache termine TLS dans cette configuration.
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP_HOST} ^((?:(?:[a-z0-9-]+\.)*gnut06\.org|127\.0\.0\.1))(?::[0-9]+)?$ [NC]
+    RewriteRule ^ https://%1%{REQUEST_URI} [R=308,L,NE]
 
     # Rediriger toutes les requêtes vers index.php
     RewriteCond %{REQUEST_FILENAME} !-f
