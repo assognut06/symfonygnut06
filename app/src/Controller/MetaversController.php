@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
+use App\Service\ApiFrameVrService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Service\ApiFrameVrService;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/metavers')]
 class MetaversController extends AbstractController
@@ -26,6 +27,7 @@ class MetaversController extends AbstractController
     }
 
     #[Route('/frame/{idFrame}', name: 'app_metavers_ohme')]
+    #[IsGranted('ROLE_ADMIN')]
     public function someEndpoint(string $idFrame): Response
     {
         $data = $this->apiFrameVrService->getSomeData($idFrame, 'frame');
