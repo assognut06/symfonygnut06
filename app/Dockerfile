@@ -75,6 +75,7 @@ RUN mkdir -p /etc/apache2/ssl && \
     -subj "/C=FR/ST=PACA/L=Nice/O=GNUT06/OU=Association/CN=localhost" \
     -addext "subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1" && \
     a2enmod ssl headers
+COPY ./vhosts.conf /etc/apache2/sites-available/000-default.conf
 COPY ./config/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
 RUN a2ensite default-ssl
 
