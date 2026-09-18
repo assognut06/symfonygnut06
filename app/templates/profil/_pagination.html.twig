@@ -1,0 +1,30 @@
+{% set currentPage = pagination.pageIndex|default(1) %}
+{% set totalPages = pagination.totalPages|default(1) %}
+
+{% if 1 < totalPages %}
+    <nav aria-label="Pagination des {{ 'payments' == section ? 'paiements' : 'commandes' }}" class="mt-4">
+        <ul class="pagination flex-wrap">
+            {% if 1 < currentPage %}
+                <li class="page-item">
+                    <a class="page-link" rel="prev" href="{{ path('app_profil_page', {donnees: section, page: currentPage - 1}) }}">Précédent</a>
+                </li>
+            {% endif %}
+
+            {% for page in 1..totalPages %}
+                <li class="page-item{{ page == currentPage ? ' active' : '' }}">
+                    {% if page == currentPage %}
+                        <span class="page-link" aria-current="page" aria-label="Page {{ page }}">{{ page }}</span>
+                    {% else %}
+                        <a class="page-link" aria-label="Page {{ page }}" href="{{ path('app_profil_page', {donnees: section, page: page}) }}">{{ page }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+
+            {% if totalPages > currentPage %}
+                <li class="page-item">
+                    <a class="page-link" rel="next" href="{{ path('app_profil_page', {donnees: section, page: currentPage + 1}) }}">Suivant</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
