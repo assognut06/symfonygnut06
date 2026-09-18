@@ -28,6 +28,7 @@ final class HttpsRedirectTest extends TestCase
         self::assertSame([$expectedLocation], $response->getHeaders(false)['location'] ?? []);
     }
 
+    /** @return iterable<string, array{string, string, string}> */
     public static function localRequestProvider(): iterable
     {
         yield 'home' => ['GET', '/', 'https://127.0.0.1/'];
