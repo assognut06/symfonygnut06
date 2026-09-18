@@ -37,6 +37,16 @@ final class HttpsRedirectTest extends TestCase
             'https://127.0.0.1/login?next=%2Fprofil',
         ];
         yield 'static file' => ['GET', '/robots.txt', 'https://127.0.0.1/robots.txt'];
+        yield 'public TIH search' => [
+            'GET',
+            '/tih/tih_search',
+            'https://127.0.0.1/tih/tih_search',
+        ];
+        yield 'intranet TIH search' => [
+            'GET',
+            '/intranet/tih/tih_search',
+            'https://127.0.0.1/intranet/tih/tih_search',
+        ];
         yield 'POST keeps its method' => ['POST', '/login', 'https://127.0.0.1/login'];
     }
 }
