@@ -56,6 +56,44 @@ final class OAuthAccountServiceTest extends TestCase
         self::assertSame($owner, $service->login(new OAuthIdentity(OAuthProvider::Google, 'google-subject', null, false)));
     }
 
+    /**
+     * A Microsoft email claim is contact data, not proof of ownership, so a
+     * provisioned account must stay unverified and be gated by the user checker.
+     */
+    public function testMicrosoftProvisionedAccountIsNeverCreatedVerified(): void
+    {
+        $persisted = null;
+        $repository = $this->createMock(EntityRepository::class);
+        $repository->method('findOneBy')->willReturn(null);
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->method('getRepository')->with(User::class)->willReturn($repository);
+        $entityManager->expects(self::once())->method('persist')->willReturnCallback(
+            static function (User $user) use (&$persisted): void { $persisted = $user; }
+        );
+
+        $service = new OAuthAccountService($entityManager, $this->createMock(UserPasswordHasherInterface::class));
+        $user = $service->login(new OAuthIdentity(OAuthProvider::Microsoft, 'object-id', 'claimed@example.test', true));
+
+        self::assertSame($persisted, $user);
+        self::assertFalse($user->isVerified(), 'A Microsoft claim must never self-verify an account.');
+    }
+
+    /** Google may verify on creation, but only when the provider asserts email_verified. */
+    public function testGoogleAccountIsOnlyVerifiedWhenTheProviderConfirmsTheEmail(): void
+    {
+        $repository = $this->createMock(EntityRepository::class);
+        $repository->method('findOneBy')->willReturn(null);
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->method('getRepository')->with(User::class)->willReturn($repository);
+
+        $service = new OAuthAccountService($entityManager, $this->createMock(UserPasswordHasherInterface::class));
+
+        self::assertTrue($service->login(new OAuthIdentity(OAuthProvider::Google, 'sub-1', 'ok@example.test', true))->isVerified());
+
+        $this->expectException(OAuthAccountException::class);
+        $service->login(new OAuthIdentity(OAuthProvider::Google, 'sub-2', 'unverified@example.test', false));
+    }
+
     private function userWithId(int $id): User
     {
         $user = new User();
