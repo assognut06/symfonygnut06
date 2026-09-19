@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Security\OAuth\OAuthFlowManager;
 use App\Security\OAuth\OAuthFlowPurpose;
 use App\Security\OAuth\OAuthProvider;
+use App\Entity\User;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -18,15 +18,14 @@ final class GoogleController extends AbstractController
     public function connect(Request $request, ClientRegistry $clientRegistry, OAuthFlowManager $flowManager): RedirectResponse
     {
         $flow = $flowManager->start($request, OAuthProvider::Google);
-        if ($this->getUser() instanceof User && OAuthFlowPurpose::Login === $flow['purpose']) {
+        if ($this->getUser() instanceof User && $flow['purpose'] === OAuthFlowPurpose::Login) {
             $flowManager->clearFlow($request, OAuthProvider::Google);
             $this->addFlash('error', 'Démarrez une liaison depuis votre profil pour ajouter Google.');
-
             return $this->redirectToRoute('app_profil');
         }
 
         $options = ['nonce' => $flow['nonce']];
-        if (OAuthFlowPurpose::Reauthenticate === $flow['purpose']) {
+        if ($flow['purpose'] === OAuthFlowPurpose::Reauthenticate) {
             $options['max_age'] = 0;
             $options['prompt'] = 'select_account';
         }
