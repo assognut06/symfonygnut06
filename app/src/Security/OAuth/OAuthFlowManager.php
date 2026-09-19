@@ -28,7 +28,6 @@ final class OAuthFlowManager
         ) {
             $existing['nonce'] = bin2hex(random_bytes(32));
             $session->set(self::FLOW_KEY, $existing);
-
             return $this->decode($existing);
         }
 
@@ -48,7 +47,6 @@ final class OAuthFlowManager
         }
 
         $this->replaceActiveFlow($request, $flow);
-
         return $this->decode($flow);
     }
 
@@ -82,7 +80,6 @@ final class OAuthFlowManager
         if (!is_array($flow) || ($flow['provider'] ?? null) !== $provider->value) {
             throw new OAuthAccountException('La demande de connexion a expiré. Veuillez recommencer.');
         }
-
         return $this->decode($flow);
     }
 
@@ -108,7 +105,6 @@ final class OAuthFlowManager
     public function consumePostAuthenticationTarget(Request $request): ?OAuthProvider
     {
         $target = $request->getSession()->remove(self::POST_AUTH_TARGET_KEY);
-
         return is_string($target) ? OAuthProvider::tryFrom($target) : null;
     }
 
@@ -130,14 +126,10 @@ final class OAuthFlowManager
         if (!is_array($pending) || ($pending['expiresAt'] ?? 0) < time() || ($pending['userId'] ?? null) !== $user->getId()) {
             return null;
         }
-
         return new OAuthIdentity(OAuthProvider::from($pending['provider']), $pending['subject'], $pending['email'], $pending['emailVerified']);
     }
 
-    public function clearPendingLink(Request $request): void
-    {
-        $request->getSession()->remove(self::PENDING_LINK_KEY);
-    }
+    public function clearPendingLink(Request $request): void { $request->getSession()->remove(self::PENDING_LINK_KEY); }
 
     /** @param array<string, mixed> $flow */
     private function replaceActiveFlow(Request $request, array $flow): void

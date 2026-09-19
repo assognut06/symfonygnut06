@@ -24,12 +24,9 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
-use TheNetworg\OAuth2\Client\Token\AccessToken as AzureAccessToken;
 
 final class OutlookAuthenticator extends OAuth2Authenticator
 {
-    private const CONSUMER_TENANT_ID = '9188040d-6c67-4c5b-b112-36a304b66dad';
-
     public function __construct(
         private readonly ClientRegistry $clientRegistry,
         private readonly OAuthAccountService $accountService,
@@ -40,10 +37,7 @@ final class OutlookAuthenticator extends OAuth2Authenticator
     ) {
     }
 
-    public function supports(Request $request): bool
-    {
-        return 'connect_outlook_check' === $request->attributes->get('_route');
-    }
+    public function supports(Request $request): bool { return $request->attributes->get('_route') === 'connect_outlook_check'; }
 
     public function authenticate(Request $request): Passport
     {
@@ -51,9 +45,6 @@ final class OutlookAuthenticator extends OAuth2Authenticator
             $flow = $this->flowManager->requireFlow($request, OAuthProvider::Microsoft);
             $accessToken = $this->fetchAccessToken($this->clientRegistry->getClient('azure'));
             $this->flowManager->consumeProviderState($request);
-            if (!$accessToken instanceof AzureAccessToken) {
-                throw new OAuthAccountException('La réponse Microsoft ne contient pas de jeton d’identité valide.');
-            }
             $claims = $accessToken->getIdTokenClaims();
             if (!is_array($claims) || !hash_equals($flow['nonce'], (string) ($claims['nonce'] ?? ''))) {
                 throw new OAuthAccountException('La réponse Microsoft ne correspond pas à la demande de connexion.');
@@ -62,7 +53,7 @@ final class OutlookAuthenticator extends OAuth2Authenticator
                 OAuthProvider::Microsoft,
                 $this->claim($claims, 'oid'),
                 is_string($claims['email'] ?? null) ? $claims['email'] : null,
-                self::isEmailVerified($claims),
+                false,
             );
 
             return new SelfValidatingPassport(new UserBadge('microsoft:'.$identity->subject, function () use ($request, $flow, $identity): User {
@@ -75,10 +66,7 @@ final class OutlookAuthenticator extends OAuth2Authenticator
         } catch (OAuthAccountException $exception) {
             throw new CustomUserMessageAuthenticationException($exception->getMessage());
         } catch (\Throwable $exception) {
-            $this->logger->error('Microsoft OAuth callback failed.', [
-                'exception' => $exception,
-                'provider_error' => self::providerErrorCode($request, $exception),
-            ]);
+            $this->logger->warning('Microsoft OAuth callback failed.', ['exception_type' => $exception::class]);
             throw new CustomUserMessageAuthenticationException('La connexion avec Microsoft a échoué. Veuillez réessayer.');
         }
     }
@@ -89,8 +77,7 @@ final class OutlookAuthenticator extends OAuth2Authenticator
             return new RedirectResponse($this->router->generate($target->routeName()));
         }
         $user = $token->getUser();
-
-        return new RedirectResponse($this->router->generate($user instanceof User && null !== $this->flowManager->pendingLink($request, $user) ? 'oauth_link_confirm' : 'app_profil'));
+        return new RedirectResponse($this->router->generate($user instanceof User && $this->flowManager->pendingLink($request, $user) !== null ? 'oauth_link_confirm' : 'app_profil'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
@@ -100,71 +87,38 @@ final class OutlookAuthenticator extends OAuth2Authenticator
         if ($session instanceof FlashBagAwareSessionInterface) {
             $session->getFlashBag()->add('error', strtr($exception->getMessageKey(), $exception->getMessageData()));
         }
-
         return new RedirectResponse($this->router->generate($this->security->getUser() instanceof User ? 'app_profil' : 'app_login'));
     }
 
     /** @param array{purpose: OAuthFlowPurpose, userId: ?int, targetProvider: ?OAuthProvider} $flow */
     private function resolveUser(Request $request, array $flow, OAuthIdentity $identity): User
     {
-        if (OAuthFlowPurpose::Link === $flow['purpose']) {
+        if ($flow['purpose'] === OAuthFlowPurpose::Link) {
             $user = $this->currentUser($flow['userId']);
             $this->accountService->assertCanLink($user, $identity);
             $this->flowManager->stageLink($request, $user, $identity);
             $this->flowManager->clearFlow($request, OAuthProvider::Microsoft);
-
             return $user;
         }
-        if (OAuthFlowPurpose::Reauthenticate === $flow['purpose']) {
+        if ($flow['purpose'] === OAuthFlowPurpose::Reauthenticate) {
             $user = $this->currentUser($flow['userId']);
             $this->accountService->assertIdentityBelongsTo($user, $identity);
             $this->flowManager->authorizeLink($request, $user, $flow['targetProvider']);
             $this->flowManager->completeReauthentication($request, OAuthProvider::Microsoft, $flow['targetProvider']);
-
             return $user;
         }
 
         $user = $this->accountService->login($identity);
         $this->flowManager->clearFlow($request, OAuthProvider::Microsoft);
-
         return $user;
-    }
-
-    /**
-     * Only personal accounts and tenants with a verified email domain (xms_edov) prove email ownership.
-     *
-     * @param array<string, mixed> $claims
-     */
-    public static function isEmailVerified(array $claims): bool
-    {
-        return self::CONSUMER_TENANT_ID === ($claims['tid'] ?? null) || true === ($claims['xms_edov'] ?? null);
-    }
-
-    private static function providerErrorCode(Request $request, \Throwable $exception): ?string
-    {
-        $parameters = $request->query->all();
-        $description = $parameters['error_description'] ?? null;
-        if (is_string($description) && 1 === preg_match('/AADSTS\d+/', $description, $match)) {
-            return $match[0];
-        }
-
-        do {
-            if (1 === preg_match('/AADSTS\d+/', $exception->getMessage(), $match)) {
-                return $match[0];
-            }
-            $exception = $exception->getPrevious();
-        } while (null !== $exception);
-
-        return is_string($parameters['error'] ?? null) ? $parameters['error'] : null;
     }
 
     /** @param array<string, mixed> $claims */
     private function claim(array $claims, string $name): string
     {
-        if (!is_string($claims[$name] ?? null) || '' === $claims[$name]) {
+        if (!is_string($claims[$name] ?? null) || $claims[$name] === '') {
             throw new OAuthAccountException('Microsoft n’a pas fourni '.$name.' utilisable.');
         }
-
         return $claims[$name];
     }
 
@@ -174,7 +128,6 @@ final class OutlookAuthenticator extends OAuth2Authenticator
         if (!$user instanceof User || $user->getId() !== $expectedId) {
             throw new OAuthAccountException('Votre session a changé. Recommencez la liaison depuis votre profil.');
         }
-
         return $user;
     }
 }
