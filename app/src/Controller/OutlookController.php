@@ -2,36 +2,39 @@
 
 namespace App\Controller;
 
+use App\Security\OAuth\OAuthFlowManager;
+use App\Security\OAuth\OAuthFlowPurpose;
+use App\Security\OAuth\OAuthProvider;
+use App\Entity\User;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Attribute\Route;
 
-class OutlookController extends AbstractController
+final class OutlookController extends AbstractController
 {
-    /**
-     * Lien pour se connecter avec Outlook/Microsoft.
-     * Cette action redirige l'utilisateur vers la page d'authentification de Microsoft.
-     */
-    #[Route('/connect/outlook', name: 'connect_outlook_start')]
-    public function connectAction(ClientRegistry $clientRegistry): RedirectResponse
+    #[Route('/connect/outlook', name: 'connect_outlook_start', methods: ['GET'])]
+    public function connect(Request $request, ClientRegistry $clientRegistry, OAuthFlowManager $flowManager): RedirectResponse
     {
-        // 'azure' est le nom de notre client configuré dans knpu_oauth2_client.yaml
-        return $clientRegistry
-            ->getClient('azure')
-            ->redirect([],[]);
+        $flow = $flowManager->start($request, OAuthProvider::Microsoft);
+        if ($this->getUser() instanceof User && $flow['purpose'] === OAuthFlowPurpose::Login) {
+            $flowManager->clearFlow($request, OAuthProvider::Microsoft);
+            $this->addFlash('error', 'Démarrez une liaison depuis votre profil pour ajouter Microsoft.');
+            return $this->redirectToRoute('app_profil');
+        }
+
+        $options = ['nonce' => $flow['nonce']];
+        if ($flow['purpose'] === OAuthFlowPurpose::Reauthenticate) {
+            $options['prompt'] = 'login';
+        }
+
+        return $clientRegistry->getClient('azure')->redirect([], $options);
     }
 
-    /**
-     * Après autorisation de Microsoft, l'utilisateur est redirigé ici.
-     * La logique d'authentification est gérée par notre OutlookAuthenticator,
-     * cette méthode peut donc rester vide.
-     */
-    #[Route('/connect/outlook/check', name: 'connect_outlook_check')]
-    public function connectCheckAction(): RedirectResponse
+    #[Route('/connect/outlook/check', name: 'connect_outlook_check', methods: ['GET'])]
+    public function check(): never
     {
-        // Cette action ne sera jamais exécutée car le pare-feu (firewall) de Symfony
-        // intercepte la requête avant qu'elle n'arrive ici.
-        return $this->redirectToRoute('app_profil');
+        throw $this->createNotFoundException();
     }
 }

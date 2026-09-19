@@ -1,56 +1,42 @@
 <?php
- 
+
 namespace App\Controller;
- 
+
+use App\Security\OAuth\OAuthFlowManager;
+use App\Security\OAuth\OAuthFlowPurpose;
+use App\Security\OAuth\OAuthProvider;
+use App\Entity\User;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\User;
-use App\Service\EmailService;
-use Symfony\Bundle\SecurityBundle\Security;
-use Psr\Log\LoggerInterface;
+use Symfony\Component\Routing\Attribute\Route;
 
- 
-class GoogleController extends AbstractController
+final class GoogleController extends AbstractController
 {
-    private LoggerInterface $logger;
-
-    public function __construct( LoggerInterface $logger)
+    #[Route('/connect/google', name: 'connect_google_start', methods: ['GET'])]
+    public function connect(Request $request, ClientRegistry $clientRegistry, OAuthFlowManager $flowManager): RedirectResponse
     {
-        $this->logger = $logger;    
-    }
-
-    #[Route('/connect/google', name: 'connect_google_start')]
-    public function connectAction(ClientRegistry $clientRegistry): RedirectResponse
-    {
-        return $clientRegistry
-            ->getClient('google')
-            ->redirect([
-                'profile', 'email'
-            ], []);
-    }
- 
-    #[Route('/connect/google/check', name: 'connect_google_check')]
-    public function connectCheckAction(Request $request, Security $security, EmailService $emailService) : RedirectResponse
-    {
-        $user = $this->getUser();
-        if (($user instanceof User) && (!$user->isVerified())) {
-            // Si l'utilisateur n'est pas encore vérifié, on envoie l'email de confirmation
-             try {
-                $emailService->sendConfirmationEmail($user);
-                $this->addFlash('success', 'Un email de confirmation a été envoyé. Veuillez consulter votre boîte mail.');
-            } catch (\Exception $e) {
-                $this->logger->error('Erreur envoi email de confirmation', ['exception' => $e]);
-                $this->addFlash('danger', 'Problème lors de l\'envoi du mail. Veuillez réessayer.');
-            }
+        $flow = $flowManager->start($request, OAuthProvider::Google);
+        if ($this->getUser() instanceof User && $flow['purpose'] === OAuthFlowPurpose::Login) {
+            $flowManager->clearFlow($request, OAuthProvider::Google);
+            $this->addFlash('error', 'Démarrez une liaison depuis votre profil pour ajouter Google.');
             return $this->redirectToRoute('app_profil');
         }
-        else{
-            $this->addFlash('danger', "Erreur lors de l'authentification Google. Veuillez réessayer ou contacter l'administrateur.");
-            return $this->redirectToRoute('app_login');
+
+        $options = ['nonce' => $flow['nonce']];
+        if ($flow['purpose'] === OAuthFlowPurpose::Reauthenticate) {
+            $options['max_age'] = 0;
+            $options['prompt'] = 'select_account';
         }
 
+        return $clientRegistry->getClient('google')->redirect(['openid', 'profile', 'email'], $options);
+    }
+
+    #[Route('/connect/google/check', name: 'connect_google_check', methods: ['GET'])]
+    public function check(): never
+    {
+        // The security firewall handles this callback before the controller.
+        throw $this->createNotFoundException();
     }
 }
