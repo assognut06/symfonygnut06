@@ -10,6 +10,14 @@ use App\Security\OAuth\OAuthFlowManager;
 use App\Security\OAuth\OAuthFlowPurpose;
 use App\Security\OAuth\OAuthIdentity;
 use App\Security\OAuth\OAuthProvider;
+use App\Entity\User;
+use App\Security\OAuth\GoogleIdTokenValidator;
+use App\Security\OAuth\OAuthAccountException;
+use App\Security\OAuth\OAuthAccountService;
+use App\Security\OAuth\OAuthFlowManager;
+use App\Security\OAuth\OAuthFlowPurpose;
+use App\Security\OAuth\OAuthIdentity;
+use App\Security\OAuth\OAuthProvider;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use Psr\Log\LoggerInterface;
@@ -39,10 +47,7 @@ final class GoogleAuthenticator extends OAuth2Authenticator
     ) {
     }
 
-    public function supports(Request $request): bool
-    {
-        return 'connect_google_check' === $request->attributes->get('_route');
-    }
+    public function supports(Request $request): bool { return $request->attributes->get('_route') === 'connect_google_check'; }
 
     public function authenticate(Request $request): Passport
     {
@@ -54,7 +59,7 @@ final class GoogleAuthenticator extends OAuth2Authenticator
             if (!is_string($idToken)) {
                 throw new OAuthAccountException('Google n’a pas fourni de preuve d’identité.');
             }
-            $claims = $this->idTokenValidator->validate($idToken, $flow['nonce'], OAuthFlowPurpose::Reauthenticate === $flow['purpose'], $flow['issuedAt']);
+            $claims = $this->idTokenValidator->validate($idToken, $flow['nonce'], $flow['purpose'] === OAuthFlowPurpose::Reauthenticate, $flow['issuedAt']);
             $identity = new OAuthIdentity(
                 OAuthProvider::Google,
                 (string) $claims['sub'],
@@ -83,8 +88,7 @@ final class GoogleAuthenticator extends OAuth2Authenticator
             return new RedirectResponse($this->router->generate($target->routeName()));
         }
         $user = $token->getUser();
-
-        return new RedirectResponse($this->router->generate($user instanceof User && null !== $this->flowManager->pendingLink($request, $user) ? 'oauth_link_confirm' : 'app_profil'));
+        return new RedirectResponse($this->router->generate($user instanceof User && $this->flowManager->pendingLink($request, $user) !== null ? 'oauth_link_confirm' : 'app_profil'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
@@ -94,33 +98,29 @@ final class GoogleAuthenticator extends OAuth2Authenticator
         if ($session instanceof FlashBagAwareSessionInterface) {
             $session->getFlashBag()->add('error', strtr($exception->getMessageKey(), $exception->getMessageData()));
         }
-
         return new RedirectResponse($this->router->generate($this->security->getUser() instanceof User ? 'app_profil' : 'app_login'));
     }
 
     /** @param array{purpose: OAuthFlowPurpose, userId: ?int, targetProvider: ?OAuthProvider} $flow */
     private function resolveUser(Request $request, array $flow, OAuthIdentity $identity): User
     {
-        if (OAuthFlowPurpose::Link === $flow['purpose']) {
+        if ($flow['purpose'] === OAuthFlowPurpose::Link) {
             $user = $this->currentUser($flow['userId']);
             $this->accountService->assertCanLink($user, $identity);
             $this->flowManager->stageLink($request, $user, $identity);
             $this->flowManager->clearFlow($request, OAuthProvider::Google);
-
             return $user;
         }
-        if (OAuthFlowPurpose::Reauthenticate === $flow['purpose']) {
+        if ($flow['purpose'] === OAuthFlowPurpose::Reauthenticate) {
             $user = $this->currentUser($flow['userId']);
             $this->accountService->assertIdentityBelongsTo($user, $identity);
             $this->flowManager->authorizeLink($request, $user, $flow['targetProvider']);
             $this->flowManager->completeReauthentication($request, OAuthProvider::Google, $flow['targetProvider']);
-
             return $user;
         }
 
         $user = $this->accountService->login($identity);
         $this->flowManager->clearFlow($request, OAuthProvider::Google);
-
         return $user;
     }
 
@@ -130,7 +130,6 @@ final class GoogleAuthenticator extends OAuth2Authenticator
         if (!$user instanceof User || $user->getId() !== $expectedId) {
             throw new OAuthAccountException('Votre session a changé. Recommencez la liaison depuis votre profil.');
         }
-
         return $user;
     }
 }
