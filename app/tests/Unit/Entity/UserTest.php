@@ -98,6 +98,16 @@ class UserTest extends TestCase
         $this->assertEquals('azure_456', $user->getAzureId());
     }
 
+    public function testAzureTenantGetterAndSetter(): void
+    {
+        $user = new User();
+        self::assertNull($user->getAzureTenantId());
+
+        $user->setAzureTenantId('tenant_456');
+
+        self::assertSame('tenant_456', $user->getAzureTenantId());
+    }
+
     public function testTihRelation(): void
     {
         $user = new User();

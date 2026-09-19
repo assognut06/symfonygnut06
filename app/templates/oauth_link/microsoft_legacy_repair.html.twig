@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sécuriser votre connexion Microsoft - GNUT 06{% endblock %}
+
+{% block body %}
+    <main class="container py-5" style="max-width: 560px">
+        <h1 class="h3">Sécuriser votre connexion Microsoft</h1>
+        <p>Confirmez pour finaliser la sécurisation de votre ancienne connexion Microsoft. Cette action ne vous connecte pas automatiquement.</p>
+        <form method="post" action="{{ path('oauth_microsoft_legacy_repair_confirm') }}">
+            <input type="hidden" name="token" value="{{ token }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('oauth_microsoft_legacy_repair') }}">
+            <button class="btn btn-primary" type="submit">Confirmer</button>
+        </form>
+    </main>
+{% endblock %}

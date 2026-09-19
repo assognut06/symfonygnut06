@@ -14,6 +14,8 @@ use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ORM\UniqueConstraint(name: 'UNIQ_USER_GOOGLE_ID', fields: ['googleId'])]
+#[ORM\UniqueConstraint(name: 'UNIQ_USER_AZURE_IDENTITY', fields: ['azureTenantId', 'azureId'])]
 #[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cet email')]
 #[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -57,6 +59,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $azureId = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $azureTenantId = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
     private ?\DateTimeInterface $createdAt = null;
@@ -204,6 +209,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAzureId(?string $azureId): static
     {
         $this->azureId = $azureId;
+        return $this;
+    }
+
+    public function getAzureTenantId(): ?string
+    {
+        return $this->azureTenantId;
+    }
+
+    public function setAzureTenantId(?string $azureTenantId): static
+    {
+        $this->azureTenantId = $azureTenantId;
+
         return $this;
     }
 

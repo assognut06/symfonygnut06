@@ -2,202 +2,127 @@
 
 namespace App\Security;
 
-use App\Entity\User; // Assurez-vous que le chemin vers votre entité User est correct
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
+use App\Security\OAuth\GoogleIdTokenValidator;
+use App\Security\OAuth\OAuthAccountException;
+use App\Security\OAuth\OAuthAccountService;
+use App\Security\OAuth\OAuthFlowManager;
+use App\Security\OAuth\OAuthFlowPurpose;
+use App\Security\OAuth\OAuthIdentity;
+use App\Security\OAuth\OAuthProvider;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
-use League\OAuth2\Client\Provider\GoogleUser;
-use App\Service\EmailService;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
-use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationEntrypointInterface
+final class GoogleAuthenticator extends OAuth2Authenticator
 {
-    private ClientRegistry $clientRegistry;
-    private EntityManagerInterface $entityManager;
-    private RouterInterface $router;
-    private UserPasswordHasherInterface $passwordHasher;
-    private EmailService $emailService;
-    private LoggerInterface $logger;
-    private Security $security;
-  
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, EmailService $emailService, LoggerInterface $logger, Security $security)
-    {
-        $this->clientRegistry = $clientRegistry;
-        $this->entityManager = $entityManager;
-        $this->router = $router;
-        $this->passwordHasher = $passwordHasher;
-        $this->emailService = $emailService;
-        $this->logger = $logger;
-        $this->security = $security;
+    public function __construct(
+        private readonly ClientRegistry $clientRegistry,
+        private readonly OAuthAccountService $accountService,
+        private readonly OAuthFlowManager $flowManager,
+        private readonly GoogleIdTokenValidator $idTokenValidator,
+        private readonly RouterInterface $router,
+        private readonly Security $security,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
-    /**
-     * Détermine si cet authentificateur doit être utilisé pour la requête actuelle.
-     * Il ne s'active que sur la route de callback de Google.
-     */
-    public function supports(Request $request): ?bool
-    {
-        return $request->attributes->get('_route') === 'connect_google_check';
-    }
+    public function supports(Request $request): bool { return $request->attributes->get('_route') === 'connect_google_check'; }
 
-    /**
-     * C'est ici que la logique d'authentification principale a lieu.
-     */
     public function authenticate(Request $request): Passport
     {
-        // Récupère le client OAuth2 'google' que nous avons configuré
-        $client = $this->clientRegistry->getClient('google');
-        // Récupère le jeton d'accès depuis la requête
-        $accessToken = $this->fetchAccessToken($client);
+        try {
+            $flow = $this->flowManager->requireFlow($request, OAuthProvider::Google);
+            $accessToken = $this->fetchAccessToken($this->clientRegistry->getClient('google'));
+            $this->flowManager->consumeProviderState($request);
+            $idToken = $accessToken->getValues()['id_token'] ?? null;
+            if (!is_string($idToken)) {
+                throw new OAuthAccountException('Google n’a pas fourni de preuve d’identité.');
+            }
+            $claims = $this->idTokenValidator->validate($idToken, $flow['nonce'], $flow['purpose'] === OAuthFlowPurpose::Reauthenticate, $flow['issuedAt']);
+            $identity = new OAuthIdentity(
+                OAuthProvider::Google,
+                (string) $claims['sub'],
+                null,
+                is_string($claims['email'] ?? null) ? $claims['email'] : null,
+                ($claims['email_verified'] ?? false) === true,
+            );
 
-        return new SelfValidatingPassport(
-            new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
-                /** @var GoogleUser $googleUser */
-                $googleUser = $client->fetchUserFromToken($accessToken);
-
-                $email = $googleUser->getEmail();
-                $googleId = $googleUser->getId();
-
-                // 1. Cherche un utilisateur correspondant à ce googleId d'abord
-                $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['googleId' => $googleId]);
-
-                if ($existingUser) {
-                    // L'utilisateur existe déjà avec ce Google ID, on le retourne
-                    return $this->ensureVerified($existingUser);
+            return new SelfValidatingPassport(new UserBadge('google:'.$identity->subject, function () use ($request, $flow, $identity): User {
+                try {
+                    return $this->resolveUser($request, $flow, $identity);
+                } catch (OAuthAccountException $exception) {
+                    throw new CustomUserMessageAuthenticationException($exception->getMessage());
                 }
-
-                // 2. Cherche un utilisateur correspondant à cet e-mail dans notre base de données
-                $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-
-                if ($existingUser) {
-                    $currentUser = $this->security->getUser();
-
-                    if (!$currentUser instanceof User || $currentUser->getId() !== $existingUser->getId()) {
-                        throw new CustomUserMessageAuthenticationException(
-                            'Un compte existe déjà avec cet email. Connectez-vous d’abord avec votre mot de passe, puis liez Google depuis votre profil.'
-                        );
-                    }
-
-                    if ($existingUser->getGoogleId() !== null && $existingUser->getGoogleId() !== $googleId) {
-                        throw new CustomUserMessageAuthenticationException('Ce compte Google ne correspond pas au compte déjà lié à votre profil.');
-                    }
-
-                    $existingUser->setGoogleId($googleId);
-                    $this->entityManager->persist($existingUser);
-                    $this->entityManager->flush();
-
-                    return $this->ensureVerified($existingUser);
-                }
-
-                // 3. L'utilisateur n'existe pas, on le crée et on l'enregistre
-                $newUser = new User();
-                $newUser->setEmail($email);
-                $newUser->setGoogleId($googleId);
-                
-                // Le mot de passe n'est pas nécessaire pour une connexion sociale,
-                // mais notre entité User en requiert un. On lui assigne donc
-                // une longue chaîne de caractères aléatoire et sécurisée.
-                $hashedPassword = $this->passwordHasher->hashPassword(
-                    $newUser,
-                    bin2hex(random_bytes(32))
-                );
-                $newUser->setPassword($hashedPassword);
-                
-                // Vous pouvez définir d'autres propriétés ici
-                // Par exemple, si vous avez une propriété `fullName` :
-                // $newUser->setFullName($googleUser->getName());
-                // Ou pour les rôles :
-                // $newUser->setRoles(['ROLE_USER']);
-
-                $this->entityManager->persist($newUser);
-                $this->entityManager->flush();
-
-                return $this->ensureVerified($newUser);
-            })
-        );
+            }));
+        } catch (OAuthAccountException $exception) {
+            throw new CustomUserMessageAuthenticationException($exception->getMessage());
+        } catch (\Throwable $exception) {
+            $this->logger->warning('Google OAuth callback failed.', ['exception_type' => $exception::class]);
+            throw new CustomUserMessageAuthenticationException('La connexion avec Google a échoué. Veuillez réessayer.');
+        }
     }
 
-    private function ensureVerified(User $user): User
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): Response
     {
-        if ($user->isVerified()) {
+        if ($target = $this->flowManager->consumePostAuthenticationTarget($request)) {
+            return new RedirectResponse($this->router->generate($target->routeName()));
+        }
+        $user = $token->getUser();
+        return new RedirectResponse($this->router->generate($user instanceof User && $this->flowManager->pendingLink($request, $user) !== null ? 'oauth_link_confirm' : 'app_profil'));
+    }
+
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
+    {
+        $this->flowManager->clearFlow($request, OAuthProvider::Google);
+        $session = $request->getSession();
+        if ($session instanceof FlashBagAwareSessionInterface) {
+            $session->getFlashBag()->add('error', strtr($exception->getMessageKey(), $exception->getMessageData()));
+        }
+        return new RedirectResponse($this->router->generate($this->security->getUser() instanceof User ? 'app_profil' : 'app_login'));
+    }
+
+    /** @param array{purpose: OAuthFlowPurpose, userId: ?int, targetProvider: ?OAuthProvider} $flow */
+    private function resolveUser(Request $request, array $flow, OAuthIdentity $identity): User
+    {
+        if ($flow['purpose'] === OAuthFlowPurpose::Link) {
+            $user = $this->currentUser($flow['userId']);
+            $this->accountService->assertCanLink($user, $identity);
+            $this->flowManager->stageLink($request, $user, $identity);
+            $this->flowManager->clearFlow($request, OAuthProvider::Google);
+            return $user;
+        }
+        if ($flow['purpose'] === OAuthFlowPurpose::Reauthenticate) {
+            $user = $this->currentUser($flow['userId']);
+            $this->accountService->assertIdentityBelongsTo($user, $identity);
+            $this->flowManager->authorizeLink($request, $user, $flow['targetProvider']);
+            $this->flowManager->completeReauthentication($request, OAuthProvider::Google, $flow['targetProvider']);
             return $user;
         }
 
-        try {
-            $this->emailService->sendConfirmationEmail($user);
-            $message = 'Votre compte n\'est pas encore vérifié. Un nouveau lien de validation vient de vous être envoyé par email.';
-        } catch (\Throwable $exception) {
-            $this->logger->error('Erreur renvoi email de confirmation pendant la connexion Google', [
-                'user_id' => $user->getId(),
-                'email' => $user->getEmail(),
-                'exception' => $exception,
-            ]);
+        $user = $this->accountService->login($identity);
+        $this->flowManager->clearFlow($request, OAuthProvider::Google);
+        return $user;
+    }
 
-            $message = 'Votre compte n\'est pas encore vérifié. Le renvoi du lien de validation a échoué, veuillez réessayer plus tard.';
+    private function currentUser(?int $expectedId): User
+    {
+        $user = $this->security->getUser();
+        if (!$user instanceof User || $user->getId() !== $expectedId) {
+            throw new OAuthAccountException('Votre session a changé. Recommencez la liaison depuis votre profil.');
         }
-
-        throw new CustomUserMessageAuthenticationException($message);
-    }
-
-    /**
-     * Appelé lorsque l'authentification réussit.
-     * Redirige l'utilisateur vers la page d'accueil.
-     */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-    {
-        // Changez 'app_home' pour le nom de la route vers laquelle vous voulez rediriger
-        $targetUrl = $this->router->generate('app_profil');
-
-        return new RedirectResponse($targetUrl);
-    }
-
-    /**
-     * Appelé lorsque l'authentification échoue.
-     */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
-    {
-        $message = strtr($exception->getMessageKey(), $exception->getMessageData());
-
-        if ($request->hasSession()) {
-            $session= $request->getSession();
-           if (!$session instanceof FlashBagAwareSessionInterface) {
-                throw new \LogicException(sprintf('You cannot use the getFlashBag method because class "%s" doesn\'t implement "%s".', get_debug_type($session), FlashBagAwareSessionInterface::class));            }
-
-            $session->getFlashBag()->add('error', $message);
-        }
-        
-        return new RedirectResponse(
-            $this->router->generate('app_login')
-        );
-    }
-     public function __toString(): string
-    {
-        return self::class;
-    }
-
-    /**
-     * Cette méthode est appelée lorsque l'utilisateur essaie d'accéder à une ressource
-     * sécurisée sans être authentifié. Elle le redirige vers le processus de connexion Google.
-     */
-    public function start(Request $request, ?AuthenticationException $authException = null): Response
-    {
-        return new RedirectResponse(
-            $this->router->generate('connect_google_start'),
-            Response::HTTP_TEMPORARY_REDIRECT
-        );
+        return $user;
     }
 }

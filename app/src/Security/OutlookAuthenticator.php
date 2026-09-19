@@ -3,14 +3,22 @@
 namespace App\Security;
 
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Security\OAuth\LegacyMicrosoftRepairRequired;
+use App\Security\OAuth\MicrosoftLegacyRepairService;
+use App\Security\OAuth\OAuthAccountException;
+use App\Security\OAuth\OAuthAccountService;
+use App\Security\OAuth\OAuthFlowManager;
+use App\Security\OAuth\OAuthFlowPurpose;
+use App\Security\OAuth\OAuthIdentity;
+use App\Security\OAuth\OAuthProvider;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -18,149 +26,116 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
-use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
-use TheNetworg\OAuth2\Client\Provider\AzureResourceOwner;
 
-class OutlookAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
+final class OutlookAuthenticator extends OAuth2Authenticator
 {
-    private ClientRegistry $clientRegistry;
-    private EntityManagerInterface $entityManager;
-    private RouterInterface $router;
-    private UserPasswordHasherInterface $passwordHasher;
-    private Security $security;
-
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $passwordHasher, Security $security)
-    {
-        $this->clientRegistry = $clientRegistry;
-        $this->entityManager = $entityManager;
-        $this->router = $router;
-        $this->passwordHasher = $passwordHasher;
-        $this->security = $security;
+    public function __construct(
+        private readonly ClientRegistry $clientRegistry,
+        private readonly OAuthAccountService $accountService,
+        private readonly OAuthFlowManager $flowManager,
+        private readonly MicrosoftLegacyRepairService $legacyRepairService,
+        private readonly RouterInterface $router,
+        private readonly Security $security,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
-    public function supports(Request $request): ?bool
-    {
-        return $request->attributes->get('_route') === 'connect_outlook_check';
-    }
+    public function supports(Request $request): bool { return $request->attributes->get('_route') === 'connect_outlook_check'; }
 
     public function authenticate(Request $request): Passport
     {
         try {
-            $client = $this->clientRegistry->getClient('azure');
-            $accessToken = $this->fetchAccessToken($client);
-
-            /** @var AzureResourceOwner $azureUser */
-            $azureUser = $client->fetchUserFromToken($accessToken);
-
-            // Récupérer les informations utilisateur
-            $azureData = $azureUser->toArray();
-            $azureId = $azureUser->getId();
-
-            // Log des données reçues pour debug
-            error_log('Azure user data: ' . json_encode($azureData));
-
-            // Essayer différents champs pour récupérer l'email
-            $email = $azureData['mail'] ??
-                     $azureData['userPrincipalName'] ??
-                     $azureData['email'] ??
-                     $azureData['preferred_username'] ??
-                     $azureData['upn'] ??           // User Principal Name (Microsoft)
-                     $azureData['unique_name'] ??   // Nom unique (Microsoft)
-                     null;
-
-            if (!$email) {
-                error_log('Aucun email trouvé dans les données Azure: ' . json_encode($azureData));
-                throw new AuthenticationException('Impossible de récupérer l\'email depuis Microsoft Azure. Données reçues: ' . json_encode(array_keys($azureData)));
+            $flow = $this->flowManager->requireFlow($request, OAuthProvider::Microsoft);
+            $accessToken = $this->fetchAccessToken($this->clientRegistry->getClient('azure'));
+            $this->flowManager->consumeProviderState($request);
+            $claims = $accessToken->getIdTokenClaims();
+            if (!is_array($claims) || !hash_equals($flow['nonce'], (string) ($claims['nonce'] ?? ''))) {
+                throw new OAuthAccountException('La réponse Microsoft ne correspond pas à la demande de connexion.');
             }
-
-            // Chercher l'utilisateur par azureId d'abord, puis par email
-            $user = $this->entityManager->getRepository(User::class)
-                ->findOneBy(['azureId' => $azureId]);
-
-            if (!$user) {
-                // Vérifier si un utilisateur avec cet email existe déjà
-                $user = $this->entityManager->getRepository(User::class)
-                    ->findOneBy(['email' => $email]);
-
-                if ($user) {
-                    $currentUser = $this->security->getUser();
-
-                    if (!$currentUser instanceof User || $currentUser->getId() !== $user->getId()) {
-                        throw new CustomUserMessageAuthenticationException(
-                            'Un compte existe déjà avec cet email. Connectez-vous d’abord avec votre mot de passe, puis liez Microsoft depuis votre profil.'
-                        );
-                    }
-
-                    if ($user->getAzureId() !== null && $user->getAzureId() !== $azureId) {
-                        throw new CustomUserMessageAuthenticationException('Ce compte Microsoft ne correspond pas au compte déjà lié à votre profil.');
-                    }
-
-                    $user->setAzureId($azureId);
-                } else {
-                    // Créer un nouvel utilisateur
-                    $user = new User();
-                    $user->setAzureId($azureId);
-                    $user->setEmail($email);
-                    $user->setRoles(['ROLE_USER']);
-
-                    // Générer un mot de passe aléatoire pour les utilisateurs OAuth
-                    $randomPassword = bin2hex(random_bytes(32));
-                    $hashedPassword = $this->passwordHasher->hashPassword($user, $randomPassword);
-                    $user->setPassword($hashedPassword);
-
-                    // Marquer comme vérifié puisque Microsoft a déjà vérifié l'email
-                    $user->setVerified(true);
-                }
-
-                $this->entityManager->persist($user);
-                $this->entityManager->flush();
-            }
-
-            return new SelfValidatingPassport(
-                new UserBadge($user->getEmail(), function () use ($user) {
-                    return $user;
-                })
+            $identity = new OAuthIdentity(
+                OAuthProvider::Microsoft,
+                $this->claim($claims, 'oid'),
+                $this->claim($claims, 'tid'),
+                is_string($claims['email'] ?? null) ? $claims['email'] : null,
+                false,
             );
-        } catch (AuthenticationException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            throw new AuthenticationException('Erreur lors de la connexion avec Outlook: ' . $e->getMessage());
+
+            return new SelfValidatingPassport(new UserBadge('microsoft:'.$identity->tenantId.':'.$identity->subject, function () use ($request, $flow, $identity): User {
+                try {
+                    return $this->resolveUser($request, $flow, $identity);
+                } catch (LegacyMicrosoftRepairRequired $exception) {
+                    $this->legacyRepairService->send($exception->user(), $exception->identity());
+                    $this->flowManager->clearFlow($request, OAuthProvider::Microsoft);
+                    throw new CustomUserMessageAuthenticationException($exception->getMessage());
+                } catch (OAuthAccountException $exception) {
+                    throw new CustomUserMessageAuthenticationException($exception->getMessage());
+                }
+            }));
+        } catch (OAuthAccountException $exception) {
+            throw new CustomUserMessageAuthenticationException($exception->getMessage());
+        } catch (\Throwable $exception) {
+            $this->logger->warning('Microsoft OAuth callback failed.', ['exception_type' => $exception::class]);
+            throw new CustomUserMessageAuthenticationException('La connexion avec Microsoft a échoué. Veuillez réessayer.');
         }
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): Response
     {
-        // Rediriger vers le profil utilisateur après connexion réussie
-        $targetUrl = $this->router->generate('app_profil');
-        return new RedirectResponse($targetUrl);
+        if ($target = $this->flowManager->consumePostAuthenticationTarget($request)) {
+            return new RedirectResponse($this->router->generate($target->routeName()));
+        }
+        $user = $token->getUser();
+        return new RedirectResponse($this->router->generate($user instanceof User && $this->flowManager->pendingLink($request, $user) !== null ? 'oauth_link_confirm' : 'app_profil'));
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
-        // Log l'erreur pour le debug
-        error_log('Outlook authentication failed: ' . $exception->getMessage());
-        error_log('Request URI: ' . $request->getUri());
-        error_log('Request parameters: ' . json_encode($request->query->all()));
+        $this->flowManager->clearFlow($request, OAuthProvider::Microsoft);
+        $session = $request->getSession();
+        if ($session instanceof FlashBagAwareSessionInterface) {
+            $session->getFlashBag()->add('error', strtr($exception->getMessageKey(), $exception->getMessageData()));
+        }
+        return new RedirectResponse($this->router->generate($this->security->getUser() instanceof User ? 'app_profil' : 'app_login'));
+    }
 
-        // Ajouter un message flash pour l'utilisateur
-        if ($request->hasSession()) {
-            $session = $request->getSession();
-            $session->set('_flash_error', 'Erreur de connexion avec Microsoft: ' . $exception->getMessage());
+    /** @param array{purpose: OAuthFlowPurpose, userId: ?int, targetProvider: ?OAuthProvider} $flow */
+    private function resolveUser(Request $request, array $flow, OAuthIdentity $identity): User
+    {
+        if ($flow['purpose'] === OAuthFlowPurpose::Link) {
+            $user = $this->currentUser($flow['userId']);
+            $this->accountService->assertCanLink($user, $identity);
+            $this->flowManager->stageLink($request, $user, $identity);
+            $this->flowManager->clearFlow($request, OAuthProvider::Microsoft);
+            return $user;
+        }
+        if ($flow['purpose'] === OAuthFlowPurpose::Reauthenticate) {
+            $user = $this->currentUser($flow['userId']);
+            $this->accountService->assertIdentityBelongsTo($user, $identity);
+            $this->flowManager->authorizeLink($request, $user, $flow['targetProvider']);
+            $this->flowManager->completeReauthentication($request, OAuthProvider::Microsoft, $flow['targetProvider']);
+            return $user;
         }
 
-        return new RedirectResponse($this->router->generate('app_login'));
+        $user = $this->accountService->login($identity);
+        $this->flowManager->clearFlow($request, OAuthProvider::Microsoft);
+        return $user;
     }
 
-    public function start(Request $request, ?AuthenticationException $authException = null): Response
+    /** @param array<string, mixed> $claims */
+    private function claim(array $claims, string $name): string
     {
-        return new RedirectResponse(
-            $this->router->generate('connect_outlook_start'),
-            Response::HTTP_TEMPORARY_REDIRECT
-        );
+        if (!is_string($claims[$name] ?? null) || $claims[$name] === '') {
+            throw new OAuthAccountException('Microsoft n’a pas fourni '.$name.' utilisable.');
+        }
+        return $claims[$name];
     }
 
-    public function __toString(): string
+    private function currentUser(?int $expectedId): User
     {
-        return 'OutlookAuthenticator';
+        $user = $this->security->getUser();
+        if (!$user instanceof User || $user->getId() !== $expectedId) {
+            throw new OAuthAccountException('Votre session a changé. Recommencez la liaison depuis votre profil.');
+        }
+        return $user;
     }
 }
