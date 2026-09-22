@@ -3,6 +3,7 @@
 namespace App\Tests\Functional;
 
 use App\Entity\Tih;
+use App\Entity\TihApplicationEvent;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
@@ -218,11 +219,12 @@ class AdminTihTest extends WebTestCase
         $updated = $this->em->getRepository(Tih::class)->find($tih->getId());
         $this->assertTrue($updated->isValidate());
         $this->assertNull($updated->getValidationMessage());
+        $this->assertSame(TihApplicationEvent::STATUS_APPROVED, $updated->getApplicationEvents()->first()->getStatus());
     }
 
     public function testRefuseRejectsTihWithCustomMessage(): void
     {
-        $this->loginAsAdmin();
+        $admin = $this->loginAsAdmin();
         $tihUser = $this->createTihUser();
         $tih = $tihUser->getTih();
         $tih->setIsValidate(true);
@@ -230,16 +232,27 @@ class AdminTihTest extends WebTestCase
 
         $this->client->request('POST', '/admin/tih/refuse/' . $tih->getId(), [
             '_token' => $this->getAdminTihCsrfToken('refuse', $tih->getId()),
-            'validation_message' => 'Documents manquants',
+            'rejection_reason' => 'Documents manquants',
         ]);
 
         $this->assertResponseRedirects('/admin/tih');
         $updated = $this->em->getRepository(Tih::class)->find($tih->getId());
         $this->assertFalse($updated->isValidate());
+        $this->assertSame(Tih::STATUS_REFUSED, $updated->getApplicationStatus());
         $this->assertSame('Documents manquants', $updated->getValidationMessage());
+        $decision = $updated->getLatestRefusalEvent();
+        $this->assertNotNull($decision);
+        $this->assertSame('Documents manquants', $decision->getReason());
+        $this->assertSame($admin->getId(), $decision->getActor()?->getId());
+        $this->assertSame(TihApplicationEvent::EMAIL_SENT, $decision->getEmailStatus());
+        self::assertEmailCount(1);
+        $email = self::getMailerMessage(0);
+        self::assertNotNull($email);
+        self::assertEmailAddressContains($email, 'to', $tihUser->getEmail());
+        self::assertEmailHtmlBodyContains($email, 'Documents manquants');
     }
 
-    public function testRefuseUsesDefaultMessageWhenEmpty(): void
+    public function testRefuseRejectsWhitespaceOnlyReasonWithoutChangingApplication(): void
     {
         $this->loginAsAdmin();
         $tihUser = $this->createTihUser();
@@ -249,13 +262,34 @@ class AdminTihTest extends WebTestCase
 
         $this->client->request('POST', '/admin/tih/refuse/' . $tih->getId(), [
             '_token' => $this->getAdminTihCsrfToken('refuse', $tih->getId()),
-            'validation_message' => '   ',
+            'rejection_reason' => '   ',
         ]);
 
         $this->assertResponseRedirects('/admin/tih');
         $updated = $this->em->getRepository(Tih::class)->find($tih->getId());
-        $this->assertFalse($updated->isValidate());
-        $this->assertSame('Vos informations ne sont pas correctes.', $updated->getValidationMessage());
+        $this->assertTrue($updated->isValidate());
+        $this->assertSame(Tih::STATUS_APPROVED, $updated->getApplicationStatus());
+        $this->assertNull($updated->getLatestRefusalEvent());
+        self::assertEmailCount(0);
+    }
+
+    public function testSecondRefusalSubmissionDoesNotSendAnotherEmail(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createTihUser('single-rejection@test.com')->getTih();
+        $token = $this->getAdminTihCsrfToken('refuse', $tih->getId());
+
+        $payload = ['_token' => $token, 'rejection_reason' => 'Merci de corriger le document.'];
+        $this->client->request('POST', '/admin/tih/refuse/' . $tih->getId(), $payload);
+        self::assertEmailCount(1);
+
+        $this->client->request('POST', '/admin/tih/refuse/' . $tih->getId(), $payload);
+
+        self::assertEmailCount(0);
+        $this->assertCount(1, $this->em->getRepository(TihApplicationEvent::class)->findBy([
+            'tih' => $tih,
+            'status' => TihApplicationEvent::STATUS_REFUSED,
+        ]));
     }
 
     public function testRefuseRequiresCSRF(): void

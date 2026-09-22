@@ -89,7 +89,10 @@ if (!$isUnitTestsuiteOnly) {
     $entityManager = $kernel->getContainer()->get('doctrine')->getManager();
     $schemaTool = new Doctrine\ORM\Tools\SchemaTool($entityManager);
     $metadata = $entityManager->getMetadataFactory()->getAllMetadata();
-    $schemaTool->dropSchema($metadata);
+    // Supprime aussi les tables devenues orphelines après un renommage d'entité.
+    // dropSchema($metadata) ignore ces anciennes tables et leurs clés étrangères
+    // peuvent alors empêcher la reconstruction propre de la base de test.
+    $schemaTool->dropDatabase();
     $schemaTool->createSchema($metadata);
 
     $kernel->shutdown();
