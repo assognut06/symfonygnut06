@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Votre candidature TIH — Décision et motif</title>
+</head>
+<body style="font-family: Arial, sans-serif; color: #212529; line-height: 1.5;">
+    <p>Bonjour {{ firstName ?: 'Madame, Monsieur' }},</p>
+
+    <p>Après examen, votre candidature à l’annuaire TIH de GNUT 06 n’a pas été validée.</p>
+
+    <p><strong>Motif du refus :</strong></p>
+    <div style="padding: 12px; border-left: 4px solid #dc3545; background: #f8f9fa; white-space: pre-wrap;">{{ reason }}</div>
+
+    <p>Vous pouvez retrouver ce message dans votre espace personnel sur le site GNUT 06.</p>
+
+    <p>
+        <a href="{{ profileUrl }}" style="display: inline-block; padding: 10px 16px; color: #fff; background: #7f29ff; text-decoration: none; border-radius: 4px;">
+            Consulter mon espace personnel
+        </a>
+    </p>
+
+    <p>Si des corrections vous sont demandées, veuillez suivre les indications du message.</p>
+
+    <p>L’équipe GNUT 06</p>
+</body>
+</html>

@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Tih;
+use App\Entity\TihApplicationEvent;
+use App\Entity\User;
+use App\Service\TihApplicationWorkflowService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -96,7 +99,7 @@ class AdminTihController extends AbstractController
     }
 
     #[Route('/admin/tih/validate/{id}', name: 'app_admin_tih_validate', methods: ['POST'])]
-    public function validate(Request $request, EntityManagerInterface $em, int $id): Response
+    public function validate(Request $request, TihApplicationWorkflowService $workflow, int $id): Response
     {
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('validate_tih'.$id, $token)) {
@@ -104,21 +107,33 @@ class AdminTihController extends AbstractController
             return $this->redirectToRoute('app_admin_tih');
         }
 
-        $tih = $em->getRepository(Tih::class)->find($id);
-        if (!$tih) {
+        $administrator = $this->getUser();
+        if (!$administrator instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $approved = $workflow->approve($id, $administrator);
+        if (null === $approved) {
             throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
         }
 
-        $tih->setIsValidate(true);
-        $tih->setValidationMessage(null);
-        $em->flush();
+        if (!$approved) {
+            $this->addFlash('warning', 'Cette candidature était déjà validée.');
+
+            return $this->redirectToRoute('app_admin_tih');
+        }
 
         $this->addFlash('success', 'Profil TIH validé avec succès.');
         return $this->redirectToRoute('app_admin_tih');
     }
 
     #[Route('/admin/tih/refuse/{id}', name: 'app_admin_tih_refuse', methods: ['POST'])]
-    public function refuse(Request $request, EntityManagerInterface $em, int $id): Response
+    public function refuse(
+        Request $request,
+        EntityManagerInterface $em,
+        TihApplicationWorkflowService $workflow,
+        int $id
+    ): Response
     {
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('refuse_tih'.$id, $token)) {
@@ -126,22 +141,67 @@ class AdminTihController extends AbstractController
             return $this->redirectToRoute('app_admin_tih');
         }
 
-        $tih = $em->getRepository(Tih::class)->find($id);
-        if (!$tih) {
+        // Une requête scalaire évite de placer le TIH dans l'identity map avant
+        // que le service ne le recharge avec un verrou pessimiste.
+        if (0 === $em->getRepository(Tih::class)->count(['id' => $id])) {
             throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
         }
 
-        // Message personnalisé saisi dans le modal
-        $message = trim((string) $request->request->get('validation_message', ''));
-        if ($message === '') {
-            $message = 'Vos informations ne sont pas correctes.';
+        $reason = trim((string) $request->request->get('rejection_reason', ''));
+        if ('' === $reason || 1 === preg_match('/^\s*$/u', $reason)) {
+            $this->addFlash('danger', 'Le motif du refus est obligatoire et ne peut pas contenir uniquement des espaces.');
+
+            return $this->redirectToRoute('app_admin_tih');
         }
 
-        $tih->setIsValidate(false);
-        $tih->setValidationMessage($message);
-        $em->flush();
+        $administrator = $this->getUser();
+        if (!$administrator instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
 
-        $this->addFlash('success', 'Le profil TIH a été refusé avec un message personnalisé.');
+        $outcome = $workflow->refuse($id, $reason, $administrator);
+        if (null === $outcome) {
+            throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
+        }
+
+        if (!$outcome['created']) {
+            $this->addFlash('warning', 'Cette candidature était déjà refusée. Aucun nouvel e-mail n’a été envoyé.');
+
+            return $this->redirectToRoute('app_admin_tih');
+        }
+
+        if (TihApplicationEvent::EMAIL_SENT === $outcome['event']->getEmailStatus()) {
+            $this->addFlash('success', 'La candidature a été refusée et le candidat a été notifié.');
+        } else {
+            $this->addFlash('danger', 'La candidature a bien été refusée, mais l’e-mail n’a pas pu être envoyé. Vous pouvez relancer l’envoi depuis l’administration.');
+        }
+
+        return $this->redirectToRoute('app_admin_tih');
+    }
+
+    #[Route('/admin/tih/rejection/{id}/retry-email', name: 'app_admin_tih_retry_rejection_email', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function retryRejectionEmail(Request $request, TihApplicationWorkflowService $workflow, int $id): Response
+    {
+        if (!$this->isCsrfTokenValid('retry_tih_rejection_email'.$id, (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Token de sécurité invalide.');
+
+            return $this->redirectToRoute('app_admin_tih');
+        }
+
+        $status = $workflow->retryRejectionEmail($id);
+
+        if ('not_found' === $status) {
+            throw $this->createNotFoundException('La décision de refus n’a pas été trouvée.');
+        }
+
+        if ('not_failed' === $status) {
+            $this->addFlash('warning', 'Cet e-mail est déjà envoyé ou en cours d’envoi. Aucun nouvel envoi n’a été déclenché.');
+        } elseif (TihApplicationEvent::EMAIL_SENT === $status) {
+            $this->addFlash('success', 'L’e-mail de refus a été renvoyé au candidat.');
+        } else {
+            $this->addFlash('danger', 'La nouvelle tentative d’envoi a échoué. Vous pouvez réessayer ultérieurement.');
+        }
+
         return $this->redirectToRoute('app_admin_tih');
     }
 

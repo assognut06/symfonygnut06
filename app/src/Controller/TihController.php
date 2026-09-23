@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Tih;
 use App\Form\TihType;
+use App\Service\TihApplicationWorkflowService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -78,12 +79,18 @@ class TihController extends AbstractController
     }
 
     #[Route('', name: 'espace_tih')]
-    public function profiltih(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function profiltih(
+        Request $request,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger,
+        TihApplicationWorkflowService $workflow,
+    ): Response
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
         $tih = $user->getTih();
+        $initialSubmission = null === $tih;
         $showForm = $request->query->get('edit') === '1' || !$tih;
 
         if (!$tih) {
@@ -92,14 +99,6 @@ class TihController extends AbstractController
             $tih->setCreatedAt(new \DateTime());
             $tih->setUpdatedAt(new \DateTime());
             $tih->setIsValidate(false);
-        }
-
-        // Affiche le message de refus s'il existe puis l'efface
-        if ($tih->getValidationMessage()) {
-            $this->addFlash('danger', $tih->getValidationMessage());
-            $tih->setValidationMessage(null);
-            $em->persist($tih);
-            $em->flush();
         }
 
         $formView = null;
@@ -150,7 +149,7 @@ class TihController extends AbstractController
                 }
 
                 $tih->setUpdatedAt(new \DateTime());
-                $tih->setIsValidate(false); // retour en attente après modif
+                $workflow->submitForReview($tih, $user, $initialSubmission);
 
                 $em->persist($tih);
                 $em->flush();
