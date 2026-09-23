@@ -159,7 +159,11 @@
                 <p><strong>Tarif :</strong> {{ tih.rate ? tih.rate ~ '€ / ' ~ tih.rateType : 'Non renseigné' }}</p>
                 <p><strong>CV :</strong>
                     {% if tih.cv %}
-                        <a href="{{ path('espace_tih_cv') }}" class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>
+                        <a href="{{ path('espace_tih_cv') }}"
+                           target="_blank"
+                           rel="noopener"
+                           aria-label="Voir le CV (nouvel onglet)"
+                           class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>
                     {% else %}
                         Non fourni
                     {% endif %}
@@ -167,7 +171,11 @@
                 <p><strong>SIRET :</strong> {{ tih.siret }}</p>
                 <p><strong>Attestation TIH :</strong>
                     {% if tih.attestationTih %}
-                        <a href="{{ path('espace_tih_attestation') }}" class="btn btn-outline-primary btn-sm ms-2">Voir l'attestation</a>
+                        <a href="{{ path('espace_tih_attestation') }}"
+                           target="_blank"
+                           rel="noopener"
+                           aria-label="Voir l’attestation TIH (nouvel onglet)"
+                           class="btn btn-outline-primary btn-sm ms-2">Voir l’attestation</a>
                     {% else %}
                         Non fournie
                     {% endif %}
