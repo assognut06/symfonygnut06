@@ -5,14 +5,14 @@
 <h2 class="text-center my-4">Espace TIH</h2>
 
 {% for message in app.flashes('success') %}
-    <div class="alert alert-success shadow-sm">{{ message }}</div>
+    <div class="alert alert-success shadow-sm" role="status">{{ message }}</div>
 {% endfor %}
 {% for message in app.flashes('danger') %}
-    <div class="alert alert-danger shadow-sm">{{ message }}</div>
+    <div class="alert alert-danger shadow-sm" role="alert">{{ message }}</div>
 {% endfor %}
 
 {% if form is defined and form is not null %}
-    <p class="text-center text-white">Complétez ou modifiez votre profil TIH</p>
+    <p class="text-center">Complétez ou modifiez votre profil TIH</p>
     <div class="container w-75 shadow p-4 rounded bg-white">
         {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
         {{ form_errors(form) }}
@@ -84,7 +84,7 @@
                 {% if tih.photo %}
                     <div class="form-text">
                         Photo actuelle :
-                        <a href="{{ asset('uploads/tih/' ~ tih.photo) }}" target="_blank" rel="noopener">voir le fichier</a>
+                        <a href="{{ asset('uploads/tih/' ~ tih.photo) }}">Voir le fichier photo</a>
                     </div>
                 {% endif %}
             </div>
@@ -93,28 +93,41 @@
                 {% if tih.cv %}
                     <div class="form-text">
                         CV actuel :
-                        <a href="{{ path('espace_tih_cv') }}" target="_blank" rel="noopener">voir le fichier</a>
+                        <a href="{{ path('espace_tih_cv') }}">Voir le CV</a>
                     </div>
                 {% endif %}
             </div>
             <div class="col-md-12 mb-3">
                 {{ form_row(form.attestationTih) }}
+                <div class="form-text">PDF uniquement, taille maximale : 5 Mo.</div>
                 {% if tih.attestationTih %}
                     <div class="form-text">
                         Attestation actuelle :
-                        <a href="{{ path('espace_tih_attestation') }}" target="_blank" rel="noopener">voir le fichier</a>
+                        <a href="{{ path('espace_tih_attestation') }}">Voir l’attestation TIH</a>
                     </div>
                 {% endif %}
 
-                <p class="mt-2">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalAttestations">
+                <p class="mt-3 mb-2">
+                    <a href="#modalAttestations" data-bs-toggle="modal" data-bs-target="#modalAttestations" aria-controls="modalAttestations">
                         Quelles attestations sont acceptées ?
                     </a>
                 </p>
+                <button type="button"
+                        class="btn btn-outline-primary btn-sm text-dark mt-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalModelesAttestation"
+                        aria-controls="modalModelesAttestation">
+                    <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 16 16" class="me-1" fill="currentColor">
+                        <path d="M8 1a.5.5 0 0 1 .5.5v7.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 9.293V1.5A.5.5 0 0 1 8 1z"/>
+                        <path d="M3.5 12.5a.5.5 0 0 1 .5.5v1h8v-1a.5.5 0 0 1 1 0v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V13a.5.5 0 0 1 .5-.5z"/>
+                    </svg>
+                    Télécharger un modèle d’attestation
+                </button>
+                <p class="small text-muted mt-3 mb-0">Les informations recueillies sont utilisées par GNUT 06 pour examiner et valider votre profil TIH. Elles sont accessibles uniquement aux personnes habilitées. Pour connaître la durée de conservation de vos données et exercer vos droits, consultez la politique de confidentialité de GNUT 06.</p>
             </div>
         </div>
         <div class="text-center mt-4">
-            <button class="btn btn-success px-4">Enregistrer</button>
+            <button type="submit" class="btn btn-success px-4">Enregistrer</button>
         </div>
         {{ form_end(form) }}
     </div>
@@ -146,7 +159,7 @@
                 <p><strong>Tarif :</strong> {{ tih.rate ? tih.rate ~ '€ / ' ~ tih.rateType : 'Non renseigné' }}</p>
                 <p><strong>CV :</strong>
                     {% if tih.cv %}
-                        <a href="{{ path('espace_tih_cv') }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>
+                        <a href="{{ path('espace_tih_cv') }}" class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>
                     {% else %}
                         Non fourni
                     {% endif %}
@@ -154,7 +167,7 @@
                 <p><strong>SIRET :</strong> {{ tih.siret }}</p>
                 <p><strong>Attestation TIH :</strong>
                     {% if tih.attestationTih %}
-                        <a href="{{ path('espace_tih_attestation') }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir l'attestation</a>
+                        <a href="{{ path('espace_tih_attestation') }}" class="btn btn-outline-primary btn-sm ms-2">Voir l'attestation</a>
                     {% else %}
                         Non fournie
                     {% endif %}
@@ -171,24 +184,61 @@
     <a href="{{ path('app_logout') }}" class="btn btn-danger text-white">Se déconnecter</a>
 </div>
 
+<!-- Modal des modèles d'attestation -->
+<div class="modal fade" id="modalModelesAttestation" tabindex="-1" aria-labelledby="modalModelesAttestationLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title h6 text-dark" id="modalModelesAttestationLabel">Télécharger un modèle d’attestation</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <p>Choisissez le format du modèle à compléter :</p>
+        <p class="form-text">Téléchargez le modèle, remplissez-le, signez-le, puis déposez votre attestation au format PDF. Taille maximale : 5 Mo.</p>
+        <div class="d-grid gap-2">
+          <a class="btn btn-outline-primary text-start d-flex align-items-center gap-2"
+             href="{{ asset('documents/modele-attestation-tih.docx') }}" download>
+            <svg aria-hidden="true" focusable="false" width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M14 4.5V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h7.5L14 4.5zM10 2v3h3l-3-3zM4.5 8.5h1l.5 2 .5-2h1l-.9 3H6l-.5-1.8L5 11.5H4.4l-.9-3z"/>
+            </svg>
+            <span><strong>Modèle modifiable (DOCX)</strong><br><small>Télécharger le document Word</small></span>
+          </a>
+          <a class="btn btn-outline-primary text-start d-flex align-items-center gap-2"
+             href="{{ asset('documents/modele-attestation-tih.pdf') }}" download>
+            <svg aria-hidden="true" focusable="false" width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M14 4.5V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h7.5L14 4.5zM10 2v3h3l-3-3zM4.5 8.5h1c.8 0 1.2.4 1.2 1s-.4 1-1.2 1H5v1H4.5v-3zm.5.5v1h.5c.3 0 .6-.1.6-.5s-.3-.5-.6-.5H5z"/>
+            </svg>
+            <span><strong>Modèle PDF</strong><br><small>Télécharger le document PDF</small></span>
+          </a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal attestations acceptées -->
 <div class="modal fade" id="modalAttestations" tabindex="-1" aria-labelledby="modalAttestationsLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalAttestationsLabel">Attestations acceptées</h5>
+        <h2 class="modal-title h6 text-dark" id="modalAttestationsLabel">Attestations acceptées</h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body">
-        <p>Attestations acceptées pour la reconnaissance administrative du handicap :</p>
+        <p>Liste des documents justificatifs acceptés :</p>
         <ul>
           <li>Reconnaissance de la Qualité de Travailleur Handicapé (RQTH) délivrée par la MDPH</li>
-          <li>Rente pour Accident du Travail ou Maladie Professionnelle (ATMP)</li>
+          <li>Rente pour accident du travail ou maladie professionnelle (AT/MP)</li>
           <li>Pension d’invalidité</li>
           <li>Pension militaire d’invalidité</li>
           <li>Carte mobilité inclusion avec la mention « invalidité »</li>
-          <li>Allocation Adulte Handicapé (AAH)</li>
+          <li>Allocation aux adultes handicapés (AAH)</li>
+          <li>Attestation sur l’honneur TIH <sup aria-hidden="true">*</sup></li>
         </ul>
+        <p class="small text-muted mb-0"><sup aria-hidden="true">*</sup> Cette attestation confirme une déclaration sur l’honneur. Elle ne remplace pas nécessairement le justificatif officiel, qui pourra être demandé par GNUT 06 lors de la validation du profil.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
