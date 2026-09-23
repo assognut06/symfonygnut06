@@ -134,12 +134,12 @@ export default class extends Controller {
         if (isChecked) {
             // Show départements for this region
             departementItems.forEach(item => {
-                item.style.display = 'block';
+                item.classList.remove('d-none');
             });
         } else {
             // Hide and uncheck départements for this region
             departementItems.forEach(item => {
-                item.style.display = 'none';
+                item.classList.add('d-none');
                 const checkbox = item.querySelector('input[type="checkbox"]');
                 if (checkbox) {
                     checkbox.checked = false;
@@ -181,7 +181,7 @@ export default class extends Controller {
         this.element.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
         // Hide all département items
         this.element.querySelectorAll('.departement-item').forEach(item => {
-            item.style.display = 'none';
+            item.classList.add('d-none');
         });
         this.performFilteredSearch();
     }

@@ -32,7 +32,7 @@
         <div class="row">
             {# Sidebar with filters #}
             <aside class="col-lg-3 mb-4">
-                <div class="card bg-dark border-secondary sticky-top" style="top: 1rem;">
+                <div class="card bg-dark border-secondary sticky-top tih-sticky-card">
                     <div class="card-body" data-tih-search-target="sidebar">
                         <h5 class="card-title text-white mb-4">
                             <i class="bi bi-funnel me-2"></i>Filtres
@@ -89,9 +89,8 @@
                                 </h6>
                                 <div data-tih-search-target="departementContainer">
                                 {% for dept in availableFilters.departements %}
-                                    <div class="form-check departement-item" 
-                                         data-region="{{ dept.region }}"
-                                         style="{% if currentFilters.regions is empty %}display: none;{% elseif dept.region not in currentFilters.regions %}display: none;{% endif %}">
+                                    <div class="form-check departement-item{{ currentFilters.regions is empty or dept.region not in currentFilters.regions ? ' d-none' : '' }}"
+                                         data-region="{{ dept.region }}">
                                         <input class="form-check-input filter-checkbox" 
                                                type="checkbox" 
                                                name="departements[]" 
@@ -227,7 +226,7 @@
 
                 {# Map View #}
                 <div id="map-view" class="d-none mb-4" data-tih-search-target="mapView">
-                    <div id="tih-map" style="height: calc(100vh - 200px); min-height: 600px; border-radius: 1rem;"></div>
+                    <div id="tih-map" class="tih-map"></div>
                 </div>
 
                 {# Grille de cartes TIH #}

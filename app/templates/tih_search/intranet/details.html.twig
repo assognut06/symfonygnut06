@@ -20,18 +20,16 @@
         <div class="row g-4">
             {# Profile Card - Left Column #}
             <div class="col-lg-4">
-                <div class="card bg-dark border-secondary h-100 sticky-top" style="top: 1rem;">
+                <div class="card bg-dark border-secondary h-100 sticky-top tih-sticky-card">
                     {# Profile Photo #}
                     {% if tih.photo %}
                         <img src="{{ asset('uploads/tih/' ~ tih.photo) }}" 
-                             class="card-img-top" 
-                             alt="Photo de profil de {{ tih.fullName }}"
-                             style="max-height: 400px; object-fit: cover;">
+                             class="card-img-top tih-profile-photo"
+                             alt="Photo de profil de {{ tih.fullName }}">
                     {% else %}
                         <img src="{{ asset('images/user_profil.jpg') }}" 
-                             class="card-img-top" 
-                             alt="Photo de profil par défaut"
-                             style="max-height: 400px; object-fit: cover;">
+                             class="card-img-top tih-profile-photo"
+                             alt="Photo de profil par défaut">
                     {% endif %}
                     
                     <div class="card-body text-center">

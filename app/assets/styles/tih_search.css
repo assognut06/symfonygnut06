@@ -302,3 +302,16 @@ input:focus {
         transform: none !important;
     }
 }
+
+.tih-sticky-card {
+    top: 1rem;
+}
+.tih-profile-photo {
+    max-height: 400px;
+    object-fit: cover;
+}
+.tih-map {
+    height: calc(100vh - 200px);
+    min-height: 600px;
+    border-radius: 1rem;
+}
