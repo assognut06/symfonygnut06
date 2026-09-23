@@ -84,7 +84,10 @@
                 {% if tih.photo %}
                     <div class="form-text">
                         Photo actuelle :
-                        <a href="{{ asset('uploads/tih/' ~ tih.photo) }}">Voir le fichier photo</a>
+                        <a href="{{ asset('uploads/tih/' ~ tih.photo) }}"
+                           target="_blank"
+                           rel="noopener"
+                           aria-label="Voir le fichier photo (nouvel onglet)">Voir le fichier photo</a>
                     </div>
                 {% endif %}
             </div>
@@ -93,7 +96,10 @@
                 {% if tih.cv %}
                     <div class="form-text">
                         CV actuel :
-                        <a href="{{ path('espace_tih_cv') }}">Voir le CV</a>
+                        <a href="{{ path('espace_tih_cv') }}"
+                           target="_blank"
+                           rel="noopener"
+                           aria-label="Voir le CV (nouvel onglet)">Voir le CV</a>
                     </div>
                 {% endif %}
             </div>
@@ -103,7 +109,10 @@
                 {% if tih.attestationTih %}
                     <div class="form-text">
                         Attestation actuelle :
-                        <a href="{{ path('espace_tih_attestation') }}">Voir l’attestation TIH</a>
+                        <a href="{{ path('espace_tih_attestation') }}"
+                           target="_blank"
+                           rel="noopener"
+                           aria-label="Voir l’attestation TIH (nouvel onglet)">Voir l’attestation TIH</a>
                     </div>
                 {% endif %}
 
