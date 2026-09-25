@@ -3,6 +3,8 @@
 namespace App\DataFixtures;
 
 use App\Entity\Tih;
+use App\Entity\Competence;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -110,7 +112,7 @@ class TihFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         for ($i = 1; $i <= 100; $i++) {
-            $user = $this->getReference(UserFixtures::USER_TIH_PREFIX . $i);
+            $user = $this->getReference(UserFixtures::USER_TIH_PREFIX . $i, User::class);
             
             $tih = new Tih();
             $tih->setUser($user);
@@ -147,7 +149,7 @@ class TihFixtures extends Fixture implements DependentFixtureInterface
             }
             
             foreach ($skillIndices as $skillIndex) {
-                $competence = $this->getReference(CompetenceFixtures::COMPETENCE_PREFIX . $skillIndex);
+                $competence = $this->getReference(CompetenceFixtures::COMPETENCE_PREFIX . $skillIndex, Competence::class);
                 $tih->addCompetence($competence);
             }
             
