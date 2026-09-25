@@ -426,6 +426,13 @@
                             </section>
                         {% endif %}
 
+                        {% if section in ['orders', 'payments'] %}
+                            {% include 'profil/_pagination.html.twig' with {
+                                pagination: data_items.pagination|default({}),
+                                section: section
+                            } only %}
+                        {% endif %}
+
                     </div> <!-- Fin contenu principal -->
                 </div> <!-- Fin row -->
             </main>
