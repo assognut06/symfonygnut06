@@ -11,7 +11,6 @@ parameters:
     app.google_maps_geocoding_api_key: '%env(APIMAPGEOCODING)%'
     mailjet.api_key: '%env(APIMAILJET)%'
     mailjet.api_secret: '%env(APIMAILJETSECRET)%'
-    ohme.api_key: '%env(SECRETOHME)%'
     openai.api_key: '%env(OPENAI_API_KEY)%'
     openai.model: '%env(OPENAI_MODEL)%'
     app.email.admin: 'gnut@gnut06.org'
@@ -132,14 +131,6 @@ services:
             $apiKey: '%env(APIMAILJET)%'
             $apiSecret: '%env(APIMAILJETSECRET)%'
 
-    App\Service\OhmeApiService:
-        arguments:
-            $client: '@ohme.client'
-
-    App\Service\ApiFrameVrService:
-        arguments:
-            $apiKey: '%env(APIFRAMEVR)%'
-        
     App\Service\RecaptchaVerifier:
         arguments:
             $client: '@http_client'
@@ -179,4 +170,3 @@ services:
     App\Controller\RegistrationController:
         arguments:
             $nocaptchaSiteKey: '%nocaptcha.sitekey%'
-
