@@ -157,6 +157,25 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
+      - name: Start Apache for upload directory tests
+        if: matrix.suite == 'Functional'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes apache2
+          sudo install -d -m 755 /etc/apache2/ssl
+          sudo openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
+            -keyout /etc/apache2/ssl/apache.key \
+            -out /etc/apache2/ssl/apache.crt \
+            -subj "/CN=127.0.0.1" \
+            -addext "subjectAltName=IP:127.0.0.1"
+          sudo ln -s "$GITHUB_WORKSPACE/app" /var/www/app
+          mkdir -p public/uploads/{cv,bordereau,profilePictures}
+          sudo cp config/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+          sudo a2enmod ssl rewrite
+          sudo a2ensite default-ssl
+          sudo apache2ctl configtest
+          sudo systemctl restart apache2
+
       - name: Wait for MySQL
         run: |
           for i in {1..30}; do
@@ -234,6 +253,24 @@ jobs:
 
       - name: Install PHP dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Start Apache for upload directory tests
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes apache2
+          sudo install -d -m 755 /etc/apache2/ssl
+          sudo openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
+            -keyout /etc/apache2/ssl/apache.key \
+            -out /etc/apache2/ssl/apache.crt \
+            -subj "/CN=127.0.0.1" \
+            -addext "subjectAltName=IP:127.0.0.1"
+          sudo ln -s "$GITHUB_WORKSPACE/app" /var/www/app
+          mkdir -p public/uploads/{cv,bordereau,profilePictures}
+          sudo cp config/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+          sudo a2enmod ssl rewrite
+          sudo a2ensite default-ssl
+          sudo apache2ctl configtest
+          sudo systemctl restart apache2
 
       - name: Wait for MySQL
         run: |
