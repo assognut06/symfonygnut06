@@ -4,6 +4,7 @@ namespace App\Tests\Unit\Entity;
 
 use App\Entity\Competence;
 use App\Entity\Tih;
+use App\Entity\TihApplicationEvent;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +16,9 @@ class TihTest extends TestCase
 
         $this->assertNull($tih->getId());
         $this->assertFalse($tih->isValidate());
+        $this->assertSame(Tih::STATUS_PENDING, $tih->getApplicationStatus());
         $this->assertCount(0, $tih->getCompetences());
+        $this->assertCount(0, $tih->getApplicationEvents());
     }
 
     public function testUserRelation(): void
@@ -100,11 +103,51 @@ class TihTest extends TestCase
 
         $tih->setIsValidate(true);
         $this->assertTrue($tih->isValidate());
+        $this->assertSame(Tih::STATUS_APPROVED, $tih->getApplicationStatus());
 
         $tih->setIsValidate(false);
         $tih->setValidationMessage('Documents manquants');
         $this->assertFalse($tih->isValidate());
+        $this->assertSame(Tih::STATUS_PENDING, $tih->getApplicationStatus());
         $this->assertEquals('Documents manquants', $tih->getValidationMessage());
+
+        $tih->setApplicationStatus(Tih::STATUS_REFUSED);
+        $this->assertFalse($tih->isValidate());
+        $this->assertSame(Tih::STATUS_REFUSED, $tih->getApplicationStatus());
+    }
+
+    public function testApplicationEventHistoryTracksEveryStatus(): void
+    {
+        $tih = new Tih();
+        $actor = new User();
+        $pending = new TihApplicationEvent(
+            $tih,
+            TihApplicationEvent::STATUS_PENDING,
+            $actor,
+            source: TihApplicationEvent::SOURCE_INITIAL_SUBMISSION,
+        );
+        $refused = new TihApplicationEvent(
+            $tih,
+            TihApplicationEvent::STATUS_REFUSED,
+            $actor,
+            'Attestation à renouveler.',
+            TihApplicationEvent::SOURCE_ADMIN_DECISION,
+        );
+
+        $tih->addApplicationEvent($pending);
+        $tih->addApplicationEvent($refused);
+
+        $this->assertCount(2, $tih->getApplicationEvents());
+        $this->assertSame($refused, $tih->getLatestRefusalEvent());
+        $this->assertNull($pending->getEmailStatus());
+        $this->assertSame(TihApplicationEvent::EMAIL_PENDING, $refused->getEmailStatus());
+    }
+
+    public function testRefusalEventRequiresReason(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        new TihApplicationEvent(new Tih(), TihApplicationEvent::STATUS_REFUSED, new User());
     }
 
     public function testFileFields(): void

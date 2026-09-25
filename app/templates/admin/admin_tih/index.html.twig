@@ -3,202 +3,179 @@
 {% block title %}Les TIH de Gnut06.org{% endblock %}
 
 {% block body %}
-<div class="container pt-0">
-  <div class="mx-4">
-    <h2 class="my-4 text-center">Les TIH de Gnut06.org</h2>
-    <div class="border border-secondary mb-4 mx-5"></div>
+<div class="container pt-0"><div class="mx-4">
+  <h1 class="h2 my-4 text-center">Les TIH de Gnut06.org</h1>
+  <div class="border border-secondary mb-4 mx-5"></div>
 
-    {% for message in app.flashes('success') %}
-      <div class="alert alert-success shadow-sm">{{ message }}</div>
-    {% endfor %}
-    {% for message in app.flashes('danger') %}
-      <div class="alert alert-danger shadow-sm">{{ message }}</div>
-    {% endfor %}
+  {% set queryParams = query|default('') is empty ? {} : {'q': query} %}
+  <form method="get" action="{{ path('app_admin_tih', {page: 1}) }}" class="mb-3">
+    <div class="input-group">
+      <input type="text" name="q" class="form-control" value="{{ query|default('') }}"
+             placeholder="Rechercher par nom, prénom ou email…" autocomplete="off" aria-label="Rechercher un profil TIH">
+      <button class="btn btn-primary" type="submit">Rechercher</button>
+      {% if query|default('') is not empty %}<a class="btn btn-outline-secondary" href="{{ path('app_admin_tih') }}">Réinitialiser</a>{% endif %}
+    </div>
+  </form>
 
-    {% set queryParams = query|default('') is empty ? {} : {'q': query} %}
-    <form method="get" action="{{ path('app_admin_tih', { page: 1 }) }}" class="mb-3">
-      <div class="input-group">
-        <input type="text" name="q" class="form-control"
-          value="{{ query|default('') }}"
-          placeholder="Rechercher par nom, prénom ou email…" autocomplete="off">
-        <button class="btn btn-primary" type="submit">Rechercher</button>
-        {% if query|default('') is not empty %}
-          <a class="btn btn-outline-secondary" href="{{ path('app_admin_tih') }}">Réinitialiser</a>
+  <div class="table-responsive">
+    <table id="tih-table" class="table table-success table-striped align-middle">
+      <thead><tr><th scope="col">ID</th><th scope="col">Nom</th><th scope="col">Prénom</th><th scope="col">Email</th><th scope="col">Rôles</th><th scope="col">Statut</th><th scope="col">Actions</th></tr></thead>
+      <tbody>
+      {% for tih in tihs %}
+        {% set user = tih.user %}
+        <tr>
+          <td>{{ tih.id }}</td><td>{{ tih.lastName ?: '—' }}</td><td>{{ tih.firstName ?: '—' }}</td>
+          <td>
+            {% if tih.professionalEmail %}
+              <span>{{ tih.professionalEmail }}</span>
+              {% if user and user.email != tih.professionalEmail %}
+                <small class="d-block text-muted">Compte : {{ user.email }}</small>
+              {% endif %}
+            {% else %}
+              {{ user ? user.email : '—' }}
+            {% endif %}
+          </td><td>{{ user ? user.roles|join(' - ') : '—' }}</td>
+          <td>
+            {% if tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_APPROVED') %}<span class="badge bg-success">Validé</span>
+            {% elseif tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_REFUSED') %}<span class="badge bg-danger">Refusé</span>
+            {% else %}<span class="badge bg-warning text-dark">En attente</span>{% endif %}
+          </td>
+          <td><div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-tih-{{ tih.id }}">Examiner</button>
+            <form action="{{ path('app_admin_tih_delete', {id: tih.id}) }}" method="post" onsubmit="return confirm('Confirmer la suppression de ce TIH ?');">
+              <input type="hidden" name="_method" value="DELETE"><input type="hidden" name="_token" value="{{ csrf_token('delete_tih' ~ tih.id) }}">
+              <button class="btn btn-danger btn-sm text-white" type="submit">Supprimer</button>
+            </form>
+          </div></td>
+        </tr>
+      {% else %}
+        <tr><td colspan="7" class="text-center">Aucun TIH trouvé.</td></tr>
+      {% endfor %}
+        <tr><td class="text-end" colspan="7"><strong class="text-primary">Soit {{ tihs|length }} TIH sur {{ total }}</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="mt-3" aria-label="Pagination des candidatures TIH"><ul class="pagination">
+    {% if page > 1 %}<li class="page-item"><a class="page-link" href="{{ path('app_admin_tih', {page: page - 1}|merge(queryParams)) }}" aria-label="Page précédente">&laquo;</a></li>{% endif %}
+    {% for p in 1..pages %}<li class="page-item{% if page == p %} active{% endif %}"><a class="page-link" href="{{ path('app_admin_tih', {page: p}|merge(queryParams)) }}"{% if page == p %} aria-current="page"{% endif %}>{{ p }}</a></li>{% endfor %}
+    {% if page < pages %}<li class="page-item"><a class="page-link" href="{{ path('app_admin_tih', {page: page + 1}|merge(queryParams)) }}" aria-label="Page suivante">&raquo;</a></li>{% endif %}
+  </ul></nav>
+</div></div>
+
+{% for tih in tihs %}
+  {% set decision = tih.latestRefusalEvent %}
+  <div class="modal fade" id="modal-tih-{{ tih.id }}" tabindex="-1" aria-labelledby="modal-tih-{{ tih.id }}-label" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable"><div class="modal-content">
+      <div class="modal-header"><h2 class="modal-title h5" id="modal-tih-{{ tih.id }}-label">Profil TIH #{{ tih.id }}</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+      <div class="modal-body">
+        <div class="row"><div class="col-md-6">
+          <p><strong>Civilité :</strong> {{ tih.title ?: '—' }}</p><p><strong>Nom :</strong> {{ tih.lastName ?: '—' }}</p>
+          <p><strong>Prénom :</strong> {{ tih.firstName ?: '—' }}</p><p><strong>Email pro :</strong> {{ tih.professionalEmail ?: '—' }}</p>
+          <p><strong>Téléphone :</strong> {{ tih.phone ?: '—' }}</p><p><strong>Adresse :</strong> {{ tih.address ?: '—' }}</p>
+          <p><strong>Code postal :</strong> {{ tih.postalCode ?: '—' }}</p><p><strong>Ville :</strong> {{ tih.city ?: '—' }}</p>
+        </div><div class="col-md-6">
+          <p><strong>SIRET :</strong> {{ tih.siret ?: '—' }}</p><p><strong>Disponibilité :</strong> {{ tih.availabilityDate ? tih.availabilityDate|date('d/m/Y') : '—' }}</p>
+          <p><strong>Compétences :</strong> {{ tih.competences|length > 0 ? tih.competences|join(', ') : '—' }}</p>
+          <p><strong>CV :</strong> {% if tih.cv %}<a href="{{ path('app_admin_tih_cv', {id: tih.id}) }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>{% else %}—{% endif %}</p>
+          <p><strong>Attestation TIH :</strong> {% if tih.attestationTih %}<a href="{{ path('app_admin_tih_attestation', {id: tih.id}) }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm ms-2">Voir l’attestation</a>{% else %}—{% endif %}</p>
+          <p><strong>Créé le :</strong> {{ tih.createdAt|date('d/m/Y H:i') }}</p><p><strong>Mis à jour le :</strong> {{ tih.updatedAt|date('d/m/Y H:i') }}</p>
+        </div></div>
+
+        {% if decision %}
+          <section class="alert alert-light border mt-3" aria-labelledby="rejection-title-{{ tih.id }}">
+            <h3 class="h6" id="rejection-title-{{ tih.id }}">Dernière décision de refus</h3>
+            <p class="mb-2" style="white-space: pre-wrap;"><strong>Motif :</strong> {{ decision.reason }}</p>
+            <p class="mb-1"><strong>Date :</strong> {{ decision.occurredAt|date('d/m/Y H:i') }}</p>
+            <p class="mb-1"><strong>Administrateur :</strong> {{ decision.actor ? decision.actor.email : 'Compte historique non identifié' }}</p>
+            <p class="mb-2"><strong>E-mail :</strong>
+              {% if decision.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_SENT') %}<span class="badge bg-success">Envoyé</span>
+              {% elseif decision.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_FAILED') %}<span class="badge bg-danger">Échec</span>
+              {% else %}<span class="badge bg-warning text-dark">En cours</span>{% endif %}
+            </p>
+            {% if decision.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_FAILED') %}
+              <p class="text-danger small">L’envoi a échoué. Le refus reste enregistré.</p>
+              {% if decision.emailError %}<p class="small"><strong>Erreur :</strong> {{ decision.emailError }}</p>{% endif %}
+              <form action="{{ path('app_admin_tih_retry_rejection_email', {id: decision.id}) }}" method="post" class="js-single-submit">
+                <input type="hidden" name="_token" value="{{ csrf_token('retry_tih_rejection_email' ~ decision.id) }}">
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-submitting-label="Envoi en cours…">Réessayer l’envoi</button>
+              </form>
+            {% endif %}
+          </section>
+        {% endif %}
+
+        {% if tih.applicationEvents|length > 0 %}
+          <section class="mt-4" aria-labelledby="application-history-title-{{ tih.id }}">
+            <h3 class="h6" id="application-history-title-{{ tih.id }}">Historique de la candidature</h3>
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered mb-0">
+                <thead><tr><th scope="col">Date</th><th scope="col">État</th><th scope="col">Acteur</th><th scope="col">Origine</th><th scope="col">Détail</th></tr></thead>
+                <tbody>
+                {% for event in tih.applicationEvents %}
+                  <tr>
+                    <td>{{ event.occurredAt|date('d/m/Y H:i') }}</td>
+                    <td>
+                      {% if event.status == constant('App\\Entity\\TihApplicationEvent::STATUS_APPROVED') %}<span class="badge bg-success">Validé</span>
+                      {% elseif event.status == constant('App\\Entity\\TihApplicationEvent::STATUS_REFUSED') %}<span class="badge bg-danger">Refusé</span>
+                      {% else %}<span class="badge bg-warning text-dark">En attente</span>{% endif %}
+                    </td>
+                    <td>{{ event.actor ? event.actor.email : 'Compte historique non identifié' }}</td>
+                    <td>
+                      {% if event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_INITIAL_SUBMISSION') %}Soumission initiale
+                      {% elseif event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_PROFILE_UPDATE') %}Mise à jour du profil
+                      {% elseif event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_ADMIN_DECISION') %}Décision administrative
+                      {% else %}Donnée historique{% endif %}
+                    </td>
+                    <td>{% if event.reason %}<span style="white-space: pre-wrap;">{{ event.reason }}</span>{% else %}—{% endif %}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </section>
         {% endif %}
       </div>
-    </form>
-
-    <div class="row align-items-start mx-auto">
-      <div class="col-12">
-        <table id="tih-table" class="table table-success table-striped align-middle">
-          <thead>
-            <tr>
-              <th scope="col">id</th>
-              <th scope="col">Nom</th>
-              <th scope="col">Prenom</th>
-              <th scope="col">Email</th>
-              <th scope="col">Roles</th>
-              <th scope="col">Statut</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% set i = 0 %}
-            {% if tihs is defined %}
-              {% for tih in tihs %}
-                {% set user = tih.user %}
-                {% set modal_id = 'modal-tih-' ~ tih.id %}
-                <tr>
-                  <td>{{ tih.id }}</td>
-                  <td>{{ user ? tih.firstname : '—' }}</td>
-                  <td>{{ user ? tih.lastname : '—' }}</td>
-                  <td>{{ user ? user.email : '—' }}</td>
-                  <td>
-                    {% if user %}
-                      {{ user.roles | join(' - ') }}
-                    {% else %}
-                      —
-                    {% endif %}
-                  </td>
-                  <td>
-                    {% if tih.isValidate %}
-                      <span class="badge bg-success">Validé</span>
-                    {% else %}
-                      <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#{{ modal_id }}">
-                        En attente de validation
-                      </button>
-                    {% endif %}
-                  </td>
-                  <td class="d-flex gap-2">
-                    <form action="{{ path('app_admin_tih_delete', {'id': tih.id}) }}" method="post" onsubmit="return confirm('Confirmer la suppression de ce TIH ?');">
-                      <input type="hidden" name="_method" value="DELETE">
-                      <input type="hidden" name="_token" value="{{ csrf_token('delete_tih' ~ tih.id) }}">
-                      <button class="btn btn-danger text-white" type="submit">Supprimer</button>
-                    </form>
-                  </td>
-                </tr>
-
-                {# MODAL : détails + actions valider/refuser #}
-                <div class="modal fade" id="{{ modal_id }}" tabindex="-1" aria-labelledby="{{ modal_id }}Label" aria-hidden="true">
-                  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="{{ modal_id }}Label">Profil TIH #{{ tih.id }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                      </div>
-                      <div class="modal-body">
-                        <div class="row">
-                          <div class="col-md-6">
-                            <p><strong>Civilité :</strong> {{ tih.title ?: '—' }}</p>
-                            <p><strong>Nom :</strong> {{ tih.lastName ?: '—' }}</p>
-                            <p><strong>Prénom :</strong> {{ tih.firstName ?: '—' }}</p>
-                            <p><strong>Email pro :</strong> {{ tih.professionalEmail ?: '—' }}</p>
-                            <p><strong>Téléphone :</strong> {{ tih.phone ?: '—' }}</p>
-                            <p><strong>Adresse :</strong> {{ tih.address ?: '—' }}</p>
-                            <p><strong>Code postal :</strong> {{ tih.postalCode ?: '—' }}</p>
-                            <p><strong>Ville :</strong> {{ tih.city ?: '—' }}</p>
-                          </div>
-                          <div class="col-md-6">
-                            <p><strong>SIRET :</strong> {{ tih.siret ?: '—' }}</p>
-                            <p><strong>Disponibilité :</strong> {{ tih.availabilityDate|date('d/m/Y') ?: '—' }}</p>
-                            <p><strong>Compétences :</strong>
-                              {% if tih.competences|length > 0 %}
-                                {{ tih.competences|join(', ') }}
-                              {% else %}
-                                —
-                              {% endif %}
-                            </p>
-                            <p><strong>CV :</strong>
-                              {% if tih.cv %}
-                                <a href="{{ path('app_admin_tih_cv', {'id': tih.id}) }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir le CV</a>
-                              {% else %}
-                                —
-                              {% endif %}
-                            </p>
-                            <p><strong>Attestation TIH :</strong>
-                              {% if tih.attestationTih %}
-                                <a href="{{ path('app_admin_tih_attestation', {'id': tih.id}) }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">Voir l'attestation</a>
-                              {% else %}
-                                —
-                              {% endif %}
-                            </p>
-                            <p><strong>Créé le :</strong> {{ tih.createdAt|date('d/m/Y H:i') }}</p>
-                            <p><strong>Mis à jour le :</strong> {{ tih.updatedAt|date('d/m/Y H:i') }}</p>
-                          </div>
-                        </div>
-
-                        <hr class="my-3">
-
-                        <div class="mb-2">
-                          <label for="validation_message_{{ tih.id }}" class="form-label">Message de refus (optionnel)</label>
-                          <textarea form="refuse-form-{{ tih.id }}" name="validation_message" id="validation_message_{{ tih.id }}" class="form-control" rows="2" placeholder="Expliquez la raison du refus..."></textarea>
-                          <small class="text-muted">Ce message apparaîtra en flash sur le profil TIH.</small>
-                        </div>
-                      </div>
-
-                      <div class="modal-footer d-flex justify-content-between">
-                        <form id="refuse-form-{{ tih.id }}" action="{{ path('app_admin_tih_refuse', {'id': tih.id}) }}" method="post" onsubmit="return confirm('Refuser ce profil TIH ?');">
-                          <input type="hidden" name="_token" value="{{ csrf_token('refuse_tih' ~ tih.id) }}">
-                          {# le textarea ci-dessus est lié à ce form via l’attribut form="" #}
-                          <button type="submit" class="btn btn-outline-danger">Refuser</button>
-                        </form>
-
-                        <div class="d-flex gap-2">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                          <form action="{{ path('app_admin_tih_validate', {'id': tih.id}) }}" method="post" onsubmit="return confirm('Valider ce profil TIH ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('validate_tih' ~ tih.id) }}">
-                            <button type="submit" class="btn btn-success">Valider</button>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {% set i = i + 1 %}
-              {% endfor %}
-            {% else %}
-              <tr>
-                <td colspan="5" class="text-center">Aucun TIH trouvé.</td>
-              </tr>
-            {% endif %}
-
-            <tr>
-              <td class="text-end" scope="row" colspan="10">
-                <strong class="text-primary">Soit {{ i }} TIH sur {{ total }}</strong>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="modal-footer">
+        {% if tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_REFUSED') %}<button type="button" class="btn btn-outline-danger me-auto" data-bs-target="#refuse-modal-{{ tih.id }}" data-bs-toggle="modal">Refuser la candidature</button>{% endif %}
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        {% if tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_APPROVED') %}<form action="{{ path('app_admin_tih_validate', {id: tih.id}) }}" method="post" onsubmit="return confirm('Valider ce profil TIH ?');"><input type="hidden" name="_token" value="{{ csrf_token('validate_tih' ~ tih.id) }}"><button type="submit" class="btn btn-success">Valider</button></form>{% endif %}
       </div>
-
-      <div class="col-12 pagination-container mt-3">
-        <nav aria-label="Admin navigation">
-          <ul class="pagination">
-            {% if page > 1 %}
-              <li class="page-item">
-                <a class="page-link" href="{{ path('app_admin_tih', {'page': page - 1}|merge(queryParams)) }}">
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
-              </li>
-            {% endif %}
-
-            {% for p in 1..pages %}
-              <li class="page-item{% if page == p %} active{% endif %}">
-                <a class="page-link" href="{{ path('app_admin_tih', {'page': p}|merge(queryParams)) }}">{{ p }}</a>
-              </li>
-            {% endfor %}
-
-            {% if page < pages %}
-              <li class="page-item">
-                <a class="page-link" href="{{ path('app_admin_tih', {'page': page + 1}|merge(queryParams)) }}">
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
-              </li>
-            {% endif %}
-          </ul>
-        </nav>
-      </div>
-    </div>
+    </div></div>
   </div>
-</div>
+
+  {% if tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_REFUSED') %}
+    <div class="modal fade" id="refuse-modal-{{ tih.id }}" tabindex="-1" aria-labelledby="refuse-modal-{{ tih.id }}-label" aria-hidden="true">
+      <div class="modal-dialog"><div class="modal-content">
+        <form action="{{ path('app_admin_tih_refuse', {id: tih.id}) }}" method="post" class="js-single-submit">
+          <div class="modal-header"><h2 class="modal-title h5" id="refuse-modal-{{ tih.id }}-label">Refuser la candidature de {{ tih.firstName }} {{ tih.lastName }}</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+          <div class="modal-body">
+            <input type="hidden" name="_token" value="{{ csrf_token('refuse_tih' ~ tih.id) }}">
+            <label for="rejection-reason-{{ tih.id }}" class="form-label">Motif du refus <span aria-hidden="true">*</span></label>
+            <textarea id="rejection-reason-{{ tih.id }}" name="rejection_reason" class="form-control" rows="5" required aria-required="true" aria-describedby="rejection-help-{{ tih.id }}" placeholder="Indiquez les corrections éventuellement attendues"></textarea>
+            <p id="rejection-help-{{ tih.id }}" class="form-text mb-0">Ce message sera transmis au candidat. Ne saisissez aucune note interne ni information médicale.</p>
+          </div>
+          <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button><button type="submit" class="btn btn-danger" data-submitting-label="Refus en cours…">Confirmer le refus et notifier le candidat</button></div>
+        </form>
+      </div></div>
+    </div>
+  {% endif %}
+{% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.js-single-submit').forEach(function (form) {
+        form.addEventListener('submit', function () {
+          if (!form.checkValidity()) return;
+          var button = form.querySelector('button[type="submit"]');
+          if (button) {
+            button.disabled = true;
+            button.textContent = button.dataset.submittingLabel || 'Envoi en cours…';
+          }
+        });
+      });
+    });
+  </script>
 {% endblock %}

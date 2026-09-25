@@ -12,6 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class Tih
 {
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REFUSED = 'refused';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -90,12 +94,21 @@ class Tih
     #[ORM\Column(type: 'boolean')]
     private bool $isValidate = false;
 
+    #[ORM\Column(length: 20, options: ['default' => self::STATUS_PENDING])]
+    private string $applicationStatus = self::STATUS_PENDING;
+
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $validationMessage = null;
+
+    /** @var Collection<int, TihApplicationEvent> */
+    #[ORM\OneToMany(mappedBy: 'tih', targetEntity: TihApplicationEvent::class)]
+    #[ORM\OrderBy(['occurredAt' => 'DESC'])]
+    private Collection $applicationEvents;
 
     public function __construct()
     {
         $this->competences = new ArrayCollection();
+        $this->applicationEvents = new ArrayCollection();
         $this->isValidate = false;
     }
 
@@ -191,10 +204,59 @@ class Tih
     }
 
     public function isValidate(): bool { return $this->isValidate; }
-    public function setIsValidate(bool $isValidate): self { $this->isValidate = $isValidate; return $this; }
+    public function setIsValidate(bool $isValidate): self
+    {
+        $this->isValidate = $isValidate;
+        $this->applicationStatus = $isValidate ? self::STATUS_APPROVED : self::STATUS_PENDING;
+
+        return $this;
+    }
+
+    public function getApplicationStatus(): string { return $this->applicationStatus; }
+    public function setApplicationStatus(string $applicationStatus): self
+    {
+        if (!in_array($applicationStatus, [self::STATUS_PENDING, self::STATUS_APPROVED, self::STATUS_REFUSED], true)) {
+            throw new \InvalidArgumentException(sprintf('Unknown TIH application status "%s".', $applicationStatus));
+        }
+
+        $this->applicationStatus = $applicationStatus;
+        $this->isValidate = self::STATUS_APPROVED === $applicationStatus;
+
+        return $this;
+    }
 
     public function getValidationMessage(): ?string { return $this->validationMessage; }
     public function setValidationMessage(?string $validationMessage): self { $this->validationMessage = $validationMessage; return $this; }
+
+    /** @return Collection<int, TihApplicationEvent> */
+    public function getApplicationEvents(): Collection { return $this->applicationEvents; }
+
+    public function addApplicationEvent(TihApplicationEvent $event): self
+    {
+        if (!$this->applicationEvents->contains($event)) {
+            $this->applicationEvents->add($event);
+            $event->setTih($this);
+        }
+
+        return $this;
+    }
+
+    public function getLatestRefusalEvent(): ?TihApplicationEvent
+    {
+        $latest = null;
+
+        foreach ($this->applicationEvents as $event) {
+            if (!$event->isRefusal()) {
+                continue;
+            }
+
+            if (null === $latest || $event->getOccurredAt() > $latest->getOccurredAt()) {
+                $latest = $event;
+            }
+        }
+
+        return $latest;
+    }
 
     public function getPhoto(): ?string { return $this->photo; }
     public function setPhoto(?string $photo): self { $this->photo = $photo; return $this; }
