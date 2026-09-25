@@ -34,6 +34,7 @@ class TihProfileTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
+        $this->assertSelectorNotExists('#tih-history');
     }
 
     public function testTihSpaceShowsProfileForTihUser(): void
@@ -44,6 +45,63 @@ class TihProfileTest extends WebTestCase
         $crawler = $this->client->request('GET', '/espace-tih');
 
         $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('#tih-history', 'Aucun historique disponible pour le moment.');
+    }
+
+    public function testTihSpaceShowsOnlyOwnApplicationHistory(): void
+    {
+        $admin = $this->createAdmin('history-admin@test.com');
+        $candidate = $this->createTihUser('history-candidate@test.com');
+        $otherCandidate = $this->createTihUser('history-other@test.com');
+
+        $events = [
+            new TihApplicationEvent(
+                $candidate->getTih(),
+                TihApplicationEvent::STATUS_PENDING,
+                $candidate,
+                source: TihApplicationEvent::SOURCE_INITIAL_SUBMISSION,
+            ),
+            new TihApplicationEvent(
+                $candidate->getTih(),
+                TihApplicationEvent::STATUS_REFUSED,
+                $admin,
+                'Document à corriger.',
+                TihApplicationEvent::SOURCE_ADMIN_DECISION,
+            ),
+            new TihApplicationEvent(
+                $candidate->getTih(),
+                TihApplicationEvent::STATUS_APPROVED,
+                $admin,
+                source: TihApplicationEvent::SOURCE_ADMIN_DECISION,
+            ),
+            new TihApplicationEvent(
+                $otherCandidate->getTih(),
+                TihApplicationEvent::STATUS_REFUSED,
+                $admin,
+                'Motif privé de l’autre candidat.',
+                TihApplicationEvent::SOURCE_ADMIN_DECISION,
+            ),
+        ];
+        foreach ($events as $event) {
+            $event->getTih()->addApplicationEvent($event);
+            $this->em->persist($event);
+        }
+        $this->em->flush();
+
+        $this->loginAs($candidate);
+        $this->client->request('GET', '/espace-tih');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('#tih-history-title', 'Historique de la candidature');
+        $this->assertCount(3, $this->client->getCrawler()->filter('#tih-history tbody tr'));
+        $this->assertSelectorTextContains('#tih-history', 'En attente');
+        $this->assertSelectorTextContains('#tih-history', 'Refusé');
+        $this->assertSelectorTextContains('#tih-history', 'Validé');
+        $this->assertSelectorTextContains('#tih-history', 'Document à corriger.');
+        $this->assertSelectorTextContains('#tih-history', 'Vous');
+        $this->assertSelectorTextContains('#tih-history', 'Équipe GNUT 06');
+        $this->assertSelectorTextNotContains('#tih-history', 'Motif privé de l’autre candidat.');
+        $this->assertSelectorTextNotContains('#tih-history', 'history-admin@test.com');
     }
 
     public function testTihSpaceEditMode(): void
