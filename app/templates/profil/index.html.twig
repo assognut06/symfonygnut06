@@ -16,6 +16,25 @@
         <a href="#profile-nav" class="skip-link">Aller à la navigation du profil</a>
         <a href="#profile-content" class="skip-link">Aller au contenu du profil</a>
     </nav>
+    <main id="main-content" aria-labelledby="profile-title">
+    {% set tihRejection = user.tih and user.tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_REFUSED')
+        ? user.tih.latestRefusalEvent : null %}
+    <div class="container mt-4">
+        <h1 id="profile-title" class="mb-4">Votre profil</h1>
+        {% if tihRejection %}
+            <div class="alert alert-warning" role="alert">
+                Une information concernant votre profil TIH est disponible. Consultez le message ci-dessous.
+            </div>
+            <section id="tih-rejection-message" class="card border-warning mb-4" aria-labelledby="tih-rejection-title">
+                <div class="card-body">
+                    <h2 id="tih-rejection-title" class="h5 card-title">Décision concernant votre candidature TIH</h2>
+                    <p class="text-muted mb-2">Message reçu le {{ tihRejection.occurredAt|date('d/m/Y à H:i') }}</p>
+                    <p class="mb-1"><strong>Motif du refus :</strong></p>
+                    <p class="mb-0" style="white-space: pre-wrap;">{{ tihRejection.reason }}</p>
+                </div>
+            </section>
+        {% endif %}
+    </div>
     {% if app.user %}
         {% set tihRejection = app.user.tih ? app.user.tih.latestRefusalEvent : null %}
         {% if tihRejection %}
@@ -51,7 +70,6 @@
     <div class="w-100 bg-main pt-5 pb-5">
         <div class="container my-4 pt-3 bg-light rounded-5 shadow mb-0">
 
-            <main id="main-content" role="main" aria-labelledby="profile-title">
                 <div class="row flex-column flex-md-row">
 
                     <!-- ✅ CORRECTION - Navigation accessible -->
@@ -121,9 +139,9 @@
 
                         <!-- ✅ CORRECTION - En-tête utilisateur amélioré -->
                         <header class="mb-4">
-                            <h1 id="profile-title" class="fs-4 mb-1">
+                            <h2 class="fs-4 mb-1">
                                 Bienvenue, {{ user.email }}
-                            </h1>
+                            </h2>
                             <p id="current-date"
                                class="text-muted"
                                aria-live="polite"
@@ -452,9 +470,9 @@
 
                     </div> <!-- Fin contenu principal -->
                 </div> <!-- Fin row -->
-            </main>
         </div> <!-- Fin container -->
     </div>
+    </main>
 {% endblock %}
 
 {% block javascripts %}
