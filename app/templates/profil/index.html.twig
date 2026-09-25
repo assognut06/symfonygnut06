@@ -22,11 +22,10 @@
     <div class="container mt-4">
         <h1 id="profile-title" class="mb-4">Votre profil</h1>
         {% if tihRejection %}
-            <div class="alert alert-warning d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2" role="alert">
-                <span>Une information concernant votre profil TIH est disponible. Consultez le message ci-dessous.</span>
-                <a href="#tih-rejection-message" class="alert-link" aria-label="Consulter le message concernant mon profil TIH">Consulter le message</a>
+            <div class="alert alert-warning" role="alert">
+                Une information concernant votre profil TIH est disponible. Consultez le message ci-dessous.
             </div>
-            <section id="tih-rejection-message" class="card border-warning mb-4" tabindex="-1" aria-labelledby="tih-rejection-title">
+            <section id="tih-rejection-message" class="card border-warning mb-4" aria-labelledby="tih-rejection-title">
                 <div class="card-body">
                     <h2 id="tih-rejection-title" class="h5 card-title">Décision concernant votre candidature TIH</h2>
                     <p class="text-muted mb-2">Message reçu le {{ tihRejection.occurredAt|date('d/m/Y à H:i') }}</p>
