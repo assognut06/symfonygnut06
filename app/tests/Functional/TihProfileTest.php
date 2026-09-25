@@ -143,7 +143,7 @@ class TihProfileTest extends WebTestCase
         $this->client->request('GET', '/profil');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('.alert-warning[role="alert"]', 'Une information concernant votre profil TIH est disponible.');
-        $this->assertSelectorExists('.alert-warning a[href="#tih-rejection-message"][aria-label="Consulter le message concernant mon profil TIH"]');
+        $this->assertSelectorNotExists('.alert-warning a');
         $this->assertSelectorTextContains('#tih-rejection-message', 'Votre attestation doit être renouvelée.');
     }
 
