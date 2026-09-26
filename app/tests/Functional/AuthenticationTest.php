@@ -2,6 +2,10 @@
 
 namespace App\Tests\Functional;
 
+use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
+use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 /**
  * Tests authentication flows: login, logout, protected access, OAuth redirects.
  */
@@ -26,11 +30,11 @@ class AuthenticationTest extends WebTestCase
         );
         $this->assertSelectorExists(
             '#connexion-form[aria-describedby~="required-fields-info"] '
-            . '#username[required][aria-required="true"][aria-describedby~="username-error"]'
+            .'#username[required][aria-required="true"][aria-describedby~="username-error"]'
         );
         $this->assertSelectorExists(
             '#connexion-form[aria-describedby~="required-fields-info"] '
-            . '#password[required][aria-required="true"][aria-describedby~="password-error"]'
+            .'#password[required][aria-required="true"][aria-describedby~="password-error"]'
         );
         $this->assertSelectorExists('#username-error.invalid-feedback[role="alert"]');
         $this->assertSelectorExists('#password-error.invalid-feedback[role="alert"]');
@@ -98,12 +102,27 @@ class AuthenticationTest extends WebTestCase
 
     public function testOutlookOAuthStartRedirects(): void
     {
+        $authorizationUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?stub=1';
+
+        $oauthClient = $this->createMock(OAuth2ClientInterface::class);
+        $oauthClient->expects($this->once())
+            ->method('redirect')
+            ->willReturnCallback(static function (array $scopes, array $options) use ($authorizationUrl): RedirectResponse {
+                self::assertSame([], $scopes);
+                self::assertArrayHasKey('nonce', $options);
+                self::assertNotSame('', $options['nonce']);
+
+                return new RedirectResponse($authorizationUrl);
+            });
+
+        $registry = $this->createMock(ClientRegistry::class);
+        $registry->method('getClient')->with('azure')->willReturn($oauthClient);
+
+        $this->client->disableReboot();
+        static::getContainer()->set('knpu.oauth2.registry', $registry);
+
         $this->client->request('GET', '/connect/outlook');
 
-        $response = $this->client->getResponse();
-        $this->assertTrue(
-            $response->isRedirection() || $response->getStatusCode() === 500,
-            'Outlook OAuth should redirect or fail gracefully without Azure config'
-        );
+        $this->assertResponseRedirects($authorizationUrl);
     }
 }

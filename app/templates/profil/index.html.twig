@@ -225,10 +225,10 @@
                                                         Google lié
                                                     </span>
                                                 {% else %}
-                                                    <a href="{{ path('connect_google_start') }}" class="btn btn-outline-danger btn-sm">
-                                                        <i class="bi bi-google" aria-hidden="true"></i>
-                                                        Lier Google
-                                                    </a>
+                                                    <form method="post" action="{{ path('oauth_link_reauth', {provider: 'google'}) }}">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('oauth_link_start_google') }}">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-google" aria-hidden="true"></i> Lier Google</button>
+                                                    </form>
                                                 {% endif %}
 
                                                 {% if user.azureId %}
@@ -237,10 +237,10 @@
                                                         Microsoft lié
                                                     </span>
                                                 {% else %}
-                                                    <a href="{{ path('connect_outlook_start') }}" class="btn btn-outline-primary btn-sm">
-                                                        <i class="bi bi-microsoft" aria-hidden="true"></i>
-                                                        Lier Microsoft
-                                                    </a>
+                                                    <form method="post" action="{{ path('oauth_link_reauth', {provider: 'microsoft'}) }}">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('oauth_link_start_microsoft') }}">
+                                                        <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-microsoft" aria-hidden="true"></i> Lier Microsoft</button>
+                                                    </form>
                                                 {% endif %}
                                             </div>
                                             <p class="text-muted small mt-2 mb-0">
