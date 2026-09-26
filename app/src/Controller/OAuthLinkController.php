@@ -44,10 +44,12 @@ final class OAuthLinkController extends AbstractController
         if (!$this->isCsrfTokenValid('oauth_link_authorize_'.$provider->value, (string) $request->request->get('_token'))
             || !$this->passwordHasher->isPasswordValid($user, (string) $request->request->get('password'))) {
             $this->addFlash('error', 'La confirmation du mot de passe a échoué.');
+
             return $this->redirectToRoute('app_profil');
         }
 
         $this->flowManager->authorizeLink($request, $user, $provider);
+
         return $this->redirectToRoute($provider->routeName());
     }
 
@@ -62,6 +64,7 @@ final class OAuthLinkController extends AbstractController
         }
 
         $this->flowManager->authorizeReauthentication($request, $user, $reauthenticationProvider, $provider);
+
         return $this->redirectToRoute($reauthenticationProvider->routeName());
     }
 
@@ -69,8 +72,9 @@ final class OAuthLinkController extends AbstractController
     public function confirm(Request $request): Response
     {
         $pending = $this->flowManager->pendingLink($request, $this->user());
-        if ($pending === null) {
+        if (null === $pending) {
             $this->addFlash('error', 'La demande de liaison a expiré.');
+
             return $this->redirectToRoute('app_profil');
         }
 
@@ -82,7 +86,7 @@ final class OAuthLinkController extends AbstractController
     {
         $user = $this->user();
         $identity = $this->flowManager->pendingLink($request, $user);
-        if ($identity === null || !$this->isCsrfTokenValid('oauth_link_confirm_'.$identity->provider->value, (string) $request->request->get('_token'))) {
+        if (null === $identity || !$this->isCsrfTokenValid('oauth_link_confirm_'.$identity->provider->value, (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();
         }
 
@@ -102,10 +106,11 @@ final class OAuthLinkController extends AbstractController
     public function cancel(Request $request): RedirectResponse
     {
         $identity = $this->flowManager->pendingLink($request, $this->user());
-        if ($identity === null || !$this->isCsrfTokenValid('oauth_link_cancel_'.$identity->provider->value, (string) $request->request->get('_token'))) {
+        if (null === $identity || !$this->isCsrfTokenValid('oauth_link_cancel_'.$identity->provider->value, (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();
         }
         $this->flowManager->clearPendingLink($request);
+
         return $this->redirectToRoute('app_profil');
     }
 
@@ -115,6 +120,7 @@ final class OAuthLinkController extends AbstractController
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
+
         return $user;
     }
 
