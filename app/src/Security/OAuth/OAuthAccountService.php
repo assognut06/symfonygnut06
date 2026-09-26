@@ -30,7 +30,7 @@ final class OAuthAccountService
         $user = new User();
         $user->setEmail($email);
         $user->setPassword($this->passwordHasher->hashPassword($user, bin2hex(random_bytes(32))));
-        $user->setVerified($identity->provider === OAuthProvider::Google && $identity->emailVerified);
+        $user->setVerified(OAuthProvider::Google === $identity->provider && $identity->emailVerified);
         $this->applyIdentity($user, $identity);
         $this->entityManager->persist($user);
         $this->flushWithConflictMessage();
@@ -45,7 +45,7 @@ final class OAuthAccountService
             throw new OAuthAccountException('Cette identité OAuth est déjà liée à un autre compte.');
         }
 
-        if ($identity->provider === OAuthProvider::Google) {
+        if (OAuthProvider::Google === $identity->provider) {
             $this->assertVerifiedGoogleEmail($identity);
         }
     }
@@ -68,7 +68,7 @@ final class OAuthAccountService
     private function findCanonicalIdentity(OAuthIdentity $identity): ?User
     {
         $repository = $this->entityManager->getRepository(User::class);
-        if ($identity->provider === OAuthProvider::Google) {
+        if (OAuthProvider::Google === $identity->provider) {
             return $repository->findOneBy(['googleId' => $identity->subject]);
         }
 
@@ -77,28 +77,28 @@ final class OAuthAccountService
 
     private function emailRequiredForCreation(OAuthIdentity $identity): string
     {
-        if (!is_string($identity->email) || filter_var($identity->email, FILTER_VALIDATE_EMAIL) === false) {
-            throw new OAuthAccountException($identity->provider === OAuthProvider::Microsoft
-                ? 'Microsoft n’a pas fourni d’adresse email utilisable pour créer un compte.'
-                : 'Google n’a pas fourni d’adresse email utilisable.');
+        if (!is_string($identity->email) || false === filter_var($identity->email, FILTER_VALIDATE_EMAIL)) {
+            throw new OAuthAccountException(OAuthProvider::Microsoft === $identity->provider ? 'Microsoft n’a pas fourni d’adresse email utilisable pour créer un compte.' : 'Google n’a pas fourni d’adresse email utilisable.');
         }
-        if ($identity->provider === OAuthProvider::Google) {
+        if (OAuthProvider::Google === $identity->provider) {
             $this->assertVerifiedGoogleEmail($identity);
         }
+
         return $identity->email;
     }
 
     private function assertVerifiedGoogleEmail(OAuthIdentity $identity): void
     {
-        if (!is_string($identity->email) || filter_var($identity->email, FILTER_VALIDATE_EMAIL) === false || !$identity->emailVerified) {
+        if (!is_string($identity->email) || false === filter_var($identity->email, FILTER_VALIDATE_EMAIL) || !$identity->emailVerified) {
             throw new OAuthAccountException('Google n’a pas confirmé l’adresse email de ce compte.');
         }
     }
 
     private function applyIdentity(User $user, OAuthIdentity $identity): void
     {
-        if ($identity->provider === OAuthProvider::Google) {
+        if (OAuthProvider::Google === $identity->provider) {
             $user->setGoogleId($identity->subject);
+
             return;
         }
 
