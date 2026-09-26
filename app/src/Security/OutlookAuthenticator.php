@@ -24,6 +24,7 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use TheNetworg\OAuth2\Client\Token\AccessToken as AzureAccessToken;
 
 final class OutlookAuthenticator extends OAuth2Authenticator
 {
@@ -48,6 +49,9 @@ final class OutlookAuthenticator extends OAuth2Authenticator
             $flow = $this->flowManager->requireFlow($request, OAuthProvider::Microsoft);
             $accessToken = $this->fetchAccessToken($this->clientRegistry->getClient('azure'));
             $this->flowManager->consumeProviderState($request);
+            if (!$accessToken instanceof AzureAccessToken) {
+                throw new OAuthAccountException('La réponse Microsoft ne contient pas de jeton d’identité valide.');
+            }
             $claims = $accessToken->getIdTokenClaims();
             if (!is_array($claims) || !hash_equals($flow['nonce'], (string) ($claims['nonce'] ?? ''))) {
                 throw new OAuthAccountException('La réponse Microsoft ne correspond pas à la demande de connexion.');
