@@ -3,13 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
-use App\Entity\Tih;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -37,16 +35,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Assert\PasswordStrength([
+    #[PasswordStrength([
         'minScore' => PasswordStrength::STRENGTH_MEDIUM, // Very strong password required
-        'message' => 'Votre mot de passe est trop facile à deviner. La politique de sécurité de Gnut 06 exige l\'utilisation d\'un mot de passe plus complexe.'
-        
+        'message' => 'Votre mot de passe est trop facile à deviner. La politique de sécurité de Gnut 06 exige l\'utilisation d\'un mot de passe plus complexe.',
     ])]
     private ?string $password = null;
 
     #[ORM\Column]
     private bool $isVerified = false;
-    
+
     #[ORM\OneToOne(mappedBy: 'user', targetEntity: Tih::class, cascade: ['persist', 'remove'])]
     private ?Tih $tih = null;
 
@@ -59,10 +56,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $azureId = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\PrePersist]
@@ -79,11 +76,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updatedAt = new \DateTimeImmutable();
     }
 
-
     public function getId(): ?int
     {
         return $this->id;
     }
+
     /**
      * A visual identifier that represents this user.
      *
@@ -93,6 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->email;
     }
+
     /**
      * A visual identifier that represents this user.
      *
@@ -179,10 +177,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->profilePicture;
     }
-    
+
     public function setProfilePicture(?string $profilePicture): self
     {
         $this->profilePicture = $profilePicture;
+
         return $this;
     }
 
@@ -194,6 +193,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGoogleId(?string $googleId): static
     {
         $this->googleId = $googleId;
+
         return $this;
     }
 
@@ -205,6 +205,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAzureId(?string $azureId): static
     {
         $this->azureId = $azureId;
+
         return $this;
     }
 
@@ -216,6 +217,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -227,6 +229,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -237,12 +240,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setTih(?Tih $tih): static
     {
-        if ($tih !== null && $tih->getUser() !== $this) {
+        if (null !== $tih && $tih->getUser() !== $this) {
             $tih->setUser($this);
         }
 
         $this->tih = $tih;
+
         return $this;
     }
-
 }
