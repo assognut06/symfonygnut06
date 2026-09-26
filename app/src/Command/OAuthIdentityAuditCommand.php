@@ -30,7 +30,7 @@ final class OAuthIdentityAuditCommand extends Command
 
         foreach (self::CHECKS as $label => $sql) {
             $duplicates = $this->connection->fetchAllAssociative($sql);
-            if ($duplicates === []) {
+            if ([] === $duplicates) {
                 $io->success($label.': none found.');
                 continue;
             }

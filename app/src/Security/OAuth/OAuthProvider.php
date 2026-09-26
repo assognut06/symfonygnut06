@@ -9,6 +9,6 @@ enum OAuthProvider: string
 
     public function routeName(): string
     {
-        return $this === self::Google ? 'connect_google_start' : 'connect_outlook_start';
+        return self::Google === $this ? 'connect_google_start' : 'connect_outlook_start';
     }
 }

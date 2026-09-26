@@ -99,6 +99,7 @@ final class OAuthAccountServiceTest extends TestCase
         $user = new User();
         $property = new \ReflectionProperty(User::class, 'id');
         $property->setValue($user, $id);
+
         return $user;
     }
 }

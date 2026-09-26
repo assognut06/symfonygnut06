@@ -61,6 +61,7 @@ final class OAuthFlowManagerTest extends TestCase
     {
         $request = new Request();
         $request->setSession(new Session(new MockArraySessionStorage()));
+
         return $request;
     }
 
@@ -69,6 +70,7 @@ final class OAuthFlowManagerTest extends TestCase
         $user = new User();
         $property = new \ReflectionProperty(User::class, 'id');
         $property->setValue($user, $id);
+
         return $user;
     }
 }

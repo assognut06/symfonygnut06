@@ -136,7 +136,7 @@ final class GoogleIdTokenValidatorTest extends TestCase
         ], $overrides);
 
         return JWT::encode(
-            array_filter($claims, static fn ($value): bool => $value !== null),
+            array_filter($claims, static fn ($value): bool => null !== $value),
             self::PRIVATE_KEY,
             'RS256',
             self::KEY_ID

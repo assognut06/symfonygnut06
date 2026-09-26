@@ -33,7 +33,7 @@ final class GoogleIdTokenValidator
             || !hash_equals((string) $this->googleClientId, (string) ($claims['aud'] ?? ''))
             || !hash_equals($nonce, (string) ($claims['nonce'] ?? ''))
             || !is_string($claims['sub'] ?? null)
-            || $claims['sub'] === ''
+            || '' === $claims['sub']
         ) {
             throw new OAuthAccountException('La réponse Google ne correspond pas à la demande de connexion.');
         }
