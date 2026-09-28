@@ -84,47 +84,11 @@
         </div></div>
 
         {% if decision %}
-          <section class="alert alert-light border mt-3" aria-labelledby="rejection-title-{{ tih.id }}">
-            <h3 class="h6" id="rejection-title-{{ tih.id }}">Dernière décision de refus</h3>
-            <p class="mb-2" style="white-space: pre-wrap;"><strong>Motif :</strong> {{ decision.reason }}</p>
-            <p class="mb-1"><strong>Date :</strong> {{ decision.occurredAt|date('d/m/Y H:i') }}</p>
-            <p class="mb-1"><strong>Administrateur :</strong> {{ decision.actor ? decision.actor.email : 'Compte historique non identifié' }}</p>
-            <p class="mb-2"><strong>E-mail :</strong>
-              {% if decision.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_SENT') %}<span class="badge bg-success">Envoyé</span>
-              {% elseif decision.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_FAILED') %}<span class="badge bg-danger">Échec</span>
-              {% else %}<span class="badge bg-warning text-dark">En cours</span>{% endif %}
-            </p>
-            {% if decision.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_FAILED') %}
-              <p class="text-danger small">L’envoi a échoué. Le refus reste enregistré.</p>
-              {% if decision.emailError %}<p class="small"><strong>Erreur :</strong> {{ decision.emailError }}</p>{% endif %}
-              <form action="{{ path('app_admin_tih_retry_rejection_email', {id: decision.id}) }}" method="post" class="js-single-submit">
-                <input type="hidden" name="_token" value="{{ csrf_token('retry_tih_rejection_email' ~ decision.id) }}">
-                <button type="submit" class="btn btn-outline-primary btn-sm" data-submitting-label="Envoi en cours…">Réessayer l’envoi</button>
-              </form>
-            {% endif %}
-          </section>
+          {% include 'admin/admin_tih/_decision_notice.html.twig' with {event: decision, tih: tih} only %}
         {% endif %}
 
         {% if reviewRequest %}
-          <section class="alert alert-light border mt-3" aria-labelledby="review-title-{{ tih.id }}">
-            <h3 class="h6" id="review-title-{{ tih.id }}">Dernière remise en attente de validation</h3>
-            <p class="mb-2" style="white-space: pre-wrap;"><strong>Motif :</strong> {{ reviewRequest.reason }}</p>
-            <p class="mb-1"><strong>Date :</strong> {{ reviewRequest.occurredAt|date('d/m/Y H:i') }}</p>
-            <p class="mb-1"><strong>Administrateur :</strong> {{ reviewRequest.actor ? reviewRequest.actor.email : 'Compte historique non identifié' }}</p>
-            <p class="mb-2"><strong>E-mail :</strong>
-              {% if reviewRequest.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_SENT') %}<span class="badge bg-success">Envoyé</span>
-              {% elseif reviewRequest.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_FAILED') %}<span class="badge bg-danger">Échec</span>
-              {% else %}<span class="badge bg-warning text-dark">En cours</span>{% endif %}
-            </p>
-            {% if reviewRequest.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_FAILED') %}
-              <p class="text-danger small">L’envoi a échoué. La remise en attente reste enregistrée.</p>
-              {% if reviewRequest.emailError %}<p class="small"><strong>Erreur :</strong> {{ reviewRequest.emailError }}</p>{% endif %}
-              <form action="{{ path('app_admin_tih_retry_review_email', {id: reviewRequest.id}) }}" method="post" class="js-single-submit">
-                <input type="hidden" name="_token" value="{{ csrf_token('retry_tih_review_email' ~ reviewRequest.id) }}">
-                <button type="submit" class="btn btn-outline-primary btn-sm" data-submitting-label="Envoi en cours…">Réessayer l’envoi</button>
-              </form>
-            {% endif %}
-          </section>
+          {% include 'admin/admin_tih/_decision_notice.html.twig' with {event: reviewRequest, tih: tih} only %}
         {% endif %}
 
         {% if tih.applicationEvents|length > 0 %}

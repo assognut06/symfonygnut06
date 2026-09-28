@@ -1,0 +1,24 @@
+{% set reviewRequest = event.isReviewRequest() %}
+{% set noticeId = (reviewRequest ? 'review-title-' : 'rejection-title-') ~ tih.id %}
+{% set retryRoute = reviewRequest ? 'app_admin_tih_retry_review_email' : 'app_admin_tih_retry_rejection_email' %}
+{% set retryToken = (reviewRequest ? 'retry_tih_review_email' : 'retry_tih_rejection_email') ~ event.id %}
+
+<section class="alert alert-light border mt-3" aria-labelledby="{{ noticeId }}">
+  <h3 class="h6" id="{{ noticeId }}">{{ reviewRequest ? 'Dernière remise en attente de validation' : 'Dernière décision de refus' }}</h3>
+  <p class="mb-2" style="white-space: pre-wrap;"><strong>Motif :</strong> {{ event.reason }}</p>
+  <p class="mb-1"><strong>Date :</strong> {{ event.occurredAt|date('d/m/Y H:i') }}</p>
+  <p class="mb-1"><strong>Administrateur :</strong> {{ event.actor ? event.actor.email : 'Compte historique non identifié' }}</p>
+  <p class="mb-2"><strong>E-mail :</strong>
+    {% if event.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_SENT') %}<span class="badge bg-success">Envoyé</span>
+    {% elseif event.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_FAILED') %}<span class="badge bg-danger">Échec</span>
+    {% else %}<span class="badge bg-warning text-dark">En cours</span>{% endif %}
+  </p>
+  {% if event.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_FAILED') %}
+    <p class="text-danger small">L’envoi a échoué. {{ reviewRequest ? 'La remise en attente' : 'Le refus' }} reste enregistré.</p>
+    {% if event.emailError %}<p class="small"><strong>Erreur :</strong> {{ event.emailError }}</p>{% endif %}
+    <form action="{{ path(retryRoute, {id: event.id}) }}" method="post" class="js-single-submit">
+      <input type="hidden" name="_token" value="{{ csrf_token(retryToken) }}">
+      <button type="submit" class="btn btn-outline-primary btn-sm" data-submitting-label="Envoi en cours…">Réessayer l’envoi</button>
+    </form>
+  {% endif %}
+</section>

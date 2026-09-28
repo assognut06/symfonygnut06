@@ -102,15 +102,34 @@ class AdminTihTest extends WebTestCase
 
     public function testIndexPagination(): void
     {
-        $this->loginAsAdmin();
+        $admin = $this->loginAsAdmin();
+        $oldestTih = null;
 
         for ($i = 0; $i < 11; $i++) {
-            $this->createTihUser(sprintf('paginated-tih-%d@test.com', $i));
+            $tih = $this->createTihUser(sprintf('paginated-tih-%d@test.com', $i))->getTih();
+            if (0 === $i) {
+                $oldestTih = $tih;
+            }
         }
 
-        $this->client->request('GET', '/admin/tih/2');
+        $this->assertNotNull($oldestTih);
+        $oldestTih->addCompetence($this->createCompetence('Compétence page deux'));
+        $event = new TihApplicationEvent(
+            $oldestTih,
+            TihApplicationEvent::STATUS_APPROVED,
+            $admin,
+            source: TihApplicationEvent::SOURCE_ADMIN_DECISION,
+        );
+        $oldestTih->addApplicationEvent($event);
+        $this->em->persist($event);
+        $this->em->flush();
+
+        $this->client->request('GET', '/admin/tih/2', ['q' => 'paginated-tih-']);
 
         $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('#modal-tih-' . $oldestTih->getId());
+        $this->assertSelectorTextContains('#modal-tih-' . $oldestTih->getId(), 'Compétence page deux');
+        $this->assertSelectorTextContains('#modal-tih-' . $oldestTih->getId(), 'Historique de la candidature');
     }
 
     public function testDownloadCvReturnsInlineFileFromConfiguredDirectory(): void
@@ -395,6 +414,26 @@ class AdminTihTest extends WebTestCase
         self::assertEmailCount(0);
     }
 
+    public function testReviewRequestRejectsMissingReason(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createTihUser('review-missing-reason@test.com')->getTih();
+        $tihId = $tih->getId();
+
+        $this->client->request('POST', '/admin/tih/review/' . $tihId, [
+            '_token' => $this->getAdminTihCsrfToken('review', $tihId),
+        ]);
+
+        $this->assertResponseRedirects('/admin/tih');
+        $this->em = static::getContainer()->get(\Doctrine\ORM\EntityManagerInterface::class);
+        $this->em->clear();
+        $updated = $this->em->getRepository(Tih::class)->find($tihId);
+        $this->assertNotNull($updated);
+        $this->assertSame(Tih::STATUS_APPROVED, $updated->getApplicationStatus());
+        $this->assertNull($updated->getLatestReviewRequestEvent());
+        self::assertEmailCount(0);
+    }
+
     public function testApprovedProfileCannotBeRefusedThroughOldRoute(): void
     {
         $this->loginAsAdmin();
@@ -429,6 +468,11 @@ class AdminTihTest extends WebTestCase
         $this->em->flush();
 
         $eventId = $event->getId();
+        $this->client->request('GET', '/admin/tih', ['q' => 'retry-review@test.com']);
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('#review-title-' . $tih->getId(), 'Dernière remise en attente de validation');
+        $this->assertSelectorExists('form[action="/admin/tih/review/' . $eventId . '/retry-email"]');
+
         $token = $this->generateCsrfToken('retry_tih_review_email' . $eventId);
         $this->client->request('POST', '/admin/tih/review/' . $eventId . '/retry-email', ['_token' => $token]);
         $this->assertResponseRedirects('/admin/tih');
@@ -534,6 +578,28 @@ class AdminTihTest extends WebTestCase
         $this->assertResponseRedirects('/admin/tih');
         $updated = $this->em->getRepository(Tih::class)->find($tih->getId());
         $this->assertFalse($updated->isValidate());
+        $this->assertSame(Tih::STATUS_PENDING, $updated->getApplicationStatus());
+        $this->assertNull($updated->getLatestRefusalEvent());
+        self::assertEmailCount(0);
+    }
+
+    public function testRefuseRejectsMissingReason(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createTihUser('refuse-missing-reason@test.com')->getTih();
+        $tih->setApplicationStatus(Tih::STATUS_PENDING);
+        $this->em->flush();
+        $tihId = $tih->getId();
+
+        $this->client->request('POST', '/admin/tih/refuse/' . $tihId, [
+            '_token' => $this->getAdminTihCsrfToken('refuse', $tihId),
+        ]);
+
+        $this->assertResponseRedirects('/admin/tih');
+        $this->em = static::getContainer()->get(\Doctrine\ORM\EntityManagerInterface::class);
+        $this->em->clear();
+        $updated = $this->em->getRepository(Tih::class)->find($tihId);
+        $this->assertNotNull($updated);
         $this->assertSame(Tih::STATUS_PENDING, $updated->getApplicationStatus());
         $this->assertNull($updated->getLatestRefusalEvent());
         self::assertEmailCount(0);
@@ -707,7 +773,10 @@ class AdminTihTest extends WebTestCase
         $this->em->remove($tih);
         $this->em->flush();
 
-        $this->client->request('POST', '/admin/tih/refuse/' . $id, ['_token' => $token]);
+        $this->client->request('POST', '/admin/tih/refuse/' . $id, [
+            '_token' => $token,
+            'rejection_reason' => 'Motif de test',
+        ]);
 
         $this->assertResponseStatusCodeSame(404);
     }
