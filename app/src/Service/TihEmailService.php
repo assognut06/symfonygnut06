@@ -36,6 +36,22 @@ class TihEmailService
             throw new \InvalidArgumentException('A rejection email requires a refusal event.');
         }
 
+        $this->sendDecisionEmail($event);
+    }
+
+    public function sendReviewRequestEmail(TihApplicationEvent $event): void
+    {
+        if (!$event->isReviewRequest()) {
+            throw new \InvalidArgumentException('A review request email requires an administrative review event.');
+        }
+
+        $this->sendDecisionEmail($event);
+    }
+
+    private function sendDecisionEmail(TihApplicationEvent $event): void
+    {
+        $reviewRequest = $event->isReviewRequest();
+
         $tih = $event->getTih();
         $recipient = $tih->getUser()?->getEmail();
 
@@ -45,22 +61,24 @@ class TihEmailService
             );
         }
 
-        $profileUrl = $this->router->generate('app_profil', [], UrlGeneratorInterface::ABSOLUTE_URL) . '#tih-rejection-message';
+        $profileUrl = $this->router->generate('app_profil', [], UrlGeneratorInterface::ABSOLUTE_URL)
+            . ($reviewRequest ? '#tih-review-message' : '#tih-rejection-message');
         $htmlContent = $this->twig->render('mailjet/tih_rejection.html.twig', [
             'firstName' => $tih->getFirstName(),
             'reason' => $event->getReason(),
             'profileUrl' => $profileUrl,
+            'reviewRequest' => $reviewRequest,
         ]);
 
         $email = (new Email())
             ->from(new Address($this->fromEmail, 'GNUT 06'))
             ->to($recipient)
-            ->subject('Votre candidature TIH — Décision et motif')
+            ->subject($reviewRequest ? 'Votre profil TIH est en attente de validation' : 'Votre candidature TIH — Décision et motif')
             ->html($htmlContent);
 
         $this->mailer->send($email);
 
-        $this->logger->info('TIH rejection email sent', [
+        $this->logger->info('TIH decision email sent', [
             'tih_id' => $tih->getId(),
             'event_id' => $event->getId(),
             'recipient' => $recipient,

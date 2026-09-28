@@ -239,6 +239,7 @@ abstract class WebTestCase extends BaseWebTestCase
         return match ($action) {
             'validate' => $this->generateCsrfToken('validate_tih' . $tihId),
             'refuse' => $this->generateCsrfToken('refuse_tih' . $tihId),
+            'review' => $this->generateCsrfToken('review_tih' . $tihId),
             'delete' => $this->generateCsrfToken('delete_tih' . $tihId),
             default => throw new \InvalidArgumentException(sprintf('Unknown TIH admin action "%s".', $action)),
         };

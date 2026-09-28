@@ -19,6 +19,7 @@ class TihApplicationEvent
     public const SOURCE_INITIAL_SUBMISSION = 'initial_submission';
     public const SOURCE_PROFILE_UPDATE = 'profile_update';
     public const SOURCE_ADMIN_DECISION = 'admin_decision';
+    public const SOURCE_ADMIN_REVIEW_REQUEST = 'admin_review_request';
     public const SOURCE_LEGACY_MIGRATION = 'legacy_migration';
 
     #[ORM\Id]
@@ -66,12 +67,13 @@ class TihApplicationEvent
             throw new \InvalidArgumentException(sprintf('Unknown TIH application event status "%s".', $status));
         }
 
-        if (self::STATUS_REFUSED === $status && (null === $reason || '' === trim($reason))) {
-            throw new \InvalidArgumentException('A rejection event requires a reason.');
+        $requiresReason = self::STATUS_REFUSED === $status || (self::STATUS_PENDING === $status && self::SOURCE_ADMIN_REVIEW_REQUEST === $source);
+        if ($requiresReason && (null === $reason || '' === trim($reason) || 1 === preg_match('/^\s*$/u', $reason))) {
+            throw new \InvalidArgumentException('An administrative decision requires a reason.');
         }
 
-        if (self::STATUS_REFUSED !== $status && null !== $reason) {
-            throw new \InvalidArgumentException('Only a rejection event may contain a reason.');
+        if (!$requiresReason && null !== $reason) {
+            throw new \InvalidArgumentException('Only a refusal or review request may contain a reason.');
         }
 
         $this->tih = $tih;
@@ -80,7 +82,7 @@ class TihApplicationEvent
         $this->reason = $reason;
         $this->source = $source;
         $this->occurredAt = new \DateTimeImmutable();
-        $this->emailStatus = self::STATUS_REFUSED === $status ? self::EMAIL_PENDING : null;
+        $this->emailStatus = $requiresReason ? self::EMAIL_PENDING : null;
     }
 
     public function getId(): ?int { return $this->id; }
@@ -105,10 +107,11 @@ class TihApplicationEvent
     public function getEmailError(): ?string { return $this->emailError; }
 
     public function isRefusal(): bool { return self::STATUS_REFUSED === $this->status; }
+    public function isReviewRequest(): bool { return self::STATUS_PENDING === $this->status && self::SOURCE_ADMIN_REVIEW_REQUEST === $this->source; }
 
     public function markEmailPending(): self
     {
-        $this->guardRefusal();
+        $this->guardNotification();
         $this->emailStatus = self::EMAIL_PENDING;
         $this->emailError = null;
 
@@ -117,7 +120,7 @@ class TihApplicationEvent
 
     public function markEmailSent(): self
     {
-        $this->guardRefusal();
+        $this->guardNotification();
         $this->emailStatus = self::EMAIL_SENT;
         $this->emailSentAt = new \DateTimeImmutable();
         $this->emailError = null;
@@ -127,17 +130,17 @@ class TihApplicationEvent
 
     public function markEmailFailed(string $error): self
     {
-        $this->guardRefusal();
+        $this->guardNotification();
         $this->emailStatus = self::EMAIL_FAILED;
         $this->emailError = mb_substr($error, 0, 2000);
 
         return $this;
     }
 
-    private function guardRefusal(): void
+    private function guardNotification(): void
     {
-        if (!$this->isRefusal()) {
-            throw new \LogicException('Email delivery is only available for rejection events.');
+        if (!$this->isRefusal() && !$this->isReviewRequest()) {
+            throw new \LogicException('Email delivery is only available for administrative decisions with a reason.');
         }
     }
 }
