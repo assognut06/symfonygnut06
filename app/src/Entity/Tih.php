@@ -258,6 +258,23 @@ class Tih
         return $latest;
     }
 
+    public function getLatestReviewRequestEvent(): ?TihApplicationEvent
+    {
+        $latest = null;
+
+        foreach ($this->applicationEvents as $event) {
+            if (!$event->isReviewRequest()) {
+                continue;
+            }
+
+            if (null === $latest || $event->getOccurredAt() > $latest->getOccurredAt()) {
+                $latest = $event;
+            }
+        }
+
+        return $latest;
+    }
+
     public function getPhoto(): ?string { return $this->photo; }
     public function setPhoto(?string $photo): self { $this->photo = $photo; return $this; }
 }

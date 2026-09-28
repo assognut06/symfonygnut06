@@ -65,6 +65,7 @@
 
 {% for tih in tihs %}
   {% set decision = tih.latestRefusalEvent %}
+  {% set reviewRequest = tih.latestReviewRequestEvent %}
   <div class="modal fade" id="modal-tih-{{ tih.id }}" tabindex="-1" aria-labelledby="modal-tih-{{ tih.id }}-label" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable"><div class="modal-content">
       <div class="modal-header"><h2 class="modal-title h5" id="modal-tih-{{ tih.id }}-label">Profil TIH #{{ tih.id }}</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
@@ -104,6 +105,28 @@
           </section>
         {% endif %}
 
+        {% if reviewRequest %}
+          <section class="alert alert-light border mt-3" aria-labelledby="review-title-{{ tih.id }}">
+            <h3 class="h6" id="review-title-{{ tih.id }}">Dernière remise en attente de validation</h3>
+            <p class="mb-2" style="white-space: pre-wrap;"><strong>Motif :</strong> {{ reviewRequest.reason }}</p>
+            <p class="mb-1"><strong>Date :</strong> {{ reviewRequest.occurredAt|date('d/m/Y H:i') }}</p>
+            <p class="mb-1"><strong>Administrateur :</strong> {{ reviewRequest.actor ? reviewRequest.actor.email : 'Compte historique non identifié' }}</p>
+            <p class="mb-2"><strong>E-mail :</strong>
+              {% if reviewRequest.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_SENT') %}<span class="badge bg-success">Envoyé</span>
+              {% elseif reviewRequest.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_FAILED') %}<span class="badge bg-danger">Échec</span>
+              {% else %}<span class="badge bg-warning text-dark">En cours</span>{% endif %}
+            </p>
+            {% if reviewRequest.emailStatus == constant('App\\Entity\\TihApplicationEvent::EMAIL_FAILED') %}
+              <p class="text-danger small">L’envoi a échoué. La remise en attente reste enregistrée.</p>
+              {% if reviewRequest.emailError %}<p class="small"><strong>Erreur :</strong> {{ reviewRequest.emailError }}</p>{% endif %}
+              <form action="{{ path('app_admin_tih_retry_review_email', {id: reviewRequest.id}) }}" method="post" class="js-single-submit">
+                <input type="hidden" name="_token" value="{{ csrf_token('retry_tih_review_email' ~ reviewRequest.id) }}">
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-submitting-label="Envoi en cours…">Réessayer l’envoi</button>
+              </form>
+            {% endif %}
+          </section>
+        {% endif %}
+
         {% if tih.applicationEvents|length > 0 %}
           <section class="mt-4" aria-labelledby="application-history-title-{{ tih.id }}">
             <h3 class="h6" id="application-history-title-{{ tih.id }}">Historique de la candidature</h3>
@@ -123,6 +146,7 @@
                     <td>
                       {% if event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_INITIAL_SUBMISSION') %}Soumission initiale
                       {% elseif event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_PROFILE_UPDATE') %}Mise à jour du profil
+                      {% elseif event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_ADMIN_REVIEW_REQUEST') %}Remise en attente par l’administration
                       {% elseif event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_ADMIN_DECISION') %}Décision administrative
                       {% else %}Donnée historique{% endif %}
                     </td>
@@ -136,14 +160,15 @@
         {% endif %}
       </div>
       <div class="modal-footer">
-        {% if tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_REFUSED') %}<button type="button" class="btn btn-outline-danger me-auto" data-bs-target="#refuse-modal-{{ tih.id }}" data-bs-toggle="modal">Refuser la candidature</button>{% endif %}
+        {% if tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_PENDING') %}<button type="button" class="btn btn-outline-danger me-auto" data-bs-target="#refuse-modal-{{ tih.id }}" data-bs-toggle="modal">Refuser la candidature</button>{% endif %}
+        {% if tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_APPROVED') %}<button type="button" class="btn btn-outline-warning me-auto" data-bs-target="#review-modal-{{ tih.id }}" data-bs-toggle="modal">Remettre en attente de validation</button>{% endif %}
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
         {% if tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_APPROVED') %}<form action="{{ path('app_admin_tih_validate', {id: tih.id}) }}" method="post" onsubmit="return confirm('Valider ce profil TIH ?');"><input type="hidden" name="_token" value="{{ csrf_token('validate_tih' ~ tih.id) }}"><button type="submit" class="btn btn-success">Valider</button></form>{% endif %}
       </div>
     </div></div>
   </div>
 
-  {% if tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_REFUSED') %}
+  {% if tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_PENDING') %}
     <div class="modal fade" id="refuse-modal-{{ tih.id }}" tabindex="-1" aria-labelledby="refuse-modal-{{ tih.id }}-label" aria-hidden="true">
       <div class="modal-dialog"><div class="modal-content">
         <form action="{{ path('app_admin_tih_refuse', {id: tih.id}) }}" method="post" class="js-single-submit">
@@ -155,6 +180,23 @@
             <p id="rejection-help-{{ tih.id }}" class="form-text mb-0">Ce message sera transmis au candidat. Ne saisissez aucune note interne ni information médicale.</p>
           </div>
           <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button><button type="submit" class="btn btn-danger" data-submitting-label="Refus en cours…">Confirmer le refus et notifier le candidat</button></div>
+        </form>
+      </div></div>
+    </div>
+  {% endif %}
+
+  {% if tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_APPROVED') %}
+    <div class="modal fade" id="review-modal-{{ tih.id }}" tabindex="-1" aria-labelledby="review-modal-{{ tih.id }}-label" aria-hidden="true">
+      <div class="modal-dialog"><div class="modal-content">
+        <form action="{{ path('app_admin_tih_review', {id: tih.id}) }}" method="post" class="js-single-submit">
+          <div class="modal-header"><h2 class="modal-title h5" id="review-modal-{{ tih.id }}-label">Remettre le profil de {{ tih.firstName }} {{ tih.lastName }} en attente de validation</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+          <div class="modal-body">
+            <input type="hidden" name="_token" value="{{ csrf_token('review_tih' ~ tih.id) }}">
+            <label for="review-reason-{{ tih.id }}" class="form-label">Motif de la remise en attente <span aria-hidden="true">*</span></label>
+            <textarea id="review-reason-{{ tih.id }}" name="review_reason" class="form-control" rows="5" required aria-required="true" aria-describedby="review-help-{{ tih.id }}"></textarea>
+            <p id="review-help-{{ tih.id }}" class="form-text mb-0">Ce message sera envoyé au TIH. Indiquez la raison et, si nécessaire, les éléments à corriger ou à fournir.</p>
+          </div>
+          <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button><button type="submit" class="btn btn-warning" data-submitting-label="Envoi en cours…">Confirmer et envoyer le message</button></div>
         </form>
       </div></div>
     </div>

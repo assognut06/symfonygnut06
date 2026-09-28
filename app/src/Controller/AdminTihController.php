@@ -164,6 +164,12 @@ class AdminTihController extends AbstractController
             throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
         }
 
+        if (false === $outcome) {
+            $this->addFlash('warning', 'Ce profil est validé. Utilisez la remise en attente de validation.');
+
+            return $this->redirectToRoute('app_admin_tih');
+        }
+
         if (!$outcome['created']) {
             $this->addFlash('warning', 'Cette candidature était déjà refusée. Aucun nouvel e-mail n’a été envoyé.');
 
@@ -174,6 +180,72 @@ class AdminTihController extends AbstractController
             $this->addFlash('success', 'La candidature a été refusée et le candidat a été notifié.');
         } else {
             $this->addFlash('danger', 'La candidature a bien été refusée, mais l’e-mail n’a pas pu être envoyé. Vous pouvez relancer l’envoi depuis l’administration.');
+        }
+
+        return $this->redirectToRoute('app_admin_tih');
+    }
+
+    #[Route('/admin/tih/review/{id}', name: 'app_admin_tih_review', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function review(Request $request, TihApplicationWorkflowService $workflow, int $id): Response
+    {
+        if (!$this->isCsrfTokenValid('review_tih'.$id, (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Token de sécurité invalide.');
+
+            return $this->redirectToRoute('app_admin_tih');
+        }
+
+        $reason = (string) $request->request->get('review_reason', '');
+        if ('' === trim($reason) || 1 === preg_match('/^\s*$/u', $reason)) {
+            $this->addFlash('danger', 'Le motif de la remise en attente est obligatoire et ne peut pas contenir uniquement des espaces.');
+
+            return $this->redirectToRoute('app_admin_tih');
+        }
+
+        $administrator = $this->getUser();
+        if (!$administrator instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $event = $workflow->reopenForReview($id, $reason, $administrator);
+        if (null === $event) {
+            throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
+        }
+
+        if (false === $event) {
+            $this->addFlash('warning', 'Ce profil n’est plus validé. Aucun nouvel e-mail n’a été envoyé.');
+
+            return $this->redirectToRoute('app_admin_tih');
+        }
+
+        if (TihApplicationEvent::EMAIL_SENT === $event->getEmailStatus()) {
+            $this->addFlash('success', 'Le profil TIH est en attente de validation et le TIH a été notifié.');
+        } else {
+            $this->addFlash('danger', 'Le profil est en attente de validation, mais l’e-mail n’a pas pu être envoyé. Vous pouvez relancer l’envoi depuis l’administration.');
+        }
+
+        return $this->redirectToRoute('app_admin_tih');
+    }
+
+    #[Route('/admin/tih/review/{id}/retry-email', name: 'app_admin_tih_retry_review_email', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function retryReviewEmail(Request $request, TihApplicationWorkflowService $workflow, int $id): Response
+    {
+        if (!$this->isCsrfTokenValid('retry_tih_review_email'.$id, (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Token de sécurité invalide.');
+
+            return $this->redirectToRoute('app_admin_tih');
+        }
+
+        $status = $workflow->retryReviewRequestEmail($id);
+        if ('not_found' === $status) {
+            throw $this->createNotFoundException('La remise en attente n’a pas été trouvée.');
+        }
+
+        if ('not_failed' === $status) {
+            $this->addFlash('warning', 'Cet e-mail est déjà envoyé ou en cours d’envoi. Aucun nouvel envoi n’a été déclenché.');
+        } elseif (TihApplicationEvent::EMAIL_SENT === $status) {
+            $this->addFlash('success', 'L’e-mail de remise en attente a été envoyé au TIH.');
+        } else {
+            $this->addFlash('danger', 'La nouvelle tentative d’envoi a échoué. Vous pouvez réessayer ultérieurement.');
         }
 
         return $this->redirectToRoute('app_admin_tih');
