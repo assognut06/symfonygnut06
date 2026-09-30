@@ -2,25 +2,33 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Votre candidature TIH — Décision et motif</title>
+    <title>{{ reviewRequest ? 'Votre profil TIH est en attente de validation' : 'Votre candidature TIH — Décision et motif' }}</title>
 </head>
 <body style="font-family: Arial, sans-serif; color: #212529; line-height: 1.5;">
     <p>Bonjour {{ firstName ?: 'Madame, Monsieur' }},</p>
 
-    <p>Après examen, votre candidature à l’annuaire TIH de GNUT 06 n’a pas été validée.</p>
+    {% if reviewRequest %}
+        <p>Votre profil TIH, précédemment validé, a été remis en attente de validation pour la raison suivante :</p>
+    {% else %}
+        <p>Après examen, votre candidature à l’annuaire TIH de GNUT 06 n’a pas été validée.</p>
+    {% endif %}
 
-    <p><strong>Motif du refus :</strong></p>
-    <div style="padding: 12px; border-left: 4px solid #dc3545; background: #f8f9fa; white-space: pre-wrap;">{{ reason }}</div>
+    {% if not reviewRequest %}<p><strong>Motif du refus :</strong></p>{% endif %}
+    <div style="padding: 12px; border-left: 4px solid {{ reviewRequest ? '#ffc107' : '#dc3545' }}; background: #f8f9fa; white-space: pre-wrap;">{{ reason }}</div>
 
-    <p>Vous pouvez retrouver ce message dans votre espace personnel sur le site GNUT 06.</p>
+    {% if reviewRequest %}
+        <p>Il ne s’agit pas d’un refus définitif. Si des corrections ou des documents complémentaires sont demandés ci-dessus, merci de les fournir depuis votre espace personnel.</p>
+    {% else %}
+        <p>Vous pouvez retrouver ce message dans votre espace personnel sur le site GNUT 06.</p>
+    {% endif %}
 
     <p>
         <a href="{{ profileUrl }}" style="display: inline-block; padding: 10px 16px; color: #fff; background: #7f29ff; text-decoration: none; border-radius: 4px;">
-            Consulter mon espace personnel
+            {{ reviewRequest ? 'Accéder à mon profil' : 'Consulter mon espace personnel' }}
         </a>
     </p>
 
-    <p>Si des corrections vous sont demandées, veuillez suivre les indications du message.</p>
+    {% if not reviewRequest %}<p>Si des corrections vous sont demandées, veuillez suivre les indications du message.</p>{% endif %}
 
     <p>L’équipe GNUT 06</p>
 </body>

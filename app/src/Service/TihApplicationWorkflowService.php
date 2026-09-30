@@ -18,15 +18,19 @@ class TihApplicationWorkflowService
     ) {}
 
     /**
-     * @return array{event: TihApplicationEvent, created: bool}|null
+     * @return array{event: TihApplicationEvent, created: bool}|false|null
      */
-    public function refuse(int $tihId, string $reason, User $administrator): ?array
+    public function refuse(int $tihId, string $reason, User $administrator): array|false|null
     {
-        $outcome = $this->entityManager->wrapInTransaction(function () use ($tihId, $reason, $administrator): ?array {
+        $outcome = $this->entityManager->wrapInTransaction(function () use ($tihId, $reason, $administrator): array|false|null {
             $tih = $this->entityManager->find(Tih::class, $tihId, LockMode::PESSIMISTIC_WRITE);
 
             if (!$tih instanceof Tih) {
                 return null;
+            }
+
+            if (Tih::STATUS_APPROVED === $tih->getApplicationStatus()) {
+                return false;
             }
 
             if (Tih::STATUS_REFUSED === $tih->getApplicationStatus()) {
@@ -55,7 +59,7 @@ class TihApplicationWorkflowService
             return ['event' => $event, 'created' => true];
         });
 
-        if (null !== $outcome && $outcome['created']) {
+        if (is_array($outcome) && $outcome['created']) {
             $this->deliverRejectionEmail($outcome['event']);
         }
 
@@ -92,6 +96,41 @@ class TihApplicationWorkflowService
         });
     }
 
+    public function reopenForReview(int $tihId, string $reason, User $administrator): TihApplicationEvent|false|null
+    {
+        $event = $this->entityManager->wrapInTransaction(function () use ($tihId, $reason, $administrator): TihApplicationEvent|false|null {
+            $tih = $this->entityManager->find(Tih::class, $tihId, LockMode::PESSIMISTIC_WRITE);
+
+            if (!$tih instanceof Tih) {
+                return null;
+            }
+
+            if (Tih::STATUS_APPROVED !== $tih->getApplicationStatus()) {
+                return false;
+            }
+
+            $event = new TihApplicationEvent(
+                $tih,
+                TihApplicationEvent::STATUS_PENDING,
+                $administrator,
+                $reason,
+                TihApplicationEvent::SOURCE_ADMIN_REVIEW_REQUEST,
+            );
+            $tih->addApplicationEvent($event);
+            $tih->setApplicationStatus(Tih::STATUS_PENDING);
+            $this->entityManager->persist($event);
+            $this->entityManager->flush();
+
+            return $event;
+        });
+
+        if ($event instanceof TihApplicationEvent) {
+            $this->deliverDecisionEmail($event);
+        }
+
+        return $event;
+    }
+
     public function submitForReview(Tih $tih, User $candidate, bool $initialSubmission): TihApplicationEvent
     {
         $event = new TihApplicationEvent(
@@ -112,14 +151,25 @@ class TihApplicationWorkflowService
 
     public function retryRejectionEmail(int $eventId): string
     {
-        $event = $this->entityManager->wrapInTransaction(function () use ($eventId): TihApplicationEvent|string|null {
+        return $this->retryDecisionEmail($eventId, false);
+    }
+
+    public function retryReviewRequestEmail(int $eventId): string
+    {
+        return $this->retryDecisionEmail($eventId, true);
+    }
+
+    private function retryDecisionEmail(int $eventId, bool $reviewRequest): string
+    {
+        $event = $this->entityManager->wrapInTransaction(function () use ($eventId, $reviewRequest): TihApplicationEvent|string|null {
             $applicationEvent = $this->entityManager->find(TihApplicationEvent::class, $eventId, LockMode::PESSIMISTIC_WRITE);
 
             if (!$applicationEvent instanceof TihApplicationEvent) {
                 return null;
             }
 
-            if (!$applicationEvent->isRefusal() || TihApplicationEvent::EMAIL_FAILED !== $applicationEvent->getEmailStatus()) {
+            if (($reviewRequest ? !$applicationEvent->isReviewRequest() : !$applicationEvent->isRefusal())
+                || TihApplicationEvent::EMAIL_FAILED !== $applicationEvent->getEmailStatus()) {
                 return 'not_failed';
             }
 
@@ -137,19 +187,28 @@ class TihApplicationWorkflowService
             return $event;
         }
 
-        $this->deliverRejectionEmail($event);
+        $this->deliverDecisionEmail($event);
 
         return (string) $event->getEmailStatus();
     }
 
     private function deliverRejectionEmail(TihApplicationEvent $event): void
     {
+        $this->deliverDecisionEmail($event);
+    }
+
+    private function deliverDecisionEmail(TihApplicationEvent $event): void
+    {
         try {
-            $this->emailService->sendRejectionEmail($event);
+            if ($event->isReviewRequest()) {
+                $this->emailService->sendReviewRequestEmail($event);
+            } else {
+                $this->emailService->sendRejectionEmail($event);
+            }
             $event->markEmailSent();
         } catch (\Throwable $exception) {
             $event->markEmailFailed($exception->getMessage());
-            $this->logger->error('Failed to send TIH rejection email', [
+            $this->logger->error('Failed to send TIH decision email', [
                 'tih_id' => $event->getTih()->getId(),
                 'event_id' => $event->getId(),
                 'error' => $exception->getMessage(),

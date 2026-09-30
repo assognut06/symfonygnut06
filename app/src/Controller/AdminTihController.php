@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Tih;
 use App\Entity\TihApplicationEvent;
 use App\Entity\User;
+use App\Repository\TihRepository;
 use App\Service\TihApplicationWorkflowService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,11 +22,11 @@ class AdminTihController extends AbstractController
     private const PAGE_SIZE = 10;
 
     #[Route('/admin/tih/{page}', name: 'app_admin_tih', defaults: ['page' => 1], methods: ['GET'])]
-    public function index(Request $request, EntityManagerInterface $em, int $page = 1): Response
+    public function index(Request $request, TihRepository $tihRepository, int $page = 1): Response
     {
         $q = trim((string) $request->query->get('q', ''));
 
-        $qb = $em->getRepository(Tih::class)->createQueryBuilder('t')
+        $qb = $tihRepository->createQueryBuilder('t')
             ->leftJoin('t.user', 'u')->addSelect('u')
             ->orderBy('t.id', 'DESC');
 
@@ -48,11 +49,17 @@ class AdminTihController extends AbstractController
         $pages = max(1, (int) ceil($total / self::PAGE_SIZE));
         $page = min($page, $pages);
 
-        $tihs = $qb
+        $pageRows = $qb
+            ->select('t.id AS id')
             ->setFirstResult(($page - 1) * self::PAGE_SIZE)
             ->setMaxResults(self::PAGE_SIZE)
             ->getQuery()
-            ->getResult();
+            ->getScalarResult();
+        $pageIds = array_map(static fn (array $row): int => (int) $row['id'], $pageRows);
+
+        // Paginer les identifiants avant de charger les collections : un fetch join
+        // sur les événements dans la requête paginée tronquerait les profils.
+        $tihs = $tihRepository->findWithAdminDetailsByIds($pageIds);
 
         return $this->render('admin/admin_tih/index.html.twig', [
             'tihs'      => $tihs,
@@ -128,28 +135,78 @@ class AdminTihController extends AbstractController
     }
 
     #[Route('/admin/tih/refuse/{id}', name: 'app_admin_tih_refuse', methods: ['POST'])]
-    public function refuse(
-        Request $request,
-        EntityManagerInterface $em,
-        TihApplicationWorkflowService $workflow,
-        int $id
-    ): Response
+    public function refuse(Request $request, TihApplicationWorkflowService $workflow, int $id): Response
     {
-        $token = $request->request->get('_token');
-        if (!$this->isCsrfTokenValid('refuse_tih'.$id, $token)) {
+        return $this->submitReasonedDecision($request, $workflow, $id, false);
+    }
+
+    #[Route('/admin/tih/review/{id}', name: 'app_admin_tih_review', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function review(Request $request, TihApplicationWorkflowService $workflow, int $id): Response
+    {
+        return $this->submitReasonedDecision($request, $workflow, $id, true);
+    }
+
+    #[Route('/admin/tih/review/{id}/retry-email', name: 'app_admin_tih_retry_review_email', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function retryReviewEmail(Request $request, TihApplicationWorkflowService $workflow, int $id): Response
+    {
+        return $this->retryDecisionEmail($request, $workflow, $id, true);
+    }
+
+    #[Route('/admin/tih/rejection/{id}/retry-email', name: 'app_admin_tih_retry_rejection_email', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function retryRejectionEmail(Request $request, TihApplicationWorkflowService $workflow, int $id): Response
+    {
+        return $this->retryDecisionEmail($request, $workflow, $id, false);
+    }
+
+    private function retryDecisionEmail(Request $request, TihApplicationWorkflowService $workflow, int $id, bool $reviewRequest): Response
+    {
+        $tokenId = ($reviewRequest ? 'retry_tih_review_email' : 'retry_tih_rejection_email').$id;
+        if (!$this->isCsrfTokenValid($tokenId, (string) $request->request->get('_token'))) {
             $this->addFlash('danger', 'Token de sécurité invalide.');
+
             return $this->redirectToRoute('app_admin_tih');
         }
 
-        // Une requête scalaire évite de placer le TIH dans l'identity map avant
-        // que le service ne le recharge avec un verrou pessimiste.
-        if (0 === $em->getRepository(Tih::class)->count(['id' => $id])) {
-            throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
+        $status = $reviewRequest ? $workflow->retryReviewRequestEmail($id) : $workflow->retryRejectionEmail($id);
+
+        if ('not_found' === $status) {
+            throw $this->createNotFoundException($reviewRequest
+                ? 'La remise en attente n’a pas été trouvée.'
+                : 'La décision de refus n’a pas été trouvée.');
         }
 
-        $reason = trim((string) $request->request->get('rejection_reason', ''));
-        if ('' === $reason || 1 === preg_match('/^\s*$/u', $reason)) {
-            $this->addFlash('danger', 'Le motif du refus est obligatoire et ne peut pas contenir uniquement des espaces.');
+        if ('not_failed' === $status) {
+            $this->addFlash('warning', 'Cet e-mail est déjà envoyé ou en cours d’envoi. Aucun nouvel envoi n’a été déclenché.');
+        } elseif (TihApplicationEvent::EMAIL_SENT === $status) {
+            $this->addFlash('success', $reviewRequest
+                ? 'L’e-mail de remise en attente a été envoyé au TIH.'
+                : 'L’e-mail de refus a été renvoyé au candidat.');
+        } else {
+            $this->addFlash('danger', 'La nouvelle tentative d’envoi a échoué. Vous pouvez réessayer ultérieurement.');
+        }
+
+        return $this->redirectToRoute('app_admin_tih');
+    }
+
+    private function submitReasonedDecision(
+        Request $request,
+        TihApplicationWorkflowService $workflow,
+        int $id,
+        bool $reviewRequest,
+    ): Response {
+        $tokenId = ($reviewRequest ? 'review_tih' : 'refuse_tih').$id;
+        if (!$this->isCsrfTokenValid($tokenId, (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Token de sécurité invalide.');
+
+            return $this->redirectToRoute('app_admin_tih');
+        }
+
+        $field = $reviewRequest ? 'review_reason' : 'rejection_reason';
+        $reason = (string) $request->request->get($field, '');
+        if ('' === trim($reason) || 1 === preg_match('/^\s*$/u', $reason)) {
+            $this->addFlash('danger', $reviewRequest
+                ? 'Le motif de la remise en attente est obligatoire et ne peut pas contenir uniquement des espaces.'
+                : 'Le motif du refus est obligatoire et ne peut pas contenir uniquement des espaces.');
 
             return $this->redirectToRoute('app_admin_tih');
         }
@@ -159,47 +216,41 @@ class AdminTihController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $outcome = $workflow->refuse($id, $reason, $administrator);
-        if (null === $outcome) {
+        if ($reviewRequest) {
+            $event = $workflow->reopenForReview($id, $reason, $administrator);
+            $created = true;
+        } else {
+            $outcome = $workflow->refuse($id, trim($reason), $administrator);
+            $event = is_array($outcome) ? $outcome['event'] : $outcome;
+            $created = is_array($outcome) && $outcome['created'];
+        }
+
+        if (null === $event) {
             throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
         }
 
-        if (!$outcome['created']) {
+        if (false === $event) {
+            $this->addFlash('warning', $reviewRequest
+                ? 'Ce profil n’est plus validé. Aucun nouvel e-mail n’a été envoyé.'
+                : 'Ce profil est validé. Utilisez la remise en attente de validation.');
+
+            return $this->redirectToRoute('app_admin_tih');
+        }
+
+        if (!$created) {
             $this->addFlash('warning', 'Cette candidature était déjà refusée. Aucun nouvel e-mail n’a été envoyé.');
 
             return $this->redirectToRoute('app_admin_tih');
         }
 
-        if (TihApplicationEvent::EMAIL_SENT === $outcome['event']->getEmailStatus()) {
-            $this->addFlash('success', 'La candidature a été refusée et le candidat a été notifié.');
+        if (TihApplicationEvent::EMAIL_SENT === $event->getEmailStatus()) {
+            $this->addFlash('success', $reviewRequest
+                ? 'Le profil TIH est en attente de validation et le TIH a été notifié.'
+                : 'La candidature a été refusée et le candidat a été notifié.');
         } else {
-            $this->addFlash('danger', 'La candidature a bien été refusée, mais l’e-mail n’a pas pu être envoyé. Vous pouvez relancer l’envoi depuis l’administration.');
-        }
-
-        return $this->redirectToRoute('app_admin_tih');
-    }
-
-    #[Route('/admin/tih/rejection/{id}/retry-email', name: 'app_admin_tih_retry_rejection_email', requirements: ['id' => '\d+'], methods: ['POST'])]
-    public function retryRejectionEmail(Request $request, TihApplicationWorkflowService $workflow, int $id): Response
-    {
-        if (!$this->isCsrfTokenValid('retry_tih_rejection_email'.$id, (string) $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Token de sécurité invalide.');
-
-            return $this->redirectToRoute('app_admin_tih');
-        }
-
-        $status = $workflow->retryRejectionEmail($id);
-
-        if ('not_found' === $status) {
-            throw $this->createNotFoundException('La décision de refus n’a pas été trouvée.');
-        }
-
-        if ('not_failed' === $status) {
-            $this->addFlash('warning', 'Cet e-mail est déjà envoyé ou en cours d’envoi. Aucun nouvel envoi n’a été déclenché.');
-        } elseif (TihApplicationEvent::EMAIL_SENT === $status) {
-            $this->addFlash('success', 'L’e-mail de refus a été renvoyé au candidat.');
-        } else {
-            $this->addFlash('danger', 'La nouvelle tentative d’envoi a échoué. Vous pouvez réessayer ultérieurement.');
+            $this->addFlash('danger', $reviewRequest
+                ? 'Le profil est en attente de validation, mais l’e-mail n’a pas pu être envoyé. Vous pouvez relancer l’envoi depuis l’administration.'
+                : 'La candidature a bien été refusée, mais l’e-mail n’a pas pu être envoyé. Vous pouvez relancer l’envoi depuis l’administration.');
         }
 
         return $this->redirectToRoute('app_admin_tih');
