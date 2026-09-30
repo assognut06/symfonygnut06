@@ -164,6 +164,35 @@ sudo systemctl reload apache2
 ```
 
 ### Vérifications post-déploiement
+
+Apache doit activer `mod_rewrite` et autoriser les règles du fichier
+`public/.htaccess` (`AllowOverride All`). Ce fichier impose HTTPS pour
+`gnut06.org`, ses sous-domaines et le serveur local `127.0.0.1`, y compris les fichiers statiques. La
+redirection permanente 308 conserve la méthode HTTP, le chemin et les paramètres
+et utilise le port HTTPS standard (443). L'accès HTTP local reste disponible.
+
+Cette configuration suppose que TLS est terminé par Apache. Si un reverse proxy
+termine TLS, appliquer la redirection sur ce proxy et adapter la règle Apache
+avant le déploiement pour éviter une boucle ; ne pas faire confiance à un en-tête
+`X-Forwarded-Proto` envoyé directement par le client.
+
+```bash
+# Attendu : 308 et Location: https://gnut06.org/login?next=%2Fprofil
+curl -I 'http://gnut06.org/login?next=%2Fprofil'
+# Attendu : réponse HTTPS sans nouvelle redirection vers la même URL
+curl -I 'https://gnut06.org/login?next=%2Fprofil'
+```
+
+Le test PHPUnit dédié interroge Apache sur `http://127.0.0.1` :
+
+```bash
+docker compose exec -w /var/www/app symfony php vendor/bin/phpunit --no-configuration --bootstrap vendor/autoload.php tests/Infrastructure/HttpsRedirectTest.php
+```
+
+Le bootstrap applicatif est volontairement évité : ce test ne nécessite pas de
+base de données. Il vérifie réellement le statut 308 pour une page, une URL avec
+paramètres, un fichier statique et une requête POST.
+
 ```bash
 # Vérifier la configuration Symfony
 php bin/console about --env=prod
