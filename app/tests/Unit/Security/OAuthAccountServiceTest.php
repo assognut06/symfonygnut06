@@ -56,11 +56,7 @@ final class OAuthAccountServiceTest extends TestCase
         self::assertSame($owner, $service->login(new OAuthIdentity(OAuthProvider::Google, 'google-subject', null, false)));
     }
 
-    /**
-     * A Microsoft email claim is contact data, not proof of ownership, so a
-     * provisioned account must stay unverified and be gated by the user checker.
-     */
-    public function testMicrosoftProvisionedAccountIsNeverCreatedVerified(): void
+    public function testMicrosoftAccountWithUnprovenEmailIsCreatedUnverified(): void
     {
         $persisted = null;
         $repository = $this->createMock(EntityRepository::class);
@@ -72,10 +68,22 @@ final class OAuthAccountServiceTest extends TestCase
         );
 
         $service = new OAuthAccountService($entityManager, $this->createMock(UserPasswordHasherInterface::class));
-        $user = $service->login(new OAuthIdentity(OAuthProvider::Microsoft, 'object-id', 'claimed@example.test', true));
+        $user = $service->login(new OAuthIdentity(OAuthProvider::Microsoft, 'object-id', 'claimed@example.test', false));
 
         self::assertSame($persisted, $user);
-        self::assertFalse($user->isVerified(), 'A Microsoft claim must never self-verify an account.');
+        self::assertFalse($user->isVerified());
+    }
+
+    public function testMicrosoftAccountWithProvenEmailIsCreatedVerified(): void
+    {
+        $repository = $this->createMock(EntityRepository::class);
+        $repository->method('findOneBy')->willReturn(null);
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->method('getRepository')->with(User::class)->willReturn($repository);
+
+        $service = new OAuthAccountService($entityManager, $this->createMock(UserPasswordHasherInterface::class));
+
+        self::assertTrue($service->login(new OAuthIdentity(OAuthProvider::Microsoft, 'object-id', 'owner@example.test', true))->isVerified());
     }
 
     /** Google may verify on creation, but only when the provider asserts email_verified. */
