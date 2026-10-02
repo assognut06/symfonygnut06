@@ -275,6 +275,13 @@ class AdminTihTest extends WebTestCase
         $this->assertTrue($updated->isValidate());
         $this->assertNull($updated->getValidationMessage());
         $this->assertSame(TihApplicationEvent::STATUS_APPROVED, $updated->getApplicationEvents()->first()->getStatus());
+        self::assertEmailCount(1);
+        $email = self::getMailerMessage(0);
+        self::assertInstanceOf(Email::class, $email);
+        self::assertEmailAddressContains($email, 'to', $tihUser->getEmail());
+        self::assertSame('Votre candidature TIH a été acceptée', $email->getSubject());
+        self::assertEmailHtmlBodyContains($email, 'alt="Logo GNUT 06"');
+        self::assertEmailHtmlBodyContains($email, 'Votre candidature à l’annuaire TIH de GNUT 06 a été acceptée.');
     }
 
     public function testRefuseRejectsTihWithCustomMessage(): void
@@ -336,7 +343,7 @@ class AdminTihTest extends WebTestCase
         ]);
 
         $this->assertResponseRedirects('/admin/tih');
-        self::assertEmailCount(0);
+        self::assertEmailCount(1);
         $this->em->clear();
         $tih = $this->em->getRepository(Tih::class)->find($tihId);
         $this->assertNotNull($tih);
@@ -580,7 +587,11 @@ class AdminTihTest extends WebTestCase
         ]);
 
         $this->assertResponseRedirects('/admin/tih');
-        self::assertEmailCount(0);
+        self::assertEmailCount(1);
+        $approvalEmail = self::getMailerMessage(0);
+        self::assertInstanceOf(Email::class, $approvalEmail);
+        self::assertEmailAddressContains($approvalEmail, 'to', $candidate->getEmail());
+        self::assertSame('Votre candidature TIH a été acceptée', $approvalEmail->getSubject());
         $this->em->clear();
         $tih = $this->em->getRepository(Tih::class)->find($tihId);
         $this->assertNotNull($tih);
@@ -591,6 +602,7 @@ class AdminTihTest extends WebTestCase
             [Tih::STATUS_PENDING, Tih::STATUS_REFUSED, Tih::STATUS_PENDING, Tih::STATUS_APPROVED],
             array_map(static fn (TihApplicationEvent $event): string => $event->getStatus(), $events),
         );
+        $this->assertSame(TihApplicationEvent::EMAIL_SENT, $events[3]->getEmailStatus());
         $this->assertSame(TihApplicationEvent::SOURCE_PROFILE_UPDATE, $events[2]->getSource());
         $this->assertSame($candidate->getId(), $events[2]->getActor()?->getId());
         $this->assertSame('Un document complémentaire est nécessaire.', $events[1]->getReason());

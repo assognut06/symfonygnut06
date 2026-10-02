@@ -48,6 +48,39 @@ class TihEmailService
         $this->sendDecisionEmail($event);
     }
 
+    public function sendApprovalEmail(TihApplicationEvent $event): void
+    {
+        if (TihApplicationEvent::STATUS_APPROVED !== $event->getStatus()) {
+            throw new \InvalidArgumentException('An approval email requires an approval event.');
+        }
+
+        $tih = $event->getTih();
+        $recipient = $tih->getUser()?->getEmail();
+
+        if (!$recipient) {
+            throw new \InvalidArgumentException(sprintf('TIH #%d has no account email address', $tih->getId()));
+        }
+
+        $htmlContent = $this->twig->render('mailjet/tih_approval.html.twig', [
+            'firstName' => $tih->getFirstName(),
+        ]);
+
+        $email = (new Email())
+            ->from(new Address($this->fromEmail, 'GNUT 06'))
+            ->to($recipient)
+            ->subject('Votre candidature TIH a été acceptée')
+            ->html($htmlContent)
+            ->embedFromPath($this->logoPath, 'logo-new');
+
+        $this->mailer->send($email);
+
+        $this->logger->info('TIH approval email sent', [
+            'tih_id' => $tih->getId(),
+            'event_id' => $event->getId(),
+            'recipient' => $recipient,
+        ]);
+    }
+
     private function sendDecisionEmail(TihApplicationEvent $event): void
     {
         $reviewRequest = $event->isReviewRequest();
@@ -74,7 +107,8 @@ class TihEmailService
             ->from(new Address($this->fromEmail, 'GNUT 06'))
             ->to($recipient)
             ->subject($reviewRequest ? 'Votre profil TIH est en attente de validation' : 'Votre candidature TIH — Décision et motif')
-            ->html($htmlContent);
+            ->html($htmlContent)
+            ->embedFromPath($this->logoPath, 'logo-new');
 
         $this->mailer->send($email);
 
