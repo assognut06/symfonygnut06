@@ -241,6 +241,13 @@ class AdminTihTest extends WebTestCase
         $this->assertTrue($updated->isValidate());
         $this->assertNull($updated->getValidationMessage());
         $this->assertSame(TihApplicationEvent::STATUS_APPROVED, $updated->getApplicationEvents()->first()->getStatus());
+        self::assertEmailCount(1);
+        $email = self::getMailerMessage(0);
+        self::assertNotNull($email);
+        self::assertEmailAddressContains($email, 'to', $tihUser->getEmail());
+        self::assertSame('Votre candidature TIH a été acceptée', $email->getSubject());
+        self::assertEmailHtmlBodyContains($email, 'alt="Logo GNUT 06"');
+        self::assertEmailHtmlBodyContains($email, 'Votre candidature à l’annuaire TIH de GNUT 06 a été acceptée.');
     }
 
     public function testRefuseRejectsTihWithCustomMessage(): void
@@ -302,7 +309,7 @@ class AdminTihTest extends WebTestCase
         ]);
 
         $this->assertResponseRedirects('/admin/tih');
-        self::assertEmailCount(0);
+        self::assertEmailCount(1);
         $this->em->clear();
         $tih = $this->em->getRepository(Tih::class)->find($tihId);
         $this->assertNotNull($tih);
