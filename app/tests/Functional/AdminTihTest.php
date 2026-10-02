@@ -41,6 +41,40 @@ class AdminTihTest extends WebTestCase
         $this->assertSelectorTextContains('table#tih-table', 'listed-tih@test.com');
     }
 
+    public function testRefusalModalTitleUsesH4AndDangerColor(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih([
+            'email' => 'refusal-title@test.com',
+            'validated' => false,
+        ]);
+
+        $this->client->request('GET', '/admin/tih');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains(
+            'h4.modal-title.text-danger#refuse-modal-' . $tih->getId() . '-label',
+            'Refuser la candidature de Jean Dupont',
+        );
+    }
+
+    public function testReviewModalTitleUsesH4AndWarningColor(): void
+    {
+        $this->loginAsAdmin();
+        $tih = $this->createSearchableTih([
+            'email' => 'review-title@test.com',
+            'validated' => true,
+        ]);
+
+        $this->client->request('GET', '/admin/tih');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains(
+            'h4.modal-title.text-warning#review-modal-' . $tih->getId() . '-label',
+            'Remettre le profil de Jean Dupont en attente de validation',
+        );
+    }
+
     public function testIndexSearchFiltersByEmail(): void
     {
         $this->loginAsAdmin();
