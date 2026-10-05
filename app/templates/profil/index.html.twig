@@ -21,6 +21,11 @@
         {% set tihReview = app.user.tih ? app.user.tih.latestReviewRequestEvent : null %}
         {% set isReview = tihReview and (not tihRejection or tihReview.occurredAt > tihRejection.occurredAt or (tihReview.occurredAt == tihRejection.occurredAt and tihReview.id > tihRejection.id)) %}
         {% set latestMessage = isReview ? tihReview : tihRejection %}
+
+        <main id="main-content" role="main" aria-labelledby="profile-title">
+        <div class="container mt-4">
+             <h1 id="profile-title" class="gradient-text text-main text-start text-center">Votre profil</h1>
+        </div>
         {% if latestMessage and app.user.tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_APPROVED') %}
             {% set messageColor = isReview ? 'warning' : 'danger' %}
             {% set isPending = app.user.tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_PENDING') %}
