@@ -76,13 +76,18 @@ class TihProfileTest extends WebTestCase
         $this->loginAs($otherCandidate);
         $this->client->request('GET', '/profil');
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorNotExists('#tih-rejection-message');
+        $this->assertSelectorNotExists('#tih-review-message');
         $this->assertSelectorTextNotContains('body', 'Votre attestation doit être renouvelée.');
 
         $this->loginAs($candidate);
         $this->client->request('GET', '/profil');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('.alert-warning', 'Vous avez un message concernant votre candidature TIH.');
-        $this->assertSelectorTextContains('#tih-rejection-message', 'Votre attestation doit être renouvelée.');
+        $this->assertSelectorCount(1, '#tih-review-message');
+        $this->assertSelectorTextContains('#tih-review-message', 'Votre attestation doit être renouvelée.');
+        $this->assertSelectorExists('#tih-review-title.text-danger');
+        $this->assertSelectorNotExists('#tih-review-title[style]');
+        $this->assertSelectorNotExists('#tih-rejection-message');
+        $this->assertSelectorNotExists('a[href="#tih-review-message"], a[href="#tih-rejection-message"]');
     }
 }
