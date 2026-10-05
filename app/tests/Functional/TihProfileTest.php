@@ -134,7 +134,7 @@ class TihProfileTest extends WebTestCase
         $this->loginAs($otherCandidate);
         $this->client->request('GET', '/profil');
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorNotExists('#tih-rejection-message');
+        $this->assertSelectorNotExists('#tih-review-message');
         $this->assertSelectorTextNotContains('body', 'Votre attestation doit être renouvelée.');
 
         $this->loginAs($candidate);
