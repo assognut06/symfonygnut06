@@ -134,17 +134,19 @@ class TihProfileTest extends WebTestCase
         $this->loginAs($otherCandidate);
         $this->client->request('GET', '/profil');
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1#profile-title', 'Votre profil');
-        $this->assertSelectorNotExists('.alert-warning');
-        $this->assertSelectorNotExists('#tih-rejection-message');
+        $this->assertSelectorNotExists('#tih-review-message');
         $this->assertSelectorTextNotContains('body', 'Votre attestation doit être renouvelée.');
 
         $this->loginAs($candidate);
         $this->client->request('GET', '/profil');
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('.alert-warning[role="alert"]', 'Une information concernant votre profil TIH est disponible.');
-        $this->assertSelectorNotExists('.alert-warning a');
-        $this->assertSelectorTextContains('#tih-rejection-message', 'Votre attestation doit être renouvelée.');
+        $this->assertSelectorTextContains('.alert-warning', 'Vous avez un message concernant votre candidature TIH.');
+        $this->assertSelectorCount(1, '#tih-review-message');
+        $this->assertSelectorTextContains('#tih-review-message', 'Votre attestation doit être renouvelée.');
+        $this->assertSelectorExists('#tih-review-title.text-danger');
+        $this->assertSelectorNotExists('#tih-review-title[style]');
+        $this->assertSelectorNotExists('#tih-rejection-message');
+        $this->assertSelectorNotExists('a[href="#tih-review-message"], a[href="#tih-rejection-message"]');
     }
 
     public function testProfileHidesHistoricalRefusalWhenApplicationIsPendingOrApproved(): void
