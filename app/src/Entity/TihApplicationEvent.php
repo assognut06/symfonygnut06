@@ -82,7 +82,7 @@ class TihApplicationEvent
         $this->reason = $reason;
         $this->source = $source;
         $this->occurredAt = new \DateTimeImmutable();
-        $this->emailStatus = $requiresReason ? self::EMAIL_PENDING : null;
+        $this->emailStatus = $requiresReason || self::STATUS_APPROVED === $status ? self::EMAIL_PENDING : null;
     }
 
     public function getId(): ?int { return $this->id; }
@@ -139,8 +139,8 @@ class TihApplicationEvent
 
     private function guardNotification(): void
     {
-        if (!$this->isRefusal() && !$this->isReviewRequest()) {
-            throw new \LogicException('Email delivery is only available for administrative decisions with a reason.');
+        if (!$this->isRefusal() && !$this->isReviewRequest() && self::STATUS_APPROVED !== $this->status) {
+            throw new \LogicException('Email delivery is only available for administrative decisions.');
         }
     }
 }
