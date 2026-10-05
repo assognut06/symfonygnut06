@@ -68,7 +68,7 @@ class TihApplicationWorkflowService
 
     public function approve(int $tihId, User $administrator): ?bool
     {
-        return $this->entityManager->wrapInTransaction(function () use ($tihId, $administrator): ?bool {
+        $outcome = $this->entityManager->wrapInTransaction(function () use ($tihId, $administrator): TihApplicationEvent|false|null {
             $tih = $this->entityManager->find(Tih::class, $tihId, LockMode::PESSIMISTIC_WRITE);
 
             if (!$tih instanceof Tih) {
@@ -92,8 +92,27 @@ class TihApplicationWorkflowService
             $this->entityManager->persist($event);
             $this->entityManager->flush();
 
-            return true;
+            return $event;
         });
+
+        if ($outcome instanceof TihApplicationEvent) {
+            try {
+                $this->emailService->sendApprovalEmail($outcome);
+                $outcome->markEmailSent();
+            } catch (\Throwable $exception) {
+                $this->logger->error('Failed to send TIH approval email', [
+                    'tih_id' => $outcome->getTih()->getId(),
+                    'event_id' => $outcome->getId(),
+                    'error' => $exception->getMessage(),
+                ]);
+            }
+
+            $this->entityManager->flush();
+
+            return true;
+        }
+
+        return $outcome;
     }
 
     public function reopenForReview(int $tihId, string $reason, User $administrator): TihApplicationEvent|false|null
