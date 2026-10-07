@@ -152,7 +152,7 @@
     <div class="modal fade" id="refuse-modal-{{ tih.id }}" tabindex="-1" aria-labelledby="refuse-modal-{{ tih.id }}-label" aria-hidden="true">
       <div class="modal-dialog"><div class="modal-content">
         <form action="{{ path('app_admin_tih_refuse', {id: tih.id}) }}" method="post" class="js-single-submit">
-          <div class="modal-header"><h2 class="modal-title h5" id="refuse-modal-{{ tih.id }}-label">Refuser la candidature de {{ tih.firstName }} {{ tih.lastName }}</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+          <div class="modal-header"><h4 class="modal-title text-danger" id="refuse-modal-{{ tih.id }}-label">Refuser la candidature de {{ tih.firstName }} {{ tih.lastName }}</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
           <div class="modal-body">
             <input type="hidden" name="_token" value="{{ csrf_token('refuse_tih' ~ tih.id) }}">
             <label for="rejection-reason-{{ tih.id }}" class="form-label">Motif du refus <span aria-hidden="true">*</span></label>
@@ -169,7 +169,7 @@
     <div class="modal fade" id="review-modal-{{ tih.id }}" tabindex="-1" aria-labelledby="review-modal-{{ tih.id }}-label" aria-hidden="true">
       <div class="modal-dialog"><div class="modal-content">
         <form action="{{ path('app_admin_tih_review', {id: tih.id}) }}" method="post" class="js-single-submit">
-          <div class="modal-header"><h2 class="modal-title h5" id="review-modal-{{ tih.id }}-label">Remettre le profil de {{ tih.firstName }} {{ tih.lastName }} en attente de validation</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+          <div class="modal-header"><h4 class="modal-title text-warning" id="review-modal-{{ tih.id }}-label">Remettre le profil de {{ tih.firstName }} {{ tih.lastName }} en attente de validation</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
           <div class="modal-body">
             <input type="hidden" name="_token" value="{{ csrf_token('review_tih' ~ tih.id) }}">
             <label for="review-reason-{{ tih.id }}" class="form-label">Motif de la remise en attente <span aria-hidden="true">*</span></label>
