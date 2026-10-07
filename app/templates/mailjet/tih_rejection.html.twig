@@ -2,9 +2,15 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ reviewRequest ? 'Votre profil TIH est en attente de validation' : 'Votre candidature TIH — Décision et motif' }}</title>
 </head>
-<body style="font-family: Arial, sans-serif; color: #212529; line-height: 1.5;">
+<body style="margin: 0; padding: 16px; font-family: Arial, sans-serif; color: #212529; line-height: 1.5;">
+    <div style="max-width: 600px; margin: 0 auto;">
+    <p style="margin: 0 0 24px; text-align: center;">
+        <img src="cid:logo-new" alt="Logo GNUT 06" width="180" style="display: block; width: 100%; max-width: 180px; height: auto; margin: 0 auto;">
+    </p>
+
     <p>Bonjour {{ firstName ?: 'Madame, Monsieur' }},</p>
 
     {% if reviewRequest %}
@@ -31,5 +37,8 @@
     {% if not reviewRequest %}<p>Si des corrections vous sont demandées, veuillez suivre les indications du message.</p>{% endif %}
 
     <p>L’équipe GNUT 06</p>
+
+    {% include 'email/_footer.html.twig' %}
+    </div>
 </body>
 </html>
