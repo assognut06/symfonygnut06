@@ -17,38 +17,30 @@
         <a href="#profile-content" class="skip-link">Aller au contenu du profil</a>
     </nav>
     {% if app.user %}
-        {% set tihRejection = app.user.tih and app.user.tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_REFUSED') ? app.user.tih.latestRefusalEvent : null %}
+        {% set tihRejection = app.user.tih ? app.user.tih.latestRefusalEvent : null %}
         {% set tihReview = app.user.tih ? app.user.tih.latestReviewRequestEvent : null %}
-        {% if tihReview %}
+        {% set isReview = tihReview and (not tihRejection or tihReview.occurredAt > tihRejection.occurredAt or (tihReview.occurredAt == tihRejection.occurredAt and tihReview.id > tihRejection.id)) %}
+        {% set latestMessage = isReview ? tihReview : tihRejection %}
+
+        <main id="main-content" role="main" aria-labelledby="profile-title">
+        <div class="container mt-4">
+             <h1 id="profile-title" class="gradient-text text-main text-start text-center">Votre profil</h1>
+        </div>
+        {% if latestMessage and app.user.tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_APPROVED') %}
+            {% set messageColor = isReview ? 'warning' : 'danger' %}
+            {% set isPending = app.user.tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_PENDING') %}
             <div class="container mt-4">
-                {% if app.user.tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_PENDING') %}
+                {% if not isReview or isPending %}
                     <div class="alert alert-warning d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2" role="status">
-                        <span>Votre profil TIH est en attente de validation. Vous avez un nouveau message.</span>
-                        <a href="#tih-review-message" class="alert-link">Consulter le message</a>
+                        <span>{{ isReview ? 'Votre profil TIH est en attente de validation. Vous avez un nouveau message.' : 'Vous avez un message concernant votre candidature TIH.' }}</span>
                     </div>
                 {% endif %}
                 <section id="tih-review-message" class="card border-warning mb-4" tabindex="-1" aria-labelledby="tih-review-title">
                     <div class="card-body">
-                        <h2 id="tih-review-title" class="h5 card-title">{{ app.user.tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_PENDING') ? 'Remise en attente de validation de votre profil TIH' : 'Message précédent concernant votre profil TIH' }}</h2>
-                        <p class="text-muted mb-2">Message reçu le {{ tihReview.occurredAt|date('d/m/Y à H:i') }}</p>
-                        <p class="mb-1"><strong>Motif de la remise en attente :</strong></p>
-                        <p class="mb-0" style="white-space: pre-wrap;">{{ tihReview.reason }}</p>
-                    </div>
-                </section>
-            </div>
-        {% endif %}
-        {% if tihRejection %}
-            <div class="container mt-4">
-                <div class="alert alert-warning d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2" role="status">
-                    <span>Vous avez un message concernant votre candidature TIH.</span>
-                    <a href="#tih-rejection-message" class="alert-link">Consulter le message</a>
-                </div>
-                <section id="tih-rejection-message" class="card border-warning mb-4" tabindex="-1" aria-labelledby="tih-rejection-title">
-                    <div class="card-body">
-                        <h2 id="tih-rejection-title" class="h5 card-title">Décision concernant votre candidature TIH</h2>
-                        <p class="text-muted mb-2">Message reçu le {{ tihRejection.occurredAt|date('d/m/Y à H:i') }}</p>
-                        <p class="mb-1"><strong>Motif du refus :</strong></p>
-                        <p class="mb-0" style="white-space: pre-wrap;">{{ tihRejection.reason }}</p>
+                        <h2 id="tih-review-title" class="card-title text-{{ messageColor }}">{{ isReview ? (isPending ? 'Remise en attente de validation de votre profil TIH' : 'Message précédent concernant votre profil TIH') : 'Refus de votre candidature TIH' }}</h2>
+                        <p class="text-muted mb-2">Message reçu le {{ latestMessage.occurredAt|date('d/m/Y à H:i') }}</p>
+                        <p class="mb-1"><strong>{{ isReview ? 'Motif de la remise en attente :' : 'Motif du refus :' }}</strong></p>
+                        <p class="mb-0" style="white-space: pre-wrap;">{{ latestMessage.reason }}</p>
                     </div>
                 </section>
             </div>
@@ -69,8 +61,6 @@
     {% endif %}
     <div class="w-100 bg-main pt-5 pb-5">
         <div class="container my-4 pt-3 bg-light rounded-5 shadow mb-0">
-
-            <main id="main-content" role="main" aria-labelledby="profile-title">
                 <div class="row flex-column flex-md-row">
 
                     <!-- ✅ CORRECTION - Navigation accessible -->
@@ -136,13 +126,14 @@
                     <div id="profile-content"
                          class="col-md-9 text-start p-3"
                          role="tabpanel"
-                         aria-labelledby="profile-title">
+                         aria-labelledby="profile-welcome-title">
 
                         <!-- ✅ CORRECTION - En-tête utilisateur amélioré -->
                         <header class="mb-4">
-                            <h1 id="profile-title" class="fs-4 mb-1">
+                            <h2 id="profile-welcome-title" class="fs-4 mb-1">
                                 Bienvenue, {{ user.email }}
-                            </h1>
+                            </h2>
+                            </h2>
                             <p id="current-date"
                                class="text-muted"
                                aria-live="polite"
@@ -244,10 +235,10 @@
                                                         Google lié
                                                     </span>
                                                 {% else %}
-                                                    <a href="{{ path('connect_google_start') }}" class="btn btn-outline-danger btn-sm">
-                                                        <i class="bi bi-google" aria-hidden="true"></i>
-                                                        Lier Google
-                                                    </a>
+                                                    <form method="post" action="{{ path('oauth_link_reauth', {provider: 'google'}) }}">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('oauth_link_start_google') }}">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-google" aria-hidden="true"></i> Lier Google</button>
+                                                    </form>
                                                 {% endif %}
 
                                                 {% if user.azureId %}
@@ -256,10 +247,10 @@
                                                         Microsoft lié
                                                     </span>
                                                 {% else %}
-                                                    <a href="{{ path('connect_outlook_start') }}" class="btn btn-outline-primary btn-sm">
-                                                        <i class="bi bi-microsoft" aria-hidden="true"></i>
-                                                        Lier Microsoft
-                                                    </a>
+                                                    <form method="post" action="{{ path('oauth_link_reauth', {provider: 'microsoft'}) }}">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('oauth_link_start_microsoft') }}">
+                                                        <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-microsoft" aria-hidden="true"></i> Lier Microsoft</button>
+                                                    </form>
                                                 {% endif %}
                                             </div>
                                             <p class="text-muted small mt-2 mb-0">
@@ -471,9 +462,9 @@
 
                     </div> <!-- Fin contenu principal -->
                 </div> <!-- Fin row -->
-            </main>
         </div> <!-- Fin container -->
     </div>
+</main>
 {% endblock %}
 
 {% block javascripts %}
