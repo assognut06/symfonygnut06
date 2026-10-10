@@ -231,12 +231,55 @@ curl -I https://gnut06.org/profil
 ## 🚨 Configuration OAuth en production
 
 ### Azure Portal (Microsoft)
+
+La connexion Microsoft accepte les comptes professionnels/scolaires de toute
+organisation et les comptes personnels (Outlook, Hotmail, etc.). Le réglage de
+l'application Entra et l'endpoint utilisé par Symfony doivent correspondre :
+
+- Dans l'inscription d'application existante, choisir les comptes de tout
+  annuaire organisationnel **et les comptes Microsoft personnels**
+  (`signInAudience: AzureADandPersonalMicrosoftAccount`).
+- Dans le manifeste Microsoft Graph, vérifier
+  `api.requestedAccessTokenVersion: 2`.
+- Utiliser `AZURE_TENANT_ID=common` sur dev et production (valeur par défaut dans
+  `app/.env`). Vérifier aussi les variables serveur, `.env.local` et les
+  éventuels fichiers d'environnement compilés : un ancien GUID de tenant
+  limiterait toujours la connexion à cette organisation.
+- Vérifier que `AZURE_CLIENT_ID` désigne cette inscription et que le secret
+  `AZURE_CLIENT_SECRET` n'est pas expiré. Conserver l'inscription existante
+  pour préserver les identités déjà liées.
+- Déclarer les URI de redirection suivantes comme plateforme **Web** :
+
+```text
+https://dev.gnut06.org/connect/outlook/check
+https://gnut06.org/connect/outlook/check
+https://www.gnut06.org/connect/outlook/check
 ```
-Application ID: [Votre Azure Client ID]
-Redirect URIs:
-  - https://gnut06.org/connect/outlook/check
-  - https://www.gnut06.org/connect/outlook/check
-```
+
+Ces deux changements sont nécessaires : `/common` avec une inscription
+mono-tenant provoque `AADSTS50194`. Une organisation externe peut aussi imposer
+le consentement de son administrateur.
+
+Les comptes personnels et les comptes professionnels dont le claim booléen
+`xms_edov` vaut `true` sont créés vérifiés. Les autres nouveaux comptes doivent
+confirmer leur email via le site. Le claim `xms_edov` décrit la vérification du
+domaine de l'email ; il ne sert pas à identifier l'utilisateur. Sans email
+utilisable, la création de compte est refusée ; une identité déjà liée peut se
+reconnecter sans claim email. Un email identique à celui d'un compte existant
+n'entraîne jamais de liaison automatique : celle-ci doit être confirmée depuis
+le profil.
+
+Avant la fusion, tester sur dev un compte GNUT 06, un compte d'une autre
+organisation et un compte personnel : inscription (et confirmation email si
+nécessaire), reconnexion et liaison explicite depuis le profil. Après passage
+par `develop` puis `main`, vérifier la configuration de production et refaire
+un test de connexion. En cas d'échec, consulter les logs OAuth de niveau
+`error`, notamment le code `AADSTS`, sans publier de jetons ni de secrets.
+
+Références Microsoft :
+[conversion multi-tenant](https://learn.microsoft.com/en-us/entra/identity-platform/howto-convert-app-to-be-multi-tenant),
+[manifeste](https://learn.microsoft.com/en-us/entra/identity-platform/reference-microsoft-graph-app-manifest),
+[claims facultatifs](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims-reference).
 
 ### Google Cloud Console
 ```
