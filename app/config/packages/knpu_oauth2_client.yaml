@@ -15,7 +15,7 @@ knpu_oauth2_client:
             client_secret: '%env(AZURE_CLIENT_SECRET)%'
             redirect_route: 'connect_outlook_check'
             redirect_params: {}
-            tenant: 'common'
+            tenant: '%env(AZURE_TENANT_ID)%'
             default_end_point_version: '2.0'
             scope:
                 - 'openid'
