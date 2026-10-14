@@ -85,6 +85,21 @@ Par contre, la base de donnée est vide
    docker exec -it symfony_asso php bin/console doctrine:fixtures:load --append
    ```
 
+## Développement Docker sous Windows et WSL
+
+Pour éviter les lenteurs du montage Windows, utiliser ce mode optionnel avec
+Docker Compose 2.32 ou plus. Depuis la racine du dépôt :
+
+```bash
+docker compose -f docker-compose.yaml -f docker-compose.dev-windows.yaml up --build -d
+docker compose -f docker-compose.yaml -f docker-compose.dev-windows.yaml exec --user www-data:user symfony composer install --no-interaction
+docker compose -f docker-compose.yaml -f docker-compose.dev-windows.yaml exec symfony npm ci
+docker compose -f docker-compose.yaml -f docker-compose.dev-windows.yaml exec symfony npm run build
+docker compose -f docker-compose.yaml -f docker-compose.dev-windows.yaml watch --no-up symfony
+```
+
+Ouvrir `https://127.0.0.1` et garder Compose Watch actif pendant le développement.
+
 ## Importation des données (si nécessaire)
 
 1. **Demander les données nécessaires**

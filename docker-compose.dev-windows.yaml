@@ -1,0 +1,65 @@
+# Optional development setup for Docker Desktop on Windows and WSL.
+# Source files are copied into the Linux filesystem with Compose Watch.
+services:
+  symfony:
+    entrypoint: ["/bin/bash", "/var/www/app/docker-entrypoint-dev.sh"]
+    command: ["apache2-foreground"]
+    env_file:
+      - path: ./app/.env.local
+        required: false
+    environment:
+      APP_ENV: dev
+      APP_DEBUG: "1"
+      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+    volumes: !override
+      - symfony_dev_assets:/var/www/app/public/build
+      - symfony_dev_node_modules:/var/www/app/node_modules
+      - symfony_dev_var:/var/www/app/var
+      - ./app/public/uploads:/var/www/app/public/uploads
+      - ./app/tests:/var/www/app/tests:ro
+      - ./app/phpunit.xml.dist:/var/www/app/phpunit.xml.dist:ro
+    develop:
+      watch:
+        - action: sync
+          path: ./app
+          target: /var/www/app
+          initial_sync: true
+          ignore:
+            - vendor/
+            - node_modules/
+            - var/
+            - public/build/
+            - public/uploads/
+            - public/media/
+            - .env.local.php
+            - tests/
+            - phpunit.xml.dist
+            - composer.json
+            - composer.lock
+            - Dockerfile
+            - docker-entrypoint.sh
+            - docker-entrypoint-dev.sh
+            - config/xdebug.ini
+            - config/default-ssl.conf
+            - vhosts.conf
+        - action: rebuild
+          path: ./app/composer.json
+        - action: rebuild
+          path: ./app/composer.lock
+        - action: rebuild
+          path: ./app/Dockerfile
+        - action: rebuild
+          path: ./app/docker-entrypoint.sh
+        - action: rebuild
+          path: ./app/docker-entrypoint-dev.sh
+        - action: rebuild
+          path: ./app/config/xdebug.ini
+        - action: rebuild
+          path: ./app/config/default-ssl.conf
+        - action: rebuild
+          path: ./app/vhosts.conf
+
+volumes:
+  symfony_dev_assets:
+  symfony_dev_node_modules:
+  symfony_dev_var:
