@@ -42,7 +42,9 @@ class DeleteInvalidUsersFunctionTest extends WebTestCase
 
         $this->em->flush();
 
-        $deletedCount = (int) $this->em->getConnection()->fetchOne('SELECT delete_invalid_users()');
+        $result = $this->em->getConnection()->executeQuery('CALL delete_invalid_users()');
+        $deletedCount = (int) $result->fetchOne();
+        $result->free();
 
         $this->em->clear();
         $repository = $this->em->getRepository(User::class);

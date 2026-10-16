@@ -11,7 +11,7 @@ final class Version20261016120000 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Ajoute la fonction de suppression des comptes non vérifiés, sans rôle et âgés de plus de 15 jours.';
+        return 'Ajoute la procédure de suppression des comptes non vérifiés, sans rôle et âgés de plus de 15 jours.';
     }
 
     public function up(Schema $schema): void
@@ -23,10 +23,9 @@ final class Version20261016120000 extends AbstractMigration
         $this->addSql('ALTER TABLE tih_application_event DROP FOREIGN KEY FK_TIH_EVENT_ACTOR');
         $this->addSql('ALTER TABLE tih_application_event ADD CONSTRAINT FK_TIH_EVENT_ACTOR FOREIGN KEY (actor_id) REFERENCES user (id) ON DELETE SET NULL');
 
+        $this->addSql('DROP FUNCTION IF EXISTS delete_invalid_users');
         $this->addSql(<<<'SQL'
-            CREATE FUNCTION delete_invalid_users()
-            RETURNS INT
-            NOT DETERMINISTIC
+            CREATE PROCEDURE delete_invalid_users()
             MODIFIES SQL DATA
             BEGIN
                 DELETE FROM user
@@ -35,14 +34,14 @@ final class Version20261016120000 extends AbstractMigration
                   AND JSON_LENGTH(roles) = 0
                   AND created_at < DATE_SUB(NOW(), INTERVAL 15 DAY);
 
-                RETURN ROW_COUNT();
+                SELECT ROW_COUNT() AS deleted_users;
             END
             SQL);
     }
 
     public function down(Schema $schema): void
     {
-        $this->addSql('DROP FUNCTION IF EXISTS delete_invalid_users');
+        $this->addSql('DROP PROCEDURE IF EXISTS delete_invalid_users');
 
         $this->addSql('ALTER TABLE tih_application_event DROP FOREIGN KEY FK_TIH_EVENT_ACTOR');
         $this->addSql('ALTER TABLE tih_application_event ADD CONSTRAINT FK_TIH_EVENT_ACTOR FOREIGN KEY (actor_id) REFERENCES user (id)');
