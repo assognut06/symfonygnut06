@@ -25,7 +25,8 @@ fi
 cd "${APP_DIR}"
 
 exec "${PHP_BINARY}" bin/console dbal:run-sql \
-    'SELECT delete_invalid_users() AS deleted_users' \
+    'CALL delete_invalid_users()' \
+    --force-fetch \
     --env="${RUNTIME_ENV}" \
     --no-debug \
     --no-interaction

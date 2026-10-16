@@ -95,10 +95,9 @@ if (!$isUnitTestsuiteOnly) {
 
     $connection = $entityManager->getConnection();
     $connection->executeStatement('DROP FUNCTION IF EXISTS delete_invalid_users');
+    $connection->executeStatement('DROP PROCEDURE IF EXISTS delete_invalid_users');
     $connection->executeStatement(<<<'SQL'
-        CREATE FUNCTION delete_invalid_users()
-        RETURNS INT
-        NOT DETERMINISTIC
+        CREATE PROCEDURE delete_invalid_users()
         MODIFIES SQL DATA
         BEGIN
             DELETE FROM user
@@ -107,7 +106,7 @@ if (!$isUnitTestsuiteOnly) {
               AND JSON_LENGTH(roles) = 0
               AND created_at < DATE_SUB(NOW(), INTERVAL 15 DAY);
 
-            RETURN ROW_COUNT();
+            SELECT ROW_COUNT() AS deleted_users;
         END
         SQL);
 
