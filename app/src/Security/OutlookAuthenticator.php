@@ -28,6 +28,8 @@ use TheNetworg\OAuth2\Client\Token\AccessToken as AzureAccessToken;
 
 final class OutlookAuthenticator extends OAuth2Authenticator
 {
+    private const CONSUMER_TENANT_ID = '9188040d-6c67-4c5b-b112-36a304b66dad';
+
     public function __construct(
         private readonly ClientRegistry $clientRegistry,
         private readonly OAuthAccountService $accountService,
@@ -60,7 +62,7 @@ final class OutlookAuthenticator extends OAuth2Authenticator
                 OAuthProvider::Microsoft,
                 $this->claim($claims, 'oid'),
                 is_string($claims['email'] ?? null) ? $claims['email'] : null,
-                false,
+                self::isEmailVerified($claims),
             );
 
             return new SelfValidatingPassport(new UserBadge('microsoft:'.$identity->subject, function () use ($request, $flow, $identity): User {
@@ -73,7 +75,10 @@ final class OutlookAuthenticator extends OAuth2Authenticator
         } catch (OAuthAccountException $exception) {
             throw new CustomUserMessageAuthenticationException($exception->getMessage());
         } catch (\Throwable $exception) {
-            $this->logger->warning('Microsoft OAuth callback failed.', ['exception_type' => $exception::class]);
+            $this->logger->error('Microsoft OAuth callback failed.', [
+                'exception' => $exception,
+                'provider_error' => self::providerErrorCode($request),
+            ]);
             throw new CustomUserMessageAuthenticationException('La connexion avec Microsoft a échoué. Veuillez réessayer.');
         }
     }
@@ -123,6 +128,23 @@ final class OutlookAuthenticator extends OAuth2Authenticator
         $this->flowManager->clearFlow($request, OAuthProvider::Microsoft);
 
         return $user;
+    }
+
+    /**
+     * Only personal accounts and tenants with a verified email domain (xms_edov) prove email ownership.
+     *
+     * @param array<string, mixed> $claims
+     */
+    public static function isEmailVerified(array $claims): bool
+    {
+        return self::CONSUMER_TENANT_ID === ($claims['tid'] ?? null) || true === ($claims['xms_edov'] ?? null);
+    }
+
+    private static function providerErrorCode(Request $request): ?string
+    {
+        $description = (string) $request->query->get('error_description', '');
+
+        return 1 === preg_match('/AADSTS\d+/', $description, $match) ? $match[0] : $request->query->get('error');
     }
 
     /** @param array<string, mixed> $claims */

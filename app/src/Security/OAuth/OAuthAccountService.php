@@ -30,7 +30,7 @@ final class OAuthAccountService
         $user = new User();
         $user->setEmail($email);
         $user->setPassword($this->passwordHasher->hashPassword($user, bin2hex(random_bytes(32))));
-        $user->setVerified(OAuthProvider::Google === $identity->provider && $identity->emailVerified);
+        $user->setVerified($identity->emailVerified);
         $this->applyIdentity($user, $identity);
         $this->entityManager->persist($user);
         $this->flushWithConflictMessage();
