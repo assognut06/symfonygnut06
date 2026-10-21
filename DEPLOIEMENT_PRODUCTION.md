@@ -241,6 +241,12 @@ l'application Entra et l'endpoint utilisé par Symfony doivent correspondre :
   (`signInAudience: AzureADandPersonalMicrosoftAccount`).
 - Dans le manifeste Microsoft Graph, vérifier
   `api.requestedAccessTokenVersion: 2`.
+- Pour éviter la confirmation email sur le site lorsque Microsoft a vérifié
+  le domaine d'un compte professionnel, ajouter le claim facultatif `xms_edov`
+  aux **jetons d'identité (ID tokens)** dans **Token configuration**, ou dans
+  `optionalClaims.idToken` du manifeste. Le scope `email` est déjà demandé par
+  Symfony ; il ne demande pas automatiquement `xms_edov`. Sans ce claim, la
+  connexion reste possible après confirmation de l'email sur le site.
 - Utiliser `AZURE_TENANT_ID=common` sur dev et production (valeur par défaut dans
   `app/.env`). Vérifier aussi les variables serveur, `.env.local` et les
   éventuels fichiers d'environnement compilés : un ancien GUID de tenant
@@ -255,6 +261,11 @@ https://dev.gnut06.org/connect/outlook/check
 https://gnut06.org/connect/outlook/check
 https://www.gnut06.org/connect/outlook/check
 ```
+
+Pour un test local sur le port `8001`, ajouter aussi l'URI Web
+`https://127.0.0.1:8001/connect/outlook/check` et démarrer la connexion depuis
+`https://127.0.0.1:8001/login`. Le nom d'hôte, le port et le chemin envoyés à
+Microsoft doivent correspondre à l'URI enregistrée.
 
 Ces deux changements sont nécessaires : `/common` avec une inscription
 mono-tenant provoque `AADSTS50194`. Une organisation externe peut aussi imposer
