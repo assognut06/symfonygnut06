@@ -38,6 +38,8 @@ final class MicrosoftOAuthFlowTest extends WebTestCase
     private string $clientId = '';
     private bool $invalidSignature = false;
     /** @var array<string, string>|null */
+    private ?array $tokenError = null;
+    /** @var array<string, string>|null */
     private ?array $tokenRequest = null;
 
     public function testConfiguredTenantDefaultsToCommon(): void
@@ -141,6 +143,52 @@ final class MicrosoftOAuthFlowTest extends WebTestCase
         self::assertSame('Microsoft OAuth callback failed.', $records[0]->message);
         self::assertSame(Level::Error, $records[0]->level);
         self::assertSame('AADSTS50194', $records[0]->context['provider_error']);
+
+        $this->client->followRedirect();
+        self::assertStringContainsString(self::GENERIC_FAILURE, $this->client->getCrawler()->text());
+    }
+
+    public function testMicrosoftTokenExchangeFailureLogsTheErrorCode(): void
+    {
+        $logs = new TestHandler();
+        $this->useProvider(logger: new Logger('test', [$logs]));
+        $this->tokenError = [
+            'error' => 'invalid_client',
+            'error_description' => 'AADSTS7000215: Invalid client secret provided.',
+        ];
+
+        $this->signIn();
+
+        $this->assertResponseRedirects('/login');
+        self::assertNotNull($this->tokenRequest);
+        self::assertNull($this->findUserByAzureId());
+        $records = $logs->getRecords();
+        self::assertCount(1, $records);
+        self::assertSame(Level::Error, $records[0]->level);
+        self::assertSame('AADSTS7000215', $records[0]->context['provider_error']);
+
+        $this->client->followRedirect();
+        self::assertStringContainsString(self::GENERIC_FAILURE, $this->client->getCrawler()->text());
+        self::assertStringNotContainsString('AADSTS7000215', $this->client->getCrawler()->text());
+    }
+
+    public function testMalformedMicrosoftErrorParametersDoNotBreakFailureHandling(): void
+    {
+        $logs = new TestHandler();
+        $this->useProvider(logger: new Logger('test', [$logs]));
+        $state = $this->startSignIn();
+
+        $this->client->request('GET', '/connect/outlook/check', [
+            'error' => ['invalid_request'],
+            'error_description' => ['AADSTS500200'],
+            'state' => $state,
+        ]);
+
+        $this->assertResponseRedirects('/login');
+        self::assertNull($this->tokenRequest);
+        $records = $logs->getRecords();
+        self::assertCount(1, $records);
+        self::assertNull($records[0]->context['provider_error']);
 
         $this->client->followRedirect();
         self::assertStringContainsString(self::GENERIC_FAILURE, $this->client->getCrawler()->text());
@@ -373,6 +421,9 @@ final class MicrosoftOAuthFlowTest extends WebTestCase
         if (str_contains($uri, '/oauth2/v2.0/token')) {
             self::assertStringContainsString('/common/oauth2/v2.0/token', $uri);
             parse_str((string) $request->getBody(), $this->tokenRequest);
+            if (null !== $this->tokenError) {
+                return $this->json($this->tokenError, 400);
+            }
             $now = time();
             $claims = array_filter(array_merge([
                 'aud' => $this->clientId,
@@ -406,9 +457,9 @@ final class MicrosoftOAuthFlowTest extends WebTestCase
     }
 
     /** @param array<string, mixed> $body */
-    private function json(array $body): \GuzzleHttp\Promise\PromiseInterface
+    private function json(array $body, int $status = 200): \GuzzleHttp\Promise\PromiseInterface
     {
-        return Create::promiseFor(new Response(200, ['Content-Type' => 'application/json'], (string) json_encode($body)));
+        return Create::promiseFor(new Response($status, ['Content-Type' => 'application/json'], (string) json_encode($body)));
     }
 
     private function objectId(): string

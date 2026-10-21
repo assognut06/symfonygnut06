@@ -77,7 +77,7 @@ final class OutlookAuthenticator extends OAuth2Authenticator
         } catch (\Throwable $exception) {
             $this->logger->error('Microsoft OAuth callback failed.', [
                 'exception' => $exception,
-                'provider_error' => self::providerErrorCode($request),
+                'provider_error' => self::providerErrorCode($request, $exception),
             ]);
             throw new CustomUserMessageAuthenticationException('La connexion avec Microsoft a échoué. Veuillez réessayer.');
         }
@@ -140,11 +140,22 @@ final class OutlookAuthenticator extends OAuth2Authenticator
         return self::CONSUMER_TENANT_ID === ($claims['tid'] ?? null) || true === ($claims['xms_edov'] ?? null);
     }
 
-    private static function providerErrorCode(Request $request): ?string
+    private static function providerErrorCode(Request $request, \Throwable $exception): ?string
     {
-        $description = (string) $request->query->get('error_description', '');
+        $parameters = $request->query->all();
+        $description = $parameters['error_description'] ?? null;
+        if (is_string($description) && 1 === preg_match('/AADSTS\d+/', $description, $match)) {
+            return $match[0];
+        }
 
-        return 1 === preg_match('/AADSTS\d+/', $description, $match) ? $match[0] : $request->query->get('error');
+        do {
+            if (1 === preg_match('/AADSTS\d+/', $exception->getMessage(), $match)) {
+                return $match[0];
+            }
+            $exception = $exception->getPrevious();
+        } while (null !== $exception);
+
+        return is_string($parameters['error'] ?? null) ? $parameters['error'] : null;
     }
 
     /** @param array<string, mixed> $claims */
