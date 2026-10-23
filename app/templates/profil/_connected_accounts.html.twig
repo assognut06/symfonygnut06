@@ -1,0 +1,29 @@
+{% set providers = [
+    {key: 'google', name: 'Google', icon: 'google', linked: user.googleId},
+    {key: 'microsoft', name: 'Microsoft', icon: 'microsoft', linked: user.azureId},
+] %}
+
+<section class="account-card" aria-labelledby="oauth-links-title">
+    <h2 id="oauth-links-title" class="account-card__title">Comptes connectés</h2>
+    <p class="account-card__hint">Connectez-vous plus vite avec un compte que vous utilisez déjà.</p>
+    <ul class="account-links">
+        {% for provider in providers %}
+            <li class="account-links__row">
+                <span class="account-links__icon" aria-hidden="true"><i class="bi bi-{{ provider.icon }}"></i></span>
+                <span class="account-links__name">
+                    {{ provider.name }}
+                    <span class="account-links__status">{{ provider.linked ? 'Lié' : 'Non lié' }}</span>
+                </span>
+                {% if provider.linked %}
+                    <span class="account-badge"><i class="bi bi-check-lg" aria-hidden="true"></i> Lié</span>
+                {% else %}
+                    <form method="post" action="{{ path('oauth_link_reauth', {provider: provider.key}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('oauth_link_start_' ~ provider.key) }}">
+                        <button type="submit" class="account-btn-sm account-btn--quiet" aria-label="Lier votre compte {{ provider.name }}">Lier</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <p class="account-card__footnote">Par sécurité, un compte ne peut être lié que depuis cette session connectée.</p>
+</section>

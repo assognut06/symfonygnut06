@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Payers;
-use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -11,7 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 /**
- * @extends AbstractType<User>
+ * @extends AbstractType<Payers>
  */
 class ProfileType extends AbstractType
 {
@@ -20,6 +19,7 @@ class ProfileType extends AbstractType
         $builder
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
+                'empty_data' => '',
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Entrez votre prénom',
@@ -41,6 +41,7 @@ class ProfileType extends AbstractType
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
+                'empty_data' => '',
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Entrez votre nom',
@@ -109,7 +110,7 @@ class ProfileType extends AbstractType
                     'placeholder' => 'Entrez votre code postal',
                     'autocomplete' => 'postal-code',
                     'pattern' => '[0-9]{5}',
-                    'aria-describedby' => 'zipCode-help zipCode-error',
+                    'aria-describedby' => 'profile_zipCode_help zipCode-error',
                 ],
                 'label_attr' => [
                     'class' => 'form-label'
@@ -117,7 +118,6 @@ class ProfileType extends AbstractType
                 'help' => 'Format : 5 chiffres (ex: 06000)',
                 'help_attr' => [
                     'class' => 'form-text',
-                    'id' => 'zipCode-help'
                 ],
                 'constraints' => [
                     new Assert\NotBlank([
@@ -137,7 +137,7 @@ class ProfileType extends AbstractType
                     'placeholder' => 'Entrez votre numéro de téléphone',
                     'autocomplete' => 'tel',
                     'pattern' => '[0-9+\-\s\(\)]+',
-                    'aria-describedby' => 'phone-help phone-error',
+                    'aria-describedby' => 'profile_phone_help phone-error',
                 ],
                 'label_attr' => [
                     'class' => 'form-label'
@@ -145,7 +145,6 @@ class ProfileType extends AbstractType
                 'help' => 'Format : 06 12 34 56 78 ou +33 6 12 34 56 78',
                 'help_attr' => [
                     'class' => 'form-text',
-                    'id' => 'phone-help'
                 ],
                 'constraints' => [
                     new Assert\Length([
