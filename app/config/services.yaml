@@ -41,6 +41,10 @@ parameters:
 
 
 services:
+    App\Command\OAuthIdentityAuditCommand:
+        tags:
+            - { name: console.command, command: 'app:oauth:identity-audit' }
+
     App\MessageHandler\NotificationHandler:
         tags: [messenger.message_handler]
     # default configuration for services in *this* file
