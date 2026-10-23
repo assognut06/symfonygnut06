@@ -1,0 +1,15 @@
+<section class="account-card account-card--row" aria-labelledby="tih-title">
+    <div>
+        <h2 id="tih-title" class="account-card__title">Espace TIH</h2>
+        <p class="account-card__hint mb-0">
+            {% if tih is null %}
+                Vous êtes travailleur indépendant handicapé ? Créez votre fiche pour rejoindre l'annuaire.
+            {% else %}
+                Gérez votre fiche de travailleur indépendant handicapé.
+            {% endif %}
+        </p>
+    </div>
+    <a href="{{ path('espace_tih') }}" class="account-btn account-btn--outline">
+        {{ tih is null ? "S'inscrire comme TIH" : 'Accéder à mon espace TIH' }}
+    </a>
+</section>

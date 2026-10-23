@@ -1,0 +1,64 @@
+.account-list {
+    margin-top: 1rem;
+}
+
+.account-list__item + .account-list__item {
+    border-top: 1px solid var(--acc-line-soft);
+}
+
+.account-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.account-row__main {
+    flex: 1 1 12rem;
+    min-width: 0;
+}
+
+.account-row__title {
+    margin: 0;
+    font-weight: 600;
+}
+
+.account-row__detail {
+    margin: 0;
+    color: #3d3a4a;
+}
+
+.account-row__meta {
+    margin: 0.25rem 0 0;
+    font-size: 0.8125rem;
+    color: var(--acc-muted);
+}
+
+.account-row__amount {
+    margin: 0;
+    font-weight: 600;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.account-empty {
+    margin-top: 1rem;
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--acc-muted);
+}
+
+.account-empty .bi {
+    font-size: 1.75rem;
+    color: #a9a5ba;
+}
+
+.account-empty p {
+    margin: 0.5rem 0 1rem;
+}
+
+.account-page .pagination {
+    margin: 0;
+}

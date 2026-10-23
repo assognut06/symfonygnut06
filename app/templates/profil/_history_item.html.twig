@@ -1,0 +1,16 @@
+<div class="account-row">
+    <div class="account-row__main">
+        <p class="account-row__title">{{ item.order.formName }}</p>
+        {% if item.name is defined %}
+            <p class="account-row__detail">{{ item.name }}</p>
+        {% endif %}
+        <p class="account-row__meta">
+            {{ section == 'payments' ? 'Paiement' : 'Commande' }} n°{{ section == 'payments' ? item.id : item.order.id }}
+            · {{ item.order.date|format_datetime(pattern="d MMMM y 'à' HH'h'mm':'ss", locale='fr', timezone='Europe/Paris') }}
+            {% if section == 'payments' %}
+                · {{ item.paymentMeans }}
+            {% endif %}
+        </p>
+    </div>
+    <p class="account-row__amount">{{ formattedPrice(item.amount) }}</p>
+</div>
