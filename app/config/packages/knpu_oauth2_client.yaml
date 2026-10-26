@@ -16,10 +16,8 @@ knpu_oauth2_client:
             redirect_route: 'connect_outlook_check'
             redirect_params: {}
             tenant: 'common'
+            default_end_point_version: '2.0'
             scope:
-                - 'https://graph.microsoft.com/User.Read'
-                - 'https://graph.microsoft.com/profile'
-                - 'https://graph.microsoft.com/email'
                 - 'openid'
                 - 'profile'
                 - 'email'

@@ -66,25 +66,10 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    Certains éléments de configuration ne peuvent être faits qu'une fois que les images sont démarrées.
 
    ```bash
-   docker exec -it --user www-data symfony_asso composer install --no-interaction
+   docker exec -it symfony_asso composer install --no-interaction
    docker exec -it symfony_asso npm install
    docker exec -it symfony_asso npm run build
    ```
-
-   Au démarrage, le conteneur attribue les dossiers `var/`, `public/uploads/`
-   et `public/media/` à `www-data:user` avec `chown`, puis donne les droits
-   d'écriture au propriétaire et au groupe avec `chmod`. Sur Linux, ces
-   changements s'appliquent aussi aux dossiers montés depuis l'hôte.
-
-   Pour appliquer cette correction à une installation existante :
-
-   ```bash
-   docker compose up -d --build symfony
-   docker exec --user www-data symfony_asso php bin/console cache:clear
-   ```
-
-   Exécutez également les commandes Symfony avec `docker exec --user www-data`
-   pour éviter de créer des fichiers de cache appartenant à `root`.
 
 5. **Initialisation de la base de données**
    ```bash
