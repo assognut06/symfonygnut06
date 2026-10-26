@@ -67,6 +67,11 @@
             margin-bottom: 0.75rem !important;
         }
 
+        /* ✅ CORRECTION - Images décoratives */
+        img[alt=""] {
+            max-width: 200px !important;
+        }
+
         /* ✅ CORRECTION - Responsive mobile */
         @media (max-width: 768px) {
             .text {
@@ -235,7 +240,7 @@
                         <div class="alert alert-info text-center p-4 mx-auto" style="max-width: 600px;" role="alert">
                             <h3 class="h5 mb-3">JavaScript requis</h3>
                             <p class="mb-3">Pour adhérer en ligne, veuillez activer JavaScript ou</p>
-                            <a href="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-2026" 
+                            <a href="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-gnut-06" 
                                class="btn btn-primary" 
                                target="_blank" 
                                rel="noopener noreferrer" 
@@ -276,7 +281,7 @@
                     <div class="text-center mt-3">
                         <p class="small text-dark">
                             Problème avec le formulaire ?
-                            <a href="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-2026" 
+                            <a href="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-gnut-06" 
                                target="_blank" 
                                rel="noopener noreferrer" 
                                class="text-dark" 
@@ -352,7 +357,7 @@
                         errorMessage.innerHTML = `
                             <h4>Problème de chargement</h4>
                             <p>Le formulaire d'adhésion n'a pas pu se charger. 
-                            <a href="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-2026" 
+                            <a href="https://www.helloasso.com/associations/gnut-06/adhesions/adhesion-a-l-association-gnut-06" 
                                target="_blank" 
                                rel="noopener noreferrer"
                                class="alert-link">

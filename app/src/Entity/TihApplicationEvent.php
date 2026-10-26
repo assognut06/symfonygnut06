@@ -32,7 +32,7 @@ class TihApplicationEvent
     private Tih $tih;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $actor = null;
 
     #[ORM\Column(length: 20)]

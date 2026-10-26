@@ -22,7 +22,6 @@ class Tih
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'tih', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -248,6 +247,23 @@ class Tih
 
         foreach ($this->applicationEvents as $event) {
             if (!$event->isRefusal()) {
+                continue;
+            }
+
+            if (null === $latest || $event->getOccurredAt() > $latest->getOccurredAt()) {
+                $latest = $event;
+            }
+        }
+
+        return $latest;
+    }
+
+    public function getLatestReviewRequestEvent(): ?TihApplicationEvent
+    {
+        $latest = null;
+
+        foreach ($this->applicationEvents as $event) {
+            if (!$event->isReviewRequest()) {
                 continue;
             }
 

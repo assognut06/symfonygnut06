@@ -167,15 +167,6 @@ class AdminTihController extends AbstractController
             return $this->redirectToRoute('app_admin_tih');
         }
 
-        // Une requête scalaire évite de placer le TIH dans l'identity map avant
-        // que le service ne le recharge avec un verrou pessimiste.
-        if (0 === $em->getRepository(Tih::class)->count(['id' => $id])) {
-            throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
-        }
-
-        $reason = trim((string) $request->request->get('rejection_reason', ''));
-        if ('' === $reason || 1 === preg_match('/^\s*$/u', $reason)) {
-            $this->addFlash('danger', 'Le motif du refus est obligatoire et ne peut pas contenir uniquement des espaces.');
         $status = $reviewRequest ? $workflow->retryReviewRequestEmail($id) : $workflow->retryRejectionEmail($id);
 
         if ('not_found' === $status) {
@@ -246,17 +237,7 @@ class AdminTihController extends AbstractController
             return $this->redirectToRoute('app_admin_tih');
         }
 
-        $administrator = $this->getUser();
-        if (!$administrator instanceof User) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $outcome = $workflow->refuse($id, $reason, $administrator);
-        if (null === $outcome) {
-            throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
-        }
-
-        if (!$outcome['created']) {
+        if (!$created) {
             $this->addFlash('warning', 'Cette candidature était déjà refusée. Aucun nouvel e-mail n’a été envoyé.');
 
             return $this->redirectToRoute('app_admin_tih');
