@@ -25,6 +25,36 @@ class TihRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param list<int> $ids
+     * @return list<Tih>
+     */
+    public function findWithAdminDetailsByIds(array $ids): array
+    {
+        if ($ids === []) {
+            return [];
+        }
+
+        $tihs = $this->createQueryBuilder('t')
+            ->leftJoin('t.user', 'u')->addSelect('u')
+            ->leftJoin('t.applicationEvents', 'event')->addSelect('event')
+            ->leftJoin('event.actor', 'actor')->addSelect('actor')
+            ->andWhere('t.id IN (:ids)')->setParameter('ids', $ids)
+            ->orderBy('t.id', 'DESC')
+            ->addOrderBy('event.occurredAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        // Un second fetch join évite de multiplier les lignes événements × compétences.
+        $this->createQueryBuilder('t')
+            ->leftJoin('t.competences', 'competence')->addSelect('competence')
+            ->andWhere('t.id IN (:ids)')->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
+
+        return $tihs;
+    }
+
+    /**
      * Search TIH profiles with full-text search and pagination
      * 
      * @param string|null $searchTerm

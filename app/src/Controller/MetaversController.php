@@ -11,13 +11,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/metavers')]
 class MetaversController extends AbstractController
 {
-    private ApiFrameVrService $apiFrameVrService;
-
-    public function __construct(ApiFrameVrService $apiFrameVrService)
-    {
-        $this->apiFrameVrService = $apiFrameVrService;
-    }
-
     #[Route('/', name: 'app_metavers')]
     public function index(): Response
     {
