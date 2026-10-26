@@ -25,12 +25,13 @@ for d in "${DIRS_WRITABLE[@]}"; do
   mkdir -p "/var/www/app/${d}"
 done
 
-# mkdir runs as root, so fix ownership on mounted directories before PHP starts.
-chown -R www-data:user \
-  /var/www/app/var \
-  /var/www/app/public/uploads \
-  /var/www/app/public/media
+# This directory is created on the bind mount by the root entrypoint. Make it
+# writable by Apache/PHP so LiipImagine can generate logo thumbnails.
+chown -R www-data:user /var/www/app/public/media
 
+# Keep bind-mount ownership unchanged. The host ACLs grant access to the
+# developer and www-data; chown here would replace the host-visible owner with
+# the container user (often nobody), forcing sudo for host-side commands.
 chmod -R ug+rwX,g+s \
   /var/www/app/var \
   /var/www/app/public/uploads \

@@ -93,22 +93,5 @@ if (!$isUnitTestsuiteOnly) {
     $schemaTool->dropDatabase();
     $schemaTool->createSchema($metadata);
 
-    $connection = $entityManager->getConnection();
-    $connection->executeStatement('DROP FUNCTION IF EXISTS delete_invalid_users');
-    $connection->executeStatement('DROP PROCEDURE IF EXISTS delete_invalid_users');
-    $connection->executeStatement(<<<'SQL'
-        CREATE PROCEDURE delete_invalid_users()
-        MODIFIES SQL DATA
-        BEGIN
-            DELETE FROM user
-            WHERE is_verified = 0
-              AND JSON_TYPE(roles) = 'ARRAY'
-              AND JSON_LENGTH(roles) = 0
-              AND created_at < DATE_SUB(NOW(), INTERVAL 15 DAY);
-
-            SELECT ROW_COUNT() AS deleted_users;
-        END
-        SQL);
-
     $kernel->shutdown();
 }
