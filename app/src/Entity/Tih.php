@@ -22,6 +22,7 @@ class Tih
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'tih', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]

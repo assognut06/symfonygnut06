@@ -31,6 +31,13 @@ class RegistrationTest extends WebTestCase
         $location = $this->client->getResponse()->headers->get('Location');
         $this->assertStringContainsString('login', $location);
 
+        self::assertEmailCount(1);
+        $email = self::getMailerMessage();
+        self::assertEmailHtmlBodyContains(
+            $email,
+            "Les informations relatives à l'utilisateur déjà communiquées au site GNUT06 seront supprimées si le compte n'est pas validé sous 15 jours."
+        );
+
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 

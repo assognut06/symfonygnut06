@@ -72,7 +72,7 @@ final class GoogleAuthenticator extends OAuth2Authenticator
         } catch (OAuthAccountException $exception) {
             throw new CustomUserMessageAuthenticationException($exception->getMessage());
         } catch (\Throwable $exception) {
-            $this->logger->warning('Google OAuth callback failed.', ['exception_type' => $exception::class]);
+            $this->logger->error('Google OAuth callback failed.', ['exception' => $exception]);
             throw new CustomUserMessageAuthenticationException('La connexion avec Google a échoué. Veuillez réessayer.');
         }
     }
