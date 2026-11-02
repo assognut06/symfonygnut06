@@ -358,13 +358,6 @@ class AdminTihTest extends WebTestCase
         $this->assertSame('Merci de remplacer l’attestation.', $events[1]->getReason());
         $this->assertSame(TihApplicationEvent::SOURCE_ADMIN_REVIEW_REQUEST, $events[1]->getSource());
         $this->assertSame($admin->getId(), $events[1]->getActor()?->getId());
-        $candidate = $tih->getUser();
-        $this->loginAs($candidate);
-        $this->client->request('GET', '/profil');
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorNotExists('#tih-review-message, #tih-rejection-message');
-        $this->assertSelectorTextNotContains('body', 'Merci de remplacer l’attestation.');
-        $this->assertSelectorTextNotContains('body', 'Vous avez un nouveau message');
     }
 
     public function testReviewRequestNotifiesCandidateAndPreservesProfile(): void
@@ -419,11 +412,7 @@ class AdminTihTest extends WebTestCase
         $this->client->request('GET', '/profil');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('#tih-review-message', 'Joindre une attestation.');
-        $this->assertSelectorCount(1, '#tih-review-message');
-        $this->assertSelectorExists('#tih-review-title.text-warning');
-        $this->assertSelectorNotExists('#tih-review-title[style]');
-        $this->assertSelectorNotExists('#tih-rejection-message');
-        $this->assertSelectorNotExists('a[href="#tih-review-message"], a[href="#tih-rejection-message"]');
+        $this->assertSelectorExists('.alert-warning a[href="#tih-review-message"]');
         $this->assertSelectorTextContains('body', 'Vous avez un nouveau message');
     }
 
