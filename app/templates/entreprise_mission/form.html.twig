@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }} | GNUT 06{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <a class="d-inline-block mb-3" href="{{ path('entreprise_mission_index') }}">← Retour à mes missions</a>
+            <h1 class="mb-4">{{ pageTitle }}</h1>
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    {{ form_start(form) }}
+                    {{ form_errors(form) }}
+                    {% for field in form %}
+                        {% if field.vars.name not in ['saveDraft', 'submitForReview', '_token'] %}
+                            <div class="mb-3">
+                                {{ form_row(field) }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="d-flex gap-3 flex-wrap mt-4">
+                        {{ form_widget(form.saveDraft) }}
+                        {{ form_widget(form.submitForReview) }}
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
