@@ -22,6 +22,9 @@ class NotificationController extends AbstractController
     private EntityManagerInterface $em;
     private LoggerInterface $logger;
 
+    /**
+     * @param list<string> $notificationRecipients
+     */
     public function __construct(
         EntityManagerInterface $em,
         LoggerInterface $logger,
@@ -35,6 +38,7 @@ class NotificationController extends AbstractController
         private int $webhookRateLimitMaxRequests,
         private int $webhookRateLimitWindowSeconds,
         private int $webhookMaxPayloadBytes,
+        private array $notificationRecipients,
     ) {
         $this->em = $em;
         $this->logger = $logger;
@@ -641,7 +645,7 @@ class NotificationController extends AbstractController
             
             $email = (new Email())
                 ->from('gnut@gnut06.org')
-                ->to('gnut@gnut06.org')
+                ->to(...$this->notificationRecipients)
                 ->subject("HelloAsso - {$eventType} - {$organizationName}")
                 ->html($htmlContent)
                 ->text($this->generateEmailText($data));
