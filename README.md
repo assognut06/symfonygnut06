@@ -66,10 +66,25 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    Certains éléments de configuration ne peuvent être faits qu'une fois que les images sont démarrées.
 
    ```bash
-   docker exec -it symfony_asso composer install --no-interaction
+   docker exec -it --user www-data symfony_asso composer install --no-interaction
    docker exec -it symfony_asso npm install
    docker exec -it symfony_asso npm run build
    ```
+
+   Au démarrage, le conteneur attribue les dossiers `var/`, `public/uploads/`
+   et `public/media/` à `www-data:user` avec `chown`, puis donne les droits
+   d'écriture au propriétaire et au groupe avec `chmod`. Sur Linux, ces
+   changements s'appliquent aussi aux dossiers montés depuis l'hôte.
+
+   Pour appliquer cette correction à une installation existante :
+
+   ```bash
+   docker compose up -d --build symfony
+   docker exec --user www-data symfony_asso php bin/console cache:clear
+   ```
+
+   Exécutez également les commandes Symfony avec `docker exec --user www-data`
+   pour éviter de créer des fichiers de cache appartenant à `root`.
 
 5. **Initialisation de la base de données**
    ```bash
@@ -84,6 +99,21 @@ Par contre, la base de donnée est vide
    ```bash
    docker exec -it symfony_asso php bin/console doctrine:fixtures:load --append
    ```
+
+## Développement Docker sous Windows et WSL
+
+Pour éviter les lenteurs du montage Windows, utiliser ce mode optionnel avec
+Docker Compose 2.32 ou plus. Depuis la racine du dépôt :
+
+```bash
+docker compose -f docker-compose.yaml -f docker-compose.dev-windows.yaml up --build -d
+docker compose -f docker-compose.yaml -f docker-compose.dev-windows.yaml exec --user www-data:user symfony composer install --no-interaction
+docker compose -f docker-compose.yaml -f docker-compose.dev-windows.yaml exec symfony npm ci
+docker compose -f docker-compose.yaml -f docker-compose.dev-windows.yaml exec symfony npm run build
+docker compose -f docker-compose.yaml -f docker-compose.dev-windows.yaml watch --no-up symfony
+```
+
+Ouvrir `https://127.0.0.1` et garder Compose Watch actif pendant le développement.
 
 ## Importation des données (si nécessaire)
 

@@ -15,6 +15,9 @@ parameters:
     openai.model: '%env(OPENAI_MODEL)%'
     app.email.admin: 'gnut@gnut06.org'
     app.email.from: '%env(default:app.email.admin:SMTP_EMAIL)%'
+    helloasso.notification_recipients:
+        - '%app.email.admin%'
+        - 'patricia@gnut06.org'
     parameters:
     photos_directory: '%kernel.project_dir%/public/uploads/profilePictures'
     bordereau_directory: '%kernel.project_dir%/public/uploads/bordereau'
@@ -41,6 +44,10 @@ parameters:
 
 
 services:
+    App\Command\OAuthIdentityAuditCommand:
+        tags:
+            - { name: console.command, command: 'app:oauth:identity-audit' }
+
     App\MessageHandler\NotificationHandler:
         tags: [messenger.message_handler]
     # default configuration for services in *this* file
@@ -139,6 +146,7 @@ services:
 
     App\Controller\NotificationController:
         arguments:
+            $notificationRecipients: '%helloasso.notification_recipients%'
             $cache: '@cache.app'
             $webhookAllowedIps: '%helloasso.webhook.allowed_ips%'
             $webhookSignatureSecret: '%helloasso.webhook.signature_secret%'

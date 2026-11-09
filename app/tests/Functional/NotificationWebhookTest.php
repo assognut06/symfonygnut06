@@ -38,6 +38,12 @@ class NotificationWebhookTest extends WebTestCase
         $this->assertSame('success', $data['status']);
         $this->assertSame('Notification processed successfully', $data['message']);
         $this->assertSame('Order', $data['eventType']);
+
+        self::assertEmailCount(1);
+        $email = self::getMailerMessage();
+        self::assertEmailAddressContains($email, 'to', 'gnut@gnut06.org');
+        self::assertEmailAddressContains($email, 'to', 'patricia@gnut06.org');
+        self::assertEmailHeaderSame($email, 'Subject', 'HelloAsso - Order - Test Association');
     }
 
     public function testCallbackRejectsGetMethod(): void
