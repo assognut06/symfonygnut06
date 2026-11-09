@@ -11,10 +11,14 @@ class TihApplicationEvent
     public const STATUS_PENDING = Tih::STATUS_PENDING;
     public const STATUS_APPROVED = Tih::STATUS_APPROVED;
     public const STATUS_REFUSED = Tih::STATUS_REFUSED;
+    public const STATUS_REMOVED = Tih::STATUS_REMOVED;
 
     public const EMAIL_PENDING = 'pending';
     public const EMAIL_SENT = 'sent';
     public const EMAIL_FAILED = 'failed';
+
+    public const SOURCE_ADMIN_REMOVAL = 'admin_removal';
+    public const SOURCE_RESUBMISSION = 'resubmission';
 
     public const SOURCE_INITIAL_SUBMISSION = 'initial_submission';
     public const SOURCE_PROFILE_UPDATE = 'profile_update';
@@ -63,7 +67,7 @@ class TihApplicationEvent
         ?string $reason = null,
         ?string $source = null,
     ) {
-        if (!in_array($status, [self::STATUS_PENDING, self::STATUS_APPROVED, self::STATUS_REFUSED], true)) {
+        if (!in_array($status, [self::STATUS_PENDING, self::STATUS_APPROVED, self::STATUS_REFUSED, self::STATUS_REMOVED], true)) {
             throw new \InvalidArgumentException(sprintf('Unknown TIH application event status "%s".', $status));
         }
 

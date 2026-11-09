@@ -746,10 +746,13 @@ class AdminTihTest extends WebTestCase
         $this->assertTrue($updated->isValidate());
     }
 
-    public function testDeleteRemovesTihProfile(): void
+    public function testDeletePreservesUserAndProfileWithRemovalHistory(): void
     {
         $this->loginAsAdmin();
         $tihUser = $this->createTihUser('delete-me@test.com');
+        $userId = $tihUser->getId();
+        $tihUser->setRoles(['ROLE_TIH', 'ROLE_BENEVOLE']);
+        $this->em->flush();
         $tih = $tihUser->getTih();
         $tihId = $tih->getId();
 
@@ -759,7 +762,26 @@ class AdminTihTest extends WebTestCase
         ]);
 
         $this->assertResponseRedirects('/admin/tih');
-        $this->assertNull($this->em->getRepository(Tih::class)->find($tihId));
+        $this->em->clear();
+        $profile = $this->em->getRepository(Tih::class)->find($tihId);
+        $user = $this->em->getRepository(User::class)->find($userId);
+        $this->assertNotNull($profile);
+        $this->assertNotNull($user);
+        $this->assertTrue($profile->isRemoved());
+        $this->assertFalse($profile->isValidate());
+        $this->assertSame($userId, $profile->getUser()->getId());
+        $this->assertSame('delete-me@test.com', $user->getEmail());
+        $this->assertContains('ROLE_BENEVOLE', $user->getRoles());
+        $this->assertNotContains('ROLE_TIH', $user->getRoles());
+        $events = $this->em->getRepository(TihApplicationEvent::class)->findBy(['tih' => $tihId, 'status' => Tih::STATUS_REMOVED]);
+        $this->assertCount(1, $events);
+        $this->assertNotNull($events[0]->getActor());
+        $this->assertNull($events[0]->getEmailStatus());
+        $this->assertNull($this->em->getRepository(Tih::class)->findValidatedById($tihId));
+        $this->client->followRedirect();
+        $this->assertSelectorTextContains('table#tih-table', 'Supprimé');
+        $this->assertSelectorNotExists('form[action="/admin/tih/delete/' . $tihId . '"]');
+        $this->assertSelectorNotExists('form[action="/admin/tih/validate/' . $tihId . '"]');
     }
 
     public function testDeleteRejectsWrongMethod(): void

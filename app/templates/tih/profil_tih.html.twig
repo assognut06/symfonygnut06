@@ -11,6 +11,10 @@
     <div class="alert alert-danger shadow-sm" role="alert">{{ message }}</div>
 {% endfor %}
 
+{% if tih.removed %}
+    <div class="alert alert-secondary" role="status">Votre profil TIH est supprimé. Votre compte est conservé. Vous pouvez soumettre une nouvelle demande, qui sera examinée par un administrateur.</div>
+{% endif %}
+
 {% if form is defined and form is not null %}
     <p class="text-center text-white">Complétez ou modifiez votre profil TIH</p>
     <div class="container w-75 shadow p-4 rounded bg-white">
@@ -136,7 +140,7 @@
             </div>
         </div>
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success px-4">Enregistrer</button>
+            <button type="submit" class="btn btn-success px-4">{{ tih.removed ? 'Soumettre une nouvelle demande' : 'Enregistrer' }}</button>
         </div>
         {{ form_end(form) }}
     </div>
@@ -192,7 +196,11 @@
             </div>
         </div>
         <div class="text-center mt-4">
-            <a href="{{ path('espace_tih', {'edit': '1'}) }}" class="btn btn-secondary">Modifier mes infos</a>
+            {% if tih.removed %}
+                <a href="{{ path('espace_tih', {'reapply': '1'}) }}" class="btn btn-primary">Préparer une nouvelle demande</a>
+            {% else %}
+                <a href="{{ path('espace_tih', {'edit': '1'}) }}" class="btn btn-secondary">Modifier mes infos</a>
+            {% endif %}
         </div>
     </div>
 {% endif %}
