@@ -273,6 +273,10 @@ Un comportement particulier a été constaté sur GitHub : même lorsque les rel
 
 Le contournement consiste, après avoir terminé, validé et poussé le rebase, à fermer puis à rouvrir la Pull Request. Cette opération permet à GitHub de prendre en compte le dernier état de la branche pour les approbations.
 
+## Tester le workflow de Pull Request
+
+Pour tester le workflow GitHub, utilisez une petite modification de documentation et indiquez le ticket Jira associé dans la description de la Pull Request.
+
 ## Trouble shoot
 
 Sur Mac, il peut y avoir une erreur avec l'extension opcache.so
