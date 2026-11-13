@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/entreprise/missions', name: 'entreprise_mission_')]
-#[IsGranted('ROLE_USER')]
+#[IsGranted('ROLE_ENTREPRISE')]
 final class EntrepriseMissionController extends AbstractController
 {
     private const EDITABLE_STATUSES = [
@@ -28,10 +28,16 @@ final class EntrepriseMissionController extends AbstractController
     public function index(EntityManagerInterface $entityManager): Response
     {
         $compte = $this->getCompteEntreprise($entityManager);
-        $missions = $entityManager->getRepository(Mission::class)->findBy(
-            ['compteEntreprise' => $compte],
-            ['createdAt' => 'DESC', 'id' => 'DESC']
-        );
+
+        $missions = $entityManager
+            ->getRepository(Mission::class)
+            ->findBy(
+                ['compteEntreprise' => $compte],
+                [
+                    'createdAt' => 'DESC',
+                    'id' => 'DESC',
+                ]
+            );
 
         return $this->render('entreprise_mission/index.html.twig', [
             'compte' => $compte,
@@ -41,17 +47,28 @@ final class EntrepriseMissionController extends AbstractController
     }
 
     #[Route('/nouvelle', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
         $compte = $this->getCompteEntreprise($entityManager);
+
         $mission = new Mission($compte);
+
         $form = $this->createForm(MissionType::class, $mission);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('submitForReview')->isClicked()) {
+            $submitForReview = $form
+                ->get('submitForReview')
+                ->isClicked();
+
+            if ($submitForReview) {
                 if (!$compte->isApproved()) {
-                    $form->addError(new FormError('Votre compte entreprise doit être validé avant toute soumission.'));
+                    $form->addError(new FormError(
+                        'Votre compte entreprise doit être validé avant de soumettre une mission.'
+                    ));
                 } else {
                     $mission->submit();
                 }
@@ -60,9 +77,22 @@ final class EntrepriseMissionController extends AbstractController
             if ($form->isValid()) {
                 $entityManager->persist($mission);
                 $entityManager->flush();
-                $this->addFlash('success', 'La mission a été enregistrée.');
 
-                return $this->redirectToRoute('entreprise_mission_index');
+                if ($submitForReview) {
+                    $this->addFlash(
+                        'success',
+                        'Votre mission a été soumise à validation.'
+                    );
+                } else {
+                    $this->addFlash(
+                        'success',
+                        'Votre brouillon a été enregistré.'
+                    );
+                }
+
+                return $this->redirectToRoute(
+                    'entreprise_mission_index'
+                );
             }
         }
 
@@ -72,42 +102,101 @@ final class EntrepriseMissionController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/modifier', name: 'edit', requirements: ['id' => '\\d+'], methods: ['GET', 'POST'])]
-    public function edit(int $id, Request $request, EntityManagerInterface $entityManager): Response
-    {
+    #[Route(
+        '/{id}/modifier',
+        name: 'edit',
+        requirements: ['id' => '\d+'],
+        methods: ['GET', 'POST']
+    )]
+    public function edit(
+        int $id,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
         $compte = $this->getCompteEntreprise($entityManager);
-        $mission = $entityManager->getRepository(Mission::class)->findOneBy([
-            'id' => $id,
-            'compteEntreprise' => $compte,
-        ]);
+
+        $mission = $entityManager
+            ->getRepository(Mission::class)
+            ->findOneBy([
+                'id' => $id,
+                'compteEntreprise' => $compte,
+            ]);
 
         if (!$mission instanceof Mission) {
-            throw $this->createNotFoundException('Mission introuvable.');
+            throw $this->createNotFoundException(
+                'Mission introuvable.'
+            );
         }
 
-        if (!in_array($mission->getStatut(), self::EDITABLE_STATUSES, true)) {
-            throw $this->createAccessDeniedException('Cette mission ne peut pas être modifiée dans son état actuel.');
+        $initialStatus = $mission->getStatut();
+
+        if (!in_array(
+            $initialStatus,
+            self::EDITABLE_STATUSES,
+            true
+        )) {
+            throw $this->createAccessDeniedException(
+                'Cette mission ne peut pas être modifiée dans son état actuel.'
+            );
         }
 
         $form = $this->createForm(MissionType::class, $mission);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('submitForReview')->isClicked()) {
+            $submitForReview = $form
+                ->get('submitForReview')
+                ->isClicked();
+
+            if ($submitForReview) {
                 if (!$compte->isApproved()) {
-                    $form->addError(new FormError('Votre compte entreprise doit être validé avant toute soumission.'));
-                } elseif (in_array($mission->getStatut(), [Mission::STATUS_DRAFT, Mission::STATUS_CORRECTION], true)) {
+                    $form->addError(new FormError(
+                        'Votre compte entreprise doit être validé avant toute soumission.'
+                    ));
+                } elseif (in_array($mission->getStatut(),[ Mission::STATUS_DRAFT,Mission::STATUS_CORRECTION],true)) {
+                  
                     $mission->submit();
-                } elseif ($mission->getStatut() !== Mission::STATUS_PENDING) {
-                    $form->addError(new FormError('Cette mission est déjà publiée et aucune nouvelle modification ne nécessite de validation.'));
+                
+                    } elseif ($initialStatus === Mission::STATUS_PUBLISHED && $mission->getStatut() === Mission::STATUS_PENDING) {
+                    
+                $this->addFlash(
+                        'info',
+                        'Les modifications de cette mission nécessitent une nouvelle validation.'
+                    );
+                } else {
+                    $form->addError(new FormError(
+                        'Cette mission ne peut pas être soumise dans son état actuel.'
+                    ));
                 }
             }
 
             if ($form->isValid()) {
                 $entityManager->flush();
-                $this->addFlash('success', 'La mission a été mise à jour.');
 
-                return $this->redirectToRoute('entreprise_mission_index');
+                if ($submitForReview) {
+                    $this->addFlash(
+                        'success',
+                        'Votre mission a été soumise à validation.'
+                    );
+                } elseif (
+                    $initialStatus === Mission::STATUS_PUBLISHED
+                    && $mission->getStatut() === Mission::STATUS_PENDING
+                ) {
+                    $this->addFlash(
+                        'success',
+                        'Les modifications ont été enregistrées. La mission est en attente de validation.'
+                    );
+                } else {
+                    $this->addFlash(
+                        'success',
+                        'La mission a été mise à jour.'
+                    );
+                }
+
+                return $this->redirectToRoute(
+                    'entreprise_mission_index'
+                );
             }
         }
 
@@ -117,18 +206,27 @@ final class EntrepriseMissionController extends AbstractController
         ]);
     }
 
-    private function getCompteEntreprise(EntityManagerInterface $entityManager): CompteEntreprise
-    {
+    private function getCompteEntreprise(
+        EntityManagerInterface $entityManager
+    ): CompteEntreprise {
         $user = $this->getUser();
 
         if (!$user instanceof User) {
-            throw $this->createAccessDeniedException('Connexion requise.');
+            throw $this->createAccessDeniedException(
+                'Vous devez être connecté pour accéder à cet espace.'
+            );
         }
 
-        $compte = $entityManager->getRepository(CompteEntreprise::class)->findOneBy(['user' => $user]);
+        $compte = $entityManager
+            ->getRepository(CompteEntreprise::class)
+            ->findOneBy([
+                'user' => $user,
+            ]);
 
         if (!$compte instanceof CompteEntreprise) {
-            throw $this->createAccessDeniedException('Aucun profil entreprise n’est associé à votre compte.');
+            throw $this->createAccessDeniedException(
+                'Aucun profil entreprise n’est associé à votre compte.'
+            );
         }
 
         return $compte;

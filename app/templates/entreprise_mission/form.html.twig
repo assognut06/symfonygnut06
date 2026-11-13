@@ -3,30 +3,1398 @@
 {% block title %}{{ pageTitle }} | GNUT 06{% endblock %}
 
 {% block body %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-9">
-            <a class="d-inline-block mb-3" href="{{ path('entreprise_mission_index') }}">← Retour à mes missions</a>
-            <h1 class="mb-4">{{ pageTitle }}</h1>
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
-                    {{ form_start(form) }}
-                    {{ form_errors(form) }}
-                    {% for field in form %}
-                        {% if field.vars.name not in ['saveDraft', 'submitForReview', '_token'] %}
-                            <div class="mb-3">
-                                {{ form_row(field) }}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                    <div class="d-flex gap-3 flex-wrap mt-4">
-                        {{ form_widget(form.saveDraft) }}
-                        {{ form_widget(form.submitForReview) }}
-                    </div>
-                    {{ form_end(form) }}
-                </div>
+
+<style>
+    .mission-form-page {
+        min-height: 100vh;
+        padding: 55px 0 100px;
+        background:
+            radial-gradient(
+                ellipse at 85% 0%,
+                rgba(153, 91, 255, 0.12),
+                transparent 45%
+            ),
+            #060611;
+        color: #f8f9ff;
+    }
+
+    .mission-form-page * {
+        box-sizing: border-box;
+    }
+
+    .mission-form-page .form-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 25px;
+    }
+
+    .mission-form-page .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        color: #bca0ec;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 30px;
+        transition: color 0.2s;
+    }
+
+    .mission-form-page .back-link:hover {
+        color: #ffffff;
+    }
+
+    .mission-form-page .page-header {
+        margin-bottom: 40px;
+    }
+
+    .mission-form-page .page-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 8px 15px;
+        border-radius: 30px;
+        background: rgba(168, 112, 255, 0.12);
+        color: #c69aff;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+
+    .mission-form-page .page-title {
+        color: #ffffff;
+        font-size: clamp(30px, 4vw, 44px);
+        font-weight: 800;
+        letter-spacing: -1.2px;
+        margin-bottom: 14px;
+    }
+
+    .mission-form-page .page-description {
+        color: #a9aac2;
+        font-size: 15px;
+        line-height: 1.8;
+        max-width: 720px;
+        margin-bottom: 0;
+    }
+
+    .mission-form-page .form-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        align-items: start;
+        gap: 25px;
+    }
+
+    .mission-form-page .form-main {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .mission-form-page .form-section {
+        background: #111120;
+        border: 1px solid #29293f;
+        border-radius: 20px;
+        padding: 32px;
+    }
+
+    .mission-form-page .section-heading {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding-bottom: 24px;
+        margin-bottom: 28px;
+        border-bottom: 1px solid #29293f;
+    }
+
+    .mission-form-page .section-icon {
+        width: 46px;
+        height: 46px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(157, 103, 255, 0.13);
+        color: #bb8dff;
+        border-radius: 13px;
+        font-size: 21px;
+    }
+
+    .mission-form-page .section-title {
+        font-size: 19px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 5px;
+    }
+
+    .mission-form-page .section-description {
+        color: #9293ab;
+        font-size: 13px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .mission-form-page .field-group {
+        margin-bottom: 25px;
+        min-width: 0;
+    }
+
+    .mission-form-page .field-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .mission-form-page .field-label {
+        display: block;
+        color: #e4e4f4;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .mission-form-page .field-help {
+        color: #9293ab;
+        font-size: 12px;
+        line-height: 1.7;
+        margin-top: 9px;
+        margin-bottom: 0;
+    }
+
+    .mission-form-page .field-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .mission-form-page .field-grid .field-group {
+        margin-bottom: 0;
+    }
+
+    .mission-form-page .mission-control {
+        display: block;
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 15px;
+        background: #191929;
+        border: 1px solid #38384d;
+        border-radius: 11px;
+        color: #ffffff;
+        font-size: 14px;
+        line-height: 1.5;
+        transition:
+            border-color 0.2s,
+            background 0.2s,
+            box-shadow 0.2s;
+    }
+
+    .mission-form-page .mission-control::placeholder {
+        color: #77788f;
+        opacity: 1;
+    }
+
+    .mission-form-page .mission-control:hover {
+        border-color: #68618b;
+    }
+
+    .mission-form-page .mission-control:focus {
+        outline: none;
+        border-color: #aa79ff;
+        background: #202033;
+        color: #ffffff;
+        box-shadow: 0 0 0 3px rgba(168, 112, 255, 0.14);
+    }
+
+    .mission-form-page textarea.mission-control {
+        min-height: 180px;
+        resize: vertical;
+        line-height: 1.8;
+    }
+
+    .mission-form-page select.mission-control {
+        cursor: pointer;
+        color-scheme: dark;
+    }
+
+    .mission-form-page select.mission-control option {
+        background: #191929;
+        color: #ffffff;
+        padding: 10px;
+    }
+
+    .mission-form-page select[multiple].mission-control {
+        min-height: 175px;
+        padding: 8px;
+    }
+
+    .mission-form-page select[multiple].mission-control option {
+        border-radius: 6px;
+        margin-bottom: 3px;
+    }
+
+    .mission-form-page input[type="date"].mission-control {
+        color-scheme: dark;
+    }
+
+    .mission-form-page .form-errors {
+        margin-top: 9px;
+        color: #ff9ca9;
+        font-size: 13px;
+    }
+
+    .mission-form-page .form-errors ul {
+        padding-left: 18px;
+        margin: 0;
+    }
+
+    .mission-form-page .form-global-errors {
+        background: rgba(220, 53, 69, 0.10);
+        border: 1px solid rgba(220, 53, 69, 0.35);
+        color: #ffb3bd;
+        padding: 16px 20px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        font-size: 14px;
+    }
+
+    .mission-form-page .form-global-errors:empty {
+        display: none;
+    }
+
+    .mission-form-page .selected-skills-box {
+        margin-bottom: 22px;
+        padding: 20px;
+        background: linear-gradient(
+            135deg,
+            rgba(139, 92, 246, 0.10),
+            rgba(99, 102, 241, 0.05)
+        );
+        border: 1px solid rgba(168, 112, 255, 0.28);
+        border-radius: 15px;
+    }
+
+    .mission-form-page .selected-skills-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .mission-form-page .selected-skills-title {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0;
+        color: #f0e4ff;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .mission-form-page .selected-skills-title i {
+        color: #bd91ff;
+        font-size: 17px;
+    }
+
+    .mission-form-page .selected-skills-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 95px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        background: rgba(168, 112, 255, 0.15);
+        color: #d5b5ff;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .mission-form-page .selected-skills-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .mission-form-page .selected-skill-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        max-width: 100%;
+        padding: 7px 8px 7px 14px;
+        border: 1px solid rgba(168, 112, 255, 0.38);
+        border-radius: 9px;
+        background: rgba(168, 112, 255, 0.16);
+        color: #e5d2ff;
+        font-size: 13px;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .mission-form-page .selected-skill-tag > span {
+        min-width: 0;
+    }
+
+    .mission-form-page .selected-skill-remove {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.10);
+        color: #f4e9ff;
+        font-size: 19px;
+        line-height: 1;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .mission-form-page .selected-skill-remove:hover {
+        background: rgba(239, 68, 68, 0.30);
+        color: #ffffff;
+    }
+
+    .mission-form-page .selected-skill-remove:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+    }
+
+    .mission-form-page .selected-skills-empty {
+        margin: 0;
+        color: #9293ab;
+        font-size: 13px;
+        font-style: italic;
+    }
+
+    .mission-form-page .selected-skills-empty[hidden] {
+        display: none;
+    }
+
+    .mission-form-page .skills-selector-label {
+        display: block;
+        margin-bottom: 10px;
+        color: #b8b9d0;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .mission-form-page .skills-hint {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        margin-top: 13px;
+        color: #9293ab;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .mission-form-page .skills-hint i {
+        color: #a98bfa;
+        margin-top: 2px;
+    }
+
+    .mission-form-page .budget-note {
+        display: flex;
+        gap: 12px;
+        padding: 16px;
+        background: rgba(99, 102, 241, 0.08);
+        border: 1px solid rgba(99, 102, 241, 0.18);
+        border-radius: 12px;
+        color: #b9badb;
+        font-size: 13px;
+        line-height: 1.7;
+        margin-top: 22px;
+    }
+
+    .mission-form-page .budget-note i {
+        color: #a5a7ff;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .mission-form-page .form-actions {
+        background: #111120;
+        border: 1px solid #29293f;
+        border-radius: 20px;
+        padding: 28px 32px;
+    }
+
+    .mission-form-page .actions-title {
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .mission-form-page .actions-description {
+        color: #9697af;
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 23px;
+    }
+
+    .mission-form-page .actions-buttons {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .mission-form-page .mission-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 13px 23px;
+        border-radius: 11px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+            transform 0.2s,
+            background 0.2s,
+            box-shadow 0.2s;
+    }
+
+    .mission-form-page .mission-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .mission-form-page .mission-btn-outline {
+        background: transparent;
+        border: 1px solid #77709f;
+        color: #ddd0ff;
+    }
+
+    .mission-form-page .mission-btn-outline:hover {
+        background: rgba(168, 112, 255, 0.13);
+        border-color: #b68cff;
+        color: #ffffff;
+    }
+
+    .mission-form-page .mission-btn-primary {
+        border: 1px solid transparent;
+        background: linear-gradient(135deg, #b45cf3, #6269f8);
+        color: #ffffff;
+        box-shadow: 0 8px 25px rgba(113, 93, 245, 0.18);
+    }
+
+    .mission-form-page .mission-btn-primary:hover {
+        color: #ffffff;
+        box-shadow: 0 12px 30px rgba(113, 93, 245, 0.3);
+    }
+
+    .mission-form-page .mission-btn:focus-visible {
+        outline: 3px solid #ffffff;
+        outline-offset: 3px;
+    }
+
+    .mission-form-page .form-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .mission-form-page .sidebar-card {
+        background: #111120;
+        border: 1px solid #29293f;
+        border-radius: 18px;
+        padding: 25px;
+    }
+
+    .mission-form-page .sidebar-card-highlight {
+        background:
+            linear-gradient(
+                145deg,
+                rgba(142, 83, 255, 0.14),
+                rgba(99, 102, 241, 0.04)
+            ),
+            #111120;
+        border-color: #453466;
+    }
+
+    .mission-form-page .sidebar-icon {
+        width: 43px;
+        height: 43px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: rgba(168, 112, 255, 0.12);
+        color: #c594ff;
+        font-size: 20px;
+        margin-bottom: 18px;
+    }
+
+    .mission-form-page .sidebar-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 15px;
+    }
+
+    .mission-form-page .sidebar-text {
+        color: #a5a6bf;
+        font-size: 13px;
+        line-height: 1.8;
+        margin-bottom: 0;
+    }
+
+    .mission-form-page .sidebar-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .mission-form-page .sidebar-list li {
+        display: flex;
+        gap: 11px;
+        align-items: flex-start;
+        color: #b5b6cc;
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 15px;
+    }
+
+    .mission-form-page .sidebar-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .mission-form-page .sidebar-list i {
+        color: #9b84fa;
+        font-size: 15px;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .mission-form-page .sidebar-divider {
+        height: 1px;
+        background: #303046;
+        margin: 20px 0;
+    }
+
+    .mission-form-page .sidebar-alert {
+        display: flex;
+        gap: 10px;
+        padding: 14px;
+        background: rgba(245, 158, 11, 0.07);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: 10px;
+        color: #e2c59e;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .mission-form-page .sidebar-alert i {
+        flex-shrink: 0;
+        color: #f0b65c;
+        font-size: 16px;
+    }
+
+    @media (max-width: 992px) {
+        .mission-form-page .form-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .mission-form-page .form-sidebar {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 600px) {
+        .mission-form-page {
+            padding: 30px 0 60px;
+        }
+
+        .mission-form-page .form-container {
+            padding: 0 16px;
+        }
+
+        .mission-form-page .page-header {
+            margin-bottom: 28px;
+        }
+
+        .mission-form-page .form-section {
+            padding: 22px 18px;
+            border-radius: 15px;
+        }
+
+        .mission-form-page .section-heading {
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .mission-form-page .section-title {
+            font-size: 17px;
+        }
+
+        .mission-form-page .field-grid {
+            grid-template-columns: 1fr;
+            gap: 22px;
+        }
+
+        .mission-form-page .form-actions {
+            padding: 22px 18px;
+        }
+
+        .mission-form-page .actions-buttons {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .mission-form-page .mission-btn {
+            width: 100%;
+        }
+
+        .mission-form-page .form-sidebar {
+            grid-template-columns: 1fr;
+        }
+
+        .mission-form-page .selected-skills-box {
+            padding: 16px;
+        }
+    }
+</style>
+
+<main class="mission-form-page">
+
+    <div class="form-container">
+
+        <a href="{{ path('entreprise_mission_index') }}" class="back-link">
+            <i class="bi bi-arrow-left"></i>
+            Retour à mes missions
+        </a>
+
+        <header class="page-header">
+
+            <span class="page-label">
+                <i class="bi bi-briefcase"></i>
+                Espace entreprise
+            </span>
+
+            <h1 class="page-title">
+                {{ pageTitle }}
+            </h1>
+
+            <p class="page-description">
+                Renseignez les informations de votre mission.
+                Vous pouvez enregistrer un brouillon et revenir
+                le compléter avant de le soumettre à validation.
+            </p>
+
+        </header>
+
+        {{ form_start(form, {
+            'attr': {
+                'class': 'mission-entry-form'
+            }
+        }) }}
+
+        {% if not form.vars.valid %}
+
+            <div class="form-global-errors" role="alert">
+                Veuillez corriger les erreurs signalées dans le formulaire.
+                {{ form_errors(form) }}
             </div>
+
+        {% else %}
+
+            {{ form_errors(form) }}
+
+        {% endif %}
+
+        <div class="form-layout">
+
+            <div class="form-main">
+
+                <section class="form-section">
+
+                    <div class="section-heading">
+
+                        <div class="section-icon">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+
+                        <div>
+                            <h2 class="section-title">
+                                Présentation de la mission
+                            </h2>
+
+                            <p class="section-description">
+                                Décrivez clairement le travail attendu.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="field-group">
+
+                        {{ form_label(form.titre, null, {
+                            'label_attr': {
+                                'class': 'field-label'
+                            }
+                        }) }}
+
+                        {{ form_widget(form.titre, {
+                            'attr': {
+                                'class': 'mission-control',
+                                'placeholder': 'Ex. Développement d’un site internet'
+                            }
+                        }) }}
+
+                        <div class="form-errors">
+                            {{ form_errors(form.titre) }}
+                        </div>
+
+                        <p class="field-help">
+                            Choisissez un titre clair et précis.
+                            Maximum 120 caractères.
+                        </p>
+
+                    </div>
+
+                    <div class="field-group">
+
+                        {{ form_label(form.description, null, {
+                            'label_attr': {
+                                'class': 'field-label'
+                            }
+                        }) }}
+
+                        {{ form_widget(form.description, {
+                            'attr': {
+                                'class': 'mission-control',
+                                'placeholder': 'Décrivez les objectifs, les tâches à réaliser et les résultats attendus.'
+                            }
+                        }) }}
+
+                        <div class="form-errors">
+                            {{ form_errors(form.description) }}
+                        </div>
+
+                        <p class="field-help">
+                            Maximum 3 000 caractères.
+                            Ne mentionnez aucune donnée personnelle
+                            ou information sensible.
+                        </p>
+
+                    </div>
+
+                </section>
+
+                <section class="form-section">
+
+                    <div class="section-heading">
+
+                        <div class="section-icon">
+                            <i class="bi bi-stars"></i>
+                        </div>
+
+                        <div>
+                            <h2 class="section-title">
+                                Compétences et localisation
+                            </h2>
+
+                            <p class="section-description">
+                                Précisez le profil recherché et les modalités d'intervention.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="field-group">
+
+                        {{ form_label(form.competences, null, {
+                            'label_attr': {
+                                'class': 'field-label'
+                            }
+                        }) }}
+
+                        <div class="selected-skills-box">
+
+                            <div class="selected-skills-header">
+
+                                <h3 class="selected-skills-title">
+                                    <i class="bi bi-check2-circle"></i>
+                                    Compétences sélectionnées
+                                </h3>
+
+                                <span
+                                    class="selected-skills-count"
+                                    data-selected-skill-count
+                                >
+                                    0 sélectionnée
+                                </span>
+
+                            </div>
+
+                            <div
+                                class="selected-skills-list"
+                                data-selected-skill-list
+                                aria-live="polite"
+                                aria-relevant="additions removals"
+                            ></div>
+
+                            <p
+                                class="selected-skills-empty"
+                                data-selected-skill-empty
+                            >
+                                Aucune compétence sélectionnée pour le moment.
+                            </p>
+
+                        </div>
+
+                        <span class="skills-selector-label">
+                            Sélectionnez les compétences recherchées :
+                        </span>
+
+                        {{ form_widget(form.competences, {
+                            'attr': {
+                                'class': 'mission-control',
+                                'data-skill-select': '1'
+                            }
+                        }) }}
+
+                        <div class="form-errors">
+                            {{ form_errors(form.competences) }}
+                        </div>
+
+                        <div class="skills-hint">
+                            <i class="bi bi-info-circle"></i>
+                            <span>
+                                Maintenez Ctrl sur Windows ou Cmd sur Mac
+                                pour sélectionner plusieurs compétences.
+                                Vous pouvez retirer une compétence en cliquant
+                                sur la croix de son étiquette.
+                            </span>
+                        </div>
+
+                        {% if form.competences.vars.choices is empty %}
+
+                            <div class="sidebar-alert mt-3" role="status">
+                                <i class="bi bi-exclamation-circle"></i>
+                                Aucune compétence n'est disponible
+                                dans le référentiel pour le moment.
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class="field-group">
+
+                        {{ form_label(form.domaine, null, {
+                            'label_attr': {
+                                'class': 'field-label'
+                            }
+                        }) }}
+
+                        {{ form_widget(form.domaine, {
+                            'attr': {
+                                'class': 'mission-control',
+                                'placeholder': 'Ex. Informatique, communication, gestion'
+                            }
+                        }) }}
+
+                        <div class="form-errors">
+                            {{ form_errors(form.domaine) }}
+                        </div>
+
+                    </div>
+
+                    <div class="field-grid">
+
+                        <div class="field-group">
+
+                            {{ form_label(form.zone, null, {
+                                'label_attr': {
+                                    'class': 'field-label'
+                                }
+                            }) }}
+
+                            {{ form_widget(form.zone, {
+                                'attr': {
+                                    'class': 'mission-control',
+                                    'placeholder': 'Ex. Île-de-France'
+                                }
+                            }) }}
+
+                            <div class="form-errors">
+                                {{ form_errors(form.zone) }}
+                            </div>
+
+                        </div>
+
+                        <div class="field-group">
+
+                            {{ form_label(form.modalite, null, {
+                                'label_attr': {
+                                    'class': 'field-label'
+                                }
+                            }) }}
+
+                            {{ form_widget(form.modalite, {
+                                'attr': {
+                                    'class': 'mission-control'
+                                }
+                            }) }}
+
+                            <div class="form-errors">
+                                {{ form_errors(form.modalite) }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="form-section">
+
+                    <div class="section-heading">
+
+                        <div class="section-icon">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+
+                        <div>
+                            <h2 class="section-title">
+                                Calendrier de la mission
+                            </h2>
+
+                            <p class="section-description">
+                                Définissez les principales échéances.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="field-grid">
+
+                        <div class="field-group">
+
+                            {{ form_label(form.dateDebutSouhaitee, null, {
+                                'label_attr': {
+                                    'class': 'field-label'
+                                }
+                            }) }}
+
+                            {{ form_widget(form.dateDebutSouhaitee, {
+                                'attr': {
+                                    'class': 'mission-control'
+                                }
+                            }) }}
+
+                            <div class="form-errors">
+                                {{ form_errors(form.dateDebutSouhaitee) }}
+                            </div>
+
+                        </div>
+
+                        <div class="field-group">
+
+                            {{ form_label(form.dureeEstimee, null, {
+                                'label_attr': {
+                                    'class': 'field-label'
+                                }
+                            }) }}
+
+                            {{ form_widget(form.dureeEstimee, {
+                                'attr': {
+                                    'class': 'mission-control',
+                                    'placeholder': 'Ex. 3 semaines'
+                                }
+                            }) }}
+
+                            <div class="form-errors">
+                                {{ form_errors(form.dureeEstimee) }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="field-group mt-4">
+
+                        {{ form_label(form.dateLimiteReponse, null, {
+                            'label_attr': {
+                                'class': 'field-label'
+                            }
+                        }) }}
+
+                        {{ form_widget(form.dateLimiteReponse, {
+                            'attr': {
+                                'class': 'mission-control'
+                            }
+                        }) }}
+
+                        <div class="form-errors">
+                            {{ form_errors(form.dateLimiteReponse) }}
+                        </div>
+
+                        <p class="field-help">
+                            La date limite doit être future.
+                            Elle est obligatoire pour soumettre la mission.
+                        </p>
+
+                    </div>
+
+                </section>
+
+                <section class="form-section">
+
+                    <div class="section-heading">
+
+                        <div class="section-icon">
+                            <i class="bi bi-cash-coin"></i>
+                        </div>
+
+                        <div>
+                            <h2 class="section-title">
+                                Tarification de la mission
+                            </h2>
+
+                            <p class="section-description">
+                                Indiquez la fourchette tarifaire proposée
+                                pour cette prestation. Ces informations
+                                sont facultatives.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="field-grid">
+
+                        <div class="field-group">
+
+                            {{ form_label(form.budgetMin, null, {
+                                'label_attr': {
+                                    'class': 'field-label'
+                                }
+                            }) }}
+
+                            {{ form_widget(form.budgetMin, {
+                                'attr': {
+                                    'class': 'mission-control',
+                                    'placeholder': 'Ex. 300'
+                                }
+                            }) }}
+
+                            <div class="form-errors">
+                                {{ form_errors(form.budgetMin) }}
+                            </div>
+
+                        </div>
+
+                        <div class="field-group">
+
+                            {{ form_label(form.budgetMax, null, {
+                                'label_attr': {
+                                    'class': 'field-label'
+                                }
+                            }) }}
+
+                            {{ form_widget(form.budgetMax, {
+                                'attr': {
+                                    'class': 'mission-control',
+                                    'placeholder': 'Ex. 500'
+                                }
+                            }) }}
+
+                            <div class="form-errors">
+                                {{ form_errors(form.budgetMax) }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="field-group mt-4">
+
+                        {{ form_label(form.uniteBudget, null, {
+                            'label_attr': {
+                                'class': 'field-label'
+                            }
+                        }) }}
+
+                        {{ form_widget(form.uniteBudget, {
+                            'attr': {
+                                'class': 'mission-control'
+                            }
+                        }) }}
+
+                        <div class="form-errors">
+                            {{ form_errors(form.uniteBudget) }}
+                        </div>
+
+                    </div>
+
+                    <div class="budget-note">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        <div>
+                            Le tarif peut être horaire, journalier ou forfaitaire.
+                            Si vous renseignez une fourchette de tarifs,
+                            le montant minimum ne peut pas dépasser
+                            le montant maximum.
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="form-actions">
+
+                    <h2 class="actions-title">
+                        Enregistrer votre mission
+                    </h2>
+
+                    <p class="actions-description">
+                        Enregistrez votre travail pour le compléter plus tard,
+                        ou soumettez votre mission à l'équipe GNUT06
+                        pour vérification.
+                    </p>
+
+                    <div class="actions-buttons">
+
+                        {{ form_widget(form.saveDraft, {
+                            'attr': {
+                                'class': 'mission-btn mission-btn-outline'
+                            }
+                        }) }}
+
+                        {{ form_widget(form.submitForReview, {
+                            'attr': {
+                                'class': 'mission-btn mission-btn-primary'
+                            }
+                        }) }}
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <aside class="form-sidebar">
+
+                <div class="sidebar-card sidebar-card-highlight">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-lightbulb"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Conseils de rédaction
+                    </h3>
+
+                    <ul class="sidebar-list">
+
+                        <li>
+                            <i class="bi bi-check-circle"></i>
+                            <span>
+                                Utilisez un titre précis qui décrit
+                                clairement la prestation.
+                            </span>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-check-circle"></i>
+                            <span>
+                                Présentez les objectifs et les
+                                livrables attendus.
+                            </span>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-check-circle"></i>
+                            <span>
+                                Précisez les compétences
+                                nécessaires à la réalisation.
+                            </span>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-check-circle"></i>
+                            <span>
+                                Indiquez une date limite
+                                réaliste.
+                            </span>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <div class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Comment ça fonctionne ?
+                    </h3>
+
+                    <ul class="sidebar-list">
+
+                        <li>
+                            <i class="bi bi-1-circle"></i>
+                            <span>
+                                Vous préparez votre mission
+                                et l'enregistrez.
+                            </span>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-2-circle"></i>
+                            <span>
+                                Vous la soumettez à
+                                validation.
+                            </span>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-3-circle"></i>
+                            <span>
+                                L'équipe GNUT06 examine
+                                son contenu.
+                            </span>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-4-circle"></i>
+                            <span>
+                                Après validation, elle devient
+                                visible dans l'annuaire.
+                            </span>
+                        </li>
+
+                    </ul>
+
+                    <div class="sidebar-divider"></div>
+
+                    <div class="sidebar-alert">
+
+                        <i class="bi bi-lock"></i>
+
+                        <span>
+                            Une mission enregistrée n'est
+                            pas automatiquement publiée.
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-eye"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Confidentialité
+                    </h3>
+
+                    <p class="sidebar-text">
+                        Les informations de votre mission
+                        pourront être consultées publiquement
+                        après validation.
+                    </p>
+
+                    <div class="sidebar-divider"></div>
+
+                    <p class="sidebar-text">
+                        Ne renseignez aucune coordonnée
+                        personnelle ni donnée sensible dans
+                        le titre ou la description.
+                    </p>
+
+                </div>
+
+            </aside>
+
         </div>
+
+        {{ form_end(form) }}
+
     </div>
-</div>
+
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const page = document.querySelector('.mission-form-page');
+
+    if (!page) {
+        return;
+    }
+
+    const select = page.querySelector('[data-skill-select]');
+    const selectedList = page.querySelector('[data-selected-skill-list]');
+    const selectedCount = page.querySelector('[data-selected-skill-count]');
+    const emptyMessage = page.querySelector('[data-selected-skill-empty]');
+
+    if (!select || !selectedList || !selectedCount || !emptyMessage) {
+        return;
+    }
+
+    function updateSelectedCompetences() {
+        const selectedOptions = Array.from(select.selectedOptions);
+
+        selectedList.replaceChildren();
+
+        selectedCount.textContent =
+            selectedOptions.length +
+            ' sélectionnée' +
+            (selectedOptions.length > 1 ? 's' : '');
+
+        emptyMessage.hidden = selectedOptions.length > 0;
+
+        selectedOptions.forEach(function (option) {
+            const tag = document.createElement('span');
+            tag.className = 'selected-skill-tag';
+
+            const label = document.createElement('span');
+            label.textContent = option.textContent.trim();
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'selected-skill-remove';
+            removeButton.textContent = '×';
+
+            removeButton.setAttribute(
+                'aria-label',
+                'Retirer la compétence ' + option.textContent.trim()
+            );
+
+            removeButton.addEventListener('click', function () {
+                option.selected = false;
+
+                select.dispatchEvent(
+                    new Event('change', {
+                        bubbles: true
+                    })
+                );
+            });
+
+            tag.appendChild(label);
+            tag.appendChild(removeButton);
+
+            selectedList.appendChild(tag);
+        });
+    }
+
+    select.addEventListener('change', updateSelectedCompetences);
+
+    updateSelectedCompetences();
+});
+</script>
+
 {% endblock %}

@@ -50,6 +50,7 @@ final class MissionType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'required' => false,
+                'by_reference' => false,
                 'attr' => ['size' => 8],
             ])
             ->add('domaine', TextType::class, [
@@ -90,7 +91,7 @@ final class MissionType extends AbstractType
                 'required' => false,
             ])
             ->add('budgetMin', NumberType::class, [
-                'label' => 'Budget minimum',
+                'label' => 'Tarif minimum (€)',
                 'required' => false,
                 'scale' => 2,
                 'input' => 'string',
@@ -98,7 +99,7 @@ final class MissionType extends AbstractType
                 'attr' => ['min' => '0.01', 'step' => '0.01'],
             ])
             ->add('budgetMax', NumberType::class, [
-                'label' => 'Budget maximum',
+                'label' => 'Tarif maximum (€)',
                 'required' => false,
                 'scale' => 2,
                 'input' => 'string',
@@ -106,7 +107,7 @@ final class MissionType extends AbstractType
                 'attr' => ['min' => '0.01', 'step' => '0.01'],
             ])
             ->add('uniteBudget', ChoiceType::class, [
-                'label' => 'Unité du budget',
+                'label' => 'Unité du tarif',
                 'placeholder' => 'À discuter / non renseigné',
                 'choices' => [
                     'Par heure' => Mission::BUDGET_HOUR,
