@@ -52,16 +52,19 @@
             {% endif %}
           </td><td>{{ user ? user.roles|join(' - ') : '—' }}</td>
           <td>
-            {% if tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_APPROVED') %}<span class="badge bg-success">Validé</span>
+            {% if tih.removed %}<span class="badge bg-secondary">Supprimé</span>
+            {% elseif tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_APPROVED') %}<span class="badge bg-success">Validé</span>
             {% elseif tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_REFUSED') %}<span class="badge bg-danger">Refusé</span>
             {% else %}<span class="badge bg-warning text-dark">En attente</span>{% endif %}
           </td>
           <td><div class="d-flex flex-wrap gap-2">
             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-tih-{{ tih.id }}">Examiner</button>
+            {% if not tih.removed %}
             <form action="{{ path('app_admin_tih_delete', {id: tih.id}) }}" method="post" onsubmit="return confirm('Confirmer la suppression de ce TIH ?');">
               <input type="hidden" name="_method" value="DELETE"><input type="hidden" name="_token" value="{{ csrf_token('delete_tih' ~ tih.id) }}">
               <button class="btn btn-danger btn-sm text-white" type="submit">Supprimer</button>
             </form>
+            {% endif %}
           </div></td>
         </tr>
       {% else %}
@@ -118,13 +121,16 @@
                   <tr>
                     <td>{{ event.occurredAt|date('d/m/Y H:i') }}</td>
                     <td>
-                      {% if event.status == constant('App\\Entity\\TihApplicationEvent::STATUS_APPROVED') %}<span class="badge bg-success">Validé</span>
+                      {% if event.status == constant('App\\Entity\\TihApplicationEvent::STATUS_REMOVED') %}<span class="badge bg-secondary">Supprimé</span>
+                      {% elseif event.status == constant('App\\Entity\\TihApplicationEvent::STATUS_APPROVED') %}<span class="badge bg-success">Validé</span>
                       {% elseif event.status == constant('App\\Entity\\TihApplicationEvent::STATUS_REFUSED') %}<span class="badge bg-danger">Refusé</span>
                       {% else %}<span class="badge bg-warning text-dark">En attente</span>{% endif %}
                     </td>
                     <td>{{ event.actor ? event.actor.email : 'Compte historique non identifié' }}</td>
                     <td>
-                      {% if event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_INITIAL_SUBMISSION') %}Soumission initiale
+                      {% if event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_ADMIN_REMOVAL') %}Suppression administrative
+                      {% elseif event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_RESUBMISSION') %}Nouvelle demande après suppression
+                      {% elseif event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_INITIAL_SUBMISSION') %}Soumission initiale
                       {% elseif event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_PROFILE_UPDATE') %}Mise à jour du profil
                       {% elseif event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_ADMIN_REVIEW_REQUEST') %}Remise en attente par l’administration
                       {% elseif event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_ADMIN_DECISION') %}Décision administrative
@@ -143,7 +149,7 @@
         {% if tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_PENDING') %}<button type="button" class="btn btn-outline-danger me-auto" data-bs-target="#refuse-modal-{{ tih.id }}" data-bs-toggle="modal">Refuser la candidature</button>{% endif %}
         {% if tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_APPROVED') %}<button type="button" class="btn btn-outline-warning admin-tih-review-button me-auto" data-bs-target="#review-modal-{{ tih.id }}" data-bs-toggle="modal">Remettre en attente de validation</button>{% endif %}
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-        {% if tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_APPROVED') %}<form action="{{ path('app_admin_tih_validate', {id: tih.id}) }}" method="post" onsubmit="return confirm('Valider ce profil TIH ?');"><input type="hidden" name="_token" value="{{ csrf_token('validate_tih' ~ tih.id) }}"><button type="submit" class="btn btn-success">Valider</button></form>{% endif %}
+        {% if not tih.removed and tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_APPROVED') %}<form action="{{ path('app_admin_tih_validate', {id: tih.id}) }}" method="post" onsubmit="return confirm('Valider ce profil TIH ?');"><input type="hidden" name="_token" value="{{ csrf_token('validate_tih' ~ tih.id) }}"><button type="submit" class="btn btn-success">Valider</button></form>{% endif %}
       </div>
     </div></div>
   </div>
