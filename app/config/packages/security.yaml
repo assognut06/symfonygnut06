@@ -48,6 +48,8 @@ security:
         - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/profil, roles: ROLE_USER }
         - { path: ^/espace-tih, roles: ROLE_USER }
+        - { path: ^/entreprise/compte, roles: ROLE_USER }
+        - { path: ^/entreprise/missions, roles: ROLE_ENTREPRISE }
 
 when@test:
     security:
