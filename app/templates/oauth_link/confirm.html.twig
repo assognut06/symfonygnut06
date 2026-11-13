@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmer la liaison OAuth - GNUT 06{% endblock %}
+
+{% block body %}
+    <main class="container py-5" style="max-width: 560px">
+        <h1 class="h3">Confirmer la liaison</h1>
+        <p>Vous allez lier {{ identity.provider.value == 'google' ? 'Google' : 'Microsoft' }} à votre compte. Cette opération permettra de vous connecter avec ce fournisseur.</p>
+        <div class="d-flex gap-2">
+            <form method="post" action="{{ path('oauth_link_confirm_submit') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('oauth_link_confirm_' ~ identity.provider.value) }}">
+                <button class="btn btn-primary" type="submit">Confirmer la liaison</button>
+            </form>
+            <form method="post" action="{{ path('oauth_link_cancel') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('oauth_link_cancel_' ~ identity.provider.value) }}">
+                <button class="btn btn-outline-secondary" type="submit">Annuler</button>
+            </form>
+        </div>
+    </main>
+{% endblock %}
