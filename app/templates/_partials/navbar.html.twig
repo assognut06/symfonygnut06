@@ -71,16 +71,23 @@
     <nav class="navbar navbar-expand-xl navbar-dark bg-navbar"
          role="navigation"
          aria-label="Navigation principale du site GNUT 06">
+
         <div class="container-fluid">
 
-            <!-- ✅ Logo accessible -->
             <a class="navbar-brand logoNavbar"
                href="{{ path('app_home') }}"
                aria-label="Retour à l'accueil de GNUT 06">
-                <span role="img" aria-label="Logo GNUT 06" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Groupement Numérique d’Utilité Territoriale des Alpes‑Maritimes (06)">GNUT 06</span>
+
+                <span role="img"
+                      aria-label="Logo GNUT 06"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      data-bs-title="Groupement Numérique d’Utilité Territoriale des Alpes-Maritimes (06)">
+                    GNUT 06
+                </span>
+
             </a>
 
-            <!-- ✅ Burger menu accessible -->
             <button class="navbar-toggler"
                     type="button"
                     data-bs-toggle="collapse"
@@ -88,45 +95,61 @@
                     aria-controls="navbarNavDropdown"
                     aria-expanded="false"
                     aria-label="Ouvrir le menu de navigation principal">
+
                 <span class="navbar-toggler-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Menu</span>
+
             </button>
 
-            <!-- ✅ Menu principal -->
-            <div class="collapse navbar-collapse fs-5" id="navbarNavDropdown">
+            <div class="collapse navbar-collapse fs-5"
+                 id="navbarNavDropdown">
+
                 <ul class="navbar-nav ms-auto mb-2 mb-xl-0 text-navbar w-100 justify-content-xl-evenly">
 
                     <li class="nav-item">
+
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_a_propos' ? 'active' : '' }}"
                            href="{{ path('app_a_propos') }}"
                            {% if app.request.attributes.get('_route') == 'app_a_propos' %}
                                aria-current="page"
                            {% endif %}>
+
                             Notre Mission
+
                         </a>
+
                     </li>
 
                     <li class="nav-item">
+
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}"
                            href="{{ path('app_billetteries') }}"
                            {% if app.request.attributes.get('_route') == 'app_billetteries' %}
                                aria-current="page"
                            {% endif %}>
+
                             Réserver une activité
+
                         </a>
+
                     </li>
 
                     <li class="nav-item">
+
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_metavers' ? 'active' : '' }}"
                            href="{{ path('app_metavers') }}"
                            {% if app.request.attributes.get('_route') == 'app_metavers' %}
                                aria-current="page"
                            {% endif %}>
+
                             Salles 3D immersives
+
                         </a>
+
                     </li>
 
                     <li class="nav-item">
+
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'handi_3d_index' ? 'active' : '' }}"
                            href="{{ path('handi_3d_index') }}"
                            {% if app.request.attributes.get('_route') == 'handi_3d_index' %}
@@ -135,132 +158,441 @@
                            {% else %}
                                aria-label="Découvrir Handi-3D, notre espace virtuel inclusif"
                            {% endif %}>
+
                             ♿ Handi-3D
+
                         </a>
+
                     </li>
 
                     <li class="nav-item">
+
                         <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_don' ? 'active' : '' }}"
                            href="{{ path('app_don') }}"
                            {% if app.request.attributes.get('_route') == 'app_don' %}
                                aria-current="page"
                            {% endif %}>
+
                             Nous Soutenir
+
                         </a>
+
                     </li>
 
                     {% if app.user %}
 
-                        <!-- ✅ Desktop : menu déroulant Profil accessible -->
+                        {% set currentRoute = app.request.attributes.get('_route')|default('') %}
+
+                        {% set isEnterprise = is_granted('ROLE_ENTREPRISE') %}
+
+                        {% set isAdmin = is_granted('ROLE_ADMIN') %}
+
+                        {% set isEnterpriseRoute =
+                            currentRoute starts with 'company_registration_'
+                            or currentRoute starts with 'entreprise_mission_'
+                            or currentRoute == 'app_tih_search'
+                        %}
+
+                        {% set isAdminRoute =
+                            currentRoute starts with 'admin_company_'
+                            or currentRoute == 'admin_dashboard'
+                        %}
+
+                        {% set isProfileRoute =
+                            currentRoute starts with 'app_profil'
+                            or isEnterpriseRoute
+                            or isAdminRoute
+                        %}
+
                         <li class="nav-item dropdown d-none d-xl-block">
-                            <a class="nav-link dropdown-toggle text-light {{ app.request.attributes.get('_route') starts with 'app_profil' ? 'active' : '' }}"
+
+                            <a class="nav-link dropdown-toggle text-light {{ isProfileRoute ? 'active' : '' }}"
                                href="#"
                                id="navbarProfilDropdown"
                                data-bs-toggle="dropdown"
                                aria-expanded="false"
                                aria-haspopup="true">
+
                                 <img src="{{ asset('../images/webp/person-circle.svg') }}"
                                      alt=""
                                      aria-hidden="true"
                                      width="20"
                                      height="20">
+
                                 <span>Profil</span>
+
                             </a>
+
                             <ul class="dropdown-menu dropdown-menu-end bg-navbar border-0"
                                 aria-labelledby="navbarProfilDropdown">
+
                                 <li>
-                                    <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'app_profil' ? 'active' : '' }}"
+
+                                    <a class="dropdown-item text-light {{ currentRoute == 'app_profil' ? 'active' : '' }}"
                                        href="{{ path('app_profil') }}"
-                                       {% if app.request.attributes.get('_route') == 'app_profil' %}
+                                       {% if currentRoute == 'app_profil' %}
                                            aria-current="page"
                                        {% endif %}>
+
+                                        <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
                                         Tableau de bord
+
                                     </a>
+
                                 </li>
-                                {% if is_granted('ROLE_ADMIN') %}
+
+                                {% if isAdmin %}
+
                                     <li>
-                                        <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
+
+                                        <a class="dropdown-item text-light {{ currentRoute == 'admin_dashboard' ? 'active' : '' }}"
                                            href="{{ path('admin_dashboard') }}"
-                                           {% if app.request.attributes.get('_route') == 'admin_dashboard' %}
+                                           {% if currentRoute == 'admin_dashboard' %}
                                                aria-current="page"
                                            {% endif %}>
+
+                                            <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>
                                             Administration
+
                                         </a>
+
                                     </li>
-                                {% endif %}
-                                {% if app.user and is_granted('ROLE_ENTREPRISE') %}
+
                                     <li>
-                                        <a class="dropdown-item text-light {{ app.request.attributes.get('_route') == 'app_tih_search' ? 'active' : '' }}"
-                                           href="{{ path('app_tih_search') }}"
-                                                {% if app.request.attributes.get('_route') == 'app_tih_search' %}
-                                            aria-current="page"
-                                                {% endif %}>
-                                            Recherche de tih
+
+                                        <a class="dropdown-item text-light {{ currentRoute starts with 'admin_company_' ? 'active' : '' }}"
+                                           href="{{ path('admin_company_index') }}"
+                                           {% if currentRoute starts with 'admin_company_' %}
+                                               aria-current="page"
+                                           {% endif %}>
+
+                                            <i class="bi bi-buildings me-2" aria-hidden="true"></i>
+                                            Gestion des entreprises
+
                                         </a>
+
                                     </li>
+
+                                                                        <li>
+
+                                        <a class="dropdown-item text-light {{ currentRoute starts with 'admin_mission_' ? 'active' : '' }}"
+                                           href="{{ path('admin_mission_index') }}"
+                                           {% if currentRoute starts with 'admin_mission_' %}
+                                               aria-current="page"
+                                           {% endif %}>
+
+                                            <i class="bi bi-clipboard me-2" aria-hidden="true"></i>
+                                            Gestion des missions
+
+                                        </a>
+
+                                    </li>
+
                                 {% endif %}
+
+                                {% if not isEnterprise %}
+
+                                    <li>
+                                        <hr class="dropdown-divider text-light"
+                                            aria-hidden="true">
+                                    </li>
+
+                                    <li>
+
+                                        <a class="dropdown-item text-light {{ currentRoute == 'company_registration_new' ? 'active' : '' }}"
+                                           href="{{ path('company_registration_new') }}"
+                                           {% if currentRoute == 'company_registration_new' %}
+                                               aria-current="page"
+                                           {% endif %}>
+
+                                            <i class="bi bi-building-add me-2" aria-hidden="true"></i>
+                                            Créer un compte entreprise
+
+                                        </a>
+
+                                    </li>
+
+                                {% endif %}
+
+                                {% if isEnterprise %}
+
+                                    <li>
+
+                                        <hr class="dropdown-divider text-light"
+                                            aria-hidden="true">
+
+                                    </li>
+
+                                    <li>
+
+                                        <h6 class="dropdown-header text-light opacity-75">
+                                            Espace entreprise
+                                        </h6>
+
+                                    </li>
+
+                                    <li>
+
+                                        <a class="dropdown-item text-light {{ currentRoute starts with 'company_registration_' ? 'active' : '' }}"
+                                           href="{{ path('company_registration_status') }}"
+                                           {% if currentRoute starts with 'company_registration_' %}
+                                               aria-current="page"
+                                           {% endif %}>
+
+                                            <i class="bi bi-building me-2" aria-hidden="true"></i>
+                                            Mon entreprise
+
+                                        </a>
+
+                                    </li>
+
+                                    <li>
+
+                                        <a class="dropdown-item text-light {{ currentRoute == 'entreprise_mission_index' ? 'active' : '' }}"
+                                           href="{{ path('entreprise_mission_index') }}"
+                                           {% if currentRoute == 'entreprise_mission_index' %}
+                                               aria-current="page"
+                                           {% endif %}>
+
+                                            <i class="bi bi-briefcase me-2" aria-hidden="true"></i>
+                                            Mes missions
+
+                                        </a>
+
+                                    </li>
+
+                                    <li>
+
+                                        <a class="dropdown-item text-light {{ currentRoute == 'entreprise_mission_new' ? 'active' : '' }}"
+                                           href="{{ path('entreprise_mission_new') }}"
+                                           {% if currentRoute == 'entreprise_mission_new' %}
+                                               aria-current="page"
+                                           {% endif %}>
+
+                                            <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>
+                                            Créer une mission
+
+                                        </a>
+
+                                    </li>
+
+                                    <li>
+
+                                        <a class="dropdown-item text-light {{ currentRoute == 'app_tih_search' ? 'active' : '' }}"
+                                           href="{{ path('app_tih_search') }}"
+                                           {% if currentRoute == 'app_tih_search' %}
+                                               aria-current="page"
+                                           {% endif %}>
+
+                                            <i class="bi bi-search me-2" aria-hidden="true"></i>
+                                            Recherche de TIH
+
+                                        </a>
+
+                                    </li>
+
+                                {% endif %}
+
                                 <li>
-                                    <hr class="dropdown-divider text-light" aria-hidden="true">
+
+                                    <hr class="dropdown-divider text-light"
+                                        aria-hidden="true">
+
                                 </li>
+
                                 <li>
+
                                     <a class="dropdown-item text-light"
                                        href="{{ path('app_logout') }}">
+
+                                        <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>
                                         Déconnexion
+
                                     </a>
+
                                 </li>
+
                             </ul>
+
                         </li>
 
-                        <!-- ✅ Mobile : liens simples accessibles -->
                         <li class="nav-item d-block d-xl-none">
-                            <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_profil' ? 'active' : '' }}"
+
+                            <a class="nav-link text-light {{ currentRoute == 'app_profil' ? 'active' : '' }}"
                                href="{{ path('app_profil') }}"
-                               {% if app.request.attributes.get('_route') == 'app_profil' %}
+                               {% if currentRoute == 'app_profil' %}
                                    aria-current="page"
                                {% endif %}>
+
+                                <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
                                 Tableau de bord
+
                             </a>
+
                         </li>
 
-                        {% if is_granted('ROLE_ADMIN') %}
+                        {% if isAdmin %}
+
                             <li class="nav-item d-block d-xl-none">
-                                <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
+
+                                <a class="nav-link text-light {{ currentRoute == 'admin_dashboard' ? 'active' : '' }}"
                                    href="{{ path('admin_dashboard') }}"
-                                   {% if app.request.attributes.get('_route') == 'admin_dashboard' %}
+                                   {% if currentRoute == 'admin_dashboard' %}
                                        aria-current="page"
                                    {% endif %}>
+
+                                    <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>
                                     Administration
+
                                 </a>
+
                             </li>
+
+                            <li class="nav-item d-block d-xl-none">
+
+                                <a class="nav-link text-light {{ currentRoute starts with 'admin_company_' ? 'active' : '' }}"
+                                   href="{{ path('admin_company_index') }}"
+                                   {% if currentRoute starts with 'admin_company_' %}
+                                       aria-current="page"
+                                   {% endif %}>
+
+                                    <i class="bi bi-buildings me-2" aria-hidden="true"></i>
+                                    Gestion des entreprises
+
+                                </a>
+
+                            </li>
+
+                        {% endif %}
+
+                        {% if not isEnterprise %}
+
+                            <li class="nav-item d-block d-xl-none">
+
+                                <a class="nav-link text-light {{ currentRoute == 'company_registration_new' ? 'active' : '' }}"
+                                   href="{{ path('company_registration_new') }}"
+                                   {% if currentRoute == 'company_registration_new' %}
+                                       aria-current="page"
+                                   {% endif %}>
+
+                                    <i class="bi bi-building-add me-2" aria-hidden="true"></i>
+                                    Créer un compte entreprise
+
+                                </a>
+
+                            </li>
+
+                        {% endif %}
+
+                        {% if isEnterprise %}
+
+                            <li class="nav-item d-block d-xl-none">
+
+                                <a class="nav-link text-light {{ currentRoute starts with 'company_registration_' ? 'active' : '' }}"
+                                   href="{{ path('company_registration_status') }}"
+                                   {% if currentRoute starts with 'company_registration_' %}
+                                       aria-current="page"
+                                   {% endif %}>
+
+                                    <i class="bi bi-building me-2" aria-hidden="true"></i>
+                                    Mon entreprise
+
+                                </a>
+
+                            </li>
+
+                            <li class="nav-item d-block d-xl-none">
+
+                                <a class="nav-link text-light {{ currentRoute == 'entreprise_mission_index' ? 'active' : '' }}"
+                                   href="{{ path('entreprise_mission_index') }}"
+                                   {% if currentRoute == 'entreprise_mission_index' %}
+                                       aria-current="page"
+                                   {% endif %}>
+
+                                    <i class="bi bi-briefcase me-2" aria-hidden="true"></i>
+                                    Mes missions
+
+                                </a>
+
+                            </li>
+
+                            <li class="nav-item d-block d-xl-none">
+
+                                <a class="nav-link text-light {{ currentRoute == 'entreprise_mission_new' ? 'active' : '' }}"
+                                   href="{{ path('entreprise_mission_new') }}"
+                                   {% if currentRoute == 'entreprise_mission_new' %}
+                                       aria-current="page"
+                                   {% endif %}>
+
+                                    <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>
+                                    Créer une mission
+
+                                </a>
+
+                            </li>
+
+                            <li class="nav-item d-block d-xl-none">
+
+                                <a class="nav-link text-light {{ currentRoute == 'app_tih_search' ? 'active' : '' }}"
+                                   href="{{ path('app_tih_search') }}"
+                                   {% if currentRoute == 'app_tih_search' %}
+                                       aria-current="page"
+                                   {% endif %}>
+
+                                    <i class="bi bi-search me-2" aria-hidden="true"></i>
+                                    Recherche de TIH
+
+                                </a>
+
+                            </li>
+
                         {% endif %}
 
                         <li class="nav-item d-block d-xl-none">
+
                             <a class="nav-link text-light"
                                href="{{ path('app_logout') }}">
+
+                                <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>
                                 Déconnexion
+
                             </a>
+
                         </li>
 
                     {% else %}
+
                         <li class="nav-item d-flex flex-column flex-xl-row gap-2 mt-2 mt-xl-0">
+
                             <a href="{{ path('app_register') }}"
-                               class="btn-outline-gradient btn-sm text-white {{ app.request.attributes.get('_route') == 'app_register' ? ' active' }}"
+                               class="btn-outline-gradient btn-sm text-white {{ app.request.attributes.get('_route') == 'app_register' ? 'active' : '' }}"
                                {% if app.request.attributes.get('_route') == 'app_register' %}
                                    aria-current="page"
                                {% endif %}>
+
                                 Inscription
+
                             </a>
+
                             <a href="{{ path('app_login') }}"
-                               class="btn-neon btn-sm text-white {{ app.request.attributes.get('_route') == 'app_login' ? ' active' }}"
+                               class="btn-neon btn-sm text-white {{ app.request.attributes.get('_route') == 'app_login' ? 'active' : '' }}"
                                {% if app.request.attributes.get('_route') == 'app_login' %}
                                    aria-current="page"
                                {% endif %}>
+
                                 Connexion
+
                             </a>
+
                         </li>
+
                     {% endif %}
+
                 </ul>
+
             </div>
+
         </div>
+
     </nav>
 </header>
