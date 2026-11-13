@@ -53,8 +53,6 @@ class ProfilController extends AbstractController
             throw $this->createAccessDeniedException('Veuillez valider votre adresse email pour accéder à votre profil.');
         }
 
-        $userEmail = urlencode($user->getUserIdentifier());
-
         $payer = $this->getOrCreatePayer($user);
 
         // Create and handle form
@@ -78,15 +76,10 @@ class ProfilController extends AbstractController
             return $this->redirectToRoute('app_profil');
         }
 
-        $page = max(1, $request->query->getInt('page', 1));
-        $url = "https://api.helloasso.com/v5/organizations/{$this->slugAsso}/items?userSearchKey=" . $userEmail . "&pageIndex=" . $page . "&pageSize=4&withDetails=false&sortOrder=Desc&sortField=Date&itemStates=Processed&withCount=true";
-
-        $data_items = $this->makeSafeHelloAssoCall($url);
-        
         // Renvoyer à la vue Twig, en passant l'utilisateur comme variable
         return $this->render('profil/index.html.twig', [
             'user' => $user,
-            'data_items' => $data_items,
+            'payer' => $payer,
             'googleMapsApiKey' => $this->googleMapsApiKey,
             'profileForm' => $form->createView(),
         ]);
@@ -120,6 +113,7 @@ class ProfilController extends AbstractController
         // Renvoyer à la vue Twig, en passant l'utilisateur comme variable
         return $this->render('profil/index.html.twig', [
             'user' => $user,
+            'payer' => $this->entityManager->getRepository(Payers::class)->findOneBy(['email' => $user->getUserIdentifier()]),
             'data_items' => $data_items,
             'googleMapsApiKey' => $this->googleMapsApiKey,
         ]);
@@ -168,10 +162,16 @@ class ProfilController extends AbstractController
         } catch (\Throwable $e) {
             error_log(sprintf('Erreur appel HelloAsso profil: %s', $e->getMessage()));
 
-            return ['data' => []];
+            return ['data' => [], 'loadFailed' => true];
         }
 
-        return is_array($data) ? $data : ['data' => []];
+        if (!is_array($data) || !isset($data['data']) || !is_array($data['data'])) {
+            return ['data' => [], 'loadFailed' => true];
+        }
+
+        $data['loadFailed'] = false;
+
+        return $data;
     }
 
     /**
