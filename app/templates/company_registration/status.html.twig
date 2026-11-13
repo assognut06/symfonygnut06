@@ -1,0 +1,1122 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statut de mon entreprise | GNUT 06{% endblock %}
+
+{% block body %}
+
+<style>
+    .company-status-page {
+        min-height: 100vh;
+        padding: 60px 20px 100px;
+        background:
+            radial-gradient(
+                ellipse at 85% 0%,
+                rgba(150, 90, 255, 0.13),
+                transparent 45%
+            ),
+            #060611;
+        color: #f8f9ff;
+    }
+
+    .company-status-page * {
+        box-sizing: border-box;
+    }
+
+    .company-status-page .status-container {
+        max-width: 1150px;
+        margin: 0 auto;
+    }
+
+    .company-status-page .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 35px;
+        color: #c49cf4;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .company-status-page .back-link:hover {
+        color: #ffffff;
+    }
+
+    .company-status-page .page-header {
+        margin-bottom: 35px;
+    }
+
+    .company-status-page .page-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 8px 16px;
+        margin-bottom: 20px;
+        border-radius: 30px;
+        background: rgba(168, 112, 255, 0.12);
+        border: 1px solid rgba(168, 112, 255, 0.2);
+        color: #d1aaff;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .company-status-page .page-title {
+        margin-bottom: 12px;
+        color: #ffffff;
+        font-size: clamp(30px, 4vw, 44px);
+        font-weight: 800;
+        letter-spacing: -1.2px;
+    }
+
+    .company-status-page .page-description {
+        max-width: 700px;
+        margin: 0;
+        color: #a9aac2;
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+    .company-status-page .flash-success {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 17px 20px;
+        margin-bottom: 25px;
+        border-radius: 13px;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        background: rgba(16, 185, 129, 0.1);
+        color: #a7f3d0;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .company-status-page .flash-success i {
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .company-status-page .flash-error {
+        padding: 17px 20px;
+        margin-bottom: 25px;
+        border-radius: 13px;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        background: rgba(239, 68, 68, 0.09);
+        color: #fda4af;
+        font-size: 14px;
+    }
+
+    .company-status-page .status-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 310px;
+        gap: 25px;
+        align-items: start;
+    }
+
+    .company-status-page .status-main {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        min-width: 0;
+    }
+
+    .company-status-page .status-card {
+        overflow: hidden;
+        border: 1px solid #2b2b42;
+        border-radius: 20px;
+        background: #111120;
+    }
+
+    .company-status-page .status-card-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 26px 30px;
+        border-bottom: 1px solid #29293f;
+    }
+
+    .company-status-page .card-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        border-radius: 13px;
+        background: rgba(168, 112, 255, 0.13);
+        color: #c49aff;
+        font-size: 22px;
+    }
+
+    .company-status-page .card-title {
+        margin: 0 0 5px;
+        color: #ffffff;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .company-status-page .card-subtitle {
+        margin: 0;
+        color: #9798b0;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .company-status-page .status-card-body {
+        padding: 30px;
+    }
+
+    .company-status-page .status-overview {
+        padding: 35px;
+        border-radius: 20px;
+        border: 1px solid #3c325d;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(142, 83, 255, 0.12),
+                rgba(99, 102, 241, 0.03)
+            ),
+            #111120;
+    }
+
+    .company-status-page .status-overview-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 23px;
+        margin-bottom: 26px;
+    }
+
+    .company-status-page .status-main-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 76px;
+        height: 76px;
+        flex-shrink: 0;
+        border-radius: 22px;
+        font-size: 35px;
+    }
+
+    .company-status-page .status-pending .status-main-icon {
+        background: rgba(245, 158, 11, 0.12);
+        color: #f4c46d;
+    }
+
+    .company-status-page .status-approved .status-main-icon {
+        background: rgba(16, 185, 129, 0.12);
+        color: #6ee7b7;
+    }
+
+    .company-status-page .status-rejected .status-main-icon {
+        background: rgba(239, 68, 68, 0.12);
+        color: #fca5a5;
+    }
+
+    .company-status-page .status-suspended .status-main-icon {
+        background: rgba(239, 68, 68, 0.12);
+        color: #fca5a5;
+    }
+
+    .company-status-page .status-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 13px;
+        margin-bottom: 13px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .company-status-page .status-pending .status-label {
+        color: #fcd34d;
+        background: rgba(245, 158, 11, 0.13);
+    }
+
+    .company-status-page .status-approved .status-label {
+        color: #6ee7b7;
+        background: rgba(16, 185, 129, 0.13);
+    }
+
+    .company-status-page .status-rejected .status-label,
+    .company-status-page .status-suspended .status-label {
+        color: #fca5a5;
+        background: rgba(239, 68, 68, 0.13);
+    }
+
+    .company-status-page .overview-title {
+        margin-bottom: 10px;
+        color: #ffffff;
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+    .company-status-page .overview-description {
+        color: #b6b7ce;
+        font-size: 14px;
+        line-height: 1.9;
+        margin-bottom: 0;
+    }
+
+    .company-status-page .overview-divider {
+        height: 1px;
+        margin: 25px 0;
+        background: #34344a;
+    }
+
+    .company-status-page .overview-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+
+    .company-status-page .overview-date {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #a6a7bd;
+        font-size: 13px;
+    }
+
+    .company-status-page .overview-date i {
+        color: #ad8af8;
+    }
+
+    .company-status-page .status-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 47px;
+        padding: 12px 20px;
+        border: 0;
+        border-radius: 11px;
+        background: linear-gradient(
+            135deg,
+            #b45cf3,
+            #6269f8
+        );
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 8px 25px rgba(113, 93, 245, 0.2);
+    }
+
+    .company-status-page .status-button:hover {
+        transform: translateY(-2px);
+        color: #ffffff;
+        box-shadow: 0 12px 30px rgba(113, 93, 245, 0.3);
+    }
+
+    .company-status-page .status-button-outline {
+        background: transparent;
+        border: 1px solid #74649b;
+        box-shadow: none;
+        color: #dec8ff;
+    }
+
+    .company-status-page .status-button-outline:hover {
+        background: rgba(168, 112, 255, 0.12);
+        box-shadow: none;
+    }
+
+    .company-status-page .status-button:focus-visible {
+        outline: 3px solid #ffffff;
+        outline-offset: 3px;
+    }
+
+    .company-status-page .company-name {
+        margin-bottom: 27px;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid rgba(168, 112, 255, 0.2);
+        background: rgba(168, 112, 255, 0.07);
+    }
+
+    .company-status-page .company-name-label {
+        color: #a4a5bd;
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+
+    .company-status-page .company-name-value {
+        margin: 0;
+        color: #ffffff;
+        font-size: 21px;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .company-status-page .information-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 25px;
+    }
+
+    .company-status-page .information-item {
+        min-width: 0;
+    }
+
+    .company-status-page .information-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        color: #9697af;
+        font-size: 12px;
+    }
+
+    .company-status-page .information-label i {
+        color: #b58bf4;
+        font-size: 15px;
+    }
+
+    .company-status-page .information-value {
+        margin: 0;
+        color: #efeffa;
+        font-size: 14px;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .company-status-page .information-empty {
+        color: #77788f;
+        font-weight: 400;
+        font-style: italic;
+    }
+
+    .company-status-page .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .company-status-page .sidebar-card {
+        padding: 25px;
+        border: 1px solid #2b2b42;
+        border-radius: 18px;
+        background: #111120;
+    }
+
+    .company-status-page .sidebar-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 44px;
+        height: 44px;
+        margin-bottom: 18px;
+        border-radius: 12px;
+        background: rgba(168, 112, 255, 0.13);
+        color: #c594ff;
+        font-size: 21px;
+    }
+
+    .company-status-page .sidebar-title {
+        margin-bottom: 15px;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .company-status-page .sidebar-text {
+        margin: 0;
+        color: #a5a6bf;
+        font-size: 13px;
+        line-height: 1.9;
+    }
+
+    .company-status-page .steps-list {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .company-status-page .step-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+    }
+
+    .company-status-page .step-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: #25253b;
+        color: #a6a7bf;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .company-status-page .step-complete .step-icon {
+        background: rgba(16, 185, 129, 0.16);
+        color: #6ee7b7;
+    }
+
+    .company-status-page .step-current .step-icon {
+        background: rgba(168, 112, 255, 0.16);
+        color: #d3acff;
+    }
+
+    .company-status-page .step-title {
+        margin-bottom: 5px;
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .company-status-page .step-description {
+        color: #999ab2;
+        font-size: 12px;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .company-status-page .sidebar-divider {
+        height: 1px;
+        margin: 20px 0;
+        background: #303046;
+    }
+
+    .company-status-page .notice-box {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        background: rgba(99, 102, 241, 0.07);
+        color: #c0c1df;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .company-status-page .notice-box i {
+        flex-shrink: 0;
+        color: #aaa5ff;
+        font-size: 18px;
+    }
+
+    .company-status-page .refresh-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        margin-top: 18px;
+        padding: 12px 15px;
+        border-radius: 10px;
+        border: 1px solid #4b4168;
+        background: transparent;
+        color: #d7c1f8;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .company-status-page .refresh-button:hover {
+        background: rgba(168, 112, 255, 0.12);
+        color: #ffffff;
+    }
+
+    @media (max-width: 992px) {
+        .company-status-page .status-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .company-status-page .sidebar {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 650px) {
+        .company-status-page {
+            padding: 35px 16px 65px;
+        }
+
+        .company-status-page .status-overview {
+            padding: 25px 20px;
+        }
+
+        .company-status-page .status-overview-top {
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .company-status-page .status-main-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 29px;
+        }
+
+        .company-status-page .overview-title {
+            font-size: 21px;
+        }
+
+        .company-status-page .status-card-header,
+        .company-status-page .status-card-body {
+            padding: 23px 20px;
+        }
+
+        .company-status-page .information-grid {
+            grid-template-columns: 1fr;
+            gap: 23px;
+        }
+
+        .company-status-page .sidebar {
+            grid-template-columns: 1fr;
+        }
+
+        .company-status-page .overview-bottom {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .company-status-page .status-button {
+            width: 100%;
+        }
+    }
+</style>
+
+<main class="company-status-page">
+
+    <div class="status-container">
+
+        <a href="/" class="back-link">
+            <i class="bi bi-arrow-left"></i>
+            Retour à l'accueil
+        </a>
+
+        <header class="page-header">
+
+            <span class="page-badge">
+                <i class="bi bi-building"></i>
+                Espace entreprise
+            </span>
+
+            <h1 class="page-title">
+                Mon compte entreprise
+            </h1>
+
+            <p class="page-description">
+                Consultez les informations de votre entreprise
+                et suivez l'état de validation de votre compte GNUT06.
+            </p>
+
+        </header>
+
+        {% for message in app.flashes('success') %}
+
+            <div class="flash-success" role="status">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>{{ message }}</span>
+            </div>
+
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+
+            <div class="flash-error" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+        <div class="status-layout">
+
+            <div class="status-main">
+
+                <section
+                    class="status-overview status-{{ status }}"
+                    aria-labelledby="account-status-title"
+                >
+
+                    <div class="status-overview-top">
+
+                        <div class="status-main-icon">
+
+                            {% if status == 'pending' %}
+                                <i class="bi bi-hourglass-split"></i>
+
+                            {% elseif status == 'approved' %}
+                                <i class="bi bi-check-circle-fill"></i>
+
+                            {% elseif status == 'rejected' %}
+                                <i class="bi bi-x-circle-fill"></i>
+
+                            {% elseif status == 'suspended' %}
+                                <i class="bi bi-shield-x"></i>
+
+                            {% else %}
+                                <i class="bi bi-info-circle"></i>
+                            {% endif %}
+
+                        </div>
+
+                        <div>
+
+                            <span class="status-label">
+
+                                {% if status == 'approved' %}
+                                    <i class="bi bi-check-circle"></i>
+
+                                {% elseif status == 'pending' %}
+                                    <i class="bi bi-clock"></i>
+
+                                {% else %}
+                                    <i class="bi bi-exclamation-circle"></i>
+                                {% endif %}
+
+                                {{ statusLabel }}
+
+                            </span>
+
+                            <h2
+                                class="overview-title"
+                                id="account-status-title"
+                            >
+                                {% if status == 'approved' %}
+                                    Votre entreprise est validée
+
+                                {% elseif status == 'pending' %}
+                                    Votre demande est en cours d'examen
+
+                                {% elseif status == 'rejected' %}
+                                    Votre demande a été refusée
+
+                                {% elseif status == 'suspended' %}
+                                    Votre compte est suspendu
+
+                                {% else %}
+                                    Statut du compte
+                                {% endif %}
+                            </h2>
+
+                            <p class="overview-description">
+                                {{ statusDescription }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="overview-divider"></div>
+
+                    <div class="overview-bottom">
+
+                        <div class="overview-date">
+                            <i class="bi bi-calendar-check"></i>
+
+                            <span>
+                                Demande créée le
+                                <strong>
+                                    {{ compte.createdAt|date('d/m/Y') }}
+                                </strong>
+                            </span>
+                        </div>
+
+                        {% if isApproved %}
+
+                            <a
+                                href="{{ path('entreprise_mission_index') }}"
+                                class="status-button"
+                            >
+                                <i class="bi bi-briefcase"></i>
+                                Accéder à mes missions
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+
+                        {% elseif status == 'pending' %}
+
+                            <a
+                                href="{{ path('entreprise_mission_index') }}"
+                                class="status-button status-button-outline"
+                            >
+                                <i class="bi bi-file-earmark-text"></i>
+                                Préparer mes missions
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </section>
+
+                <section class="status-card">
+
+                    <div class="status-card-header">
+
+                        <div class="card-icon">
+                            <i class="bi bi-building"></i>
+                        </div>
+
+                        <div>
+
+                            <h2 class="card-title">
+                                Informations de l'entreprise
+                            </h2>
+
+                            <p class="card-subtitle">
+                                Coordonnées enregistrées lors de votre inscription.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="status-card-body">
+
+                        <div class="company-name">
+
+                            <div class="company-name-label">
+                                Raison sociale
+                            </div>
+
+                            <h3 class="company-name-value">
+                                {{ compte.raisonSociale }}
+                            </h3>
+
+                        </div>
+
+                        <div class="information-grid">
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-card-checklist"></i>
+                                    SIREN / SIRET
+                                </div>
+
+                                <p class="information-value">
+
+                                    {% if compte.identifiantLegal %}
+                                        {{ compte.identifiantLegal }}
+                                    {% else %}
+                                        <span class="information-empty">
+                                            Non renseigné
+                                        </span>
+                                    {% endif %}
+
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-person"></i>
+                                    Contact principal
+                                </div>
+
+                                <p class="information-value">
+                                    {{ compte.nomContact }}
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-envelope"></i>
+                                    Adresse e-mail
+                                </div>
+
+                                <p class="information-value">
+                                    {{ compte.emailContact }}
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-telephone"></i>
+                                    Téléphone
+                                </div>
+
+                                <p class="information-value">
+
+                                    {% if compte.telephone %}
+                                        {{ compte.telephone }}
+                                    {% else %}
+                                        <span class="information-empty">
+                                            Non renseigné
+                                        </span>
+                                    {% endif %}
+
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-calendar-plus"></i>
+                                    Date d'inscription
+                                </div>
+
+                                <p class="information-value">
+                                    {{ compte.createdAt|date('d/m/Y') }}
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-clock-history"></i>
+                                    Dernière mise à jour
+                                </div>
+
+                                <p class="information-value">
+                                    {{ compte.updatedAt|date('d/m/Y') }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <aside class="sidebar">
+
+                <div class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-list-check"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Suivi de votre demande
+                    </h3>
+
+                    <ol class="steps-list">
+
+                        <li class="step-item step-complete">
+
+                            <span class="step-icon">
+                                <i class="bi bi-check-lg"></i>
+                            </span>
+
+                            <div>
+
+                                <h4 class="step-title">
+                                    Demande enregistrée
+                                </h4>
+
+                                <p class="step-description">
+                                    Votre compte entreprise
+                                    a été créé.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li class="step-item {{ status == 'pending' ? 'step-current' : (status == 'approved' ? 'step-complete' : '') }}">
+
+                            <span class="step-icon">
+
+                                {% if status == 'approved' %}
+                                    <i class="bi bi-check-lg"></i>
+                                {% else %}
+                                    2
+                                {% endif %}
+
+                            </span>
+
+                            <div>
+
+                                <h4 class="step-title">
+                                    Vérification administrative
+                                </h4>
+
+                                <p class="step-description">
+
+                                    {% if status == 'pending' %}
+                                        Votre demande attend une décision.
+
+                                    {% elseif status == 'approved' %}
+                                        Votre entreprise a été approuvée.
+
+                                    {% elseif status == 'rejected' %}
+                                        La demande n'a pas été approuvée.
+
+                                    {% elseif status == 'suspended' %}
+                                        Votre compte est actuellement suspendu.
+
+                                    {% else %}
+                                        Consultez le statut de votre compte.
+                                    {% endif %}
+
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li class="step-item {{ isApproved ? 'step-complete' : '' }}">
+
+                            <span class="step-icon">
+
+                                {% if isApproved %}
+                                    <i class="bi bi-check-lg"></i>
+                                {% else %}
+                                    3
+                                {% endif %}
+
+                            </span>
+
+                            <div>
+
+                                <h4 class="step-title">
+                                    Accès aux missions
+                                </h4>
+
+                                <p class="step-description">
+
+                                    {% if isApproved %}
+                                        Vous pouvez soumettre vos missions.
+
+                                    {% else %}
+                                        La soumission nécessite
+                                        un compte approuvé.
+                                    {% endif %}
+
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                    </ol>
+
+                </div>
+
+                <div class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-info-circle"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Informations utiles
+                    </h3>
+
+                    {% if status == 'pending' %}
+
+                        <p class="sidebar-text">
+                            Vous pouvez commencer à préparer
+                            vos missions et les enregistrer
+                            comme brouillons.
+                        </p>
+
+                        <div class="sidebar-divider"></div>
+
+                        <div class="notice-box">
+                            <i class="bi bi-hourglass-split"></i>
+
+                            <span>
+                                La soumission à validation
+                                sera disponible lorsque votre
+                                compte entreprise sera approuvé.
+                            </span>
+                        </div>
+
+                    {% elseif status == 'approved' %}
+
+                        <p class="sidebar-text">
+                            Votre compte est actif.
+                            Vous pouvez créer vos missions,
+                            les modifier et les transmettre
+                            à l'équipe GNUT06 pour validation.
+                        </p>
+
+                        <div class="sidebar-divider"></div>
+
+                        <div class="notice-box">
+                            <i class="bi bi-shield-check"></i>
+
+                            <span>
+                                La validation de votre compte
+                                ne publie pas automatiquement
+                                vos missions.
+                            </span>
+                        </div>
+
+                    {% elseif status == 'rejected' %}
+
+                        <p class="sidebar-text">
+                            Votre demande n'a pas été approuvée.
+                            Pour connaître les raisons du refus
+                            et les démarches possibles,
+                            contactez l'équipe GNUT06.
+                        </p>
+
+                    {% elseif status == 'suspended' %}
+
+                        <p class="sidebar-text">
+                            L'accès à certaines fonctionnalités
+                            est actuellement limité.
+                            Contactez l'équipe GNUT06
+                            pour obtenir des informations.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Actualiser mon statut
+                    </h3>
+
+                    <p class="sidebar-text">
+                        Vous pouvez vérifier à tout moment
+                        si votre demande a été examinée
+                        par l'équipe GNUT06.
+                    </p>
+
+                    <a
+                        href="{{ path('company_registration_status') }}"
+                        class="refresh-button"
+                    >
+                        <i class="bi bi-arrow-repeat"></i>
+                        Actualiser le statut
+                    </a>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}

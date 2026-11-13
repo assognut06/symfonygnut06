@@ -1,0 +1,872 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }} | GNUT 06{% endblock %}
+
+{% block body %}
+
+<style>
+    .company-registration {
+        min-height: 100vh;
+        padding: 65px 20px 100px;
+        background:
+            radial-gradient(
+                ellipse at 85% 0%,
+                rgba(150, 90, 255, 0.14),
+                transparent 45%
+            ),
+            #060611;
+        color: #f8f9ff;
+    }
+
+    .company-registration * {
+        box-sizing: border-box;
+    }
+
+    .company-registration .registration-container {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .company-registration .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        color: #bd9aef;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 35px;
+        transition: color 0.2s;
+    }
+
+    .company-registration .back-link:hover {
+        color: #ffffff;
+    }
+
+    .company-registration .page-header {
+        text-align: center;
+        margin-bottom: 45px;
+    }
+
+    .company-registration .page-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 9px 17px;
+        border-radius: 30px;
+        background: rgba(168, 112, 255, 0.12);
+        border: 1px solid rgba(168, 112, 255, 0.2);
+        color: #d1aaff;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 22px;
+    }
+
+    .company-registration .page-title {
+        color: #ffffff;
+        font-size: clamp(30px, 4vw, 45px);
+        font-weight: 800;
+        letter-spacing: -1.2px;
+        margin-bottom: 15px;
+    }
+
+    .company-registration .page-description {
+        max-width: 670px;
+        margin: 0 auto;
+        color: #a9aac2;
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+    .company-registration .registration-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        align-items: start;
+        gap: 25px;
+    }
+
+    .company-registration .registration-main {
+        min-width: 0;
+    }
+
+    .company-registration .registration-card {
+        background: #111120;
+        border: 1px solid #2a2a40;
+        border-radius: 22px;
+        overflow: hidden;
+    }
+
+    .company-registration .registration-card-header {
+        padding: 30px 35px;
+        border-bottom: 1px solid #29293f;
+        background: linear-gradient(
+            135deg,
+            rgba(157, 103, 255, 0.08),
+            transparent
+        );
+    }
+
+    .company-registration .card-header-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .company-registration .card-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        border-radius: 14px;
+        background: rgba(157, 103, 255, 0.16);
+        color: #c49aff;
+        font-size: 23px;
+    }
+
+    .company-registration .card-title {
+        margin: 0 0 6px;
+        color: #ffffff;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .company-registration .card-subtitle {
+        margin: 0;
+        color: #9697af;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .company-registration .registration-card-body {
+        padding: 35px;
+    }
+
+    .company-registration .form-section {
+        margin-bottom: 35px;
+    }
+
+    .company-registration .form-section:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .company-registration .section-heading {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding-bottom: 17px;
+        margin-bottom: 25px;
+        border-bottom: 1px solid #2a2a3e;
+    }
+
+    .company-registration .section-heading i {
+        color: #be94ff;
+        font-size: 19px;
+    }
+
+    .company-registration .section-title {
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .company-registration .field-group {
+        margin-bottom: 24px;
+    }
+
+    .company-registration .field-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .company-registration .field-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .company-registration .field-grid .field-group {
+        margin-bottom: 0;
+    }
+
+    .company-registration .field-label {
+        display: block;
+        color: #e7e7f5;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .company-registration .required-indicator {
+        color: #d3a3ff;
+        margin-left: 3px;
+    }
+
+    .company-registration .field-control {
+        display: block;
+        width: 100%;
+        min-height: 50px;
+        padding: 12px 16px;
+        background: #191929;
+        border: 1px solid #3a3a50;
+        border-radius: 11px;
+        color: #ffffff;
+        font-size: 14px;
+        line-height: 1.5;
+        transition:
+            background 0.2s,
+            border-color 0.2s,
+            box-shadow 0.2s;
+    }
+
+    .company-registration .field-control::placeholder {
+        color: #77788f;
+        opacity: 1;
+    }
+
+    .company-registration .field-control:hover {
+        border-color: #746492;
+    }
+
+    .company-registration .field-control:focus {
+        outline: none;
+        background: #202033;
+        border-color: #ae80ff;
+        box-shadow: 0 0 0 3px rgba(168, 112, 255, 0.15);
+        color: #ffffff;
+    }
+
+    .company-registration .field-help {
+        margin-top: 9px;
+        color: #9697af;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .company-registration .field-errors {
+        margin-top: 9px;
+        color: #ff9ca9;
+        font-size: 13px;
+    }
+
+    .company-registration .field-errors ul {
+        padding-left: 18px;
+        margin-bottom: 0;
+    }
+
+    .company-registration .form-global-errors {
+        padding: 16px 20px;
+        margin-bottom: 28px;
+        border: 1px solid rgba(239, 68, 68, 0.35);
+        border-radius: 12px;
+        background: rgba(239, 68, 68, 0.09);
+        color: #ffb0bb;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .company-registration .form-global-errors ul {
+        margin: 8px 0 0;
+        padding-left: 20px;
+    }
+
+    .company-registration .registration-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        padding: 18px;
+        margin-top: 30px;
+        background: rgba(99, 102, 241, 0.08);
+        border: 1px solid rgba(132, 123, 255, 0.25);
+        border-radius: 12px;
+        color: #c2c1df;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .company-registration .registration-notice i {
+        flex-shrink: 0;
+        color: #a9a1ff;
+        font-size: 20px;
+        margin-top: 2px;
+    }
+
+    .company-registration .registration-card-footer {
+        padding: 25px 35px;
+        border-top: 1px solid #29293f;
+        background: rgba(255, 255, 255, 0.015);
+    }
+
+    .company-registration .submit-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 52px;
+        padding: 14px 24px;
+        border: 0;
+        border-radius: 12px;
+        background: linear-gradient(
+            135deg,
+            #b45cf3,
+            #6269f8
+        );
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+            transform 0.2s,
+            box-shadow 0.2s;
+        box-shadow: 0 8px 25px rgba(113, 93, 245, 0.2);
+    }
+
+    .company-registration .submit-button:hover {
+        transform: translateY(-2px);
+        color: #ffffff;
+        box-shadow: 0 12px 30px rgba(113, 93, 245, 0.35);
+    }
+
+    .company-registration .submit-button:focus-visible {
+        outline: 3px solid #ffffff;
+        outline-offset: 3px;
+    }
+
+    .company-registration .registration-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .company-registration .sidebar-card {
+        padding: 25px;
+        background: #111120;
+        border: 1px solid #2a2a40;
+        border-radius: 18px;
+    }
+
+    .company-registration .sidebar-card-highlight {
+        background:
+            linear-gradient(
+                145deg,
+                rgba(142, 83, 255, 0.13),
+                rgba(99, 102, 241, 0.04)
+            ),
+            #111120;
+        border-color: #453466;
+    }
+
+    .company-registration .sidebar-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        background: rgba(168, 112, 255, 0.13);
+        color: #c594ff;
+        font-size: 20px;
+    }
+
+    .company-registration .sidebar-title {
+        margin-bottom: 15px;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .company-registration .sidebar-text {
+        color: #a5a6bf;
+        font-size: 13px;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    .company-registration .sidebar-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .company-registration .sidebar-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        margin-bottom: 18px;
+        color: #b6b7ce;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .company-registration .sidebar-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .company-registration .sidebar-list i {
+        flex-shrink: 0;
+        color: #ad8dfb;
+        font-size: 17px;
+        margin-top: 1px;
+    }
+
+    .company-registration .sidebar-divider {
+        height: 1px;
+        margin: 20px 0;
+        background: #303046;
+    }
+
+    .company-registration .status-box {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        padding: 15px;
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: 11px;
+        background: rgba(245, 158, 11, 0.07);
+        color: #e7c99d;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .company-registration .status-box i {
+        flex-shrink: 0;
+        color: #f0b65c;
+        font-size: 17px;
+    }
+
+    .company-registration .privacy-text {
+        color: #9e9fb7;
+        font-size: 12px;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    @media (max-width: 992px) {
+        .company-registration .registration-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .company-registration .registration-sidebar {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 600px) {
+        .company-registration {
+            padding: 35px 16px 65px;
+        }
+
+        .company-registration .page-header {
+            margin-bottom: 30px;
+        }
+
+        .company-registration .registration-card-header,
+        .company-registration .registration-card-body,
+        .company-registration .registration-card-footer {
+            padding: 23px 19px;
+        }
+
+        .company-registration .field-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        .company-registration .registration-sidebar {
+            grid-template-columns: 1fr;
+        }
+
+        .company-registration .card-title {
+            font-size: 18px;
+        }
+
+        .company-registration .card-header-content {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<main class="company-registration">
+
+    <div class="registration-container">
+
+        <a href="/" class="back-link">
+            <i class="bi bi-arrow-left"></i>
+            Retour à l'accueil
+        </a>
+
+        <header class="page-header">
+
+            <div class="page-badge">
+                <i class="bi bi-building"></i>
+                Espace entreprise
+            </div>
+
+            <h1 class="page-title">
+                {{ pageTitle }}
+            </h1>
+
+            <p class="page-description">
+                Rejoignez GNUT06 en tant qu'entreprise pour proposer
+                des missions aux travailleurs indépendants handicapés.
+                Complétez ce formulaire pour demander l'ouverture
+                de votre espace professionnel.
+            </p>
+
+        </header>
+
+        <div class="registration-layout">
+
+            <div class="registration-main">
+
+                {{ form_start(form, {
+                    'attr': {
+                        'class': 'company-registration-form'
+                    }
+                }) }}
+
+                <div class="registration-card">
+
+                    <div class="registration-card-header">
+
+                        <div class="card-header-content">
+
+                            <div class="card-header-icon">
+                                <i class="bi bi-building-add"></i>
+                            </div>
+
+                            <div>
+
+                                <h2 class="card-title">
+                                    Informations de votre entreprise
+                                </h2>
+
+                                <p class="card-subtitle">
+                                    Les champs marqués d'un astérisque
+                                    sont obligatoires.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="registration-card-body">
+
+                        {% if not form.vars.valid %}
+
+                            <div class="form-global-errors" role="alert">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                Veuillez vérifier les informations saisies.
+
+                                {{ form_errors(form) }}
+                            </div>
+
+                        {% else %}
+
+                            {{ form_errors(form) }}
+
+                        {% endif %}
+
+                        <section class="form-section">
+
+                            <div class="section-heading">
+
+                                <i class="bi bi-buildings"></i>
+
+                                <h3 class="section-title">
+                                    Identification de l'entreprise
+                                </h3>
+
+                            </div>
+
+                            <div class="field-group">
+
+                                {{ form_label(form.raisonSociale, null, {
+                                    'label_attr': {
+                                        'class': 'field-label'
+                                    }
+                                }) }}
+
+                                {{ form_widget(form.raisonSociale, {
+                                    'attr': {
+                                        'class': 'field-control',
+                                        'placeholder': 'Ex. Entreprise ABC'
+                                    }
+                                }) }}
+
+                                <div class="field-errors">
+                                    {{ form_errors(form.raisonSociale) }}
+                                </div>
+
+                                <p class="field-help">
+                                    Renseignez le nom officiel de votre entreprise.
+                                </p>
+
+                            </div>
+
+                            <div class="field-group">
+
+                                {{ form_label(form.identifiantLegal, null, {
+                                    'label_attr': {
+                                        'class': 'field-label'
+                                    }
+                                }) }}
+
+                                {{ form_widget(form.identifiantLegal, {
+                                    'attr': {
+                                        'class': 'field-control',
+                                        'placeholder': 'Ex. 123456789'
+                                    }
+                                }) }}
+
+                                <div class="field-errors">
+                                    {{ form_errors(form.identifiantLegal) }}
+                                </div>
+
+                                <p class="field-help">
+                                    Facultatif. Saisissez un SIREN de 9 chiffres
+                                    ou un SIRET de 14 chiffres, si votre
+                                    entreprise en possède un.
+                                </p>
+
+                            </div>
+
+                        </section>
+
+                        <section class="form-section">
+
+                            <div class="section-heading">
+
+                                <i class="bi bi-person-vcard"></i>
+
+                                <h3 class="section-title">
+                                    Contact principal
+                                </h3>
+
+                            </div>
+
+                            <div class="field-group">
+
+                                {{ form_label(form.nomContact, null, {
+                                    'label_attr': {
+                                        'class': 'field-label'
+                                    }
+                                }) }}
+
+                                {{ form_widget(form.nomContact, {
+                                    'attr': {
+                                        'class': 'field-control',
+                                        'placeholder': 'Nom et prénom du responsable'
+                                    }
+                                }) }}
+
+                                <div class="field-errors">
+                                    {{ form_errors(form.nomContact) }}
+                                </div>
+
+                            </div>
+
+                            <div class="field-group">
+
+                                {{ form_label(form.emailContact, null, {
+                                    'label_attr': {
+                                        'class': 'field-label'
+                                    }
+                                }) }}
+
+                                {{ form_widget(form.emailContact, {
+                                    'attr': {
+                                        'class': 'field-control',
+                                        'placeholder': 'contact@entreprise.fr'
+                                    }
+                                }) }}
+
+                                <div class="field-errors">
+                                    {{ form_errors(form.emailContact) }}
+                                </div>
+
+                                <p class="field-help">
+                                    Cette adresse servira de contact
+                                    pour votre entreprise.
+                                </p>
+
+                            </div>
+
+                            <div class="field-group">
+
+                                {{ form_label(form.telephone, null, {
+                                    'label_attr': {
+                                        'class': 'field-label'
+                                    }
+                                }) }}
+
+                                {{ form_widget(form.telephone, {
+                                    'attr': {
+                                        'class': 'field-control',
+                                        'placeholder': 'Ex. 06 12 34 56 78'
+                                    }
+                                }) }}
+
+                                <div class="field-errors">
+                                    {{ form_errors(form.telephone) }}
+                                </div>
+
+                                <p class="field-help">
+                                    Facultatif. Indiquez un numéro permettant
+                                    de vous contacter si nécessaire.
+                                </p>
+
+                            </div>
+
+                        </section>
+
+                        <div class="registration-notice">
+
+                            <i class="bi bi-info-circle"></i>
+
+                            <div>
+                                Après l'envoi du formulaire, votre compte
+                                entreprise sera créé avec le statut
+                                <strong>« En attente de validation »</strong>.
+
+                                Vous pourrez consulter l'état de votre demande
+                                depuis votre espace entreprise.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="registration-card-footer">
+
+                        {{ form_widget(form.submit, {
+                            'attr': {
+                                'class': 'submit-button'
+                            }
+                        }) }}
+
+                    </div>
+
+                </div>
+
+                {{ form_end(form) }}
+
+            </div>
+
+            <aside class="registration-sidebar">
+
+                <div class="sidebar-card sidebar-card-highlight">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-stars"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Pourquoi rejoindre GNUT06 ?
+                    </h3>
+
+                    <ul class="sidebar-list">
+
+                        <li>
+                            <i class="bi bi-check-circle"></i>
+                            <span>
+                                Proposez des missions adaptées
+                                aux compétences recherchées.
+                            </span>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-check-circle"></i>
+                            <span>
+                                Favorisez l'inclusion professionnelle
+                                des travailleurs indépendants handicapés.
+                            </span>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-check-circle"></i>
+                            <span>
+                                Gérez vos missions depuis
+                                un espace dédié.
+                            </span>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-check-circle"></i>
+                            <span>
+                                Suivez l'état de publication
+                                de vos missions.
+                            </span>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <div class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Validation de votre compte
+                    </h3>
+
+                    <p class="sidebar-text">
+                        Chaque nouvelle demande de compte entreprise
+                        est soumise à une vérification
+                        par l'équipe GNUT06.
+                    </p>
+
+                    <div class="sidebar-divider"></div>
+
+                    <div class="status-box">
+
+                        <i class="bi bi-hourglass-split"></i>
+
+                        <span>
+                            Votre espace de gestion sera associé
+                            à votre compte utilisateur.
+                            La soumission des missions nécessitera
+                            la validation de votre entreprise.
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-lock"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Protection des informations
+                    </h3>
+
+                    <p class="privacy-text">
+                        Les informations fournies servent à identifier
+                        votre entreprise et à traiter votre demande.
+                        Veillez à renseigner des coordonnées
+                        professionnelles exactes.
+                    </p>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
