@@ -1,0 +1,1137 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dossier entreprise | GNUT 06{% endblock %}
+
+{% block body %}
+
+{% set status = account.statut %}
+
+<style>
+    .admin-company-detail {
+        min-height: 100vh;
+        padding: 55px 20px 100px;
+        background:
+            radial-gradient(
+                ellipse at 85% 0%,
+                rgba(149, 91, 255, 0.13),
+                transparent 45%
+            ),
+            #060611;
+        color: #f8f9ff;
+    }
+
+    .admin-company-detail * {
+        box-sizing: border-box;
+    }
+
+    .admin-company-detail .detail-container {
+        max-width: 1250px;
+        margin: 0 auto;
+    }
+
+    .admin-company-detail .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 32px;
+        color: #c5a0f5;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+    .admin-company-detail .back-link:hover {
+        color: #ffffff;
+    }
+
+    .admin-company-detail .page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 25px;
+        margin-bottom: 35px;
+    }
+
+    .admin-company-detail .page-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 8px 15px;
+        margin-bottom: 18px;
+        border: 1px solid rgba(168, 112, 255, 0.22);
+        border-radius: 30px;
+        background: rgba(168, 112, 255, 0.12);
+        color: #d1aaff;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .admin-company-detail .page-title {
+        margin: 0 0 12px;
+        color: #ffffff;
+        font-size: clamp(28px, 4vw, 44px);
+        font-weight: 800;
+        letter-spacing: -1.2px;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-company-detail .page-description {
+        max-width: 680px;
+        margin: 0;
+        color: #a7a8bf;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .admin-company-detail .account-reference {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 12px 17px;
+        border: 1px solid #38304f;
+        border-radius: 12px;
+        background: #151524;
+        color: #c5c5dc;
+        font-size: 13px;
+    }
+
+    .admin-company-detail .account-reference strong {
+        color: #ffffff;
+    }
+
+    .admin-company-detail .flash-message {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 17px 20px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .admin-company-detail .flash-success {
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        background: rgba(16, 185, 129, 0.1);
+        color: #a7f3d0;
+    }
+
+    .admin-company-detail .flash-warning {
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        background: rgba(245, 158, 11, 0.1);
+        color: #fcd34d;
+    }
+
+    .admin-company-detail .detail-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 25px;
+        align-items: start;
+    }
+
+    .admin-company-detail .detail-main {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        min-width: 0;
+    }
+
+    .admin-company-detail .detail-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 0;
+    }
+
+    .admin-company-detail .detail-card {
+        overflow: hidden;
+        border: 1px solid #2b2b42;
+        border-radius: 20px;
+        background: #111120;
+    }
+
+    .admin-company-detail .card-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 26px 30px;
+        border-bottom: 1px solid #2a2a40;
+        background: transparent;
+    }
+
+    .admin-company-detail .card-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        border-radius: 13px;
+        background: rgba(168, 112, 255, 0.13);
+        color: #c49aff;
+        font-size: 22px;
+    }
+
+    .admin-company-detail .card-title {
+        margin: 0 0 5px;
+        color: #ffffff;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .admin-company-detail .card-subtitle {
+        margin: 0;
+        color: #9798b0;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .admin-company-detail .card-body {
+        padding: 30px;
+    }
+
+    .admin-company-detail .status-panel {
+        padding: 30px;
+        border: 1px solid #40345e;
+        border-radius: 20px;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(142, 83, 255, 0.12),
+                rgba(99, 102, 241, 0.03)
+            ),
+            #111120;
+    }
+
+    .admin-company-detail .status-panel-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .admin-company-detail .status-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 65px;
+        height: 65px;
+        flex-shrink: 0;
+        border-radius: 18px;
+        font-size: 29px;
+    }
+
+    .admin-company-detail .status-pending .status-icon {
+        background: rgba(245, 158, 11, 0.13);
+        color: #fcd34d;
+    }
+
+    .admin-company-detail .status-approved .status-icon {
+        background: rgba(16, 185, 129, 0.13);
+        color: #6ee7b7;
+    }
+
+    .admin-company-detail .status-rejected .status-icon {
+        background: rgba(239, 68, 68, 0.13);
+        color: #fca5a5;
+    }
+
+    .admin-company-detail .status-suspended .status-icon {
+        background: rgba(148, 117, 245, 0.13);
+        color: #c4b5fd;
+    }
+
+    .admin-company-detail .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 13px;
+        margin-bottom: 13px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .admin-company-detail .status-pending .status-badge {
+        background: rgba(245, 158, 11, 0.13);
+        color: #fcd34d;
+    }
+
+    .admin-company-detail .status-approved .status-badge {
+        background: rgba(16, 185, 129, 0.13);
+        color: #6ee7b7;
+    }
+
+    .admin-company-detail .status-rejected .status-badge {
+        background: rgba(239, 68, 68, 0.13);
+        color: #fca5a5;
+    }
+
+    .admin-company-detail .status-suspended .status-badge {
+        background: rgba(148, 117, 245, 0.13);
+        color: #c4b5fd;
+    }
+
+    .admin-company-detail .status-title {
+        margin-bottom: 10px;
+        color: #ffffff;
+        font-size: 22px;
+        font-weight: 800;
+    }
+
+    .admin-company-detail .status-description {
+        margin: 0;
+        color: #b1b2ca;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .admin-company-detail .status-divider {
+        height: 1px;
+        margin: 25px 0;
+        background: #34344b;
+    }
+
+    .admin-company-detail .status-footer {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #a5a6be;
+        font-size: 13px;
+    }
+
+    .admin-company-detail .status-footer i {
+        color: #ae8aff;
+    }
+
+    .admin-company-detail .company-identity {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 22px;
+        margin-bottom: 28px;
+        border: 1px solid rgba(168, 112, 255, 0.2);
+        border-radius: 14px;
+        background: rgba(168, 112, 255, 0.07);
+    }
+
+    .admin-company-detail .company-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 58px;
+        height: 58px;
+        flex-shrink: 0;
+        border-radius: 15px;
+        background: rgba(168, 112, 255, 0.16);
+        color: #d0a9ff;
+        font-size: 27px;
+    }
+
+    .admin-company-detail .company-identity-label {
+        margin-bottom: 6px;
+        color: #9c9db5;
+        font-size: 12px;
+    }
+
+    .admin-company-detail .company-identity-name {
+        margin: 0;
+        color: #ffffff;
+        font-size: 21px;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-company-detail .information-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px 24px;
+    }
+
+    .admin-company-detail .information-item {
+        min-width: 0;
+    }
+
+    .admin-company-detail .information-label {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 10px;
+        color: #999ab3;
+        font-size: 12px;
+    }
+
+    .admin-company-detail .information-label i {
+        color: #b38bf5;
+        font-size: 16px;
+    }
+
+    .admin-company-detail .information-value {
+        margin: 0;
+        color: #f0f0fb;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-company-detail .information-value a {
+        color: #d4b1ff;
+        text-decoration: none;
+    }
+
+    .admin-company-detail .information-value a:hover {
+        text-decoration: underline;
+        color: #ffffff;
+    }
+
+    .admin-company-detail .information-empty {
+        color: #85869e;
+        font-style: italic;
+        font-weight: 400;
+    }
+
+    .admin-company-detail .sidebar-card {
+        padding: 26px;
+        border: 1px solid #2b2b42;
+        border-radius: 18px;
+        background: #111120;
+    }
+
+    .admin-company-detail .sidebar-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        margin-bottom: 19px;
+        border-radius: 12px;
+        background: rgba(168, 112, 255, 0.13);
+        color: #c594ff;
+        font-size: 21px;
+    }
+
+    .admin-company-detail .sidebar-title {
+        margin-bottom: 10px;
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .admin-company-detail .sidebar-description {
+        margin-bottom: 22px;
+        color: #a5a6bd;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .admin-company-detail .action-form {
+        margin-bottom: 13px;
+    }
+
+    .admin-company-detail .action-form:last-child {
+        margin-bottom: 0;
+    }
+
+    .admin-company-detail .action-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 49px;
+        padding: 13px 17px;
+        border-radius: 11px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+            transform 0.2s,
+            box-shadow 0.2s,
+            background 0.2s;
+    }
+
+    .admin-company-detail .action-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .admin-company-detail .action-button:focus-visible {
+        outline: 3px solid #ffffff;
+        outline-offset: 3px;
+    }
+
+    .admin-company-detail .button-approve {
+        border: 1px solid transparent;
+        background: linear-gradient(135deg, #18a779, #0d8f77);
+        color: #ffffff;
+    }
+
+    .admin-company-detail .button-approve:hover {
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+    }
+
+    .admin-company-detail .button-reject {
+        border: 1px solid #ad4a59;
+        background: rgba(239, 68, 68, 0.1);
+        color: #ffadb7;
+    }
+
+    .admin-company-detail .button-reject:hover {
+        background: rgba(239, 68, 68, 0.2);
+    }
+
+    .admin-company-detail .button-suspend {
+        border: 1px solid #ab773f;
+        background: rgba(245, 158, 11, 0.1);
+        color: #f8c982;
+    }
+
+    .admin-company-detail .button-suspend:hover {
+        background: rgba(245, 158, 11, 0.2);
+    }
+
+    .admin-company-detail .button-review {
+        border: 1px solid transparent;
+        background: linear-gradient(135deg, #b45cf3, #6269f8);
+        color: #ffffff;
+    }
+
+    .admin-company-detail .button-review:hover {
+        box-shadow: 0 8px 25px rgba(113, 93, 245, 0.25);
+    }
+
+    .admin-company-detail .action-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        padding: 15px;
+        margin-top: 20px;
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-radius: 11px;
+        background: rgba(99, 102, 241, 0.07);
+        color: #bcbdd8;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .admin-company-detail .action-notice i {
+        flex-shrink: 0;
+        color: #aaa5ff;
+        font-size: 17px;
+    }
+
+    .admin-company-detail .sidebar-divider {
+        height: 1px;
+        margin: 20px 0;
+        background: #303046;
+    }
+
+    .admin-company-detail .secondary-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #4b4168;
+        border-radius: 10px;
+        background: transparent;
+        color: #ddc7fc;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .admin-company-detail .secondary-link:hover {
+        background: rgba(168, 112, 255, 0.12);
+        color: #ffffff;
+    }
+
+    @media (max-width: 992px) {
+        .admin-company-detail .detail-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-company-detail .detail-sidebar {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 650px) {
+        .admin-company-detail {
+            padding: 35px 16px 65px;
+        }
+
+        .admin-company-detail .page-header {
+            margin-bottom: 25px;
+        }
+
+        .admin-company-detail .status-panel {
+            padding: 22px 19px;
+        }
+
+        .admin-company-detail .status-panel-header {
+            flex-direction: column;
+            gap: 17px;
+        }
+
+        .admin-company-detail .status-title {
+            font-size: 19px;
+        }
+
+        .admin-company-detail .card-header,
+        .admin-company-detail .card-body {
+            padding: 23px 19px;
+        }
+
+        .admin-company-detail .company-identity {
+            align-items: flex-start;
+            padding: 17px;
+        }
+
+        .admin-company-detail .company-avatar {
+            width: 48px;
+            height: 48px;
+            font-size: 22px;
+        }
+
+        .admin-company-detail .company-identity-name {
+            font-size: 17px;
+        }
+
+        .admin-company-detail .information-grid {
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .admin-company-detail .detail-sidebar {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<main class="admin-company-detail">
+
+    <div class="detail-container">
+
+        <a
+            href="{{ path('admin_company_index') }}"
+            class="back-link"
+        >
+            <i class="bi bi-arrow-left"></i>
+            Retour aux entreprises
+        </a>
+
+        <header class="page-header">
+
+            <div>
+
+                <span class="page-badge">
+                    <i class="bi bi-shield-lock"></i>
+                    Administration GNUT06
+                </span>
+
+                <h1 class="page-title">
+                    Dossier entreprise
+                </h1>
+
+                <p class="page-description">
+                    Consultez les informations du compte professionnel
+                    et prenez les décisions nécessaires à sa validation.
+                </p>
+
+            </div>
+
+            <div class="account-reference">
+                <i class="bi bi-hash"></i>
+                Dossier
+                <strong>{{ account.id }}</strong>
+            </div>
+
+        </header>
+
+        {% for message in app.flashes('success') %}
+            <div class="flash-message flash-success" role="status">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('warning') %}
+            <div class="flash-message flash-warning" role="alert">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+
+        <div class="detail-layout">
+
+            <div class="detail-main">
+
+                <section class="status-panel status-{{ status }}">
+
+                    <div class="status-panel-header">
+
+                        <div class="status-icon">
+
+                            {% if status == 'pending' %}
+                                <i class="bi bi-hourglass-split"></i>
+                            {% elseif status == 'approved' %}
+                                <i class="bi bi-check-circle-fill"></i>
+                            {% elseif status == 'rejected' %}
+                                <i class="bi bi-x-circle-fill"></i>
+                            {% elseif status == 'suspended' %}
+                                <i class="bi bi-shield-x"></i>
+                            {% else %}
+                                <i class="bi bi-info-circle"></i>
+                            {% endif %}
+
+                        </div>
+
+                        <div>
+
+                            <span class="status-badge">
+                                {{ statusLabel }}
+                            </span>
+
+                            <h2 class="status-title">
+
+                                {% if status == 'pending' %}
+                                    Demande en attente d'examen
+                                {% elseif status == 'approved' %}
+                                    Entreprise approuvée
+                                {% elseif status == 'rejected' %}
+                                    Demande refusée
+                                {% elseif status == 'suspended' %}
+                                    Compte suspendu
+                                {% else %}
+                                    Statut du compte
+                                {% endif %}
+
+                            </h2>
+
+                            <p class="status-description">
+
+                                {% if status == 'pending' %}
+                                    Cette entreprise a demandé l'ouverture
+                                    d'un compte professionnel GNUT06.
+                                    Une décision administrative est nécessaire.
+
+                                {% elseif status == 'approved' %}
+                                    Le compte entreprise a été validé.
+                                    Son titulaire peut désormais soumettre
+                                    des missions à validation.
+
+                                {% elseif status == 'rejected' %}
+                                    Cette demande de création de compte
+                                    n'a pas été approuvée.
+
+                                {% elseif status == 'suspended' %}
+                                    Ce compte a été suspendu.
+                                    L'entreprise ne peut plus soumettre
+                                    de nouvelles missions à validation.
+
+                                {% else %}
+                                    Consultez les informations du dossier.
+                                {% endif %}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="status-divider"></div>
+
+                    <div class="status-footer">
+                        <i class="bi bi-calendar3"></i>
+                        Demande créée le
+                        <strong>
+                            {{ account.createdAt|date('d/m/Y à H:i') }}
+                        </strong>
+                    </div>
+
+                </section>
+
+                <section class="detail-card">
+
+                    <div class="card-header">
+
+                        <div class="card-icon">
+                            <i class="bi bi-building"></i>
+                        </div>
+
+                        <div>
+
+                            <h2 class="card-title">
+                                Informations de l'entreprise
+                            </h2>
+
+                            <p class="card-subtitle">
+                                Données déclarées lors de l'inscription.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="company-identity">
+
+                            <div class="company-avatar">
+                                <i class="bi bi-buildings"></i>
+                            </div>
+
+                            <div>
+
+                                <div class="company-identity-label">
+                                    Raison sociale
+                                </div>
+
+                                <h3 class="company-identity-name">
+                                    {{ account.raisonSociale }}
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                        <div class="information-grid">
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-card-checklist"></i>
+                                    SIREN / SIRET
+                                </div>
+
+                                <p class="information-value">
+                                    {% if account.identifiantLegal %}
+                                        {{ account.identifiantLegal }}
+                                    {% else %}
+                                        <span class="information-empty">
+                                            Non renseigné
+                                        </span>
+                                    {% endif %}
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-person"></i>
+                                    Contact principal
+                                </div>
+
+                                <p class="information-value">
+                                    {{ account.nomContact }}
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-envelope"></i>
+                                    Adresse e-mail
+                                </div>
+
+                                <p class="information-value">
+                                    <a href="mailto:{{ account.emailContact }}">
+                                        {{ account.emailContact }}
+                                    </a>
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-telephone"></i>
+                                    Téléphone
+                                </div>
+
+                                <p class="information-value">
+                                    {% if account.telephone %}
+                                        {{ account.telephone }}
+                                    {% else %}
+                                        <span class="information-empty">
+                                            Non renseigné
+                                        </span>
+                                    {% endif %}
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-calendar-plus"></i>
+                                    Date d'inscription
+                                </div>
+
+                                <p class="information-value">
+                                    {{ account.createdAt|date('d/m/Y à H:i') }}
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-clock-history"></i>
+                                    Dernière mise à jour
+                                </div>
+
+                                <p class="information-value">
+                                    {{ account.updatedAt|date('d/m/Y à H:i') }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <aside class="detail-sidebar">
+
+                <section class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Décision administrative
+                    </h3>
+
+                    {% if status == 'pending' %}
+
+                        <p class="sidebar-description">
+                            Examinez les informations de l'entreprise
+                            avant d'approuver ou de refuser
+                            sa demande.
+                        </p>
+
+                        <form
+                            method="post"
+                            action="{{ path('admin_company_approve', {id: account.id}) }}"
+                            class="action-form"
+                        >
+                            <input
+                                type="hidden"
+                                name="_token"
+                                value="{{ csrf_token('admin_company_approve_' ~ account.id) }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="action-button button-approve"
+                                onclick="return confirm('Confirmer l’approbation de cette entreprise ?')"
+                            >
+                                <i class="bi bi-check-circle"></i>
+                                Approuver l'entreprise
+                            </button>
+                        </form>
+
+                        <form
+                            method="post"
+                            action="{{ path('admin_company_reject', {id: account.id}) }}"
+                            class="action-form"
+                        >
+                            <input
+                                type="hidden"
+                                name="_token"
+                                value="{{ csrf_token('admin_company_reject_' ~ account.id) }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="action-button button-reject"
+                                onclick="return confirm('Confirmer le refus de cette demande ?')"
+                            >
+                                <i class="bi bi-x-circle"></i>
+                                Refuser la demande
+                            </button>
+                        </form>
+
+                    {% elseif status == 'approved' %}
+
+                        <p class="sidebar-description">
+                            Cette entreprise dispose d'un compte approuvé.
+                            Vous pouvez le suspendre si nécessaire.
+                        </p>
+
+                        <form
+                            method="post"
+                            action="{{ path('admin_company_suspend', {id: account.id}) }}"
+                            class="action-form"
+                        >
+                            <input
+                                type="hidden"
+                                name="_token"
+                                value="{{ csrf_token('admin_company_suspend_' ~ account.id) }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="action-button button-suspend"
+                                onclick="return confirm('Confirmer la suspension de ce compte entreprise ?')"
+                            >
+                                <i class="bi bi-shield-x"></i>
+                                Suspendre le compte
+                            </button>
+                        </form>
+
+                    {% elseif status == 'rejected' %}
+
+                        <p class="sidebar-description">
+                            Cette demande a été refusée.
+                            Vous pouvez la remettre en attente
+                            afin de procéder à un nouvel examen.
+                        </p>
+
+                        <form
+                            method="post"
+                            action="{{ path('admin_company_reopen', {id: account.id}) }}"
+                            class="action-form"
+                        >
+                            <input
+                                type="hidden"
+                                name="_token"
+                                value="{{ csrf_token('admin_company_reopen_' ~ account.id) }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="action-button button-review"
+                                onclick="return confirm('Remettre cette demande en attente de validation ?')"
+                            >
+                                <i class="bi bi-arrow-repeat"></i>
+                                Réexaminer la demande
+                            </button>
+                        </form>
+
+                    {% elseif status == 'suspended' %}
+
+                        <p class="sidebar-description">
+                            Ce compte est suspendu.
+                            Vous pouvez réactiver ses fonctionnalités
+                            en approuvant de nouveau l'entreprise.
+                        </p>
+
+                        <form
+                            method="post"
+                            action="{{ path('admin_company_approve', {id: account.id}) }}"
+                            class="action-form"
+                        >
+                            <input
+                                type="hidden"
+                                name="_token"
+                                value="{{ csrf_token('admin_company_approve_' ~ account.id) }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="action-button button-approve"
+                                onclick="return confirm('Réactiver ce compte entreprise ?')"
+                            >
+                                <i class="bi bi-arrow-clockwise"></i>
+                                Réactiver le compte
+                            </button>
+                        </form>
+
+                    {% else %}
+
+                        <p class="sidebar-description">
+                            Aucune action n'est disponible
+                            pour le statut actuel.
+                        </p>
+
+                    {% endif %}
+
+                    <div class="action-notice">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        <span>
+                            Les changements de statut sont
+                            appliqués après confirmation
+                            de votre décision.
+                        </span>
+
+                    </div>
+
+                </section>
+
+                <section class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-lightbulb"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Informations utiles
+                    </h3>
+
+                    <p class="sidebar-description">
+                        L'approbation du compte entreprise
+                        autorise son titulaire à soumettre
+                        des missions à l'équipe GNUT06.
+                    </p>
+
+                    <div class="sidebar-divider"></div>
+
+                    <p class="sidebar-description">
+                        Chaque mission reste soumise
+                        à une validation administrative
+                        avant sa publication.
+                    </p>
+
+                </section>
+
+                <section class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-arrow-left-circle"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Navigation
+                    </h3>
+
+                    <p class="sidebar-description">
+                        Retournez à la liste pour consulter
+                        les autres comptes entreprise.
+                    </p>
+
+                    <a
+                        href="{{ path('admin_company_index') }}"
+                        class="secondary-link"
+                    >
+                        <i class="bi bi-list-ul"></i>
+                        Toutes les entreprises
+                    </a>
+
+                </section>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
