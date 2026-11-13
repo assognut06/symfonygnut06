@@ -1,0 +1,1859 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dossier de mission | GNUT 06{% endblock %}
+
+{% block body %}
+
+{% set status = mission.statut %}
+{% set statusLabel = statusLabels[status] ?? status %}
+
+{% set modalityLabels = {
+    'distance': 'À distance',
+    'sur_place': 'Sur place',
+    'hybride': 'Hybride'
+} %}
+
+{% set pricingLabels = {
+    'heure': 'Tarif horaire',
+    'jour': 'Tarif journalier',
+    'forfait': 'Tarif forfaitaire'
+} %}
+
+{% set decisionLabels = {
+    'publish': 'Publication',
+    'request_correction': 'Demande de correction',
+    'withdraw': 'Retrait de publication'
+} %}
+
+<style>
+    .admin-mission-detail {
+        min-height: 100vh;
+        padding: 55px 20px 100px;
+        background:
+            radial-gradient(
+                ellipse at 85% 0%,
+                rgba(153, 91, 255, 0.13),
+                transparent 45%
+            ),
+            #060611;
+        color: #f8f9ff;
+    }
+
+    .admin-mission-detail * {
+        box-sizing: border-box;
+    }
+
+    .admin-mission-detail .detail-container {
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+
+    .admin-mission-detail .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 30px;
+        color: #c5a0f5;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .admin-mission-detail .back-link:hover {
+        color: #ffffff;
+    }
+
+    .admin-mission-detail .page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 25px;
+        margin-bottom: 35px;
+    }
+
+    .admin-mission-detail .page-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 8px 15px;
+        margin-bottom: 20px;
+        border-radius: 30px;
+        background: rgba(168, 112, 255, 0.12);
+        border: 1px solid rgba(168, 112, 255, 0.2);
+        color: #d1aaff;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .admin-mission-detail .page-title {
+        margin: 0 0 12px;
+        color: #ffffff;
+        font-size: clamp(29px, 4vw, 43px);
+        font-weight: 800;
+        letter-spacing: -1.2px;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-mission-detail .page-description {
+        max-width: 750px;
+        margin: 0;
+        color: #a7a8bf;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .admin-mission-detail .reference-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 13px 18px;
+        border: 1px solid #403657;
+        border-radius: 12px;
+        background: #151524;
+        color: #c5c5dc;
+        font-size: 13px;
+    }
+
+    .admin-mission-detail .reference-badge strong {
+        color: #ffffff;
+    }
+
+    .admin-mission-detail .flash-message {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 17px 20px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .admin-mission-detail .flash-success {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #a7f3d0;
+    }
+
+    .admin-mission-detail .flash-warning {
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #fcd34d;
+    }
+
+    .admin-mission-detail .detail-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        align-items: start;
+        gap: 25px;
+    }
+
+    .admin-mission-detail .detail-main {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        min-width: 0;
+    }
+
+    .admin-mission-detail .detail-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 0;
+    }
+
+    .admin-mission-detail .detail-card {
+        overflow: hidden;
+        background: #111120;
+        border: 1px solid #2b2b42;
+        border-radius: 20px;
+    }
+
+    .admin-mission-detail .card-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 25px 30px;
+        background: transparent;
+        border-bottom: 1px solid #2a2a40;
+    }
+
+    .admin-mission-detail .card-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        border-radius: 13px;
+        background: rgba(168, 112, 255, 0.13);
+        color: #c49aff;
+        font-size: 22px;
+    }
+
+    .admin-mission-detail .card-title {
+        margin: 0 0 5px;
+        color: #ffffff;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .admin-mission-detail .card-subtitle {
+        margin: 0;
+        color: #9798b0;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .admin-mission-detail .card-body {
+        padding: 30px;
+    }
+
+    .admin-mission-detail .status-panel {
+        padding: 30px;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(142, 83, 255, 0.12),
+                rgba(99, 102, 241, 0.03)
+            ),
+            #111120;
+        border: 1px solid #40345e;
+        border-radius: 20px;
+    }
+
+    .admin-mission-detail .status-panel-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .admin-mission-detail .status-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 65px;
+        height: 65px;
+        flex-shrink: 0;
+        border-radius: 18px;
+        background: rgba(168, 112, 255, 0.12);
+        color: #c49aff;
+        font-size: 29px;
+    }
+
+    .admin-mission-detail .status-en_attente .status-icon {
+        background: rgba(245, 158, 11, 0.13);
+        color: #fcd34d;
+    }
+
+    .admin-mission-detail .status-publiee .status-icon {
+        background: rgba(16, 185, 129, 0.13);
+        color: #6ee7b7;
+    }
+
+    .admin-mission-detail .status-a_corriger .status-icon {
+        background: rgba(249, 115, 22, 0.13);
+        color: #fdba74;
+    }
+
+    .admin-mission-detail .status-retiree .status-icon {
+        background: rgba(239, 68, 68, 0.13);
+        color: #fca5a5;
+    }
+
+    .admin-mission-detail .status-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 13px;
+        margin-bottom: 13px;
+        background: rgba(168, 112, 255, 0.14);
+        border-radius: 30px;
+        color: #d8baff;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .admin-mission-detail .status-en_attente .status-label {
+        background: rgba(245, 158, 11, 0.14);
+        color: #fcd34d;
+    }
+
+    .admin-mission-detail .status-publiee .status-label {
+        background: rgba(16, 185, 129, 0.14);
+        color: #6ee7b7;
+    }
+
+    .admin-mission-detail .status-a_corriger .status-label {
+        background: rgba(249, 115, 22, 0.14);
+        color: #fdba74;
+    }
+
+    .admin-mission-detail .status-retiree .status-label {
+        background: rgba(239, 68, 68, 0.14);
+        color: #fca5a5;
+    }
+
+    .admin-mission-detail .status-title {
+        margin-bottom: 10px;
+        color: #ffffff;
+        font-size: 23px;
+        font-weight: 800;
+    }
+
+    .admin-mission-detail .status-description {
+        margin: 0;
+        color: #b4b5cc;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .admin-mission-detail .status-divider {
+        height: 1px;
+        margin: 24px 0;
+        background: #34344a;
+    }
+
+    .admin-mission-detail .status-meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px 25px;
+        color: #a4a5bd;
+        font-size: 12px;
+    }
+
+    .admin-mission-detail .status-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .admin-mission-detail .status-meta i {
+        color: #ad8af8;
+        font-size: 15px;
+    }
+
+    .admin-mission-detail .mission-name {
+        margin-bottom: 22px;
+        color: #ffffff;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-mission-detail .content-label {
+        display: block;
+        margin-bottom: 12px;
+        color: #d9c3fa;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .admin-mission-detail .mission-description {
+        margin: 0;
+        color: #c4c5d8;
+        font-size: 14px;
+        line-height: 1.9;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-mission-detail .section-divider {
+        height: 1px;
+        margin: 28px 0;
+        background: #303046;
+    }
+
+    .admin-mission-detail .information-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px 24px;
+    }
+
+    .admin-mission-detail .information-item {
+        min-width: 0;
+    }
+
+    .admin-mission-detail .information-label {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 10px;
+        color: #999ab3;
+        font-size: 12px;
+    }
+
+    .admin-mission-detail .information-label i {
+        color: #b38bf5;
+        font-size: 15px;
+    }
+
+    .admin-mission-detail .information-value {
+        margin: 0;
+        color: #f0f0fb;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-mission-detail .information-empty {
+        color: #85869e;
+        font-style: italic;
+        font-weight: 400;
+    }
+
+    .admin-mission-detail .skills-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .admin-mission-detail .skill-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 14px;
+        border: 1px solid rgba(168, 112, 255, 0.32);
+        border-radius: 10px;
+        background: rgba(168, 112, 255, 0.13);
+        color: #e4d0ff;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .admin-mission-detail .pricing-box {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .admin-mission-detail .pricing-item {
+        padding: 20px;
+        background: #191929;
+        border: 1px solid #36364c;
+        border-radius: 13px;
+    }
+
+    .admin-mission-detail .pricing-label {
+        margin-bottom: 10px;
+        color: #9e9fb6;
+        font-size: 12px;
+    }
+
+    .admin-mission-detail .pricing-value {
+        margin: 0;
+        color: #ffffff;
+        font-size: 23px;
+        font-weight: 800;
+    }
+
+    .admin-mission-detail .pricing-type {
+        margin-top: 18px;
+        color: #c5c5dd;
+        font-size: 13px;
+    }
+
+    .admin-mission-detail .sidebar-card {
+        padding: 26px;
+        background: #111120;
+        border: 1px solid #2b2b42;
+        border-radius: 18px;
+    }
+
+    .admin-mission-detail .sidebar-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        margin-bottom: 19px;
+        border-radius: 12px;
+        background: rgba(168, 112, 255, 0.13);
+        color: #c594ff;
+        font-size: 21px;
+    }
+
+    .admin-mission-detail .sidebar-title {
+        margin-bottom: 10px;
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .admin-mission-detail .sidebar-description {
+        margin-bottom: 20px;
+        color: #a5a6bd;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .admin-mission-detail .company-name {
+        margin-bottom: 18px;
+        color: #ffffff;
+        font-size: 19px;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-mission-detail .company-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .admin-mission-detail .company-meta-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        color: #b7b8ce;
+        font-size: 13px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-mission-detail .company-meta-item i {
+        color: #b38bf5;
+        font-size: 16px;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .admin-mission-detail .company-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 20px;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .admin-mission-detail .company-approved {
+        background: rgba(16, 185, 129, 0.13);
+        color: #6ee7b7;
+    }
+
+    .admin-mission-detail .company-unapproved {
+        background: rgba(245, 158, 11, 0.13);
+        color: #fcd34d;
+    }
+
+    .admin-mission-detail .action-form {
+        margin-bottom: 20px;
+    }
+
+    .admin-mission-detail .action-form:last-child {
+        margin-bottom: 0;
+    }
+
+    .admin-mission-detail .action-label {
+        display: block;
+        margin-bottom: 10px;
+        color: #e4e4f4;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .admin-mission-detail .action-textarea {
+        width: 100%;
+        min-height: 115px;
+        padding: 13px 15px;
+        margin-bottom: 13px;
+        background: #191929;
+        border: 1px solid #3a3a50;
+        border-radius: 11px;
+        color: #ffffff;
+        font-size: 13px;
+        line-height: 1.7;
+        resize: vertical;
+    }
+
+    .admin-mission-detail .action-textarea::placeholder {
+        color: #85869e;
+    }
+
+    .admin-mission-detail .action-textarea:focus {
+        outline: none;
+        border-color: #aa79ff;
+        box-shadow: 0 0 0 3px rgba(168, 112, 255, 0.13);
+    }
+
+    .admin-mission-detail .action-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 49px;
+        padding: 13px 17px;
+        border-radius: 11px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .admin-mission-detail .action-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .admin-mission-detail .action-button:focus-visible {
+        outline: 3px solid #ffffff;
+        outline-offset: 3px;
+    }
+
+    .admin-mission-detail .button-publish {
+        border: 1px solid transparent;
+        background: linear-gradient(135deg, #18a779, #0d8f77);
+        color: #ffffff;
+    }
+
+    .admin-mission-detail .button-correction {
+        border: 1px solid #b77945;
+        background: rgba(245, 158, 11, 0.10);
+        color: #fcd34d;
+    }
+
+    .admin-mission-detail .button-withdraw {
+        border: 1px solid #ad4a59;
+        background: rgba(239, 68, 68, 0.10);
+        color: #ffadb7;
+    }
+
+    .admin-mission-detail .action-button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .admin-mission-detail .action-divider {
+        height: 1px;
+        margin: 24px 0;
+        background: #303046;
+    }
+
+    .admin-mission-detail .action-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        padding: 15px;
+        background: rgba(99, 102, 241, 0.07);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-radius: 11px;
+        color: #bcbdd8;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .admin-mission-detail .action-notice i {
+        color: #aaa5ff;
+        flex-shrink: 0;
+        font-size: 17px;
+    }
+
+    .admin-mission-detail .history-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .admin-mission-detail .history-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 22px 0;
+        border-bottom: 1px solid #2d2d42;
+    }
+
+    .admin-mission-detail .history-item:first-child {
+        padding-top: 0;
+    }
+
+    .admin-mission-detail .history-item:last-child {
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .admin-mission-detail .history-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: rgba(168, 112, 255, 0.13);
+        color: #c59aff;
+        font-size: 17px;
+    }
+
+    .admin-mission-detail .history-publish .history-icon {
+        background: rgba(16, 185, 129, 0.13);
+        color: #6ee7b7;
+    }
+
+    .admin-mission-detail .history-request_correction .history-icon {
+        background: rgba(245, 158, 11, 0.13);
+        color: #fcd34d;
+    }
+
+    .admin-mission-detail .history-withdraw .history-icon {
+        background: rgba(239, 68, 68, 0.13);
+        color: #fca5a5;
+    }
+
+    .admin-mission-detail .history-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .admin-mission-detail .history-title {
+        margin-bottom: 7px;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .admin-mission-detail .history-date {
+        color: #999ab2;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .admin-mission-detail .history-reason {
+        margin-top: 13px;
+        padding: 14px 16px;
+        border: 1px solid #34344a;
+        border-radius: 10px;
+        background: #191929;
+        color: #c2c3d8;
+        font-size: 13px;
+        line-height: 1.8;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-mission-detail .empty-history {
+        padding: 30px 15px;
+        text-align: center;
+        color: #999ab2;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .admin-mission-detail .empty-history i {
+        display: block;
+        margin-bottom: 15px;
+        color: #b38bf5;
+        font-size: 32px;
+    }
+
+    .admin-mission-detail .secondary-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        padding: 12px 15px;
+        background: transparent;
+        border: 1px solid #4b4168;
+        border-radius: 10px;
+        color: #ddc7fc;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .admin-mission-detail .secondary-link:hover {
+        background: rgba(168, 112, 255, 0.12);
+        color: #ffffff;
+    }
+
+    @media (max-width: 992px) {
+        .admin-mission-detail .detail-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-mission-detail .detail-sidebar {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 650px) {
+        .admin-mission-detail {
+            padding: 35px 16px 65px;
+        }
+
+        .admin-mission-detail .status-panel {
+            padding: 22px 19px;
+        }
+
+        .admin-mission-detail .status-panel-top {
+            flex-direction: column;
+        }
+
+        .admin-mission-detail .card-header,
+        .admin-mission-detail .card-body {
+            padding: 23px 19px;
+        }
+
+        .admin-mission-detail .information-grid,
+        .admin-mission-detail .pricing-box {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-mission-detail .detail-sidebar {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-mission-detail .mission-name {
+            font-size: 20px;
+        }
+
+        .admin-mission-detail .status-title {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<main class="admin-mission-detail">
+
+    <div class="detail-container">
+
+        <a
+            href="{{ path('admin_mission_index') }}"
+            class="back-link"
+        >
+            <i class="bi bi-arrow-left"></i>
+            Retour aux missions
+        </a>
+
+        <header class="page-header">
+
+            <div>
+
+                <span class="page-badge">
+                    <i class="bi bi-shield-check"></i>
+                    Administration GNUT06
+                </span>
+
+                <h1 class="page-title">
+                    Dossier de mission
+                </h1>
+
+                <p class="page-description">
+                    Examinez les informations de la mission,
+                    vérifiez sa conformité et gérez
+                    les décisions de modération.
+                </p>
+
+            </div>
+
+            <div class="reference-badge">
+                <i class="bi bi-hash"></i>
+                Mission
+                <strong>{{ mission.id }}</strong>
+            </div>
+
+        </header>
+
+        {% for message in app.flashes('success') %}
+
+            <div class="flash-message flash-success" role="status">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>{{ message }}</span>
+            </div>
+
+        {% endfor %}
+
+        {% for message in app.flashes('warning') %}
+
+            <div class="flash-message flash-warning" role="alert">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>{{ message }}</span>
+            </div>
+
+        {% endfor %}
+
+        <div class="detail-layout">
+
+            <div class="detail-main">
+
+                <section class="status-panel status-{{ status }}">
+
+                    <div class="status-panel-top">
+
+                        <div class="status-icon">
+
+                            {% if status == 'en_attente' %}
+                                <i class="bi bi-hourglass-split"></i>
+
+                            {% elseif status == 'publiee' %}
+                                <i class="bi bi-check-circle-fill"></i>
+
+                            {% elseif status == 'a_corriger' %}
+                                <i class="bi bi-pencil-square"></i>
+
+                            {% elseif status == 'retiree' %}
+                                <i class="bi bi-shield-x"></i>
+
+                            {% else %}
+                                <i class="bi bi-file-earmark-text"></i>
+                            {% endif %}
+
+                        </div>
+
+                        <div>
+
+                            <span class="status-label">
+                                {{ statusLabel }}
+                            </span>
+
+                            <h2 class="status-title">
+
+                                {% if status == 'en_attente' %}
+                                    Mission en attente de validation
+
+                                {% elseif status == 'publiee' %}
+                                    Mission publiée
+
+                                {% elseif status == 'a_corriger' %}
+                                    Corrections demandées
+
+                                {% elseif status == 'retiree' %}
+                                    Mission retirée
+
+                                {% elseif status == 'brouillon' %}
+                                    Mission en préparation
+
+                                {% elseif status == 'cloturee' %}
+                                    Mission clôturée
+
+                                {% elseif status == 'expiree' %}
+                                    Mission expirée
+
+                                {% else %}
+                                    État de la mission
+                                {% endif %}
+
+                            </h2>
+
+                            <p class="status-description">
+
+                                {% if status == 'en_attente' %}
+                                    Cette mission a été soumise par une entreprise.
+                                    Elle attend une décision administrative
+                                    avant sa publication.
+
+                                {% elseif status == 'publiee' %}
+                                    La mission a été approuvée et publiée.
+                                    Elle peut être consultée dans l'annuaire
+                                    public si les conditions de visibilité
+                                    sont toujours remplies.
+
+                                {% elseif status == 'a_corriger' %}
+                                    Une correction a été demandée.
+                                    L'entreprise doit modifier sa mission
+                                    avant de la soumettre de nouveau.
+
+                                {% elseif status == 'retiree' %}
+                                    La mission a été retirée de la publication
+                                    à la suite d'une décision administrative.
+
+                                {% elseif status == 'brouillon' %}
+                                    L'entreprise prépare encore sa mission.
+                                    Elle n'a pas été soumise à validation.
+
+                                {% elseif status == 'cloturee' %}
+                                    Cette mission a été clôturée.
+
+                                {% elseif status == 'expiree' %}
+                                    La date limite de cette mission
+                                    est dépassée.
+
+                                {% endif %}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="status-divider"></div>
+
+                    <div class="status-meta">
+
+                        <span>
+                            <i class="bi bi-calendar-plus"></i>
+                            Créée le {{ mission.createdAt|date('d/m/Y') }}
+                        </span>
+
+                        {% if mission.submittedAt %}
+
+                            <span>
+                                <i class="bi bi-send-check"></i>
+                                Soumise le {{ mission.submittedAt|date('d/m/Y') }}
+                            </span>
+
+                        {% endif %}
+
+                        {% if mission.publishedAt %}
+
+                            <span>
+                                <i class="bi bi-check-circle"></i>
+                                Publication enregistrée le
+                                {{ mission.publishedAt|date('d/m/Y') }}
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </section>
+
+                <section class="detail-card">
+
+                    <div class="card-header">
+
+                        <div class="card-icon">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+
+                        <div>
+
+                            <h2 class="card-title">
+                                Présentation de la mission
+                            </h2>
+
+                            <p class="card-subtitle">
+                                Informations fournies par l'entreprise.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <h3 class="mission-name">
+                            {{ mission.titre ?: 'Mission sans titre' }}
+                        </h3>
+
+                        <span class="content-label">
+                            Description de la prestation
+                        </span>
+
+                        <p class="mission-description">
+                            {{ mission.description ?: 'Aucune description renseignée.' }}
+                        </p>
+
+                        <div class="section-divider"></div>
+
+                        <div class="information-grid">
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-grid"></i>
+                                    Domaine professionnel
+                                </div>
+
+                                <p class="information-value">
+                                    {{ mission.domaine ?: 'Non renseigné' }}
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-geo-alt"></i>
+                                    Zone géographique
+                                </div>
+
+                                <p class="information-value">
+                                    {{ mission.zone ?: 'Non renseignée' }}
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-laptop"></i>
+                                    Modalité d'intervention
+                                </div>
+
+                                <p class="information-value">
+                                    {{ modalityLabels[mission.modalite] ?? 'Non renseignée' }}
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-clock-history"></i>
+                                    Durée estimée
+                                </div>
+
+                                <p class="information-value">
+                                    {{ mission.dureeEstimee ?: 'Non renseignée' }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="detail-card">
+
+                    <div class="card-header">
+
+                        <div class="card-icon">
+                            <i class="bi bi-stars"></i>
+                        </div>
+
+                        <div>
+
+                            <h2 class="card-title">
+                                Compétences recherchées
+                            </h2>
+
+                            <p class="card-subtitle">
+                                Compétences nécessaires à la réalisation de la mission.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        {% if mission.competences|length > 0 %}
+
+                            <div class="skills-list">
+
+                                {% for competence in mission.competences %}
+
+                                    {% if competence.libelle is defined %}
+                                        {% set competenceLabel = competence.libelle %}
+
+                                    {% elseif competence.nom is defined %}
+                                        {% set competenceLabel = competence.nom %}
+
+                                    {% elseif competence.name is defined %}
+                                        {% set competenceLabel = competence.name %}
+
+                                    {% else %}
+                                        {% set competenceLabel = 'Compétence #' ~ competence.id %}
+                                    {% endif %}
+
+                                    <span class="skill-tag">
+                                        <i class="bi bi-check-circle"></i>
+                                        {{ competenceLabel }}
+                                    </span>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% else %}
+
+                            <p class="information-empty mb-0">
+                                Aucune compétence renseignée.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                </section>
+
+                <section class="detail-card">
+
+                    <div class="card-header">
+
+                        <div class="card-icon">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+
+                        <div>
+
+                            <h2 class="card-title">
+                                Calendrier de la mission
+                            </h2>
+
+                            <p class="card-subtitle">
+                                Dates importantes et échéances.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="information-grid">
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-calendar-plus"></i>
+                                    Date de début souhaitée
+                                </div>
+
+                                <p class="information-value">
+
+                                    {% if mission.dateDebutSouhaitee %}
+                                        {{ mission.dateDebutSouhaitee|date('d/m/Y') }}
+
+                                    {% else %}
+                                        <span class="information-empty">
+                                            Non renseignée
+                                        </span>
+                                    {% endif %}
+
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-calendar-x"></i>
+                                    Date limite de réponse
+                                </div>
+
+                                <p class="information-value">
+
+                                    {% if mission.dateLimiteReponse %}
+                                        {{ mission.dateLimiteReponse|date('d/m/Y') }}
+
+                                    {% else %}
+                                        <span class="information-empty">
+                                            Non renseignée
+                                        </span>
+                                    {% endif %}
+
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-clock-history"></i>
+                                    Dernière modification
+                                </div>
+
+                                <p class="information-value">
+                                    {{ mission.updatedAt|date('d/m/Y à H:i') }}
+                                </p>
+
+                            </div>
+
+                            <div class="information-item">
+
+                                <div class="information-label">
+                                    <i class="bi bi-send"></i>
+                                    Date de soumission
+                                </div>
+
+                                <p class="information-value">
+
+                                    {% if mission.submittedAt %}
+                                        {{ mission.submittedAt|date('d/m/Y à H:i') }}
+
+                                    {% else %}
+                                        <span class="information-empty">
+                                            Pas encore soumise
+                                        </span>
+                                    {% endif %}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="detail-card">
+
+                    <div class="card-header">
+
+                        <div class="card-icon">
+                            <i class="bi bi-cash-coin"></i>
+                        </div>
+
+                        <div>
+
+                            <h2 class="card-title">
+                                Tarification de la mission
+                            </h2>
+
+                            <p class="card-subtitle">
+                                Conditions tarifaires proposées pour la prestation.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        {% if mission.budgetMin is not null or mission.budgetMax is not null %}
+
+                            <div class="pricing-box">
+
+                                <div class="pricing-item">
+
+                                    <div class="pricing-label">
+                                        Tarif minimum
+                                    </div>
+
+                                    <p class="pricing-value">
+
+                                        {% if mission.budgetMin is not null %}
+                                            {{ mission.budgetMin|number_format(2, ',', ' ') }} €
+
+                                        {% else %}
+                                            <span class="information-empty">
+                                                Non renseigné
+                                            </span>
+                                        {% endif %}
+
+                                    </p>
+
+                                </div>
+
+                                <div class="pricing-item">
+
+                                    <div class="pricing-label">
+                                        Tarif maximum
+                                    </div>
+
+                                    <p class="pricing-value">
+
+                                        {% if mission.budgetMax is not null %}
+                                            {{ mission.budgetMax|number_format(2, ',', ' ') }} €
+
+                                        {% else %}
+                                            <span class="information-empty">
+                                                Non renseigné
+                                            </span>
+                                        {% endif %}
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <p class="pricing-type">
+
+                                <i class="bi bi-info-circle me-2"></i>
+
+                                Mode de tarification :
+
+                                <strong>
+                                    {{ pricingLabels[mission.uniteBudget] ?? 'Non renseigné' }}
+                                </strong>
+
+                            </p>
+
+                        {% else %}
+
+                            <p class="information-empty mb-0">
+                                Aucune fourchette tarifaire renseignée.
+                            </p>
+
+                            {% if mission.uniteBudget %}
+
+                                <p class="pricing-type">
+                                    Mode de tarification :
+                                    <strong>
+                                        {{ pricingLabels[mission.uniteBudget] ?? mission.uniteBudget }}
+                                    </strong>
+                                </p>
+
+                            {% endif %}
+
+                        {% endif %}
+
+                    </div>
+
+                </section>
+
+                <section class="detail-card">
+
+                    <div class="card-header">
+
+                        <div class="card-icon">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+
+                        <div>
+
+                            <h2 class="card-title">
+                                Historique de modération
+                            </h2>
+
+                            <p class="card-subtitle">
+                                Retrouvez les décisions administratives précédentes.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        {% if decisions is empty %}
+
+                            <div class="empty-history">
+
+                                <i class="bi bi-journal-text"></i>
+
+                                Aucune décision de modération
+                                n'a encore été enregistrée
+                                pour cette mission.
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="history-list">
+
+                                {% for decision in decisions %}
+
+                                    <article class="history-item history-{{ decision.decision }}">
+
+                                        <div class="history-icon">
+
+                                            {% if decision.decision == 'publish' %}
+                                                <i class="bi bi-check-circle"></i>
+
+                                            {% elseif decision.decision == 'request_correction' %}
+                                                <i class="bi bi-pencil-square"></i>
+
+                                            {% elseif decision.decision == 'withdraw' %}
+                                                <i class="bi bi-shield-x"></i>
+
+                                            {% else %}
+                                                <i class="bi bi-clock-history"></i>
+                                            {% endif %}
+
+                                        </div>
+
+                                        <div class="history-content">
+
+                                            <h3 class="history-title">
+                                                {{ decisionLabels[decision.decision] ?? decision.decision }}
+                                            </h3>
+
+                                            <div class="history-date">
+
+                                                <i class="bi bi-calendar3 me-1"></i>
+
+                                                {{ decision.createdAt|date('d/m/Y à H:i') }}
+
+                                                <span class="mx-1">·</span>
+
+                                                Administrateur #{{ decision.moderator.id }}
+
+                                            </div>
+
+                                            {% if decision.reason %}
+
+                                                <div class="history-reason">
+                                                    {{ decision.reason }}
+                                                </div>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </article>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <aside class="detail-sidebar">
+
+                <section class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Décision administrative
+                    </h3>
+
+                    {% if status == 'en_attente' %}
+
+                        <p class="sidebar-description">
+                            Examinez les informations de la mission
+                            avant de décider de sa publication
+                            ou de demander des corrections.
+                        </p>
+
+                        {% if canPublish %}
+
+                            <form
+                                method="post"
+                                action="{{ path('admin_mission_publish', {id: mission.id}) }}"
+                                class="action-form"
+                                onsubmit="return confirm('Confirmer la publication de cette mission ?')"
+                            >
+
+                                <input
+                                    type="hidden"
+                                    name="_token"
+                                    value="{{ csrf_token('admin_mission_publish_' ~ mission.id) }}"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="action-button button-publish"
+                                >
+                                    <i class="bi bi-check-circle"></i>
+                                    Publier la mission
+                                </button>
+
+                            </form>
+
+                        {% else %}
+
+                            <button
+                                type="button"
+                                class="action-button button-publish"
+                                disabled
+                            >
+                                <i class="bi bi-check-circle"></i>
+                                Publication indisponible
+                            </button>
+
+                            <div class="action-notice mt-3">
+
+                                <i class="bi bi-exclamation-triangle"></i>
+
+                                <span>
+                                    La publication nécessite un compte entreprise
+                                    approuvé et une date limite de réponse future.
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+                        <div class="action-divider"></div>
+
+                        <form
+                            method="post"
+                            action="{{ path('admin_mission_correction', {id: mission.id}) }}"
+                            class="action-form"
+                            onsubmit="return confirm('Envoyer cette demande de correction ?')"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="_token"
+                                value="{{ csrf_token('admin_mission_correction_' ~ mission.id) }}"
+                            >
+
+                            <label
+                                for="correction-reason"
+                                class="action-label"
+                            >
+                                Motif de la correction
+                            </label>
+
+                            <textarea
+                                id="correction-reason"
+                                name="reason"
+                                class="action-textarea"
+                                maxlength="2000"
+                                required
+                                placeholder="Expliquez précisément les éléments que l'entreprise doit corriger."
+                            ></textarea>
+
+                            <button
+                                type="submit"
+                                class="action-button button-correction"
+                            >
+                                <i class="bi bi-pencil-square"></i>
+                                Demander une correction
+                            </button>
+
+                        </form>
+
+                    {% elseif status == 'publiee' %}
+
+                        <p class="sidebar-description">
+                            Cette mission est publiée.
+                            Vous pouvez la retirer de la publication
+                            si son contenu nécessite une intervention.
+                        </p>
+
+                        <form
+                            method="post"
+                            action="{{ path('admin_mission_withdraw', {id: mission.id}) }}"
+                            class="action-form"
+                            onsubmit="return confirm('Confirmer le retrait de cette mission ?')"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="_token"
+                                value="{{ csrf_token('admin_mission_withdraw_' ~ mission.id) }}"
+                            >
+
+                            <label
+                                for="withdraw-reason"
+                                class="action-label"
+                            >
+                                Motif du retrait
+                            </label>
+
+                            <textarea
+                                id="withdraw-reason"
+                                name="reason"
+                                class="action-textarea"
+                                maxlength="2000"
+                                required
+                                placeholder="Expliquez pourquoi cette mission doit être retirée."
+                            ></textarea>
+
+                            <button
+                                type="submit"
+                                class="action-button button-withdraw"
+                            >
+                                <i class="bi bi-shield-x"></i>
+                                Retirer la mission
+                            </button>
+
+                        </form>
+
+                    {% elseif status == 'a_corriger' %}
+
+                        <p class="sidebar-description">
+                            Une demande de correction a déjà été envoyée.
+                            L'entreprise doit modifier sa mission
+                            et la soumettre à nouveau.
+                        </p>
+
+                        <div class="action-notice">
+
+                            <i class="bi bi-hourglass-split"></i>
+
+                            <span>
+                                Aucune nouvelle décision n'est possible
+                                tant que la mission n'est pas soumise
+                                à validation.
+                            </span>
+
+                        </div>
+
+                    {% elseif status == 'brouillon' %}
+
+                        <p class="sidebar-description">
+                            Cette mission est encore au stade de brouillon.
+                            Elle appartient à l'entreprise qui la prépare.
+                        </p>
+
+                        <div class="action-notice">
+
+                            <i class="bi bi-lock"></i>
+
+                            <span>
+                                Une mission doit être soumise par l'entreprise
+                                avant de pouvoir être examinée
+                                par l'administration.
+                            </span>
+
+                        </div>
+
+                    {% else %}
+
+                        <p class="sidebar-description">
+                            Aucune action de modération n'est disponible
+                            pour le statut actuel de cette mission.
+                        </p>
+
+                    {% endif %}
+
+                </section>
+
+                <section class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-building"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Entreprise déposante
+                    </h3>
+
+                    <h3 class="company-name">
+                        {{ mission.compteEntreprise.raisonSociale }}
+                    </h3>
+
+                    <div class="company-meta">
+
+                        <div class="company-meta-item">
+                            <i class="bi bi-person"></i>
+                            <span>
+                                {{ mission.compteEntreprise.nomContact }}
+                            </span>
+                        </div>
+
+                        <div class="company-meta-item">
+                            <i class="bi bi-envelope"></i>
+                            <span>
+                                {{ mission.compteEntreprise.emailContact }}
+                            </span>
+                        </div>
+
+                        {% if mission.compteEntreprise.telephone %}
+
+                            <div class="company-meta-item">
+                                <i class="bi bi-telephone"></i>
+                                <span>
+                                    {{ mission.compteEntreprise.telephone }}
+                                </span>
+                            </div>
+
+                        {% endif %}
+
+                        {% if mission.compteEntreprise.identifiantLegal %}
+
+                            <div class="company-meta-item">
+                                <i class="bi bi-card-checklist"></i>
+                                <span>
+                                    {{ mission.compteEntreprise.identifiantLegal }}
+                                </span>
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    {% if mission.compteEntreprise.isApproved() %}
+
+                        <span class="company-status company-approved">
+                            <i class="bi bi-check-circle"></i>
+                            Compte approuvé
+                        </span>
+
+                    {% else %}
+
+                        <span class="company-status company-unapproved">
+                            <i class="bi bi-exclamation-circle"></i>
+                            Compte non approuvé
+                        </span>
+
+                    {% endif %}
+
+                    <div class="action-divider"></div>
+
+                    <a
+                        href="{{ path('admin_company_show', {
+                            id: mission.compteEntreprise.id
+                        }) }}"
+                        class="secondary-link"
+                    >
+                        <i class="bi bi-building-check"></i>
+                        Consulter le compte entreprise
+                    </a>
+
+                </section>
+
+                <section class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-info-circle"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Informations importantes
+                    </h3>
+
+                    <p class="sidebar-description">
+                        La validation d'un compte entreprise
+                        ne signifie pas que toutes ses missions
+                        sont automatiquement approuvées.
+                    </p>
+
+                    <div class="action-notice">
+
+                        <i class="bi bi-shield-lock"></i>
+
+                        <span>
+                            Chaque mission doit faire l'objet
+                            d'une décision administrative
+                            avant sa publication.
+                        </span>
+
+                    </div>
+
+                </section>
+
+                <section class="sidebar-card">
+
+                    <div class="sidebar-icon">
+                        <i class="bi bi-arrow-left-circle"></i>
+                    </div>
+
+                    <h3 class="sidebar-title">
+                        Navigation
+                    </h3>
+
+                    <p class="sidebar-description">
+                        Retournez à la liste pour examiner
+                        les autres missions.
+                    </p>
+
+                    <a
+                        href="{{ path('admin_mission_index') }}"
+                        class="secondary-link"
+                    >
+                        <i class="bi bi-list-task"></i>
+                        Toutes les missions
+                    </a>
+
+                </section>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}

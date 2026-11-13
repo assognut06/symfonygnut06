@@ -1,0 +1,1187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modération des missions | GNUT 06{% endblock %}
+
+{% block body %}
+
+{% set totalMissions = missions|length %}
+
+{% set modalityLabels = {
+    'distance': 'À distance',
+    'sur_place': 'Sur place',
+    'hybride': 'Hybride'
+} %}
+
+<style>
+    .admin-mission-page {
+        min-height: 100vh;
+        padding: 55px 20px 100px;
+        background:
+            radial-gradient(
+                ellipse at 85% 0%,
+                rgba(151, 89, 255, 0.13),
+                transparent 45%
+            ),
+            #060611;
+        color: #f8f9ff;
+    }
+
+    .admin-mission-page * {
+        box-sizing: border-box;
+    }
+
+    .admin-mission-page .dashboard-container {
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+
+    .admin-mission-page .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .admin-mission-page .page-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 8px 15px;
+        margin-bottom: 20px;
+        background: rgba(168, 112, 255, 0.12);
+        border: 1px solid rgba(168, 112, 255, 0.2);
+        border-radius: 30px;
+        color: #d1aaff;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .admin-mission-page .page-title {
+        margin: 0 0 12px;
+        color: #ffffff;
+        font-size: clamp(30px, 4vw, 45px);
+        font-weight: 800;
+        letter-spacing: -1.2px;
+    }
+
+    .admin-mission-page .page-description {
+        max-width: 700px;
+        margin: 0;
+        color: #a9aac2;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .admin-mission-page .header-info {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 23px;
+        background: #141424;
+        border: 1px solid #37304e;
+        border-radius: 15px;
+    }
+
+    .admin-mission-page .header-info-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        background: rgba(168, 112, 255, 0.14);
+        color: #c59aff;
+        font-size: 20px;
+    }
+
+    .admin-mission-page .header-info-label {
+        color: #9e9fb6;
+        font-size: 12px;
+    }
+
+    .admin-mission-page .header-info-value {
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .admin-mission-page .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 40px;
+    }
+
+    .admin-mission-page .stat-card {
+        position: relative;
+        overflow: hidden;
+        padding: 26px;
+        background: #111120;
+        border: 1px solid #29293e;
+        border-radius: 18px;
+        transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .admin-mission-page .stat-card:hover {
+        transform: translateY(-3px);
+        border-color: #71569b;
+    }
+
+    .admin-mission-page .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--stat-color);
+    }
+
+    .admin-mission-page .stat-total {
+        --stat-color: #ad82ff;
+    }
+
+    .admin-mission-page .stat-pending {
+        --stat-color: #f4bd65;
+    }
+
+    .admin-mission-page .stat-published {
+        --stat-color: #52d8a6;
+    }
+
+    .admin-mission-page .stat-correction {
+        --stat-color: #fb986b;
+    }
+
+    .admin-mission-page .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .admin-mission-page .stat-label {
+        color: #a6a7bd;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .admin-mission-page .stat-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: rgba(168, 112, 255, 0.10);
+        color: var(--stat-color);
+        font-size: 20px;
+    }
+
+    .admin-mission-page .stat-value {
+        margin-bottom: 12px;
+        color: #ffffff;
+        font-size: 38px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .admin-mission-page .stat-description {
+        margin: 0;
+        color: #8c8da6;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .admin-mission-page .content-card {
+        overflow: hidden;
+        background: #111120;
+        border: 1px solid #29293f;
+        border-radius: 20px;
+    }
+
+    .admin-mission-page .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 18px;
+        padding: 28px 30px;
+        border-bottom: 1px solid #29293f;
+    }
+
+    .admin-mission-page .content-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0 0 8px;
+        color: #ffffff;
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+    .admin-mission-page .content-title i {
+        color: #bb8cff;
+        font-size: 23px;
+    }
+
+    .admin-mission-page .content-description {
+        margin: 0;
+        color: #9899b0;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .admin-mission-page .result-count {
+        padding: 8px 15px;
+        border: 1px solid #403657;
+        border-radius: 25px;
+        background: rgba(168, 112, 255, 0.1);
+        color: #dcc3ff;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .admin-mission-page .toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 25px 30px;
+        border-bottom: 1px solid #29293f;
+    }
+
+    .admin-mission-page .search-wrapper {
+        position: relative;
+        flex: 1;
+        max-width: 450px;
+        min-width: 220px;
+    }
+
+    .admin-mission-page .search-wrapper i {
+        position: absolute;
+        top: 50%;
+        left: 17px;
+        transform: translateY(-50%);
+        color: #a2a2b8;
+        pointer-events: none;
+    }
+
+    .admin-mission-page .search-input {
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 15px 12px 45px;
+        background: #191929;
+        border: 1px solid #3a3a51;
+        border-radius: 11px;
+        color: #ffffff;
+        font-size: 13px;
+    }
+
+    .admin-mission-page .search-input::placeholder {
+        color: #85869e;
+    }
+
+    .admin-mission-page .search-input:focus {
+        outline: none;
+        border-color: #a87aff;
+        box-shadow: 0 0 0 3px rgba(168, 112, 255, 0.13);
+    }
+
+    .admin-mission-page .filter-group {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 9px;
+    }
+
+    .admin-mission-page .filter-button {
+        min-height: 40px;
+        padding: 9px 14px;
+        background: #191929;
+        border: 1px solid #38384f;
+        border-radius: 10px;
+        color: #b5b6ca;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
+    }
+
+    .admin-mission-page .filter-button:hover {
+        background: #27263d;
+        color: #ffffff;
+    }
+
+    .admin-mission-page .filter-button.active {
+        background: rgba(168, 112, 255, 0.16);
+        border-color: #9864dd;
+        color: #e4ceff;
+    }
+
+    .admin-mission-page .filter-button:focus-visible,
+    .admin-mission-page .mission-action:focus-visible {
+        outline: 3px solid #ffffff;
+        outline-offset: 3px;
+    }
+
+    .admin-mission-page .missions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 17px;
+        padding: 27px 30px;
+    }
+
+    .admin-mission-page .mission-card {
+        padding: 25px;
+        background: #171725;
+        border: 1px solid #303047;
+        border-radius: 16px;
+        transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .admin-mission-page .mission-card:hover {
+        transform: translateY(-2px);
+        border-color: #71569b;
+    }
+
+    .admin-mission-page .mission-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-bottom: 20px;
+    }
+
+    .admin-mission-page .mission-title {
+        margin-bottom: 9px;
+        color: #ffffff;
+        font-size: 19px;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-mission-page .mission-company {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #bd9af1;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .admin-mission-page .mission-company i {
+        font-size: 15px;
+    }
+
+    .admin-mission-page .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 14px;
+        border-radius: 25px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .admin-mission-page .status-brouillon {
+        background: rgba(148, 163, 184, 0.15);
+        color: #cbd5e1;
+    }
+
+    .admin-mission-page .status-en_attente {
+        background: rgba(245, 158, 11, 0.14);
+        color: #fcd34d;
+    }
+
+    .admin-mission-page .status-a_corriger {
+        background: rgba(249, 115, 22, 0.14);
+        color: #fdba74;
+    }
+
+    .admin-mission-page .status-publiee {
+        background: rgba(16, 185, 129, 0.14);
+        color: #6ee7b7;
+    }
+
+    .admin-mission-page .status-cloturee {
+        background: rgba(99, 102, 241, 0.14);
+        color: #a5b4fc;
+    }
+
+    .admin-mission-page .status-expiree {
+        background: rgba(239, 68, 68, 0.12);
+        color: #fca5a5;
+    }
+
+    .admin-mission-page .status-retiree {
+        background: rgba(239, 68, 68, 0.14);
+        color: #fca5a5;
+    }
+
+    .admin-mission-page .status-badge i {
+        font-size: 8px;
+    }
+
+    .admin-mission-page .mission-description {
+        margin-bottom: 20px;
+        color: #a8a9bf;
+        font-size: 13px;
+        line-height: 1.8;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-mission-page .mission-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px 22px;
+        margin-bottom: 22px;
+        color: #a1a2b9;
+        font-size: 12px;
+    }
+
+    .admin-mission-page .meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .admin-mission-page .meta-item i {
+        color: #b28bea;
+        font-size: 15px;
+    }
+
+    .admin-mission-page .mission-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding-top: 20px;
+        border-top: 1px solid #303046;
+    }
+
+    .admin-mission-page .mission-date {
+        color: #85869f;
+        font-size: 12px;
+    }
+
+    .admin-mission-page .mission-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 11px 18px;
+        border: 1px solid #7958aa;
+        border-radius: 10px;
+        background: rgba(168, 112, 255, 0.11);
+        color: #e2c6ff;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .admin-mission-page .mission-action:hover {
+        background: #7550a5;
+        color: #ffffff;
+    }
+
+    .admin-mission-page .mission-action-priority {
+        background: linear-gradient(135deg, #a658e8, #6b66ef);
+        border-color: transparent;
+        color: #ffffff;
+    }
+
+    .admin-mission-page .mission-action-priority:hover {
+        background: linear-gradient(135deg, #b76cfa, #7772ff);
+    }
+
+    .admin-mission-page .empty-state {
+        padding: 75px 25px;
+        text-align: center;
+    }
+
+    .admin-mission-page .empty-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 25px;
+        border-radius: 22px;
+        background: rgba(168, 112, 255, 0.12);
+        color: #c49aff;
+        font-size: 32px;
+    }
+
+    .admin-mission-page .empty-title {
+        margin-bottom: 10px;
+        color: #ffffff;
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+    .admin-mission-page .empty-description {
+        max-width: 480px;
+        margin: 0 auto;
+        color: #a1a2b9;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .admin-mission-page .flash-message {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        font-size: 14px;
+    }
+
+    .admin-mission-page .flash-success {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #a7f3d0;
+    }
+
+    .admin-mission-page .flash-warning {
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #fcd34d;
+    }
+
+    .admin-mission-page [hidden] {
+        display: none !important;
+    }
+
+    @media (max-width: 1100px) {
+        .admin-mission-page .stats-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .admin-mission-page .toolbar {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .admin-mission-page .search-wrapper {
+            max-width: none;
+        }
+    }
+
+    @media (max-width: 550px) {
+        .admin-mission-page {
+            padding: 35px 15px 65px;
+        }
+
+        .admin-mission-page .stats-grid {
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .admin-mission-page .stat-card {
+            padding: 20px 16px;
+        }
+
+        .admin-mission-page .stat-value {
+            font-size: 30px;
+        }
+
+        .admin-mission-page .content-header,
+        .admin-mission-page .toolbar {
+            padding: 22px 18px;
+        }
+
+        .admin-mission-page .missions-list {
+            padding: 18px;
+        }
+
+        .admin-mission-page .mission-card {
+            padding: 20px 17px;
+        }
+
+        .admin-mission-page .mission-title {
+            font-size: 17px;
+        }
+
+        .admin-mission-page .mission-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .admin-mission-page .mission-action {
+            width: 100%;
+        }
+
+        .admin-mission-page .filter-button {
+            padding: 8px 11px;
+            font-size: 11px;
+        }
+    }
+</style>
+
+<main class="admin-mission-page">
+
+    <div class="dashboard-container">
+
+        <header class="page-header">
+
+            <div>
+
+                <span class="page-badge">
+                    <i class="bi bi-shield-lock"></i>
+                    Administration GNUT06
+                </span>
+
+                <h1 class="page-title">
+                    Modération des missions
+                </h1>
+
+                <p class="page-description">
+                    Consultez les missions déposées par les entreprises,
+                    examinez les demandes en attente et suivez
+                    leur publication sur la plateforme GNUT06.
+                </p>
+
+            </div>
+
+            <div class="header-info">
+
+                <div class="header-info-icon">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+
+                <div>
+
+                    <div class="header-info-label">
+                        Missions enregistrées
+                    </div>
+
+                    <div class="header-info-value">
+                        {{ totalMissions }} au total
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        {% for message in app.flashes('success') %}
+            <div class="flash-message flash-success" role="status">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('warning') %}
+            <div class="flash-message flash-warning" role="alert">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+
+        <section class="stats-grid" aria-label="Statistiques des missions">
+
+            <article class="stat-card stat-total">
+
+                <div class="stat-header">
+
+                    <span class="stat-label">
+                        Total des missions
+                    </span>
+
+                    <span class="stat-icon">
+                        <i class="bi bi-briefcase"></i>
+                    </span>
+
+                </div>
+
+                <div class="stat-value">
+                    {{ totalMissions }}
+                </div>
+
+                <p class="stat-description">
+                    Toutes les missions enregistrées
+                </p>
+
+            </article>
+
+            <article class="stat-card stat-pending">
+
+                <div class="stat-header">
+
+                    <span class="stat-label">
+                        En attente
+                    </span>
+
+                    <span class="stat-icon">
+                        <i class="bi bi-hourglass-split"></i>
+                    </span>
+
+                </div>
+
+                <div class="stat-value">
+                    {{ pendingCount }}
+                </div>
+
+                <p class="stat-description">
+                    Missions nécessitant une décision
+                </p>
+
+            </article>
+
+            <article class="stat-card stat-published">
+
+                <div class="stat-header">
+
+                    <span class="stat-label">
+                        Publiées
+                    </span>
+
+                    <span class="stat-icon">
+                        <i class="bi bi-check-circle"></i>
+                    </span>
+
+                </div>
+
+                <div class="stat-value">
+                    {{ publishedCount }}
+                </div>
+
+                <p class="stat-description">
+                    Missions actuellement publiées
+                </p>
+
+            </article>
+
+            <article class="stat-card stat-correction">
+
+                <div class="stat-header">
+
+                    <span class="stat-label">
+                        À corriger
+                    </span>
+
+                    <span class="stat-icon">
+                        <i class="bi bi-pencil-square"></i>
+                    </span>
+
+                </div>
+
+                <div class="stat-value">
+                    {{ correctionCount }}
+                </div>
+
+                <p class="stat-description">
+                    Missions retournées aux entreprises
+                </p>
+
+            </article>
+
+        </section>
+
+        <section class="content-card" aria-labelledby="missions-list-title">
+
+            <div class="content-header">
+
+                <div>
+
+                    <h2 class="content-title" id="missions-list-title">
+                        <i class="bi bi-list-task"></i>
+                        Liste des missions
+                    </h2>
+
+                    <p class="content-description">
+                        Retrouvez les missions, consultez leurs informations
+                        et accédez aux dossiers de modération.
+                    </p>
+
+                </div>
+
+                <span class="result-count" data-results-count>
+                    {{ totalMissions }} résultat{{ totalMissions > 1 ? 's' : '' }}
+                </span>
+
+            </div>
+
+            <div class="toolbar">
+
+                <div class="search-wrapper">
+
+                    <label for="mission-search" class="visually-hidden">
+                        Rechercher une mission
+                    </label>
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                        type="search"
+                        id="mission-search"
+                        class="search-input"
+                        placeholder="Mission, entreprise, domaine..."
+                        autocomplete="off"
+                        data-mission-search
+                    >
+
+                </div>
+
+                <div class="filter-group" aria-label="Filtrer les missions">
+
+                    <button
+                        type="button"
+                        class="filter-button active"
+                        data-mission-filter="all"
+                        aria-pressed="true"
+                    >
+                        Toutes
+                    </button>
+
+                    <button
+                        type="button"
+                        class="filter-button"
+                        data-mission-filter="en_attente"
+                        aria-pressed="false"
+                    >
+                        En attente
+                    </button>
+
+                    <button
+                        type="button"
+                        class="filter-button"
+                        data-mission-filter="publiee"
+                        aria-pressed="false"
+                    >
+                        Publiées
+                    </button>
+
+                    <button
+                        type="button"
+                        class="filter-button"
+                        data-mission-filter="a_corriger"
+                        aria-pressed="false"
+                    >
+                        À corriger
+                    </button>
+
+                    <button
+                        type="button"
+                        class="filter-button"
+                        data-mission-filter="other"
+                        aria-pressed="false"
+                    >
+                        Autres statuts
+                    </button>
+
+                </div>
+
+            </div>
+
+            {% if missions is empty %}
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+
+                    <h3 class="empty-title">
+                        Aucune mission enregistrée
+                    </h3>
+
+                    <p class="empty-description">
+                        Les missions déposées par les entreprises
+                        apparaîtront ici dès leur création.
+                    </p>
+
+                </div>
+
+            {% else %}
+
+                <div class="missions-list" data-missions-list>
+
+                    {% for mission in missions %}
+
+                        {% set statusLabel = statusLabels[mission.statut] ?? mission.statut %}
+
+                        <article
+                            class="mission-card"
+                            data-mission-card
+                            data-status="{{ mission.statut }}"
+                        >
+
+                            <div class="mission-header">
+
+                                <div>
+
+                                    <h3 class="mission-title">
+                                        {{ mission.titre ?: 'Mission sans titre' }}
+                                    </h3>
+
+                                    <div class="mission-company">
+                                        <i class="bi bi-building"></i>
+                                        {{ mission.compteEntreprise.raisonSociale }}
+                                    </div>
+
+                                </div>
+
+                                <span class="status-badge status-{{ mission.statut }}">
+                                    <i class="bi bi-circle-fill"></i>
+                                    {{ statusLabel }}
+                                </span>
+
+                            </div>
+
+                            {% if mission.description %}
+
+                                <p class="mission-description">
+                                    {{ mission.description|striptags|slice(0, 230) }}
+
+                                    {% if mission.description|length > 230 %}
+                                        ...
+                                    {% endif %}
+                                </p>
+
+                            {% endif %}
+
+                            <div class="mission-meta">
+
+                                {% if mission.domaine %}
+
+                                    <span class="meta-item">
+                                        <i class="bi bi-grid"></i>
+                                        {{ mission.domaine }}
+                                    </span>
+
+                                {% endif %}
+
+                                {% if mission.zone %}
+
+                                    <span class="meta-item">
+                                        <i class="bi bi-geo-alt"></i>
+                                        {{ mission.zone }}
+                                    </span>
+
+                                {% endif %}
+
+                                {% if mission.modalite %}
+
+                                    <span class="meta-item">
+                                        <i class="bi bi-laptop"></i>
+                                        {{ modalityLabels[mission.modalite] ?? mission.modalite }}
+                                    </span>
+
+                                {% endif %}
+
+                                {% if mission.dateLimiteReponse %}
+
+                                    <span class="meta-item">
+                                        <i class="bi bi-calendar-event"></i>
+                                        Date limite :
+                                        {{ mission.dateLimiteReponse|date('d/m/Y') }}
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                            <div class="mission-footer">
+
+                                <span class="mission-date">
+
+                                    <i class="bi bi-clock-history me-1"></i>
+
+                                    {% if mission.submittedAt %}
+
+                                        Soumise le
+                                        {{ mission.submittedAt|date('d/m/Y à H:i') }}
+
+                                    {% else %}
+
+                                        Créée le
+                                        {{ mission.createdAt|date('d/m/Y à H:i') }}
+
+                                    {% endif %}
+
+                                </span>
+
+                                <a
+                                    href="{{ path('admin_mission_show', {
+                                        id: mission.id
+                                    }) }}"
+                                    class="mission-action {{ mission.statut == 'en_attente' ? 'mission-action-priority' : '' }}"
+                                >
+
+                                    {% if mission.statut == 'en_attente' %}
+
+                                        <i class="bi bi-clipboard-check"></i>
+                                        Examiner la mission
+
+                                    {% else %}
+
+                                        <i class="bi bi-eye"></i>
+                                        Consulter le dossier
+
+                                    {% endif %}
+
+                                    <i class="bi bi-arrow-right"></i>
+
+                                </a>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+                <div
+                    class="empty-state"
+                    data-no-results
+                    hidden
+                >
+
+                    <div class="empty-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+
+                    <h3 class="empty-title">
+                        Aucun résultat
+                    </h3>
+
+                    <p class="empty-description">
+                        Aucune mission ne correspond à votre recherche.
+                        Essayez un autre mot-clé ou modifiez le filtre.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </div>
+
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const page = document.querySelector('.admin-mission-page');
+
+    if (!page) {
+        return;
+    }
+
+    const searchInput = page.querySelector('[data-mission-search]');
+
+    const filterButtons = Array.from(
+        page.querySelectorAll('[data-mission-filter]')
+    );
+
+    const missionCards = Array.from(
+        page.querySelectorAll('[data-mission-card]')
+    );
+
+    const resultsCount = page.querySelector('[data-results-count]');
+    const noResults = page.querySelector('[data-no-results]');
+
+    let activeFilter = 'all';
+
+    function normalizeText(value) {
+        return value
+            .toLocaleLowerCase('fr')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function updateMissions() {
+        const query = searchInput
+            ? normalizeText(searchInput.value.trim())
+            : '';
+
+        let visibleCount = 0;
+
+        missionCards.forEach(function (card) {
+            const status = card.dataset.status;
+
+            let matchesStatus = false;
+
+            if (activeFilter === 'all') {
+                matchesStatus = true;
+            } else if (activeFilter === 'other') {
+                matchesStatus = ![
+                    'en_attente',
+                    'publiee',
+                    'a_corriger'
+                ].includes(status);
+            } else {
+                matchesStatus = status === activeFilter;
+            }
+
+            const matchesSearch = normalizeText(
+                card.textContent
+            ).includes(query);
+
+            const visible = matchesStatus && matchesSearch;
+
+            card.hidden = !visible;
+
+            if (visible) {
+                visibleCount++;
+            }
+        });
+
+        if (resultsCount) {
+            resultsCount.textContent =
+                visibleCount +
+                ' résultat' +
+                (visibleCount > 1 ? 's' : '');
+        }
+
+        if (noResults) {
+            noResults.hidden = visibleCount > 0;
+        }
+    }
+
+    filterButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            activeFilter = button.dataset.missionFilter;
+
+            filterButtons.forEach(function (item) {
+                const isActive = item === button;
+
+                item.classList.toggle('active', isActive);
+
+                item.setAttribute(
+                    'aria-pressed',
+                    isActive ? 'true' : 'false'
+                );
+            });
+
+            updateMissions();
+        });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener('input', updateMissions);
+    }
+
+    updateMissions();
+});
+</script>
+
+{% endblock %}
