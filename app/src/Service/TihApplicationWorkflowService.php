@@ -17,6 +17,36 @@ class TihApplicationWorkflowService
         private LoggerInterface $logger,
     ) {}
 
+    public function remove(int $tihId, User $administrator): ?bool
+    {
+        return $this->entityManager->wrapInTransaction(function () use ($tihId, $administrator): ?bool {
+            $tih = $this->entityManager->find(Tih::class, $tihId, LockMode::PESSIMISTIC_WRITE);
+            if (!$tih instanceof Tih) {
+                return null;
+            }
+            if ($tih->isRemoved()) {
+                return false;
+            }
+
+            $event = new TihApplicationEvent(
+                $tih,
+                TihApplicationEvent::STATUS_REMOVED,
+                $administrator,
+                source: TihApplicationEvent::SOURCE_ADMIN_REMOVAL,
+            );
+            $tih->addApplicationEvent($event);
+            $tih->setApplicationStatus(Tih::STATUS_REMOVED);
+            $user = $tih->getUser();
+            if (null !== $user) {
+                $user->setRoles(array_values(array_diff($user->getRoles(), ['ROLE_TIH'])));
+            }
+            $this->entityManager->persist($event);
+            $this->entityManager->flush();
+
+            return true;
+        });
+    }
+
     /**
      * @return array{event: TihApplicationEvent, created: bool}|false|null
      */
@@ -29,7 +59,7 @@ class TihApplicationWorkflowService
                 return null;
             }
 
-            if (Tih::STATUS_APPROVED === $tih->getApplicationStatus()) {
+            if ($tih->isRemoved() || Tih::STATUS_APPROVED === $tih->getApplicationStatus()) {
                 return false;
             }
 
@@ -75,7 +105,7 @@ class TihApplicationWorkflowService
                 return null;
             }
 
-            if (Tih::STATUS_APPROVED === $tih->getApplicationStatus()) {
+            if ($tih->isRemoved() || Tih::STATUS_APPROVED === $tih->getApplicationStatus()) {
                 return false;
             }
 
@@ -150,15 +180,18 @@ class TihApplicationWorkflowService
         return $event;
     }
 
-    public function submitForReview(Tih $tih, User $candidate, bool $initialSubmission): TihApplicationEvent
+    public function submitForReview(Tih $tih, User $candidate, bool $initialSubmission, bool $resubmission = false): TihApplicationEvent
     {
+        if ($tih->isRemoved() && !$resubmission) {
+            throw new \LogicException('A removed profile requires an explicit new application.');
+        }
+        $source = $tih->isRemoved() ? TihApplicationEvent::SOURCE_RESUBMISSION
+            : ($initialSubmission ? TihApplicationEvent::SOURCE_INITIAL_SUBMISSION : TihApplicationEvent::SOURCE_PROFILE_UPDATE);
         $event = new TihApplicationEvent(
             $tih,
             TihApplicationEvent::STATUS_PENDING,
             $candidate,
-            source: $initialSubmission
-                ? TihApplicationEvent::SOURCE_INITIAL_SUBMISSION
-                : TihApplicationEvent::SOURCE_PROFILE_UPDATE,
+            source: $source,
         );
 
         $tih->addApplicationEvent($event);

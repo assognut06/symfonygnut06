@@ -125,7 +125,7 @@ class AdminTihController extends AbstractController
         }
 
         if (!$approved) {
-            $this->addFlash('warning', 'Cette candidature était déjà validée.');
+            $this->addFlash('warning', 'Cette candidature est déjà validée ou supprimée.');
 
             return $this->redirectToRoute('app_admin_tih');
         }
@@ -232,7 +232,7 @@ class AdminTihController extends AbstractController
         if (false === $event) {
             $this->addFlash('warning', $reviewRequest
                 ? 'Ce profil n’est plus validé. Aucun nouvel e-mail n’a été envoyé.'
-                : 'Ce profil est validé. Utilisez la remise en attente de validation.');
+                : 'Ce profil est validé ou supprimé. Le refus n’est pas disponible.');
 
             return $this->redirectToRoute('app_admin_tih');
         }
@@ -257,7 +257,7 @@ class AdminTihController extends AbstractController
     }
 
     #[Route('/admin/tih/delete/{id}', name: 'app_admin_tih_delete', methods: ['POST', 'DELETE'])]
-    public function delete(Request $request, EntityManagerInterface $em, int $id): Response
+    public function delete(Request $request, TihApplicationWorkflowService $workflow, int $id): Response
     {
         $method = $request->request->get('_method', 'POST');
 
@@ -272,15 +272,15 @@ class AdminTihController extends AbstractController
             return $this->redirectToRoute('app_admin_tih');
         }
 
-        $tih = $em->getRepository(Tih::class)->find($id);
-        if (!$tih) {
-            throw $this->createNotFoundException('Le TIH n\'a pas été trouvé.');
+        $administrator = $this->getUser();
+        if (!$administrator instanceof User) {
+            throw $this->createAccessDeniedException();
         }
-
-        $em->remove($tih);
-        $em->flush();
-
-        $this->addFlash('success', 'TIH supprimé avec succès.');
+        $removed = $workflow->remove($id, $administrator);
+        if (null === $removed) {
+            throw $this->createNotFoundException('Le TIH n’a pas été trouvé.');
+        }
+        $this->addFlash('success', $removed ? 'Profil TIH supprimé. Le compte utilisateur est conservé.' : 'Ce profil TIH est déjà supprimé.');
         return $this->redirectToRoute('app_admin_tih');
     }
 

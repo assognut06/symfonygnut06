@@ -15,14 +15,14 @@ class Tih
     public const STATUS_PENDING = 'pending';
     public const STATUS_APPROVED = 'approved';
     public const STATUS_REFUSED = 'refused';
+    public const STATUS_REMOVED = 'removed';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'tih', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\OneToOne(inversedBy: 'tih', cascade: ['persist'])]
     private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -213,10 +213,12 @@ class Tih
         return $this;
     }
 
+    public function isRemoved(): bool { return self::STATUS_REMOVED === $this->applicationStatus; }
+
     public function getApplicationStatus(): string { return $this->applicationStatus; }
     public function setApplicationStatus(string $applicationStatus): self
     {
-        if (!in_array($applicationStatus, [self::STATUS_PENDING, self::STATUS_APPROVED, self::STATUS_REFUSED], true)) {
+        if (!in_array($applicationStatus, [self::STATUS_PENDING, self::STATUS_APPROVED, self::STATUS_REFUSED, self::STATUS_REMOVED], true)) {
             throw new \InvalidArgumentException(sprintf('Unknown TIH application status "%s".', $applicationStatus));
         }
 

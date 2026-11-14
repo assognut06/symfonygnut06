@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -91,7 +91,8 @@ class TihController extends AbstractController
 
         $tih = $user->getTih();
         $initialSubmission = null === $tih;
-        $showForm = $request->query->get('edit') === '1' || !$tih;
+        $resubmission = $tih?->isRemoved() && $request->query->get('reapply') === '1';
+        $showForm = $resubmission || !$tih || (!$tih->isRemoved() && $request->query->get('edit') === '1');
 
         if (!$tih) {
             $tih = new Tih();
@@ -149,7 +150,7 @@ class TihController extends AbstractController
                 }
 
                 $tih->setUpdatedAt(new \DateTime());
-                $workflow->submitForReview($tih, $user, $initialSubmission);
+                $workflow->submitForReview($tih, $user, $initialSubmission, $resubmission);
 
                 $em->persist($tih);
                 $em->flush();

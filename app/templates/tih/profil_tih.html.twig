@@ -2,7 +2,7 @@
 {% block title %}Espace TIH{% endblock %}
 
 {% block body %}
-<h2 class="text-center my-4">Espace TIH</h2>
+<h1 class="text-center my-4">Espace TIH</h1>
 
 {% for message in app.flashes('success') %}
     <div class="alert alert-success shadow-sm" role="status">{{ message }}</div>
@@ -10,6 +10,10 @@
 {% for message in app.flashes('danger') %}
     <div class="alert alert-danger shadow-sm" role="alert">{{ message }}</div>
 {% endfor %}
+
+{% if tih.removed %}
+    <div class="alert alert-secondary" role="status">Votre profil TIH est supprimé. Votre compte est conservé. Vous pouvez soumettre une nouvelle demande, qui sera examinée par un administrateur.</div>
+{% endif %}
 
 {% if form is defined and form is not null %}
     <p class="text-center text-white">Complétez ou modifiez votre profil TIH</p>
@@ -136,7 +140,7 @@
             </div>
         </div>
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success px-4">Enregistrer</button>
+            <button type="submit" class="btn btn-success px-4">{{ tih.removed ? 'Soumettre une nouvelle demande' : 'Enregistrer' }}</button>
         </div>
         {{ form_end(form) }}
     </div>
@@ -192,9 +196,64 @@
             </div>
         </div>
         <div class="text-center mt-4">
-            <a href="{{ path('espace_tih', {'edit': '1'}) }}" class="btn btn-secondary">Modifier mes infos</a>
+            {% if tih.removed %}
+                <a href="{{ path('espace_tih', {'reapply': '1'}) }}" class="btn btn-primary">Préparer une nouvelle demande</a>
+            {% else %}
+                <a href="{{ path('espace_tih', {'edit': '1'}) }}" class="btn btn-secondary">Modifier mes infos</a>
+            {% endif %}
         </div>
     </div>
+{% endif %}
+
+{% if tih.id %}
+    <section id="tih-history" class="container shadow p-4 rounded bg-white mt-4" aria-labelledby="tih-history-title">
+        <h2 class="h4 mb-3" id="tih-history-title">Historique de la candidature</h2>
+        {% if tih.applicationEvents|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">État</th>
+                            <th scope="col">Acteur</th>
+                            <th scope="col">Origine</th>
+                            <th scope="col">Détail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in tih.applicationEvents %}
+                            <tr>
+                                <td><time datetime="{{ event.occurredAt|date('c') }}">{{ event.occurredAt|date('d/m/Y H:i') }}</time></td>
+                                <td>
+                                    {% if event.status == constant('App\\Entity\\TihApplicationEvent::STATUS_APPROVED') %}
+                                        <span class="badge bg-success">Validé</span>
+                                    {% elseif event.status == constant('App\\Entity\\TihApplicationEvent::STATUS_REFUSED') %}
+                                        <span class="badge bg-danger">Refusé</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">En attente</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if event.actor and event.actor.id == tih.user.id %}Vous
+                                    {% elseif event.actor %}Équipe GNUT 06
+                                    {% else %}Compte historique non identifié{% endif %}
+                                </td>
+                                <td>
+                                    {% if event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_INITIAL_SUBMISSION') %}Soumission initiale
+                                    {% elseif event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_PROFILE_UPDATE') %}Mise à jour du profil
+                                    {% elseif event.source == constant('App\\Entity\\TihApplicationEvent::SOURCE_ADMIN_DECISION') %}Décision administrative
+                                    {% else %}Donnée historique{% endif %}
+                                </td>
+                                <td>{% if event.reason %}<span style="white-space: pre-wrap;">{{ event.reason }}</span>{% else %}—{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="mb-0">Aucun historique disponible pour le moment.</p>
+        {% endif %}
+    </section>
 {% endif %}
 
 <div class="text-center my-4">
