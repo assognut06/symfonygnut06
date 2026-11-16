@@ -1,5 +1,7 @@
 twig:
     file_name_pattern: '*.twig'
+    globals:
+        handi_3d_url: '%app.handi_3d_url%'
 
 when@test:
     twig:
