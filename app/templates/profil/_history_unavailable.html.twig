@@ -1,0 +1,6 @@
+<div class="account-empty account-history-error" role="status">
+    <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+    <p>{{ section == 'orders' ? 'Vos commandes sont momentanément indisponibles.' : 'Vos paiements sont momentanément indisponibles.' }}</p>
+    <p>Nous n'avons pas pu charger votre historique. Veuillez réessayer.</p>
+    <a href="{{ path('app_profil_page', {donnees: section, page: page}) }}" class="account-btn account-btn--outline">Réessayer</a>
+</div>

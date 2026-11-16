@@ -47,7 +47,7 @@ class ProfilePaymentsAuthorizationTest extends WebTestCase
      * @dataProvider malformedPaymentDataProvider
      * @param array<string, mixed> $response
      */
-    public function testMalformedPaymentDataDisplaysAnEmptyList(array $response): void
+    public function testMalformedPaymentDataDisplaysARetryMessage(array $response): void
     {
         $this->loginAs($this->createUser('member@example.test'));
 
@@ -60,7 +60,9 @@ class ProfilePaymentsAuthorizationTest extends WebTestCase
         $this->client->request('GET', '/profil/payments/1');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('#profile-content', 'Aucun paiement à afficher pour le moment.');
+        $this->assertSelectorTextContains('.account-history-error', 'Vos paiements sont momentanément indisponibles.');
+        $retryUrl = static::getContainer()->get('router')->generate('app_profil_page', ['donnees' => 'payments', 'page' => 1]);
+        $this->assertSelectorTextContains('.account-history-error a[href="'.$retryUrl.'"]', 'Réessayer');
         $this->assertSelectorCount(0, '#profile-content [role="listitem"]');
     }
 
