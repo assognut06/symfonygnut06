@@ -1,0 +1,22 @@
+name: Branch naming
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  branch-naming:
+    name: Branch naming
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Test naming policy
+        run: python3 -m unittest discover -s .github/scripts -p 'test_*.py'
+      - name: Check source branch and Jira reference
+        run: python3 .github/scripts/check_branch_policy.py "$GITHUB_EVENT_PATH"

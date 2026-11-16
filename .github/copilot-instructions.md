@@ -1,5 +1,7 @@
 # Project Guidelines
 
+Keep `AGENTS.md` and `.github/copilot-instructions.md` identical.
+
 ## Code Style
 - PHP 8.2 with `strict_types` in migrations; use attributes for routing and forms.
 - JavaScript: Webpack Encore for assets, Bootstrap/jQuery for UI, Stimulus for interactivity.
@@ -7,38 +9,26 @@
 
 ## Architecture
 - Symfony 7.1 MVC framework with CQRS elements: Controllers handle requests, Services contain business logic, Repositories manage data access.
-- Layers: Controllers → Services → Repositories/Entities; Messenger for async processing (e.g., notifications).
+- Layers: Controllers -> Services -> Repositories/Entities; Messenger for async processing, for example notifications.
 - CQRS: Commands/Queries in `src/Application/`, handled via QueryBus.
 - Avoid fat controllers; refactor business logic to services.
 
 ## Build and Test
-- Install: `composer install` (PHP deps), `npm install` (JS deps), `docker-compose up` (services).
-- Build assets: `npm run build` (production) or `npm run dev` (development).
-- Database: `php bin/console doctrine:migrations:migrate` (apply migrations), `php bin/console doctrine:fixtures:load` (seed data).
-- Test: `php bin/phpunit` (though currently no tests exist).
+- Install: `composer install` for PHP dependencies, `npm install` for JS dependencies, `docker-compose up` for services.
+- Build assets: `npm run build` for production or `npm run dev` for development.
+- Database: `php bin/console doctrine:migrations:migrate` to apply migrations, `php bin/console doctrine:fixtures:load` to seed data.
+- Test: `php bin/phpunit`.
 - Dev server: `app/run.sh` or `start-project.sh` for full setup.
 
 ## Conventions
-- Naming: PascalCase for classes (e.g., `HomeController`, `UserService`), camelCase for methods/properties.
-- Structure: Standard Symfony folders; templates organized by feature (e.g., `templates/admin/`).
-- Environment: Use `.env` for config; avoid hardcoded values—move to parameters.
-- Security: Never expose secrets; use environment variables for API keys, DB credentials.
+- Naming: PascalCase for classes, for example `HomeController` and `UserService`; camelCase for methods and properties.
+- Structure: Standard Symfony folders; templates organized by feature, for example `templates/admin/`.
+- Environment: Use `.env` for config; avoid hardcoded values and move them to parameters.
+- Security: Never expose secrets; use environment variables for API keys and database credentials.
 
-## Branch Naming and Deployment Flow
-- Branch names must follow `<type>/tg-<taiga-ticket-number>-<free-text>`.
-- Allowed branch types are `feature`, `fix`, and `hotfix`.
-- `feature/*` and `fix/*` branches follow the standard delivery flow: merge into `develop` first, then into `main`.
-- `hotfix/*` branches follow the emergency production flow: merge into `main` first, then backport or merge into `develop`.
-- Keep the free-text part short and descriptive so the branch remains easy to identify.
+## Project Skills
+Paths are relative to the repository root. Read the relevant skill before carrying out its workflow:
+- `.agents/skills/project-jira/SKILL.md`: starting work on a Jira ticket, creating or updating tickets, changing status, or handling PR links.
+- `.agents/skills/project-github/SKILL.md`: creating branches, preparing commits or pull requests, reviewing CI, or organizing delivery.
 
-## Branch Creation Requests
-- When a user asks an agent to create a branch and does not provide all required parts, ask for:
-  - the branch type, reminding them that possible values are `feature`, `fix`, and `hotfix`;
-  - the Taiga ticket number;
-  - the free-text description.
-- Once the information is available, create the branch name with this exact format: `<type>/tg-<taiga-ticket-number>-<free-text>`.
-- Normalize the free-text description before creating the branch: lowercase when possible, replace spaces with hyphens, remove punctuation that is unsafe for Git branch names, and keep it short.
-- Always create every branch from the current `HEAD` of `main`, regardless of whether its type is `feature`, `fix`, or `hotfix`.
-- Never use `develop` as the branch creation base.
-
-See README.md for installation, AUDIT_TECHNIQUE.md for security/architecture issues, DEPLOIEMENT_PRODUCTION.md for production deployment.
+See `README.md` for installation, `AUDIT_TECHNIQUE.md` for security/architecture issues, and `DEPLOIEMENT_PRODUCTION.md` for production deployment.

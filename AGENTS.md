@@ -1,6 +1,6 @@
 # Project Guidelines
 
-This file mirrors `.github/copilot-instructions.md` for coding agents such as Codex.
+Keep `AGENTS.md` and `.github/copilot-instructions.md` identical.
 
 ## Code Style
 - PHP 8.2 with `strict_types` in migrations; use attributes for routing and forms.
@@ -26,21 +26,9 @@ This file mirrors `.github/copilot-instructions.md` for coding agents such as Co
 - Environment: Use `.env` for config; avoid hardcoded values and move them to parameters.
 - Security: Never expose secrets; use environment variables for API keys and database credentials.
 
-## Branch Naming and Deployment Flow
-- Branch names must follow `<type>/tg-<taiga-ticket-number>-<free-text>`.
-- Allowed branch types are `feature`, `fix`, and `hotfix`.
-- `feature/*` and `fix/*` branches follow the standard delivery flow: merge into `develop` first, then into `main`.
-- `hotfix/*` branches follow the emergency production flow: merge into `main` first, then backport or merge into `develop`.
-- Keep the free-text part short and descriptive so the branch remains easy to identify.
-
-## Branch Creation Requests
-- When a user asks an agent to create a branch and does not provide all required parts, ask for:
-  - the branch type, reminding them that possible values are `feature`, `fix`, and `hotfix`;
-  - the Taiga ticket number;
-  - the free-text description.
-- Once the information is available, create the branch name with this exact format: `<type>/tg-<taiga-ticket-number>-<free-text>`.
-- Normalize the free-text description before creating the branch: lowercase when possible, replace spaces with hyphens, remove punctuation that is unsafe for Git branch names, and keep it short.
-- Always create every branch from the current `HEAD` of `main`, regardless of whether its type is `feature`, `fix`, or `hotfix`.
-- Never use `develop` as the branch creation base.
+## Project Skills
+Paths are relative to the repository root. Read the relevant skill before carrying out its workflow:
+- `.agents/skills/project-jira/SKILL.md`: starting work on a Jira ticket, creating or updating tickets, changing status, or handling PR links.
+- `.agents/skills/project-github/SKILL.md`: creating branches, preparing commits or pull requests, reviewing CI, or organizing delivery.
 
 See `README.md` for installation, `AUDIT_TECHNIQUE.md` for security/architecture issues, and `DEPLOIEMENT_PRODUCTION.md` for production deployment.

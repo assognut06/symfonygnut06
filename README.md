@@ -25,6 +25,7 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 - [Node.js](https://nodejs.org/) et [npm](https://www.npmjs.com/)
+- [Python 3.9 ou supérieur](https://www.python.org/downloads/), disponible via la commande `python3` sur votre machine, pour les hooks Git locaux.
 
 ## Installation
 
@@ -47,7 +48,11 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    ```bash
    git clone git@github.com:assognut06/symfonygnut06.git
    cd symfonygnut06
+   python3 .github/scripts/install_git_hooks.py
    ```
+
+   Cette dernière commande active les hooks Git locaux pour vérifier les messages de commit et les noms de branches avant le push. Elle doit être exécutée dans chaque nouveau clone, sur votre machine et non dans le conteneur Docker. Les contrôles des pull requests sur GitHub restent complémentaires.
+
 3. **Résolution de conflit**  
    La solution inclus un container mysql utilisant le port 3306  
    Vérifiez que le poste de dev n'aie pas déjà un serveur monopolisant ce port

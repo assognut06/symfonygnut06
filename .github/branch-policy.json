@@ -1,0 +1,37 @@
+{
+  "repository": "assognut06/symfonygnut06",
+  "recorded_on": "2026-11-16",
+  "permanent_branches": [
+    "main",
+    "develop"
+  ],
+  "legacy_branches": [
+    "260207_fanny_front",
+    "GNUT06-106-ajouter-le-bouton-lancer-la-salle-immersive-handi-3-d-sur-la-page-recherche-tih",
+    "codex/modifier-digital-consulting-par-accompagnement-digital",
+    "feat/GNUT06-42-formulaire-legacy-asso-recommander-1-type-incoherent-priorite-moyenne",
+    "feature/GNUT06-153-test-pr",
+    "feature/profil-redesign",
+    "feature/tg-26-refactor-tih-search",
+    "feature/tg-26-styles-css",
+    "feature/tg-75-apply-php-cs",
+    "feature/tg-90-newsletter",
+    "feature/tg-104-handi-3d-main",
+    "feature/tg-105-notification-tih",
+    "feature/tg-119-nettoyage-utilisateurs-non-valides",
+    "feature/tg-123-conserver-user-suppression-tih",
+    "feature-interface-admin",
+    "fix/docker-windows-wsl",
+    "fix/tg-60-echec/oauth",
+    "fix/tg-60-echec-oauth",
+    "fix/tg-60-microsoft-identity",
+    "fix/tg-60-microsoft-login-dev",
+    "fix/tg-91-doublons-test",
+    "fix/tg-115-erreurs-tableau-de-bord-utilisateur",
+    "fix/tg-122-slug-adhesion",
+    "fix/tg-154-securite-npm",
+    "fix/tg-154-synchroniser-main-develop",
+    "phil-dev-stage",
+    "test-retard-main"
+  ]
+}
