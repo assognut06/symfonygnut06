@@ -1,0 +1,58 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Approbation des TIH de démonstration{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <h1 class="h2 mb-4 text-center">TIH de démonstration à examiner</h1>
+    <p class="alert alert-info">Seuls les profils approuvés apparaissent dans la recherche publique.</p>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead><tr><th>ID</th><th>Profil fictif</th><th>Localisation</th><th>Statut</th><th>Actions</th></tr></thead>
+            <tbody>
+            {% for tih in tihs %}
+                <tr>
+                    <td>{{ tih.id }}</td>
+                    <td><strong>{{ tih.firstName }} {{ tih.lastName }}</strong><small class="d-block">{{ tih.professionalEmail ?: 'Aucun email' }} · {{ tih.phone ?: 'Aucun téléphone' }}</small></td>
+                    <td>{{ tih.postalCode }} {{ tih.city }}</td>
+                    <td>
+                        {% if tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_APPROVED') %}<span class="badge bg-success">Publié</span>
+                        {% elseif tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_REFUSED') %}<span class="badge bg-danger">Refusé</span>
+                        {% else %}<span class="badge bg-warning text-dark">En attente</span>{% endif %}
+                    </td>
+                    <td>
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#demo-{{ tih.id }}">Examiner</button>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5" class="text-center">Aucune proposition de démonstration.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% for tih in tihs %}
+<div class="modal fade" id="demo-{{ tih.id }}" tabindex="-1" aria-labelledby="demo-title-{{ tih.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content">
+        <div class="modal-header"><h2 class="modal-title h5" id="demo-title-{{ tih.id }}">Profil fictif #{{ tih.id }}</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+        <div class="modal-body">
+            <p><strong>Nom :</strong> {{ tih.firstName }} {{ tih.lastName }}</p>
+            <p><strong>Coordonnées déclarées :</strong> {{ tih.professionalEmail ?: '—' }} · {{ tih.phone ?: '—' }}</p>
+            <p><strong>Adresse :</strong> {{ tih.address ?: '—' }}, {{ tih.postalCode }} {{ tih.city }}</p>
+            <p><strong>Région / département :</strong> {{ tih.region ?: '—' }} / {{ tih.departement ?: '—' }}</p>
+            <p><strong>Compétences :</strong> {{ tih.competences|length ? tih.competences|join(', ') : '—' }}</p>
+            <p><strong>Disponibilités :</strong> {{ tih.availability ?: '—' }}</p>
+            <p><strong>Tarif :</strong> {{ tih.rate ? tih.rate ~ ' € / ' ~ tih.rateType : '—' }}</p>
+            <div class="alert alert-danger mb-0">Vérifier que toutes ces informations sont fictives avant publication.</div>
+        </div>
+        <div class="modal-footer">
+            <form method="post" action="{{ path('app_admin_demo_tih_refuse', {id: tih.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('refuse_demo_tih' ~ tih.id) }}"><button class="btn btn-outline-danger">Refuser</button></form>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            <form method="post" action="{{ path('app_admin_demo_tih_approve', {id: tih.id}) }}" onsubmit="return confirm('Publier ce profil fictif ?');"><input type="hidden" name="_token" value="{{ csrf_token('approve_demo_tih' ~ tih.id) }}"><button class="btn btn-success">Approuver et publier</button></form>
+        </div>
+    </div></div>
+</div>
+{% endfor %}
+{% endblock %}

@@ -48,6 +48,10 @@ security:
         - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/profil, roles: ROLE_USER }
         - { path: ^/espace-tih, roles: ROLE_USER }
+        # L'accès entreprise restera fermé tant que la validation administrative
+        # des entreprises ne sera pas modélisée. Les administrateurs conservent
+        # l'accès au parcours réel pendant cette étape.
+        - { path: ^/intranet/tih, roles: ROLE_ADMIN }
 
 when@test:
     security:
