@@ -69,6 +69,7 @@ class TihSearchTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertTihResultCount(1);
         $this->assertTihGridContains('Valid Profile');
+        $this->assertTihGridContains('Profil fictif');
         $this->assertTihGridNotContains('Pending Review');
     }
 
@@ -152,6 +153,7 @@ class TihSearchTest extends WebTestCase
         $this->assertSelectorTextContains('body', 'Marie');
         $this->assertSelectorTextContains('body', 'Curie');
         $this->assertSelectorTextContains('body', 'Nice');
+        $this->assertSelectorTextContains('.card-body', 'Profil fictif');
     }
 
     public function testTihContactIsDisabledForDemoProfile(): void

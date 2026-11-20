@@ -19,10 +19,7 @@ class AdminDemoTihController extends AbstractController
     {
         return $this->render('admin/admin_tih_demo/index.html.twig', [
             'tihs' => $repository->findBy(
-                [
-                    'profileKind' => Tih::PROFILE_KIND_DEMO,
-                    'applicationStatus' => Tih::STATUS_PENDING,
-                ],
+                ['profileKind' => Tih::PROFILE_KIND_DEMO],
                 ['id' => 'DESC'],
             ),
         ]);

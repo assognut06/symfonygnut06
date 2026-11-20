@@ -32,7 +32,7 @@
                 Démonstration publique utilisant uniquement des profils fictifs approuvés
             </p>
             <a href="{{ path('app_tih_demo_new') }}" class="btn btn-outline-light mt-2">
-                <i class="bi bi-person-plus me-2"></i>Proposer un profil fictif
+                <i class="bi bi-person-plus me-2"></i>Ajouter un profil TIH (démo)
             </a>
             {% if totalItems > 0 %}
                 <p class="text-white-50 mt-2" data-tih-search-target="resultsInfo">
@@ -267,6 +267,7 @@
                             <h3 class="card-title text-white mb-2 h5">
                                 {{ tih.firstName|default('') }} {{ tih.lastName|default('') }}
                             </h3>
+                            <p class="card-title text-white mb-2 h5">Profil fictif</p>
                             
                             {% if tih.city or tih.postalCode %}
                                 <p class="tih-location mb-2">
