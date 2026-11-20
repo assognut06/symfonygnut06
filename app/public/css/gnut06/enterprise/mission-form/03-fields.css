@@ -1,0 +1,113 @@
+.mission-form-page .form-actions {
+    background: #111120; border: 1px solid #29293f; border-radius: 20px; padding: 28px 32px;
+}
+
+.mission-form-page .actions-title {
+    color: #ffffff; font-size: 17px; font-weight: 700; margin-bottom: 8px;
+}
+
+.mission-form-page .actions-description {
+    color: #9697af; font-size: 13px; line-height: 1.7; margin-bottom: 23px;
+}
+
+.mission-form-page .actions-buttons {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 14px;
+}
+
+.mission-form-page .mission-btn {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 48px;
+    padding: 13px 23px; border-radius: 11px; font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: transform 0.2s,
+            background 0.2s,
+            box-shadow 0.2s;
+}
+
+.mission-form-page .mission-btn:hover {
+    transform: translateY(-2px);
+}
+
+.mission-form-page .mission-btn-outline {
+    background: transparent; border: 1px solid #77709f; color: #ddd0ff;
+}
+
+.mission-form-page .mission-btn-outline:hover {
+    background: rgba(168, 112, 255, 0.13); border-color: #b68cff; color: #ffffff;
+}
+
+.mission-form-page .mission-btn-primary {
+    border: 1px solid transparent; background: linear-gradient(135deg, #b45cf3, #6269f8); color: #ffffff;
+    box-shadow: 0 8px 25px rgba(113, 93, 245, 0.18);
+}
+
+.mission-form-page .mission-btn-primary:hover {
+    color: #ffffff; box-shadow: 0 12px 30px rgba(113, 93, 245, 0.3);
+}
+
+.mission-form-page .mission-btn:focus-visible {
+    outline: 3px solid #ffffff; outline-offset: 3px;
+}
+
+.mission-form-page .form-sidebar {
+    display: flex; flex-direction: column; gap: 20px;
+}
+
+.mission-form-page .sidebar-card {
+    background: #111120; border: 1px solid #29293f; border-radius: 18px; padding: 25px;
+}
+
+.mission-form-page .sidebar-card-highlight {
+    background: linear-gradient(
+                145deg,
+                rgba(142, 83, 255, 0.14),
+                rgba(99, 102, 241, 0.04)
+            ),
+            #111120;
+    border-color: #453466;
+}
+
+.mission-form-page .sidebar-icon {
+    width: 43px; height: 43px; display: flex; align-items: center; justify-content: center;
+    border-radius: 12px; background: rgba(168, 112, 255, 0.12); color: #c594ff; font-size: 20px;
+    margin-bottom: 18px;
+}
+
+.mission-form-page .sidebar-title {
+    font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 15px;
+}
+
+.mission-form-page .sidebar-text {
+    color: #a5a6bf; font-size: 13px; line-height: 1.8; margin-bottom: 0;
+}
+
+.mission-form-page .sidebar-list li {
+    display: flex; gap: 11px; align-items: flex-start; color: #b5b6cc; font-size: 13px; line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+.mission-form-page .sidebar-list i {
+    color: #9b84fa; font-size: 15px; flex-shrink: 0; margin-top: 2px;
+}
+
+.mission-form-page .sidebar-divider {
+    height: 1px; background: #303046; margin: 20px 0;
+}
+
+.mission-form-page .sidebar-alert {
+    display: flex; gap: 10px; padding: 14px; background: rgba(245, 158, 11, 0.07);
+    border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 10px; color: #e2c59e; font-size: 12px;
+    line-height: 1.7;
+}
+
+.mission-form-page .sidebar-alert i {
+    flex-shrink: 0; color: #f0b65c; font-size: 16px;
+}
+
+@media (max-width: 992px) {
+    .mission-form-page .form-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .mission-form-page .form-sidebar {
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

@@ -1,0 +1,66 @@
+.admin-company-detail .action-notice i {
+    flex-shrink: 0; color: #aaa5ff; font-size: 17px;
+}
+
+.admin-company-detail .secondary-link {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px; width: 100%;
+    padding: 12px 15px; border: 1px solid #4b4168; border-radius: 10px; background: transparent;
+    color: #ddc7fc; font-size: 13px; font-weight: 600; text-decoration: none; transition: background 0.2s;
+}
+
+@media (max-width: 992px) {
+    .admin-company-detail .detail-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-company-detail .detail-sidebar {
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .admin-company-detail {
+        padding: 35px 16px 65px;
+    }
+
+    .admin-company-detail .page-header {
+        margin-bottom: 25px;
+    }
+
+    .admin-company-detail .status-panel {
+        padding: 22px 19px;
+    }
+
+    .admin-company-detail .status-panel-header {
+        flex-direction: column; gap: 17px;
+    }
+
+    .admin-company-detail .status-title {
+        font-size: 19px;
+    }
+
+    .admin-company-detail .card-header,
+        .admin-company-detail .card-body {
+        padding: 23px 19px;
+    }
+
+    .admin-company-detail .company-identity {
+        align-items: flex-start; padding: 17px;
+    }
+
+    .admin-company-detail .company-avatar {
+        width: 48px; height: 48px; font-size: 22px;
+    }
+
+    .admin-company-detail .company-identity-name {
+        font-size: 17px;
+    }
+
+    .admin-company-detail .information-grid {
+        grid-template-columns: 1fr; gap: 25px;
+    }
+
+    .admin-company-detail .detail-sidebar {
+        grid-template-columns: 1fr;
+    }
+}

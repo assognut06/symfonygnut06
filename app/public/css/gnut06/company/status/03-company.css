@@ -1,0 +1,106 @@
+.company-status-page .sidebar-text {
+    margin: 0; color: #a5a6bf; font-size: 13px; line-height: 1.9;
+}
+
+.company-status-page .steps-list {
+    display: flex; flex-direction: column; gap: 22px; padding: 0; margin: 0; list-style: none;
+}
+
+.company-status-page .step-item {
+    display: flex; align-items: flex-start; gap: 13px;
+}
+
+.company-status-page .step-icon {
+    display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; flex-shrink: 0;
+    border-radius: 50%; background: #25253b; color: #a6a7bf; font-size: 13px; font-weight: 700;
+}
+
+.company-status-page .step-complete .step-icon {
+    background: rgba(16, 185, 129, 0.16); color: #6ee7b7;
+}
+
+.company-status-page .step-current .step-icon {
+    background: rgba(168, 112, 255, 0.16); color: #d3acff;
+}
+
+.company-status-page .step-title {
+    margin-bottom: 5px; color: #ffffff; font-size: 13px; font-weight: 700;
+}
+
+.company-status-page .step-description {
+    color: #999ab2; font-size: 12px; line-height: 1.7; margin: 0;
+}
+
+.company-status-page .notice-box {
+    display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: 12px;
+    border: 1px solid rgba(99, 102, 241, 0.2); background: rgba(99, 102, 241, 0.07); color: #c0c1df;
+    font-size: 12px; line-height: 1.8;
+}
+
+.company-status-page .notice-box i {
+    flex-shrink: 0; color: #aaa5ff; font-size: 18px;
+}
+
+.company-status-page .refresh-button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px; width: 100%;
+    margin-top: 18px; padding: 12px 15px; border-radius: 10px; border: 1px solid #4b4168;
+    background: transparent; color: #d7c1f8; font-size: 13px; font-weight: 600; text-decoration: none;
+    transition: background 0.2s;
+}
+
+.company-status-page .refresh-button:hover {
+    background: rgba(168, 112, 255, 0.12); color: #ffffff;
+}
+
+@media (max-width: 992px) {
+    .company-status-page .status-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .company-status-page .sidebar {
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .company-status-page {
+        padding: 35px 16px 65px;
+    }
+
+    .company-status-page .status-overview {
+        padding: 25px 20px;
+    }
+
+    .company-status-page .status-overview-top {
+        flex-direction: column; gap: 18px;
+    }
+
+    .company-status-page .status-main-icon {
+        width: 60px; height: 60px; font-size: 29px;
+    }
+
+    .company-status-page .overview-title {
+        font-size: 21px;
+    }
+
+    .company-status-page .status-card-header,
+        .company-status-page .status-card-body {
+        padding: 23px 20px;
+    }
+
+    .company-status-page .information-grid {
+        grid-template-columns: 1fr; gap: 23px;
+    }
+
+    .company-status-page .sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .company-status-page .overview-bottom {
+        align-items: stretch; flex-direction: column;
+    }
+
+    .company-status-page .status-button {
+        width: 100%;
+    }
+}

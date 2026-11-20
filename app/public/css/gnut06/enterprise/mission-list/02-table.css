@@ -1,0 +1,95 @@
+.mission-dashboard .mission-name {
+    display: block; color: #fff; font-size: 14px; font-weight: 700; overflow-wrap: anywhere;
+}
+
+.mission-dashboard .mission-excerpt {
+    display: block; max-width: 300px; margin-top: 6px; color: #b2b3cb; font-size: 12px; line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.mission-dashboard .mission-badge {
+    display: inline-flex; align-items: center; gap: 8px; padding: 9px 13px; border-radius: 25px;
+    font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+
+.mission-dashboard .mission-badge i {
+    font-size: 8px;
+}
+
+.mission-dashboard .status-brouillon {
+    background: rgba(148, 163, 184, .15); color: #cbd5e1;
+}
+
+.mission-dashboard .status-en_attente {
+    background: rgba(245, 158, 11, .15); color: #fcd34d;
+}
+
+.mission-dashboard .status-a_corriger {
+    background: rgba(249, 115, 22, .15); color: #fdba74;
+}
+
+.mission-dashboard .status-publiee {
+    background: rgba(16, 185, 129, .15); color: #6ee7b7;
+}
+
+.mission-dashboard .status-cloturee {
+    background: rgba(99, 102, 241, .15); color: #a5b4fc;
+}
+
+.mission-dashboard .status-expiree, .mission-dashboard .status-retiree {
+    background: rgba(239, 68, 68, .15); color: #fca5a5;
+}
+
+.mission-dashboard .btn-edit {
+    display: inline-flex; align-items: center; gap: 8px; padding: 9px 15px; border: 1px solid #74549d;
+    border-radius: 10px; background: rgba(167, 114, 255, .10); color: #ebcdff; font-size: 13px;
+    font-weight: 600; text-decoration: none; white-space: nowrap;
+}
+
+.mission-dashboard .btn-edit:hover {
+    background: #74549d; color: #fff;
+}
+
+.mission-dashboard .mission-locked {
+    color: #afb0c7; font-size: 12px;
+}
+
+.mission-dashboard .dashboard-alert {
+    margin-bottom: 20px; padding: 15px 20px; border: 1px solid; border-radius: 12px; font-size: 14px;
+}
+
+.mission-dashboard .dashboard-alert-success {
+    background: rgba(16, 185, 129, .1); color: #a7f3d0; border-color: rgba(16, 185, 129, .3);
+}
+
+.mission-dashboard .dashboard-alert-info {
+    background: rgba(99, 102, 241, .1); color: #c7d2fe; border-color: rgba(99, 102, 241, .3);
+}
+
+.mission-dashboard .empty-state {
+    padding: 65px 20px; text-align: center;
+}
+
+.mission-dashboard .empty-icon {
+    width: 70px; height: 70px; margin: 0 auto 20px; display: flex; align-items: center;
+    justify-content: center; border-radius: 20px; background: rgba(166, 101, 255, .12); color: #c18bff;
+    font-size: 30px;
+}
+
+.mission-dashboard .empty-title {
+    color: #fff; font-size: 21px; font-weight: 700;
+}
+
+.mission-dashboard .empty-description {
+    max-width: 450px; margin: 0 auto 25px; color: #a4a5b8; font-size: 14px; line-height: 1.7;
+}
+
+.mission-dashboard .btn-create:focus-visible, .mission-dashboard .btn-edit:focus-visible {
+    outline: 3px solid #fff; outline-offset: 3px;
+}
+
+@media (max-width: 992px) {
+    .mission-dashboard .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

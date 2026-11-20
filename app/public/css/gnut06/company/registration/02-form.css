@@ -1,0 +1,113 @@
+.company-registration .field-control {
+    display: block; width: 100%; min-height: 50px; padding: 12px 16px; background: #191929;
+    border: 1px solid #3a3a50; border-radius: 11px; color: #ffffff; font-size: 14px; line-height: 1.5;
+    transition: background 0.2s,
+            border-color 0.2s,
+            box-shadow 0.2s;
+}
+
+.company-registration .field-control::placeholder {
+    color: #77788f; opacity: 1;
+}
+
+.company-registration .field-control:hover {
+    border-color: #746492;
+}
+
+.company-registration .field-control:focus {
+    outline: none; background: #202033; border-color: #ae80ff;
+    box-shadow: 0 0 0 3px rgba(168, 112, 255, 0.15); color: #ffffff;
+}
+
+.company-registration .field-help {
+    margin-top: 9px; color: #9697af; font-size: 12px; line-height: 1.7;
+}
+
+.company-registration .field-errors {
+    margin-top: 9px; color: #ff9ca9; font-size: 13px;
+}
+
+.company-registration .field-errors ul {
+    padding-left: 18px; margin-bottom: 0;
+}
+
+.company-registration .form-global-errors {
+    padding: 16px 20px; margin-bottom: 28px; border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 12px;
+    background: rgba(239, 68, 68, 0.09); color: #ffb0bb; font-size: 14px; line-height: 1.7;
+}
+
+.company-registration .form-global-errors ul {
+    margin: 8px 0 0; padding-left: 20px;
+}
+
+.company-registration .registration-notice {
+    display: flex; align-items: flex-start; gap: 13px; padding: 18px; margin-top: 30px;
+    background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(132, 123, 255, 0.25); border-radius: 12px;
+    color: #c2c1df; font-size: 13px; line-height: 1.8;
+}
+
+.company-registration .registration-notice i {
+    flex-shrink: 0; color: #a9a1ff; font-size: 20px; margin-top: 2px;
+}
+
+.company-registration .registration-card-footer {
+    padding: 25px 35px; border-top: 1px solid #29293f; background: rgba(255, 255, 255, 0.015);
+}
+
+.company-registration .submit-button {
+    display: inline-flex; align-items: center; justify-content: center; width: 100%; min-height: 52px;
+    padding: 14px 24px; border: 0; border-radius: 12px;
+    background: linear-gradient(
+            135deg,
+            #b45cf3,
+            #6269f8
+        );
+    color: #ffffff; font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: transform 0.2s,
+            box-shadow 0.2s; box-shadow: 0 8px 25px rgba(113, 93, 245, 0.2);
+}
+
+.company-registration .submit-button:hover {
+    transform: translateY(-2px); color: #ffffff; box-shadow: 0 12px 30px rgba(113, 93, 245, 0.35);
+}
+
+.company-registration .submit-button:focus-visible {
+    outline: 3px solid #ffffff; outline-offset: 3px;
+}
+
+.company-registration .registration-sidebar {
+    display: flex; flex-direction: column; gap: 20px;
+}
+
+.company-registration .sidebar-card {
+    padding: 25px; background: #111120; border: 1px solid #2a2a40; border-radius: 18px;
+}
+
+.company-registration .sidebar-card-highlight {
+    background: linear-gradient(
+                145deg,
+                rgba(142, 83, 255, 0.13),
+                rgba(99, 102, 241, 0.04)
+            ),
+            #111120;
+    border-color: #453466;
+}
+
+.company-registration .sidebar-icon {
+    display: flex; align-items: center; justify-content: center; width: 44px; height: 44px;
+    margin-bottom: 20px; border-radius: 12px; background: rgba(168, 112, 255, 0.13); color: #c594ff;
+    font-size: 20px;
+}
+
+.company-registration .sidebar-text {
+    color: #a5a6bf; font-size: 13px; line-height: 1.8; margin: 0;
+}
+
+.company-registration .sidebar-list li {
+    display: flex; align-items: flex-start; gap: 11px; margin-bottom: 18px; color: #b6b7ce; font-size: 13px;
+    line-height: 1.7;
+}
+
+.company-registration .sidebar-list i {
+    flex-shrink: 0; color: #ad8dfb; font-size: 17px; margin-top: 1px;
+}

@@ -1,0 +1,117 @@
+.mission-form-page select[multiple].mission-control {
+    min-height: 175px; padding: 8px;
+}
+
+.mission-form-page select[multiple].mission-control option {
+    border-radius: 6px; margin-bottom: 3px;
+}
+
+.mission-form-page input[type="date"].mission-control {
+    color-scheme: dark;
+}
+
+.mission-form-page .form-errors {
+    margin-top: 9px; color: #ff9ca9; font-size: 13px;
+}
+
+.mission-form-page .form-errors ul {
+    padding-left: 18px; margin: 0;
+}
+
+.mission-form-page .form-global-errors {
+    background: rgba(220, 53, 69, 0.10); border: 1px solid rgba(220, 53, 69, 0.35); color: #ffb3bd;
+    padding: 16px 20px; border-radius: 12px; margin-bottom: 24px; font-size: 14px;
+}
+
+.mission-form-page .form-global-errors:empty {
+    display: none;
+}
+
+.mission-form-page .selected-skills-box {
+    margin-bottom: 22px; padding: 20px;
+    background: linear-gradient(
+            135deg,
+            rgba(139, 92, 246, 0.10),
+            rgba(99, 102, 241, 0.05)
+        );
+    border: 1px solid rgba(168, 112, 255, 0.28); border-radius: 15px;
+}
+
+.mission-form-page .selected-skills-header {
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 16px;
+}
+
+.mission-form-page .selected-skills-title {
+    display: flex; align-items: center; gap: 9px; margin: 0; color: #f0e4ff; font-size: 14px;
+    font-weight: 700;
+}
+
+.mission-form-page .selected-skills-title i {
+    color: #bd91ff; font-size: 17px;
+}
+
+.mission-form-page .selected-skills-count {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 95px; padding: 6px 12px;
+    border-radius: 20px; background: rgba(168, 112, 255, 0.15); color: #d5b5ff; font-size: 12px;
+    font-weight: 700;
+}
+
+.mission-form-page .selected-skills-list {
+    display: flex; flex-wrap: wrap; gap: 10px;
+}
+
+.mission-form-page .selected-skill-tag {
+    display: inline-flex; align-items: center; gap: 11px; max-width: 100%; padding: 7px 8px 7px 14px;
+    border: 1px solid rgba(168, 112, 255, 0.38); border-radius: 9px; background: rgba(168, 112, 255, 0.16);
+    color: #e5d2ff; font-size: 13px; font-weight: 600; overflow-wrap: anywhere;
+}
+
+.mission-form-page .selected-skill-tag > span {
+    min-width: 0;
+}
+
+.mission-form-page .selected-skill-remove {
+    display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px;
+    flex-shrink: 0; padding: 0; border: 0; border-radius: 6px; background: rgba(255, 255, 255, 0.10);
+    color: #f4e9ff; font-size: 19px; line-height: 1; cursor: pointer; transition: background 0.2s;
+}
+
+.mission-form-page .selected-skill-remove:hover {
+    background: rgba(239, 68, 68, 0.30); color: #ffffff;
+}
+
+.mission-form-page .selected-skill-remove:focus-visible {
+    outline: 2px solid #ffffff; outline-offset: 2px;
+}
+
+.mission-form-page .selected-skills-empty {
+    margin: 0; color: #9293ab; font-size: 13px; font-style: italic;
+}
+
+.mission-form-page .selected-skills-empty[hidden] {
+    display: none;
+}
+
+.mission-form-page .skills-selector-label {
+    display: block; margin-bottom: 10px; color: #b8b9d0; font-size: 13px; font-weight: 600;
+}
+
+.mission-form-page .skills-hint {
+    display: flex; align-items: flex-start; gap: 9px; margin-top: 13px; color: #9293ab; font-size: 12px;
+    line-height: 1.7;
+}
+
+.mission-form-page .skills-hint i {
+    color: #a98bfa; margin-top: 2px;
+}
+
+.mission-form-page .budget-note {
+    display: flex; gap: 12px; padding: 16px; background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.18); border-radius: 12px; color: #b9badb; font-size: 13px;
+    line-height: 1.7; margin-top: 22px;
+}
+
+.mission-form-page .budget-note i {
+    color: #a5a7ff; font-size: 18px; flex-shrink: 0;
+}

@@ -1,0 +1,114 @@
+.mission-dashboard {
+    min-height: 75vh; padding: 65px 0 100px;
+    background: radial-gradient(ellipse at 85% 0%, rgba(139, 92, 246, .11), transparent 45%), #060611;
+    color: #f8f9ff;
+}
+
+.mission-dashboard .dashboard-container {
+    max-width: 1250px; margin: 0 auto; padding: 0 25px;
+}
+
+.mission-dashboard .dashboard-header {
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 25px;
+    margin-bottom: 40px;
+}
+
+.mission-dashboard .dashboard-label {
+    display: inline-flex; gap: 8px; align-items: center; margin-bottom: 18px; padding: 7px 14px;
+    border-radius: 30px; background: rgba(153, 102, 255, .12); color: #c99aff; font-size: 12px;
+    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+}
+
+.mission-dashboard .dashboard-title {
+    margin-bottom: 10px; color: #fff; font-size: clamp(30px, 4vw, 44px); font-weight: 800;
+}
+
+.mission-dashboard .dashboard-subtitle {
+    margin: 0; color: #b1b2cc; font-size: 15px;
+}
+
+.mission-dashboard .dashboard-subtitle strong {
+    color: #ddbbff;
+}
+
+.mission-dashboard .btn-create {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 13px 22px;
+    border: 0; border-radius: 11px; background: linear-gradient(135deg, #b45cf3, #6b6dff); color: #fff;
+    font-weight: 700; font-size: 14px; text-decoration: none;
+}
+
+.mission-dashboard .btn-create:hover {
+    color: #fff; filter: brightness(1.1);
+}
+
+.mission-dashboard .stats-grid {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-bottom: 45px;
+}
+
+.mission-dashboard .stat-card {
+    position: relative; overflow: hidden; padding: 25px; border: 1px solid #29293e; border-radius: 17px;
+    background: #111120;
+}
+
+.mission-dashboard .stat-card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--stat-color);
+}
+
+.mission-dashboard .stat-total {
+    --stat-color: #a879ff;
+}
+
+.mission-dashboard .stat-draft {
+    --stat-color: #93a3c2;
+}
+
+.mission-dashboard .stat-pending {
+    --stat-color: #f6bc64;
+}
+
+.mission-dashboard .stat-published {
+    --stat-color: #4bd6a0;
+}
+
+.mission-dashboard .stat-label {
+    margin-bottom: 15px; color: #afb0c6; font-size: 13px;
+}
+
+.mission-dashboard .stat-value {
+    margin: 0; color: #fff; font-size: 36px; line-height: 1; font-weight: 800;
+}
+
+.mission-dashboard .missions-section {
+    overflow: hidden; border: 1px solid #29293f; border-radius: 18px; background: #111120;
+}
+
+.mission-dashboard .section-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 24px 25px;
+    border-bottom: 1px solid #29293f;
+}
+
+.mission-dashboard .section-title {
+    margin: 0; color: #fff; font-size: 21px; font-weight: 700;
+}
+
+.mission-dashboard .section-count {
+    padding: 7px 12px; border-radius: 20px; color: #dfc2ff; background: rgba(168, 112, 255, .12);
+    font-size: 12px; font-weight: 600;
+}
+
+.mission-dashboard .table-responsive {
+    padding: 16px 20px 24px;
+}
+
+.mission-dashboard .mission-table {
+    min-width: 1050px; margin: 0; --bs-table-color: #e6e5f2; --bs-table-bg: #141423;
+    --bs-table-border-color: #303046; --bs-table-hover-color: #fff; --bs-table-hover-bg: #222035;
+}
+
+.mission-dashboard .mission-table thead th {
+    padding: 17px 15px; font-size: 12px; color: #dfc7ff; font-weight: 700; white-space: nowrap;
+}
+
+.mission-dashboard .mission-table tbody td {
+    padding: 17px 15px; font-size: 13px;
+}

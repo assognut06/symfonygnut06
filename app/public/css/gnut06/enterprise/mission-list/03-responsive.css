@@ -1,0 +1,33 @@
+@media (max-width: 576px) {
+    .mission-dashboard {
+        padding: 35px 0 60px;
+    }
+
+    .mission-dashboard .dashboard-container {
+        padding: 0 16px;
+    }
+
+    .mission-dashboard .btn-create {
+        width: 100%;
+    }
+
+    .mission-dashboard .stats-grid {
+        gap: 12px;
+    }
+
+    .mission-dashboard .stat-card {
+        padding: 20px 16px;
+    }
+
+    .mission-dashboard .stat-value {
+        font-size: 29px;
+    }
+
+    .mission-dashboard .section-header {
+        padding: 19px 16px;
+    }
+
+    .mission-dashboard .table-responsive {
+        padding: 12px;
+    }
+}

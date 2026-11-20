@@ -1,0 +1,117 @@
+.admin-mission-detail .status-publiee .status-label {
+    background: rgba(16, 185, 129, 0.14); color: #6ee7b7;
+}
+
+.admin-mission-detail .status-a_corriger .status-label {
+    background: rgba(249, 115, 22, 0.14); color: #fdba74;
+}
+
+.admin-mission-detail .status-retiree .status-label {
+    background: rgba(239, 68, 68, 0.14); color: #fca5a5;
+}
+
+.admin-mission-detail .status-title {
+    margin-bottom: 10px; color: #ffffff; font-size: 23px; font-weight: 800;
+}
+
+.admin-mission-detail .status-description {
+    margin: 0; color: #b4b5cc; font-size: 13px; line-height: 1.8;
+}
+
+.admin-mission-detail .status-divider {
+    height: 1px; margin: 24px 0; background: #34344a;
+}
+
+.admin-mission-detail .status-meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 12px 25px; color: #a4a5bd; font-size: 12px;
+}
+
+.admin-mission-detail .status-meta span {
+    display: inline-flex; align-items: center; gap: 9px;
+}
+
+.admin-mission-detail .status-meta i {
+    color: #ad8af8; font-size: 15px;
+}
+
+.admin-mission-detail .mission-name {
+    margin-bottom: 22px; color: #ffffff; font-size: 24px; font-weight: 700; line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.admin-mission-detail .content-label {
+    display: block; margin-bottom: 12px; color: #d9c3fa; font-size: 13px; font-weight: 700;
+}
+
+.admin-mission-detail .mission-description {
+    margin: 0; color: #c4c5d8; font-size: 14px; line-height: 1.9; white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.admin-mission-detail .section-divider {
+    height: 1px; margin: 28px 0; background: #303046;
+}
+
+.admin-mission-detail .information-label i {
+    color: #b38bf5; font-size: 15px;
+}
+
+.admin-mission-detail .skills-list {
+    display: flex; flex-wrap: wrap; gap: 10px;
+}
+
+.admin-mission-detail .skill-tag {
+    display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px;
+    border: 1px solid rgba(168, 112, 255, 0.32); border-radius: 10px; background: rgba(168, 112, 255, 0.13);
+    color: #e4d0ff; font-size: 13px; font-weight: 600;
+}
+
+.admin-mission-detail .pricing-box {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px;
+}
+
+.admin-mission-detail .pricing-item {
+    padding: 20px; background: #191929; border: 1px solid #36364c; border-radius: 13px;
+}
+
+.admin-mission-detail .pricing-label {
+    margin-bottom: 10px; color: #9e9fb6; font-size: 12px;
+}
+
+.admin-mission-detail .pricing-value {
+    margin: 0; color: #ffffff; font-size: 23px; font-weight: 800;
+}
+
+.admin-mission-detail .pricing-type {
+    margin-top: 18px; color: #c5c5dd; font-size: 13px;
+}
+
+.admin-mission-detail .sidebar-card {
+    padding: 26px; background: #111120; border: 1px solid #2b2b42; border-radius: 18px;
+}
+
+.admin-mission-detail .sidebar-description {
+    margin-bottom: 20px; color: #a5a6bd; font-size: 13px; line-height: 1.8;
+}
+
+.admin-mission-detail .company-name {
+    margin-bottom: 18px; color: #ffffff; font-size: 19px; font-weight: 700; overflow-wrap: anywhere;
+}
+
+.admin-mission-detail .company-meta {
+    display: flex; flex-direction: column; gap: 15px;
+}
+
+.admin-mission-detail .company-meta-item {
+    display: flex; align-items: flex-start; gap: 11px; color: #b7b8ce; font-size: 13px; line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.admin-mission-detail .company-meta-item i {
+    color: #b38bf5; font-size: 16px; flex-shrink: 0; margin-top: 2px;
+}
+
+.admin-mission-detail .company-status {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; padding: 8px 12px;
+    border-radius: 20px; font-size: 12px; font-weight: 700;
+}

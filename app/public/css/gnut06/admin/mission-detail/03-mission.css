@@ -1,0 +1,116 @@
+.admin-mission-detail .company-approved {
+    background: rgba(16, 185, 129, 0.13); color: #6ee7b7;
+}
+
+.admin-mission-detail .company-unapproved {
+    background: rgba(245, 158, 11, 0.13); color: #fcd34d;
+}
+
+.admin-mission-detail .action-form {
+    margin-bottom: 20px;
+}
+
+.admin-mission-detail .action-label {
+    display: block; margin-bottom: 10px; color: #e4e4f4; font-size: 13px; font-weight: 600;
+}
+
+.admin-mission-detail .action-textarea {
+    width: 100%; min-height: 115px; padding: 13px 15px; margin-bottom: 13px; background: #191929;
+    border: 1px solid #3a3a50; border-radius: 11px; color: #ffffff; font-size: 13px; line-height: 1.7;
+    resize: vertical;
+}
+
+.admin-mission-detail .action-textarea::placeholder {
+    color: #85869e;
+}
+
+.admin-mission-detail .action-textarea:focus {
+    outline: none; border-color: #aa79ff; box-shadow: 0 0 0 3px rgba(168, 112, 255, 0.13);
+}
+
+.admin-mission-detail .action-button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+    min-height: 49px; padding: 13px 17px; border-radius: 11px; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.admin-mission-detail .button-publish {
+    border: 1px solid transparent; background: linear-gradient(135deg, #18a779, #0d8f77); color: #ffffff;
+}
+
+.admin-mission-detail .button-correction {
+    border: 1px solid #b77945; background: rgba(245, 158, 11, 0.10); color: #fcd34d;
+}
+
+.admin-mission-detail .button-withdraw {
+    border: 1px solid #ad4a59; background: rgba(239, 68, 68, 0.10); color: #ffadb7;
+}
+
+.admin-mission-detail .action-button:disabled {
+    opacity: 0.45; cursor: not-allowed; transform: none;
+}
+
+.admin-mission-detail .action-divider {
+    height: 1px; margin: 24px 0; background: #303046;
+}
+
+.admin-mission-detail .action-notice {
+    display: flex; align-items: flex-start; gap: 11px; padding: 15px; background: rgba(99, 102, 241, 0.07);
+    border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 11px; color: #bcbdd8; font-size: 12px;
+    line-height: 1.8;
+}
+
+.admin-mission-detail .action-notice i {
+    color: #aaa5ff; flex-shrink: 0; font-size: 17px;
+}
+
+.admin-mission-detail .history-list {
+    display: flex; flex-direction: column; gap: 0;
+}
+
+.admin-mission-detail .history-item {
+    display: flex; align-items: flex-start; gap: 16px; padding: 22px 0; border-bottom: 1px solid #2d2d42;
+}
+
+.admin-mission-detail .history-item:first-child {
+    padding-top: 0;
+}
+
+.admin-mission-detail .history-item:last-child {
+    padding-bottom: 0; border-bottom: none;
+}
+
+.admin-mission-detail .history-icon {
+    display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; flex-shrink: 0;
+    border-radius: 12px; background: rgba(168, 112, 255, 0.13); color: #c59aff; font-size: 17px;
+}
+
+.admin-mission-detail .history-publish .history-icon {
+    background: rgba(16, 185, 129, 0.13); color: #6ee7b7;
+}
+
+.admin-mission-detail .history-request_correction .history-icon {
+    background: rgba(245, 158, 11, 0.13); color: #fcd34d;
+}
+
+.admin-mission-detail .history-withdraw .history-icon {
+    background: rgba(239, 68, 68, 0.13); color: #fca5a5;
+}
+
+.admin-mission-detail .history-content {
+    flex: 1; min-width: 0;
+}
+
+.admin-mission-detail .history-title {
+    margin-bottom: 7px; color: #ffffff; font-size: 14px; font-weight: 700;
+}
+
+.admin-mission-detail .history-date {
+    color: #999ab2; font-size: 12px; line-height: 1.6;
+}
+
+.admin-mission-detail .history-reason {
+    margin-top: 13px; padding: 14px 16px; border: 1px solid #34344a; border-radius: 10px;
+    background: #191929; color: #c2c3d8; font-size: 13px; line-height: 1.8; white-space: pre-line;
+    overflow-wrap: anywhere;
+}

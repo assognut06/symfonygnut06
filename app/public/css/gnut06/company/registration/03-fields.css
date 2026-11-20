@@ -1,0 +1,55 @@
+.company-registration .status-box {
+    display: flex; align-items: flex-start; gap: 11px; padding: 15px;
+    border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 11px; background: rgba(245, 158, 11, 0.07);
+    color: #e7c99d; font-size: 12px; line-height: 1.8;
+}
+
+.company-registration .status-box i {
+    flex-shrink: 0; color: #f0b65c; font-size: 17px;
+}
+
+.company-registration .privacy-text {
+    color: #9e9fb7; font-size: 12px; line-height: 1.8; margin: 0;
+}
+
+@media (max-width: 992px) {
+    .company-registration .registration-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .company-registration .registration-sidebar {
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .company-registration {
+        padding: 35px 16px 65px;
+    }
+
+    .company-registration .page-header {
+        margin-bottom: 30px;
+    }
+
+    .company-registration .registration-card-header,
+    .company-registration .registration-card-body,
+    .company-registration .registration-card-footer {
+        padding: 23px 19px;
+    }
+
+    .company-registration .field-grid {
+        grid-template-columns: 1fr; gap: 24px;
+    }
+
+    .company-registration .registration-sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .company-registration .card-title {
+        font-size: 18px;
+    }
+
+    .company-registration .card-header-content {
+        align-items: flex-start;
+    }
+}

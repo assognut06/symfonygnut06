@@ -1,0 +1,117 @@
+.company-registration {
+    min-height: 100vh; padding: 65px 20px 100px;
+    background: radial-gradient(
+                ellipse at 85% 0%,
+                rgba(150, 90, 255, 0.14),
+                transparent 45%
+            ),
+            #060611;
+    color: #f8f9ff;
+}
+
+.company-registration .registration-container {
+    max-width: 1100px; margin: 0 auto;
+}
+
+.company-registration .back-link {
+    display: inline-flex; align-items: center; gap: 9px; color: #bd9aef; text-decoration: none;
+    font-size: 14px; font-weight: 600; margin-bottom: 35px; transition: color 0.2s;
+}
+
+.company-registration .page-header {
+    text-align: center; margin-bottom: 45px;
+}
+
+.company-registration .page-badge {
+    display: inline-flex; align-items: center; gap: 9px; padding: 9px 17px; border-radius: 30px;
+    background: rgba(168, 112, 255, 0.12); border: 1px solid rgba(168, 112, 255, 0.2); color: #d1aaff;
+    font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 22px;
+}
+
+.company-registration .page-title {
+    color: #ffffff; font-size: clamp(30px, 4vw, 45px); font-weight: 800; letter-spacing: -1.2px;
+    margin-bottom: 15px;
+}
+
+.company-registration .page-description {
+    max-width: 670px; margin: 0 auto; color: #a9aac2; font-size: 15px; line-height: 1.8;
+}
+
+.company-registration .registration-layout {
+    display: grid; grid-template-columns: minmax(0, 1fr) 300px; align-items: start; gap: 25px;
+}
+
+.company-registration .registration-main {
+    min-width: 0;
+}
+
+.company-registration .registration-card {
+    background: #111120; border: 1px solid #2a2a40; border-radius: 22px; overflow: hidden;
+}
+
+.company-registration .registration-card-header {
+    padding: 30px 35px; border-bottom: 1px solid #29293f;
+    background: linear-gradient(
+            135deg,
+            rgba(157, 103, 255, 0.08),
+            transparent
+        );
+}
+
+.company-registration .card-header-content {
+    display: flex; align-items: center; gap: 16px;
+}
+
+.company-registration .card-header-icon {
+    display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; flex-shrink: 0;
+    border-radius: 14px; background: rgba(157, 103, 255, 0.16); color: #c49aff; font-size: 23px;
+}
+
+.company-registration .card-title {
+    margin: 0 0 6px; color: #ffffff; font-size: 20px; font-weight: 700;
+}
+
+.company-registration .card-subtitle {
+    margin: 0; color: #9697af; font-size: 13px; line-height: 1.6;
+}
+
+.company-registration .registration-card-body {
+    padding: 35px;
+}
+
+.company-registration .form-section {
+    margin-bottom: 35px;
+}
+
+.company-registration .form-section:last-of-type {
+    margin-bottom: 0;
+}
+
+.company-registration .section-heading {
+    display: flex; align-items: center; gap: 11px; padding-bottom: 17px; margin-bottom: 25px;
+    border-bottom: 1px solid #2a2a3e;
+}
+
+.company-registration .section-heading i {
+    color: #be94ff; font-size: 19px;
+}
+
+.company-registration .section-title {
+    color: #ffffff; font-size: 16px; font-weight: 700; margin: 0;
+}
+
+.company-registration .field-group {
+    margin-bottom: 24px;
+}
+
+.company-registration .field-grid {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px;
+}
+
+.company-registration .field-label {
+    display: block; color: #e7e7f5; font-size: 14px; font-weight: 600; margin-bottom: 10px;
+}
+
+.company-registration .required-indicator {
+    color: #d3a3ff; margin-left: 3px;
+}

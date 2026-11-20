@@ -1,0 +1,78 @@
+@media (max-width: 550px) {
+    .admin-mission-page {
+        padding: 35px 15px 65px;
+    }
+
+    .admin-mission-page .stats-grid {
+        gap: 12px; margin-bottom: 28px;
+    }
+
+    .admin-mission-page .stat-card {
+        padding: 20px 16px;
+    }
+
+    .admin-mission-page .stat-value {
+        font-size: 30px;
+    }
+
+    .admin-mission-page .content-header,
+        .admin-mission-page .toolbar {
+        padding: 22px 18px;
+    }
+
+    .admin-mission-page .mission-title {
+        font-size: 17px;
+    }
+
+    .admin-mission-page .mission-action {
+        width: 100%;
+    }
+
+    .admin-mission-page .filter-button {
+        padding: 8px 11px; font-size: 11px;
+    }
+}
+
+.admin-mission-page .missions-table-wrap {
+    padding: 18px 22px 28px;
+}
+
+.admin-mission-page .mission-table {
+    min-width: 1050px; margin: 0; --bs-table-color: #e6e5f2; --bs-table-bg: #141423;
+    --bs-table-border-color: #303046; --bs-table-hover-color: #fff; --bs-table-hover-bg: #222035;
+}
+
+.admin-mission-page .mission-table thead th {
+    padding: 16px 13px; color: #dfc7ff; font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+
+.admin-mission-page .mission-table tbody td {
+    padding: 15px 13px; font-size: 13px;
+}
+
+.admin-mission-page .mission-table .mission-title {
+    display: block; margin: 0; font-size: 14px;
+}
+
+.admin-mission-page .mission-table-excerpt {
+    display: block; max-width: 310px; margin-top: 6px; color: #afb0c7; font-size: 12px; line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.admin-mission-page .mission-table .status-badge i {
+    margin-right: 2px;
+}
+
+.admin-mission-page .mission-table .mission-action {
+    padding: 9px 12px; white-space: nowrap;
+}
+
+.admin-mission-page .missions-table-wrap [hidden] {
+    display: none !important;
+}
+
+@media (max-width: 600px) {
+    .admin-mission-page .missions-table-wrap {
+        padding: 12px;
+    }
+}

@@ -1,0 +1,113 @@
+.company-status-page {
+    min-height: 100vh; padding: 60px 20px 100px;
+    background: radial-gradient(
+                ellipse at 85% 0%,
+                rgba(150, 90, 255, 0.13),
+                transparent 45%
+            ),
+            #060611;
+    color: #f8f9ff;
+}
+
+.company-status-page .status-container {
+    max-width: 1150px; margin: 0 auto;
+}
+
+.company-status-page .back-link {
+    display: inline-flex; align-items: center; gap: 9px; margin-bottom: 35px; color: #c49cf4;
+    font-size: 14px; font-weight: 600; text-decoration: none; transition: color 0.2s;
+}
+
+.company-status-page .page-header {
+    margin-bottom: 35px;
+}
+
+.company-status-page .page-badge {
+    display: inline-flex; align-items: center; gap: 9px; padding: 8px 16px; margin-bottom: 20px;
+    border-radius: 30px; background: rgba(168, 112, 255, 0.12); border: 1px solid rgba(168, 112, 255, 0.2);
+    color: #d1aaff; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+}
+
+.company-status-page .page-title {
+    margin-bottom: 12px; color: #ffffff; font-size: clamp(30px, 4vw, 44px); font-weight: 800;
+    letter-spacing: -1.2px;
+}
+
+.company-status-page .page-description {
+    max-width: 700px; margin: 0; color: #a9aac2; font-size: 15px; line-height: 1.8;
+}
+
+.company-status-page .flash-success {
+    display: flex; align-items: flex-start; gap: 12px; padding: 17px 20px; margin-bottom: 25px;
+    border-radius: 13px; border: 1px solid rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.1);
+    color: #a7f3d0; font-size: 14px; line-height: 1.7;
+}
+
+.company-status-page .flash-success i {
+    font-size: 20px; flex-shrink: 0;
+}
+
+.company-status-page .flash-error {
+    padding: 17px 20px; margin-bottom: 25px; border-radius: 13px; border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.09); color: #fda4af; font-size: 14px;
+}
+
+.company-status-page .status-layout {
+    display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 25px; align-items: start;
+}
+
+.company-status-page .status-main {
+    display: flex; flex-direction: column; gap: 25px; min-width: 0;
+}
+
+.company-status-page .status-card {
+    overflow: hidden; border: 1px solid #2b2b42; border-radius: 20px; background: #111120;
+}
+
+.company-status-page .status-card-header {
+    display: flex; align-items: center; gap: 15px; padding: 26px 30px; border-bottom: 1px solid #29293f;
+}
+
+.company-status-page .card-icon {
+    display: flex; justify-content: center; align-items: center; width: 48px; height: 48px; flex-shrink: 0;
+    border-radius: 13px; background: rgba(168, 112, 255, 0.13); color: #c49aff; font-size: 22px;
+}
+
+.company-status-page .status-card-body {
+    padding: 30px;
+}
+
+.company-status-page .status-overview {
+    padding: 35px; border-radius: 20px; border: 1px solid #3c325d;
+    background: linear-gradient(
+                135deg,
+                rgba(142, 83, 255, 0.12),
+                rgba(99, 102, 241, 0.03)
+            ),
+            #111120;
+}
+
+.company-status-page .status-overview-top {
+    display: flex; align-items: flex-start; gap: 23px; margin-bottom: 26px;
+}
+
+.company-status-page .status-main-icon {
+    display: flex; justify-content: center; align-items: center; width: 76px; height: 76px; flex-shrink: 0;
+    border-radius: 22px; font-size: 35px;
+}
+
+.company-status-page .status-pending .status-main-icon {
+    background: rgba(245, 158, 11, 0.12); color: #f4c46d;
+}
+
+.company-status-page .status-approved .status-main-icon {
+    background: rgba(16, 185, 129, 0.12); color: #6ee7b7;
+}
+
+.company-status-page .status-rejected .status-main-icon {
+    background: rgba(239, 68, 68, 0.12); color: #fca5a5;
+}
+
+.company-status-page .status-suspended .status-main-icon {
+    background: rgba(239, 68, 68, 0.12); color: #fca5a5;
+}

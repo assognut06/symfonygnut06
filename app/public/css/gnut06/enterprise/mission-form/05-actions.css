@@ -1,0 +1,17 @@
+@media (max-width: 600px) {
+    .mission-form-page .mission-correction-notice {
+        gap: 12px; padding: 19px 16px;
+    }
+
+    .mission-form-page .mission-correction-icon {
+        width: 37px; height: 37px; font-size: 17px;
+    }
+
+    .mission-form-page .mission-correction-title {
+        font-size: 17px;
+    }
+
+    .mission-form-page .mission-correction-reason {
+        padding: 14px;
+    }
+}

@@ -1,0 +1,117 @@
+.admin-company-detail {
+    min-height: 100vh; padding: 55px 20px 100px;
+    background: radial-gradient(
+                ellipse at 85% 0%,
+                rgba(149, 91, 255, 0.13),
+                transparent 45%
+            ),
+            #060611;
+    color: #f8f9ff;
+}
+
+.admin-company-detail .detail-container {
+    max-width: 1250px; margin: 0 auto;
+}
+
+.admin-company-detail .back-link {
+    display: inline-flex; align-items: center; gap: 10px; margin-bottom: 32px; color: #c5a0f5;
+    text-decoration: none; font-size: 14px; font-weight: 600; transition: color 0.2s;
+}
+
+.admin-company-detail .page-badge {
+    display: inline-flex; align-items: center; gap: 9px; padding: 8px 15px; margin-bottom: 18px;
+    border: 1px solid rgba(168, 112, 255, 0.22); border-radius: 30px; background: rgba(168, 112, 255, 0.12);
+    color: #d1aaff; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+}
+
+.admin-company-detail .page-title {
+    margin: 0 0 12px; color: #ffffff; font-size: clamp(28px, 4vw, 44px); font-weight: 800;
+    letter-spacing: -1.2px; overflow-wrap: anywhere;
+}
+
+.admin-company-detail .page-description {
+    max-width: 680px; margin: 0; color: #a7a8bf; font-size: 14px; line-height: 1.8;
+}
+
+.admin-company-detail .account-reference {
+    display: inline-flex; align-items: center; gap: 9px; padding: 12px 17px; border: 1px solid #38304f;
+    border-radius: 12px; background: #151524; color: #c5c5dc; font-size: 13px;
+}
+
+.admin-company-detail .account-reference strong {
+    color: #ffffff;
+}
+
+.admin-company-detail .flash-message {
+    display: flex; align-items: flex-start; gap: 12px; padding: 17px 20px; margin-bottom: 20px;
+    border-radius: 12px; font-size: 14px; line-height: 1.7;
+}
+
+.admin-company-detail .flash-success {
+    border: 1px solid rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.1); color: #a7f3d0;
+}
+
+.admin-company-detail .flash-warning {
+    border: 1px solid rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.1); color: #fcd34d;
+}
+
+.admin-company-detail .detail-layout {
+    display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 25px; align-items: start;
+}
+
+.admin-company-detail .detail-card {
+    overflow: hidden; border: 1px solid #2b2b42; border-radius: 20px; background: #111120;
+}
+
+.admin-company-detail .card-header {
+    display: flex; align-items: center; gap: 15px; padding: 26px 30px; border-bottom: 1px solid #2a2a40;
+    background: transparent;
+}
+
+.admin-company-detail .status-panel {
+    padding: 30px; border: 1px solid #40345e; border-radius: 20px;
+    background: linear-gradient(
+                135deg,
+                rgba(142, 83, 255, 0.12),
+                rgba(99, 102, 241, 0.03)
+            ),
+            #111120;
+}
+
+.admin-company-detail .status-panel-header {
+    display: flex; align-items: flex-start; gap: 20px;
+}
+
+.admin-company-detail .status-icon {
+    display: flex; align-items: center; justify-content: center; width: 65px; height: 65px; flex-shrink: 0;
+    border-radius: 18px; font-size: 29px;
+}
+
+.admin-company-detail .status-pending .status-icon {
+    background: rgba(245, 158, 11, 0.13); color: #fcd34d;
+}
+
+.admin-company-detail .status-approved .status-icon {
+    background: rgba(16, 185, 129, 0.13); color: #6ee7b7;
+}
+
+.admin-company-detail .status-rejected .status-icon {
+    background: rgba(239, 68, 68, 0.13); color: #fca5a5;
+}
+
+.admin-company-detail .status-suspended .status-icon {
+    background: rgba(148, 117, 245, 0.13); color: #c4b5fd;
+}
+
+.admin-company-detail .status-badge {
+    display: inline-flex; align-items: center; gap: 8px; padding: 8px 13px; margin-bottom: 13px;
+    border-radius: 30px; font-size: 12px; font-weight: 700;
+}
+
+.admin-company-detail .status-pending .status-badge {
+    background: rgba(245, 158, 11, 0.13); color: #fcd34d;
+}
+
+.admin-company-detail .status-approved .status-badge {
+    background: rgba(16, 185, 129, 0.13); color: #6ee7b7;
+}

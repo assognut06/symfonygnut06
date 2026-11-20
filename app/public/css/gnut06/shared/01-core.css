@@ -1,0 +1,112 @@
+.admin-mission-detail *,
+.admin-company-detail *,
+.company-registration *,
+.company-status-page *,
+.mission-form-page * {
+    box-sizing: border-box;
+}
+
+.admin-mission-detail .back-link:hover,
+.admin-company-detail .back-link:hover,
+.company-registration .back-link:hover,
+.company-status-page .back-link:hover,
+.mission-form-page .back-link:hover {
+    color: #ffffff;
+}
+
+.admin-mission-detail .page-header,
+.admin-company-detail .page-header {
+    display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 25px;
+    margin-bottom: 35px;
+}
+
+.admin-mission-detail .detail-main,
+.admin-company-detail .detail-main {
+    display: flex; flex-direction: column; gap: 25px; min-width: 0;
+}
+
+.admin-mission-detail .detail-sidebar,
+.admin-company-detail .detail-sidebar {
+    display: flex; flex-direction: column; gap: 20px; min-width: 0;
+}
+
+.admin-mission-detail .card-icon,
+.admin-company-detail .card-icon {
+    display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; flex-shrink: 0;
+    border-radius: 13px; background: rgba(168, 112, 255, 0.13); color: #c49aff; font-size: 22px;
+}
+
+.admin-mission-detail .card-title,
+.admin-company-detail .card-title,
+.company-status-page .card-title {
+    margin: 0 0 5px; color: #ffffff; font-size: 19px; font-weight: 700;
+}
+
+.admin-mission-detail .card-subtitle,
+.admin-company-detail .card-subtitle,
+.company-status-page .card-subtitle {
+    margin: 0; color: #9798b0; font-size: 13px; line-height: 1.6;
+}
+
+.admin-mission-detail .card-body,
+.admin-company-detail .card-body {
+    padding: 30px;
+}
+
+.admin-mission-detail .information-grid,
+.admin-company-detail .information-grid {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 24px;
+}
+
+.admin-mission-detail .information-item,
+.admin-company-detail .information-item,
+.company-status-page .information-item {
+    min-width: 0;
+}
+
+.admin-mission-detail .information-label,
+.admin-company-detail .information-label {
+    display: flex; align-items: center; gap: 9px; margin-bottom: 10px; color: #999ab3; font-size: 12px;
+}
+
+.admin-mission-detail .information-value,
+.admin-company-detail .information-value {
+    margin: 0; color: #f0f0fb; font-size: 14px; font-weight: 600; line-height: 1.7; overflow-wrap: anywhere;
+}
+
+.admin-mission-detail .information-empty,
+.admin-company-detail .information-empty {
+    color: #85869e; font-style: italic; font-weight: 400;
+}
+
+.admin-mission-detail .sidebar-icon,
+.admin-company-detail .sidebar-icon {
+    display: flex; align-items: center; justify-content: center; width: 45px; height: 45px;
+    margin-bottom: 19px; border-radius: 12px; background: rgba(168, 112, 255, 0.13); color: #c594ff;
+    font-size: 21px;
+}
+
+.admin-mission-detail .sidebar-title,
+.admin-company-detail .sidebar-title {
+    margin-bottom: 10px; color: #ffffff; font-size: 17px; font-weight: 700;
+}
+
+.admin-mission-detail .action-form:last-child,
+.admin-company-detail .action-form:last-child {
+    margin-bottom: 0;
+}
+
+.admin-mission-detail .action-button:hover,
+.admin-company-detail .action-button:hover {
+    transform: translateY(-2px);
+}
+
+.admin-mission-detail .action-button:focus-visible,
+.admin-company-detail .action-button:focus-visible {
+    outline: 3px solid #ffffff; outline-offset: 3px;
+}
+
+.admin-mission-detail .secondary-link:hover,
+.admin-company-detail .secondary-link:hover {
+    background: rgba(168, 112, 255, 0.12); color: #ffffff;
+}

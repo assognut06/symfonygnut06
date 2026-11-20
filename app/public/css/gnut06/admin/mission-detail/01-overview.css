@@ -1,0 +1,115 @@
+.admin-mission-detail {
+    min-height: 100vh; padding: 55px 20px 100px;
+    background: radial-gradient(
+                ellipse at 85% 0%,
+                rgba(153, 91, 255, 0.13),
+                transparent 45%
+            ),
+            #060611;
+    color: #f8f9ff;
+}
+
+.admin-mission-detail .detail-container {
+    max-width: 1280px; margin: 0 auto;
+}
+
+.admin-mission-detail .back-link {
+    display: inline-flex; align-items: center; gap: 10px; margin-bottom: 30px; color: #c5a0f5;
+    text-decoration: none; font-size: 14px; font-weight: 600;
+}
+
+.admin-mission-detail .page-badge {
+    display: inline-flex; align-items: center; gap: 9px; padding: 8px 15px; margin-bottom: 20px;
+    border-radius: 30px; background: rgba(168, 112, 255, 0.12); border: 1px solid rgba(168, 112, 255, 0.2);
+    color: #d1aaff; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+}
+
+.admin-mission-detail .page-title {
+    margin: 0 0 12px; color: #ffffff; font-size: clamp(29px, 4vw, 43px); font-weight: 800;
+    letter-spacing: -1.2px; overflow-wrap: anywhere;
+}
+
+.admin-mission-detail .page-description {
+    max-width: 750px; margin: 0; color: #a7a8bf; font-size: 14px; line-height: 1.8;
+}
+
+.admin-mission-detail .reference-badge {
+    display: inline-flex; align-items: center; gap: 9px; padding: 13px 18px; border: 1px solid #403657;
+    border-radius: 12px; background: #151524; color: #c5c5dc; font-size: 13px;
+}
+
+.admin-mission-detail .reference-badge strong {
+    color: #ffffff;
+}
+
+.admin-mission-detail .flash-message {
+    display: flex; align-items: center; gap: 12px; padding: 17px 20px; margin-bottom: 20px;
+    border-radius: 12px; font-size: 14px; line-height: 1.7;
+}
+
+.admin-mission-detail .flash-success {
+    background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #a7f3d0;
+}
+
+.admin-mission-detail .flash-warning {
+    background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #fcd34d;
+}
+
+.admin-mission-detail .detail-layout {
+    display: grid; grid-template-columns: minmax(0, 1fr) 340px; align-items: start; gap: 25px;
+}
+
+.admin-mission-detail .detail-card {
+    overflow: hidden; background: #111120; border: 1px solid #2b2b42; border-radius: 20px;
+}
+
+.admin-mission-detail .card-header {
+    display: flex; align-items: center; gap: 15px; padding: 25px 30px; background: transparent;
+    border-bottom: 1px solid #2a2a40;
+}
+
+.admin-mission-detail .status-panel {
+    padding: 30px;
+    background: linear-gradient(
+                135deg,
+                rgba(142, 83, 255, 0.12),
+                rgba(99, 102, 241, 0.03)
+            ),
+            #111120;
+    border: 1px solid #40345e; border-radius: 20px;
+}
+
+.admin-mission-detail .status-panel-top {
+    display: flex; align-items: flex-start; gap: 20px;
+}
+
+.admin-mission-detail .status-icon {
+    display: flex; align-items: center; justify-content: center; width: 65px; height: 65px; flex-shrink: 0;
+    border-radius: 18px; background: rgba(168, 112, 255, 0.12); color: #c49aff; font-size: 29px;
+}
+
+.admin-mission-detail .status-en_attente .status-icon {
+    background: rgba(245, 158, 11, 0.13); color: #fcd34d;
+}
+
+.admin-mission-detail .status-publiee .status-icon {
+    background: rgba(16, 185, 129, 0.13); color: #6ee7b7;
+}
+
+.admin-mission-detail .status-a_corriger .status-icon {
+    background: rgba(249, 115, 22, 0.13); color: #fdba74;
+}
+
+.admin-mission-detail .status-retiree .status-icon {
+    background: rgba(239, 68, 68, 0.13); color: #fca5a5;
+}
+
+.admin-mission-detail .status-label {
+    display: inline-flex; align-items: center; gap: 8px; padding: 8px 13px; margin-bottom: 13px;
+    background: rgba(168, 112, 255, 0.14); border-radius: 30px; color: #d8baff; font-size: 12px;
+    font-weight: 700;
+}
+
+.admin-mission-detail .status-en_attente .status-label {
+    background: rgba(245, 158, 11, 0.14); color: #fcd34d;
+}

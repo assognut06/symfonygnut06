@@ -1,0 +1,97 @@
+.admin-mission-page .status-badge {
+    display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 25px;
+    font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+
+.admin-mission-page .status-brouillon {
+    background: rgba(148, 163, 184, 0.15); color: #cbd5e1;
+}
+
+.admin-mission-page .status-en_attente {
+    background: rgba(245, 158, 11, 0.14); color: #fcd34d;
+}
+
+.admin-mission-page .status-a_corriger {
+    background: rgba(249, 115, 22, 0.14); color: #fdba74;
+}
+
+.admin-mission-page .status-publiee {
+    background: rgba(16, 185, 129, 0.14); color: #6ee7b7;
+}
+
+.admin-mission-page .status-cloturee {
+    background: rgba(99, 102, 241, 0.14); color: #a5b4fc;
+}
+
+.admin-mission-page .status-expiree {
+    background: rgba(239, 68, 68, 0.12); color: #fca5a5;
+}
+
+.admin-mission-page .status-retiree {
+    background: rgba(239, 68, 68, 0.14); color: #fca5a5;
+}
+
+.admin-mission-page .status-badge i {
+    font-size: 8px;
+}
+
+.admin-mission-page .mission-action {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 11px 18px;
+    border: 1px solid #7958aa; border-radius: 10px; background: rgba(168, 112, 255, 0.11); color: #e2c6ff;
+    font-size: 13px; font-weight: 700; text-decoration: none; transition: background 0.2s;
+}
+
+.admin-mission-page .mission-action:hover {
+    background: #7550a5; color: #ffffff;
+}
+
+.admin-mission-page .empty-state {
+    padding: 75px 25px; text-align: center;
+}
+
+.admin-mission-page .empty-icon {
+    display: flex; align-items: center; justify-content: center; width: 76px; height: 76px;
+    margin: 0 auto 25px; border-radius: 22px; background: rgba(168, 112, 255, 0.12); color: #c49aff;
+    font-size: 32px;
+}
+
+.admin-mission-page .empty-title {
+    margin-bottom: 10px; color: #ffffff; font-size: 21px; font-weight: 700;
+}
+
+.admin-mission-page .empty-description {
+    max-width: 480px; margin: 0 auto; color: #a1a2b9; font-size: 13px; line-height: 1.8;
+}
+
+.admin-mission-page .flash-message {
+    display: flex; align-items: center; gap: 12px; padding: 16px 20px; margin-bottom: 20px;
+    border-radius: 12px; font-size: 14px;
+}
+
+.admin-mission-page .flash-success {
+    background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #a7f3d0;
+}
+
+.admin-mission-page .flash-warning {
+    background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #fcd34d;
+}
+
+.admin-mission-page [hidden] {
+    display: none !important;
+}
+
+@media (max-width: 1100px) {
+    .admin-mission-page .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-mission-page .toolbar {
+        align-items: stretch; flex-direction: column;
+    }
+
+    .admin-mission-page .search-wrapper {
+        max-width: none;
+    }
+}

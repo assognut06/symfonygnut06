@@ -1,0 +1,111 @@
+.admin-mission-page .stat-total {
+    --stat-color: #ad82ff;
+}
+
+.admin-mission-page .stat-published {
+    --stat-color: #52d8a6;
+}
+
+.admin-mission-page .stat-correction {
+    --stat-color: #fb986b;
+}
+
+.admin-mission-page .status-brouillon {
+    background: rgba(148, 163, 184, .15); color: #cbd5e1;
+}
+
+.admin-mission-page .status-en_attente {
+    background: rgba(245, 158, 11, .14); color: #fcd34d;
+}
+
+.admin-mission-page .status-a_corriger {
+    background: rgba(249, 115, 22, .14); color: #fdba74;
+}
+
+.admin-mission-page .status-publiee {
+    background: rgba(16, 185, 129, .14); color: #6ee7b7;
+}
+
+.admin-mission-page .status-cloturee {
+    background: rgba(99, 102, 241, .14); color: #a5b4fc;
+}
+
+.admin-mission-page .status-expiree,
+.admin-mission-page .status-retiree {
+    background: rgba(239, 68, 68, .14); color: #fca5a5;
+}
+
+.admin-mission-page {
+    min-height: 100vh; padding: 55px 20px 100px;
+    background: radial-gradient(
+                ellipse at 85% 0%,
+                rgba(151, 89, 255, 0.13),
+                transparent 45%
+            ),
+            #060611;
+    color: #f8f9ff;
+}
+
+.admin-mission-page * {
+    box-sizing: border-box;
+}
+
+.admin-mission-page .dashboard-container {
+    max-width: 1280px; margin: 0 auto;
+}
+
+.admin-mission-page .page-header {
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 25px;
+    margin-bottom: 40px;
+}
+
+.admin-mission-page .page-badge {
+    display: inline-flex; align-items: center; gap: 9px; padding: 8px 15px; margin-bottom: 20px;
+    background: rgba(168, 112, 255, 0.12); border: 1px solid rgba(168, 112, 255, 0.2); border-radius: 30px;
+    color: #d1aaff; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+}
+
+.admin-mission-page .page-title {
+    margin: 0 0 12px; color: #ffffff; font-size: clamp(30px, 4vw, 45px); font-weight: 800;
+    letter-spacing: -1.2px;
+}
+
+.admin-mission-page .page-description {
+    max-width: 700px; margin: 0; color: #a9aac2; font-size: 14px; line-height: 1.8;
+}
+
+.admin-mission-page .header-info {
+    display: flex; align-items: center; gap: 14px; padding: 18px 23px; background: #141424;
+    border: 1px solid #37304e; border-radius: 15px;
+}
+
+.admin-mission-page .header-info-icon {
+    display: flex; align-items: center; justify-content: center; width: 45px; height: 45px;
+    border-radius: 12px; background: rgba(168, 112, 255, 0.14); color: #c59aff; font-size: 20px;
+}
+
+.admin-mission-page .header-info-label {
+    color: #9e9fb6; font-size: 12px;
+}
+
+.admin-mission-page .header-info-value {
+    color: #ffffff; font-size: 17px; font-weight: 700;
+}
+
+.admin-mission-page .stats-grid {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-bottom: 40px;
+}
+
+.admin-mission-page .stat-card {
+    position: relative; overflow: hidden; padding: 26px; background: #111120; border: 1px solid #29293e;
+    border-radius: 18px; transition: transform 0.2s, border-color 0.2s;
+}
+
+.admin-mission-page .stat-card:hover {
+    transform: translateY(-3px); border-color: #71569b;
+}
+
+.admin-mission-page .stat-card::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+    background: var(--stat-color);
+}

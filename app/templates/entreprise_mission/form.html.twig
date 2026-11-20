@@ -2,664 +2,19 @@
 
 {% block title %}{{ pageTitle }} | GNUT 06{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/gnut06/shared/01-core.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/gnut06/shared/02-components.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/gnut06/enterprise/mission-form/01-overview.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/gnut06/enterprise/mission-form/02-form.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/gnut06/enterprise/mission-form/03-fields.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/gnut06/enterprise/mission-form/04-skills.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/gnut06/enterprise/mission-form/05-actions.css') }}">
+{% endblock %}
+
 {% block body %}
 
-<style>
-    .mission-form-page {
-        min-height: 100vh;
-        padding: 55px 0 100px;
-        background:
-            radial-gradient(
-                ellipse at 85% 0%,
-                rgba(153, 91, 255, 0.12),
-                transparent 45%
-            ),
-            #060611;
-        color: #f8f9ff;
-    }
-
-    .mission-form-page * {
-        box-sizing: border-box;
-    }
-
-    .mission-form-page .form-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 25px;
-    }
-
-    .mission-form-page .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 9px;
-        color: #bca0ec;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 30px;
-        transition: color 0.2s;
-    }
-
-    .mission-form-page .back-link:hover {
-        color: #ffffff;
-    }
-
-    .mission-form-page .page-header {
-        margin-bottom: 40px;
-    }
-
-    .mission-form-page .page-label {
-        display: inline-flex;
-        align-items: center;
-        gap: 9px;
-        padding: 8px 15px;
-        border-radius: 30px;
-        background: rgba(168, 112, 255, 0.12);
-        color: #c69aff;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        margin-bottom: 20px;
-    }
-
-    .mission-form-page .page-title {
-        color: #ffffff;
-        font-size: clamp(30px, 4vw, 44px);
-        font-weight: 800;
-        letter-spacing: -1.2px;
-        margin-bottom: 14px;
-    }
-
-    .mission-form-page .page-description {
-        color: #a9aac2;
-        font-size: 15px;
-        line-height: 1.8;
-        max-width: 720px;
-        margin-bottom: 0;
-    }
-
-    .mission-form-page .form-layout {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 300px;
-        align-items: start;
-        gap: 25px;
-    }
-
-    .mission-form-page .form-main {
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-    }
-
-    .mission-form-page .form-section {
-        background: #111120;
-        border: 1px solid #29293f;
-        border-radius: 20px;
-        padding: 32px;
-    }
-
-    .mission-form-page .section-heading {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        padding-bottom: 24px;
-        margin-bottom: 28px;
-        border-bottom: 1px solid #29293f;
-    }
-
-    .mission-form-page .section-icon {
-        width: 46px;
-        height: 46px;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(157, 103, 255, 0.13);
-        color: #bb8dff;
-        border-radius: 13px;
-        font-size: 21px;
-    }
-
-    .mission-form-page .section-title {
-        font-size: 19px;
-        font-weight: 700;
-        color: #ffffff;
-        margin-bottom: 5px;
-    }
-
-    .mission-form-page .section-description {
-        color: #9293ab;
-        font-size: 13px;
-        line-height: 1.6;
-        margin: 0;
-    }
-
-    .mission-form-page .field-group {
-        margin-bottom: 25px;
-        min-width: 0;
-    }
-
-    .mission-form-page .field-group:last-child {
-        margin-bottom: 0;
-    }
-
-    .mission-form-page .field-label {
-        display: block;
-        color: #e4e4f4;
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-
-    .mission-form-page .field-help {
-        color: #9293ab;
-        font-size: 12px;
-        line-height: 1.7;
-        margin-top: 9px;
-        margin-bottom: 0;
-    }
-
-    .mission-form-page .field-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 20px;
-    }
-
-    .mission-form-page .field-grid .field-group {
-        margin-bottom: 0;
-    }
-
-    .mission-form-page .mission-control {
-        display: block;
-        width: 100%;
-        min-height: 48px;
-        padding: 12px 15px;
-        background: #191929;
-        border: 1px solid #38384d;
-        border-radius: 11px;
-        color: #ffffff;
-        font-size: 14px;
-        line-height: 1.5;
-        transition:
-            border-color 0.2s,
-            background 0.2s,
-            box-shadow 0.2s;
-    }
-
-    .mission-form-page .mission-control::placeholder {
-        color: #77788f;
-        opacity: 1;
-    }
-
-    .mission-form-page .mission-control:hover {
-        border-color: #68618b;
-    }
-
-    .mission-form-page .mission-control:focus {
-        outline: none;
-        border-color: #aa79ff;
-        background: #202033;
-        color: #ffffff;
-        box-shadow: 0 0 0 3px rgba(168, 112, 255, 0.14);
-    }
-
-    .mission-form-page textarea.mission-control {
-        min-height: 180px;
-        resize: vertical;
-        line-height: 1.8;
-    }
-
-    .mission-form-page select.mission-control {
-        cursor: pointer;
-        color-scheme: dark;
-    }
-
-    .mission-form-page select.mission-control option {
-        background: #191929;
-        color: #ffffff;
-        padding: 10px;
-    }
-
-    .mission-form-page select[multiple].mission-control {
-        min-height: 175px;
-        padding: 8px;
-    }
-
-    .mission-form-page select[multiple].mission-control option {
-        border-radius: 6px;
-        margin-bottom: 3px;
-    }
-
-    .mission-form-page input[type="date"].mission-control {
-        color-scheme: dark;
-    }
-
-    .mission-form-page .form-errors {
-        margin-top: 9px;
-        color: #ff9ca9;
-        font-size: 13px;
-    }
-
-    .mission-form-page .form-errors ul {
-        padding-left: 18px;
-        margin: 0;
-    }
-
-    .mission-form-page .form-global-errors {
-        background: rgba(220, 53, 69, 0.10);
-        border: 1px solid rgba(220, 53, 69, 0.35);
-        color: #ffb3bd;
-        padding: 16px 20px;
-        border-radius: 12px;
-        margin-bottom: 24px;
-        font-size: 14px;
-    }
-
-    .mission-form-page .form-global-errors:empty {
-        display: none;
-    }
-
-    .mission-form-page .selected-skills-box {
-        margin-bottom: 22px;
-        padding: 20px;
-        background: linear-gradient(
-            135deg,
-            rgba(139, 92, 246, 0.10),
-            rgba(99, 102, 241, 0.05)
-        );
-        border: 1px solid rgba(168, 112, 255, 0.28);
-        border-radius: 15px;
-    }
-
-    .mission-form-page .selected-skills-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 16px;
-    }
-
-    .mission-form-page .selected-skills-title {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        margin: 0;
-        color: #f0e4ff;
-        font-size: 14px;
-        font-weight: 700;
-    }
-
-    .mission-form-page .selected-skills-title i {
-        color: #bd91ff;
-        font-size: 17px;
-    }
-
-    .mission-form-page .selected-skills-count {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 95px;
-        padding: 6px 12px;
-        border-radius: 20px;
-        background: rgba(168, 112, 255, 0.15);
-        color: #d5b5ff;
-        font-size: 12px;
-        font-weight: 700;
-    }
-
-    .mission-form-page .selected-skills-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .mission-form-page .selected-skill-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 11px;
-        max-width: 100%;
-        padding: 7px 8px 7px 14px;
-        border: 1px solid rgba(168, 112, 255, 0.38);
-        border-radius: 9px;
-        background: rgba(168, 112, 255, 0.16);
-        color: #e5d2ff;
-        font-size: 13px;
-        font-weight: 600;
-        overflow-wrap: anywhere;
-    }
-
-    .mission-form-page .selected-skill-tag > span {
-        min-width: 0;
-    }
-
-    .mission-form-page .selected-skill-remove {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
-        flex-shrink: 0;
-        padding: 0;
-        border: 0;
-        border-radius: 6px;
-        background: rgba(255, 255, 255, 0.10);
-        color: #f4e9ff;
-        font-size: 19px;
-        line-height: 1;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
-
-    .mission-form-page .selected-skill-remove:hover {
-        background: rgba(239, 68, 68, 0.30);
-        color: #ffffff;
-    }
-
-    .mission-form-page .selected-skill-remove:focus-visible {
-        outline: 2px solid #ffffff;
-        outline-offset: 2px;
-    }
-
-    .mission-form-page .selected-skills-empty {
-        margin: 0;
-        color: #9293ab;
-        font-size: 13px;
-        font-style: italic;
-    }
-
-    .mission-form-page .selected-skills-empty[hidden] {
-        display: none;
-    }
-
-    .mission-form-page .skills-selector-label {
-        display: block;
-        margin-bottom: 10px;
-        color: #b8b9d0;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .mission-form-page .skills-hint {
-        display: flex;
-        align-items: flex-start;
-        gap: 9px;
-        margin-top: 13px;
-        color: #9293ab;
-        font-size: 12px;
-        line-height: 1.7;
-    }
-
-    .mission-form-page .skills-hint i {
-        color: #a98bfa;
-        margin-top: 2px;
-    }
-
-    .mission-form-page .budget-note {
-        display: flex;
-        gap: 12px;
-        padding: 16px;
-        background: rgba(99, 102, 241, 0.08);
-        border: 1px solid rgba(99, 102, 241, 0.18);
-        border-radius: 12px;
-        color: #b9badb;
-        font-size: 13px;
-        line-height: 1.7;
-        margin-top: 22px;
-    }
-
-    .mission-form-page .budget-note i {
-        color: #a5a7ff;
-        font-size: 18px;
-        flex-shrink: 0;
-    }
-
-    .mission-form-page .form-actions {
-        background: #111120;
-        border: 1px solid #29293f;
-        border-radius: 20px;
-        padding: 28px 32px;
-    }
-
-    .mission-form-page .actions-title {
-        color: #ffffff;
-        font-size: 17px;
-        font-weight: 700;
-        margin-bottom: 8px;
-    }
-
-    .mission-form-page .actions-description {
-        color: #9697af;
-        font-size: 13px;
-        line-height: 1.7;
-        margin-bottom: 23px;
-    }
-
-    .mission-form-page .actions-buttons {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 14px;
-    }
-
-    .mission-form-page .mission-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 48px;
-        padding: 13px 23px;
-        border-radius: 11px;
-        font-size: 14px;
-        font-weight: 700;
-        cursor: pointer;
-        transition:
-            transform 0.2s,
-            background 0.2s,
-            box-shadow 0.2s;
-    }
-
-    .mission-form-page .mission-btn:hover {
-        transform: translateY(-2px);
-    }
-
-    .mission-form-page .mission-btn-outline {
-        background: transparent;
-        border: 1px solid #77709f;
-        color: #ddd0ff;
-    }
-
-    .mission-form-page .mission-btn-outline:hover {
-        background: rgba(168, 112, 255, 0.13);
-        border-color: #b68cff;
-        color: #ffffff;
-    }
-
-    .mission-form-page .mission-btn-primary {
-        border: 1px solid transparent;
-        background: linear-gradient(135deg, #b45cf3, #6269f8);
-        color: #ffffff;
-        box-shadow: 0 8px 25px rgba(113, 93, 245, 0.18);
-    }
-
-    .mission-form-page .mission-btn-primary:hover {
-        color: #ffffff;
-        box-shadow: 0 12px 30px rgba(113, 93, 245, 0.3);
-    }
-
-    .mission-form-page .mission-btn:focus-visible {
-        outline: 3px solid #ffffff;
-        outline-offset: 3px;
-    }
-
-    .mission-form-page .form-sidebar {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .mission-form-page .sidebar-card {
-        background: #111120;
-        border: 1px solid #29293f;
-        border-radius: 18px;
-        padding: 25px;
-    }
-
-    .mission-form-page .sidebar-card-highlight {
-        background:
-            linear-gradient(
-                145deg,
-                rgba(142, 83, 255, 0.14),
-                rgba(99, 102, 241, 0.04)
-            ),
-            #111120;
-        border-color: #453466;
-    }
-
-    .mission-form-page .sidebar-icon {
-        width: 43px;
-        height: 43px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-        background: rgba(168, 112, 255, 0.12);
-        color: #c594ff;
-        font-size: 20px;
-        margin-bottom: 18px;
-    }
-
-    .mission-form-page .sidebar-title {
-        font-size: 16px;
-        font-weight: 700;
-        color: #ffffff;
-        margin-bottom: 15px;
-    }
-
-    .mission-form-page .sidebar-text {
-        color: #a5a6bf;
-        font-size: 13px;
-        line-height: 1.8;
-        margin-bottom: 0;
-    }
-
-    .mission-form-page .sidebar-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .mission-form-page .sidebar-list li {
-        display: flex;
-        gap: 11px;
-        align-items: flex-start;
-        color: #b5b6cc;
-        font-size: 13px;
-        line-height: 1.7;
-        margin-bottom: 15px;
-    }
-
-    .mission-form-page .sidebar-list li:last-child {
-        margin-bottom: 0;
-    }
-
-    .mission-form-page .sidebar-list i {
-        color: #9b84fa;
-        font-size: 15px;
-        flex-shrink: 0;
-        margin-top: 2px;
-    }
-
-    .mission-form-page .sidebar-divider {
-        height: 1px;
-        background: #303046;
-        margin: 20px 0;
-    }
-
-    .mission-form-page .sidebar-alert {
-        display: flex;
-        gap: 10px;
-        padding: 14px;
-        background: rgba(245, 158, 11, 0.07);
-        border: 1px solid rgba(245, 158, 11, 0.2);
-        border-radius: 10px;
-        color: #e2c59e;
-        font-size: 12px;
-        line-height: 1.7;
-    }
-
-    .mission-form-page .sidebar-alert i {
-        flex-shrink: 0;
-        color: #f0b65c;
-        font-size: 16px;
-    }
-
-    @media (max-width: 992px) {
-        .mission-form-page .form-layout {
-            grid-template-columns: 1fr;
-        }
-
-        .mission-form-page .form-sidebar {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-
-    @media (max-width: 600px) {
-        .mission-form-page {
-            padding: 30px 0 60px;
-        }
-
-        .mission-form-page .form-container {
-            padding: 0 16px;
-        }
-
-        .mission-form-page .page-header {
-            margin-bottom: 28px;
-        }
-
-        .mission-form-page .form-section {
-            padding: 22px 18px;
-            border-radius: 15px;
-        }
-
-        .mission-form-page .section-heading {
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .mission-form-page .section-title {
-            font-size: 17px;
-        }
-
-        .mission-form-page .field-grid {
-            grid-template-columns: 1fr;
-            gap: 22px;
-        }
-
-        .mission-form-page .form-actions {
-            padding: 22px 18px;
-        }
-
-        .mission-form-page .actions-buttons {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .mission-form-page .mission-btn {
-            width: 100%;
-        }
-
-        .mission-form-page .form-sidebar {
-            grid-template-columns: 1fr;
-        }
-
-        .mission-form-page .selected-skills-box {
-            padding: 16px;
-        }
-    }
-</style>
 
 <main class="mission-form-page">
 
@@ -688,6 +43,38 @@
             </p>
 
         </header>
+
+        {% if lastCorrection is defined and lastCorrection %}
+            <section class="mission-correction-notice" aria-labelledby="mission-correction-title">
+                <div class="mission-correction-icon" aria-hidden="true">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+
+                <div class="mission-correction-content">
+                    <div class="mission-correction-header">
+                        <h2 id="mission-correction-title" class="mission-correction-title">
+                            Votre mission est à corriger
+                        </h2>
+                        <span class="mission-correction-badge">Action requise</span>
+                    </div>
+
+                    <p class="mission-correction-intro">
+                        L'équipe GNUT06 a demandé quelques ajustements avant la publication de votre mission.
+                        Consultez son retour, puis modifiez les informations concernées.
+                    </p>
+
+                    <div class="mission-correction-reason">
+                        <p class="mission-correction-reason-label">Retour de l'équipe GNUT06</p>
+                        <p class="mission-correction-reason-text">{{ lastCorrection.reason }}</p>
+                    </div>
+
+                    <p class="mission-correction-date">
+                        <i class="bi bi-clock" aria-hidden="true"></i>
+                        <span>Demande du <time datetime="{{ lastCorrection.createdAt|date('c') }}">{{ lastCorrection.createdAt|date('d/m/Y à H:i') }}</time></span>
+                    </p>
+                </div>
+            </section>
+        {% endif %}
 
         {{ form_start(form, {
             'attr': {
@@ -743,7 +130,8 @@
                         {{ form_widget(form.titre, {
                             'attr': {
                                 'class': 'mission-control',
-                                'placeholder': 'Ex. Développement d’un site internet'
+                                'placeholder': 'Ex. Développement d’un site internet',
+                                'aria-describedby': 'mission-help-titre'
                             }
                         }) }}
 
@@ -751,7 +139,7 @@
                             {{ form_errors(form.titre) }}
                         </div>
 
-                        <p class="field-help">
+                        <p class="field-help" id="mission-help-titre">
                             Choisissez un titre clair et précis.
                             Maximum 120 caractères.
                         </p>
@@ -769,7 +157,8 @@
                         {{ form_widget(form.description, {
                             'attr': {
                                 'class': 'mission-control',
-                                'placeholder': 'Décrivez les objectifs, les tâches à réaliser et les résultats attendus.'
+                                'placeholder': 'Décrivez les objectifs, les tâches à réaliser et les résultats attendus.',
+                                'aria-describedby': 'mission-help-description'
                             }
                         }) }}
 
@@ -777,7 +166,7 @@
                             {{ form_errors(form.description) }}
                         </div>
 
-                        <p class="field-help">
+                        <p class="field-help" id="mission-help-description">
                             Maximum 3 000 caractères.
                             Ne mentionnez aucune donnée personnelle
                             ou information sensible.
@@ -856,7 +245,8 @@
                         {{ form_widget(form.competences, {
                             'attr': {
                                 'class': 'mission-control',
-                                'data-skill-select': '1'
+                                'data-skill-select': '1',
+                                'aria-describedby': 'mission-help-skills'
                             }
                         }) }}
 
@@ -864,7 +254,7 @@
                             {{ form_errors(form.competences) }}
                         </div>
 
-                        <div class="skills-hint">
+                        <div class="skills-hint" id="mission-help-skills">
                             <i class="bi bi-info-circle"></i>
                             <span>
                                 Maintenez Ctrl sur Windows ou Cmd sur Mac
@@ -1029,7 +419,8 @@
 
                         {{ form_widget(form.dateLimiteReponse, {
                             'attr': {
-                                'class': 'mission-control'
+                                'class': 'mission-control',
+                                'aria-describedby': 'mission-help-deadline'
                             }
                         }) }}
 
@@ -1037,7 +428,7 @@
                             {{ form_errors(form.dateLimiteReponse) }}
                         </div>
 
-                        <p class="field-help">
+                        <p class="field-help" id="mission-help-deadline">
                             La date limite doit être future.
                             Elle est obligatoire pour soumettre la mission.
                         </p>
@@ -1382,6 +773,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         bubbles: true
                     })
                 );
+
+                select.focus();
             });
 
             tag.appendChild(label);

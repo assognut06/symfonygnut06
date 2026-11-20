@@ -1,0 +1,59 @@
+.admin-mission-detail .empty-history {
+    padding: 30px 15px; text-align: center; color: #999ab2; font-size: 13px; line-height: 1.8;
+}
+
+.admin-mission-detail .empty-history i {
+    display: block; margin-bottom: 15px; color: #b38bf5; font-size: 32px;
+}
+
+.admin-mission-detail .secondary-link {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px; width: 100%;
+    padding: 12px 15px; background: transparent; border: 1px solid #4b4168; border-radius: 10px;
+    color: #ddc7fc; font-size: 13px; font-weight: 600; text-decoration: none;
+}
+
+@media (max-width: 992px) {
+    .admin-mission-detail .detail-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-mission-detail .detail-sidebar {
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .admin-mission-detail {
+        padding: 35px 16px 65px;
+    }
+
+    .admin-mission-detail .status-panel {
+        padding: 22px 19px;
+    }
+
+    .admin-mission-detail .status-panel-top {
+        flex-direction: column;
+    }
+
+    .admin-mission-detail .card-header,
+        .admin-mission-detail .card-body {
+        padding: 23px 19px;
+    }
+
+    .admin-mission-detail .information-grid,
+        .admin-mission-detail .pricing-box {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-mission-detail .detail-sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-mission-detail .mission-name {
+        font-size: 20px;
+    }
+
+    .admin-mission-detail .status-title {
+        font-size: 20px;
+    }
+}

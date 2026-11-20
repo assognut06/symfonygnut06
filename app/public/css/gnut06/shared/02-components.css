@@ -1,0 +1,30 @@
+.admin-company-detail .sidebar-divider,
+.company-registration .sidebar-divider,
+.company-status-page .sidebar-divider {
+    height: 1px; margin: 20px 0; background: #303046;
+}
+
+.company-registration .field-group:last-child,
+.mission-form-page .field-group:last-child {
+    margin-bottom: 0;
+}
+
+.company-registration .field-grid .field-group,
+.mission-form-page .field-grid .field-group {
+    margin-bottom: 0;
+}
+
+.company-registration .sidebar-title,
+.company-status-page .sidebar-title {
+    margin-bottom: 15px; color: #ffffff; font-size: 16px; font-weight: 700;
+}
+
+.company-registration .sidebar-list,
+.mission-form-page .sidebar-list {
+    list-style: none; padding: 0; margin: 0;
+}
+
+.company-registration .sidebar-list li:last-child,
+.mission-form-page .sidebar-list li:last-child {
+    margin-bottom: 0;
+}

@@ -1,0 +1,115 @@
+.admin-company-detail .status-rejected .status-badge {
+    background: rgba(239, 68, 68, 0.13); color: #fca5a5;
+}
+
+.admin-company-detail .status-suspended .status-badge {
+    background: rgba(148, 117, 245, 0.13); color: #c4b5fd;
+}
+
+.admin-company-detail .status-title {
+    margin-bottom: 10px; color: #ffffff; font-size: 22px; font-weight: 800;
+}
+
+.admin-company-detail .status-description {
+    margin: 0; color: #b1b2ca; font-size: 13px; line-height: 1.8;
+}
+
+.admin-company-detail .status-divider {
+    height: 1px; margin: 25px 0; background: #34344b;
+}
+
+.admin-company-detail .status-footer {
+    display: flex; align-items: center; gap: 10px; color: #a5a6be; font-size: 13px;
+}
+
+.admin-company-detail .status-footer i {
+    color: #ae8aff;
+}
+
+.admin-company-detail .company-identity {
+    display: flex; align-items: center; gap: 18px; padding: 22px; margin-bottom: 28px;
+    border: 1px solid rgba(168, 112, 255, 0.2); border-radius: 14px; background: rgba(168, 112, 255, 0.07);
+}
+
+.admin-company-detail .company-avatar {
+    display: flex; align-items: center; justify-content: center; width: 58px; height: 58px; flex-shrink: 0;
+    border-radius: 15px; background: rgba(168, 112, 255, 0.16); color: #d0a9ff; font-size: 27px;
+}
+
+.admin-company-detail .company-identity-label {
+    margin-bottom: 6px; color: #9c9db5; font-size: 12px;
+}
+
+.admin-company-detail .company-identity-name {
+    margin: 0; color: #ffffff; font-size: 21px; font-weight: 700; overflow-wrap: anywhere;
+}
+
+.admin-company-detail .information-label i {
+    color: #b38bf5; font-size: 16px;
+}
+
+.admin-company-detail .information-value a {
+    color: #d4b1ff; text-decoration: none;
+}
+
+.admin-company-detail .information-value a:hover {
+    text-decoration: underline; color: #ffffff;
+}
+
+.admin-company-detail .sidebar-card {
+    padding: 26px; border: 1px solid #2b2b42; border-radius: 18px; background: #111120;
+}
+
+.admin-company-detail .sidebar-description {
+    margin-bottom: 22px; color: #a5a6bd; font-size: 13px; line-height: 1.8;
+}
+
+.admin-company-detail .action-form {
+    margin-bottom: 13px;
+}
+
+.admin-company-detail .action-button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+    min-height: 49px; padding: 13px 17px; border-radius: 11px; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: transform 0.2s,
+            box-shadow 0.2s,
+            background 0.2s;
+}
+
+.admin-company-detail .button-approve {
+    border: 1px solid transparent; background: linear-gradient(135deg, #18a779, #0d8f77); color: #ffffff;
+}
+
+.admin-company-detail .button-approve:hover {
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+}
+
+.admin-company-detail .button-reject {
+    border: 1px solid #ad4a59; background: rgba(239, 68, 68, 0.1); color: #ffadb7;
+}
+
+.admin-company-detail .button-reject:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.admin-company-detail .button-suspend {
+    border: 1px solid #ab773f; background: rgba(245, 158, 11, 0.1); color: #f8c982;
+}
+
+.admin-company-detail .button-suspend:hover {
+    background: rgba(245, 158, 11, 0.2);
+}
+
+.admin-company-detail .button-review {
+    border: 1px solid transparent; background: linear-gradient(135deg, #b45cf3, #6269f8); color: #ffffff;
+}
+
+.admin-company-detail .button-review:hover {
+    box-shadow: 0 8px 25px rgba(113, 93, 245, 0.25);
+}
+
+.admin-company-detail .action-notice {
+    display: flex; align-items: flex-start; gap: 11px; padding: 15px; margin-top: 20px;
+    border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 11px; background: rgba(99, 102, 241, 0.07);
+    color: #bcbdd8; font-size: 12px; line-height: 1.8;
+}

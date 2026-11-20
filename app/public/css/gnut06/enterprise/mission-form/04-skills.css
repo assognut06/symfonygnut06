@@ -1,0 +1,106 @@
+@media (max-width: 600px) {
+    .mission-form-page {
+        padding: 30px 0 60px;
+    }
+
+    .mission-form-page .form-container {
+        padding: 0 16px;
+    }
+
+    .mission-form-page .page-header {
+        margin-bottom: 28px;
+    }
+
+    .mission-form-page .form-section {
+        padding: 22px 18px; border-radius: 15px;
+    }
+
+    .mission-form-page .section-heading {
+        align-items: flex-start; gap: 12px;
+    }
+
+    .mission-form-page .section-title {
+        font-size: 17px;
+    }
+
+    .mission-form-page .field-grid {
+        grid-template-columns: 1fr; gap: 22px;
+    }
+
+    .mission-form-page .form-actions {
+        padding: 22px 18px;
+    }
+
+    .mission-form-page .actions-buttons {
+        flex-direction: column; align-items: stretch;
+    }
+
+    .mission-form-page .mission-btn {
+        width: 100%;
+    }
+
+    .mission-form-page .form-sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .mission-form-page .selected-skills-box {
+        padding: 16px;
+    }
+}
+
+.mission-form-page .mission-correction-notice {
+    display: flex; align-items: flex-start; gap: 18px; padding: 25px 27px; margin-bottom: 30px;
+    background: linear-gradient(120deg, rgba(168, 112, 255, 0.10), transparent 65%), #111120;
+    border: 1px solid #48365e; border-left: 4px solid #a870ff; border-radius: 17px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.mission-form-page .mission-correction-icon {
+    display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; flex-shrink: 0;
+    border-radius: 12px; background: rgba(168, 112, 255, 0.16); color: #cba6ff; font-size: 21px;
+}
+
+.mission-form-page .mission-correction-content {
+    flex: 1; min-width: 0;
+}
+
+.mission-form-page .mission-correction-header {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 9px;
+}
+
+.mission-form-page .mission-correction-title {
+    margin: 0; color: #ffffff; font-size: 19px; font-weight: 700; line-height: 1.4; letter-spacing: 0;
+    text-transform: none;
+}
+
+.mission-form-page .mission-correction-badge {
+    display: inline-flex; align-items: center; padding: 5px 11px;
+    border: 1px solid rgba(191, 143, 255, 0.34); border-radius: 30px; background: rgba(168, 112, 255, 0.13);
+    color: #dac1ff; font-size: 12px; font-weight: 700; line-height: 1.3;
+}
+
+.mission-form-page .mission-correction-intro {
+    margin: 0 0 18px; color: #bfc0d7; font-size: 14px; line-height: 1.7;
+}
+
+.mission-form-page .mission-correction-reason {
+    padding: 17px 19px; background: #1c1a30; border: 1px solid #38304d; border-radius: 11px;
+}
+
+.mission-form-page .mission-correction-reason-label {
+    margin: 0 0 7px; color: #c69aff; font-size: 12px; font-weight: 700; line-height: 1.5;
+}
+
+.mission-form-page .mission-correction-reason-text {
+    margin: 0; color: #f2effc; font-size: 14px; line-height: 1.7; white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.mission-form-page .mission-correction-date {
+    display: flex; align-items: center; gap: 8px; margin: 14px 0 0; color: #aaaac2; font-size: 12px;
+    line-height: 1.5;
+}
+
+.mission-form-page .mission-correction-date i {
+    color: #a98bfa; font-size: 13px;
+}
