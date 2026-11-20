@@ -153,7 +153,7 @@
             {% endif %}
         </div>
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success px-4">{{ demoMode|default(false) ? 'Proposer ce profil fictif' : 'Enregistrer' }}</button>
+            <button type="submit" class="btn btn-success px-4">{{ demoMode|default(false) ? 'Proposer ce profil fictif' : (tih.removed ? 'Soumettre une nouvelle demande' : 'Enregistrer') }}</button>
         </div>
         {{ form_end(form) }}
     </div>
