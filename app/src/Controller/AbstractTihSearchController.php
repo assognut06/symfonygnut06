@@ -35,11 +35,12 @@ abstract class AbstractTihSearchController extends AbstractController
     /**
      * @return array<string, mixed>
      */
-    protected function getSearchViewData(Request $request, string $detailRoute): array
+    protected function getSearchViewData(Request $request, string $detailRoute, string $profileKind): array
     {
         $page = max(1, (int) $request->query->get('page', 1));
         $queryParams = $request->query->all();
         $filters = [
+            'profileKind' => $profileKind,
             'skills' => array_filter(array_map('intval', (array) ($queryParams['skills'] ?? []))),
             'regions' => array_filter((array) ($queryParams['regions'] ?? [])),
             'departements' => array_filter((array) ($queryParams['departements'] ?? [])),
@@ -110,14 +111,14 @@ abstract class AbstractTihSearchController extends AbstractController
         ];
     }
 
-    protected function getTihDetailsViewModel(TihRepository $tihRepository, int $id): TihDetailsViewModel
+    protected function getTihDetailsViewModel(TihRepository $tihRepository, int $id, string $profileKind): TihDetailsViewModel
     {
-        return TihDetailsViewModel::fromEntity($this->getValidatedTih($tihRepository, $id));
+        return TihDetailsViewModel::fromEntity($this->getValidatedTih($tihRepository, $id, $profileKind));
     }
 
-    protected function createPublicCvResponse(TihRepository $tihRepository, int $id): BinaryFileResponse
+    protected function createPublicCvResponse(TihRepository $tihRepository, int $id, string $profileKind): BinaryFileResponse
     {
-        $tih = $this->getValidatedTih($tihRepository, $id);
+        $tih = $this->getValidatedTih($tihRepository, $id, $profileKind);
 
         if (!$tih->getCv()) {
             throw $this->createNotFoundException('CV introuvable.');
@@ -131,9 +132,9 @@ abstract class AbstractTihSearchController extends AbstractController
         );
     }
 
-    protected function createPublicAttestationResponse(TihRepository $tihRepository, int $id): BinaryFileResponse
+    protected function createPublicAttestationResponse(TihRepository $tihRepository, int $id, string $profileKind): BinaryFileResponse
     {
-        $tih = $this->getValidatedTih($tihRepository, $id);
+        $tih = $this->getValidatedTih($tihRepository, $id, $profileKind);
 
         if (!$tih->getAttestationTih()) {
             throw $this->createNotFoundException('Attestation introuvable.');
@@ -150,9 +151,9 @@ abstract class AbstractTihSearchController extends AbstractController
     /**
      * @return array<string, mixed>|Response
      */
-    protected function handleContactRequest(Request $request, TihRepository $tihRepository, int $id, string $detailsRoute): array|Response
+    protected function handleContactRequest(Request $request, TihRepository $tihRepository, int $id, string $detailsRoute, string $profileKind): array|Response
     {
-        $tih = $this->getValidatedTih($tihRepository, $id);
+        $tih = $this->getValidatedTih($tihRepository, $id, $profileKind);
         $tihViewModel = TihContactViewModel::fromEntity($tih);
         $form = $this->createForm(TihContactType::class);
         $form->handleRequest($request);
@@ -202,9 +203,9 @@ abstract class AbstractTihSearchController extends AbstractController
         return $profiles;
     }
 
-    private function getValidatedTih(TihRepository $tihRepository, int $id): Tih
+    protected function getValidatedTih(TihRepository $tihRepository, int $id, string $profileKind): Tih
     {
-        $tih = $tihRepository->findValidatedById($id);
+        $tih = $tihRepository->findValidatedById($id, $profileKind);
 
         if (!$tih) {
             throw $this->createNotFoundException('TIH non trouvé.');

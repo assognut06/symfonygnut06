@@ -20,7 +20,7 @@ final readonly class SendTihContactCommandHandler
      */
     public function __invoke(SendTihContactCommand $command): void
     {
-        $tih = $this->tihRepository->find($command->tihId);
+        $tih = $this->tihRepository->findValidatedById($command->tihId);
         
         if (!$tih) {
             throw new EntityNotFoundException(

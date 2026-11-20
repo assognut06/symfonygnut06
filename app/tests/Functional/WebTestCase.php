@@ -141,6 +141,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *     rate?: string,
      *     rateType?: string,
      *     validated?: bool,
+     *     profileKind?: string,
      *     professionalEmail?: string,
      *     competences?: Competence[],
      * } $options
@@ -156,6 +157,7 @@ abstract class WebTestCase extends BaseWebTestCase
         );
 
         $tih = new Tih();
+        $tih->setProfileKind($options['profileKind'] ?? Tih::PROFILE_KIND_REAL);
         $tih->setUser($user);
         $tih->setFirstName($options['firstName'] ?? 'Jean');
         $tih->setLastName($options['lastName'] ?? 'Dupont');
