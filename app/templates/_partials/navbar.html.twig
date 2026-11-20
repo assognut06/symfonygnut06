@@ -1,5 +1,4 @@
 <style>
-/* ✅ Focus visible obligatoire WCAG 2.1 AA */
 .nav-link:focus,
 .btn-neon:focus,
 .btn-outline-gradient:focus,
@@ -11,7 +10,6 @@
     box-shadow: 0 0 0 3px rgba(248, 108, 248, 0.5) !important;
 }
 
-/* ✅ Amélioration du contraste */
 .nav-link {
     color: #ffffff !important;
     transition: all 0.3s ease;
@@ -23,7 +21,6 @@
     background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Style pour la page active */
 .nav-link.active,
 .btn-neon.active,
 .btn-outline-gradient.active {
@@ -32,7 +29,6 @@
     border-radius: 4px;
 }
 
-/* ✅ Dropdown accessible */
 .dropdown-menu.bg-navbar {
     background-color: #121212;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -53,13 +49,17 @@
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* ✅ Style pour les liens du dropdown actifs */
 .dropdown-item.active {
     font-weight: bold !important;
     background-color: rgba(248, 108, 248, 0.3) !important;
 }
 
-/* ✅ Amélioration mobile */
+.dropdown-header {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
 @media (max-width: 1199.98px) {
     .nav-item {
         margin-bottom: 0.5rem;
@@ -67,7 +67,10 @@
 }
 </style>
 
+{% set currentRoute = app.request.attributes.get('_route')|default('') %}
+
 <header class="sticky-top" role="banner">
+
     <nav class="navbar navbar-expand-xl navbar-dark bg-navbar"
          role="navigation"
          aria-label="Navigation principale du site GNUT 06">
@@ -108,9 +111,9 @@
 
                     <li class="nav-item">
 
-                        <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_a_propos' ? 'active' : '' }}"
+                        <a class="nav-link text-light {{ currentRoute == 'app_a_propos' ? 'active' : '' }}"
                            href="{{ path('app_a_propos') }}"
-                           {% if app.request.attributes.get('_route') == 'app_a_propos' %}
+                           {% if currentRoute == 'app_a_propos' %}
                                aria-current="page"
                            {% endif %}>
 
@@ -122,9 +125,9 @@
 
                     <li class="nav-item">
 
-                        <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_billetteries' ? 'active' : '' }}"
+                        <a class="nav-link text-light {{ currentRoute == 'app_billetteries' ? 'active' : '' }}"
                            href="{{ path('app_billetteries') }}"
-                           {% if app.request.attributes.get('_route') == 'app_billetteries' %}
+                           {% if currentRoute == 'app_billetteries' %}
                                aria-current="page"
                            {% endif %}>
 
@@ -136,9 +139,9 @@
 
                     <li class="nav-item">
 
-                        <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_metavers' ? 'active' : '' }}"
+                        <a class="nav-link text-light {{ currentRoute == 'app_metavers' ? 'active' : '' }}"
                            href="{{ path('app_metavers') }}"
-                           {% if app.request.attributes.get('_route') == 'app_metavers' %}
+                           {% if currentRoute == 'app_metavers' %}
                                aria-current="page"
                            {% endif %}>
 
@@ -150,9 +153,9 @@
 
                     <li class="nav-item">
 
-                        <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'handi_3d_index' ? 'active' : '' }}"
+                        <a class="nav-link text-light {{ currentRoute == 'handi_3d_index' ? 'active' : '' }}"
                            href="{{ path('handi_3d_index') }}"
-                           {% if app.request.attributes.get('_route') == 'handi_3d_index' %}
+                           {% if currentRoute == 'handi_3d_index' %}
                                aria-current="page"
                                aria-label="Handi-3D - Page courante"
                            {% else %}
@@ -167,9 +170,9 @@
 
                     <li class="nav-item">
 
-                        <a class="nav-link text-light {{ app.request.attributes.get('_route') == 'app_don' ? 'active' : '' }}"
+                        <a class="nav-link text-light {{ currentRoute == 'app_don' ? 'active' : '' }}"
                            href="{{ path('app_don') }}"
-                           {% if app.request.attributes.get('_route') == 'app_don' %}
+                           {% if currentRoute == 'app_don' %}
                                aria-current="page"
                            {% endif %}>
 
@@ -181,10 +184,7 @@
 
                     {% if app.user %}
 
-                        {% set currentRoute = app.request.attributes.get('_route')|default('') %}
-
                         {% set isEnterprise = is_granted('ROLE_ENTREPRISE') %}
-
                         {% set isAdmin = is_granted('ROLE_ADMIN') %}
 
                         {% set isEnterpriseRoute =
@@ -195,6 +195,7 @@
 
                         {% set isAdminRoute =
                             currentRoute starts with 'admin_company_'
+                            or currentRoute starts with 'admin_mission_'
                             or currentRoute == 'admin_dashboard'
                         %}
 
@@ -244,6 +245,16 @@
                                 {% if isAdmin %}
 
                                     <li>
+                                        <hr class="dropdown-divider text-light" aria-hidden="true">
+                                    </li>
+
+                                    <li>
+                                        <h6 class="dropdown-header text-light opacity-75">
+                                            Administration
+                                        </h6>
+                                    </li>
+
+                                    <li>
 
                                         <a class="dropdown-item text-light {{ currentRoute == 'admin_dashboard' ? 'active' : '' }}"
                                            href="{{ path('admin_dashboard') }}"
@@ -273,7 +284,7 @@
 
                                     </li>
 
-                                                                        <li>
+                                    <li>
 
                                         <a class="dropdown-item text-light {{ currentRoute starts with 'admin_mission_' ? 'active' : '' }}"
                                            href="{{ path('admin_mission_index') }}"
@@ -281,7 +292,7 @@
                                                aria-current="page"
                                            {% endif %}>
 
-                                            <i class="bi bi-clipboard me-2" aria-hidden="true"></i>
+                                            <i class="bi bi-clipboard-check me-2" aria-hidden="true"></i>
                                             Gestion des missions
 
                                         </a>
@@ -290,61 +301,32 @@
 
                                 {% endif %}
 
-                                {% if not isEnterprise %}
+                                <li>
+                                    <hr class="dropdown-divider text-light" aria-hidden="true">
+                                </li>
 
-                                    <li>
-                                        <hr class="dropdown-divider text-light"
-                                            aria-hidden="true">
-                                    </li>
+                                <li>
+                                    <h6 class="dropdown-header text-light opacity-75">
+                                       Entreprise
+                                    </h6>
+                                </li>
 
-                                    <li>
+                                <li>
 
-                                        <a class="dropdown-item text-light {{ currentRoute == 'company_registration_new' ? 'active' : '' }}"
-                                           href="{{ path('company_registration_new') }}"
-                                           {% if currentRoute == 'company_registration_new' %}
-                                               aria-current="page"
-                                           {% endif %}>
+                                    <a class="dropdown-item text-light {{ currentRoute starts with 'company_registration_' ? 'active' : '' }}"
+                                       href="{{ path('company_registration_new') }}"
+                                       {% if currentRoute starts with 'company_registration_' %}
+                                           aria-current="page"
+                                       {% endif %}>
 
-                                            <i class="bi bi-building-add me-2" aria-hidden="true"></i>
-                                            Créer un compte entreprise
+                                        <i class="bi bi-building me-2" aria-hidden="true"></i>
+                                        Espace entreprise
 
-                                        </a>
+                                    </a>
 
-                                    </li>
-
-                                {% endif %}
+                                </li>
 
                                 {% if isEnterprise %}
-
-                                    <li>
-
-                                        <hr class="dropdown-divider text-light"
-                                            aria-hidden="true">
-
-                                    </li>
-
-                                    <li>
-
-                                        <h6 class="dropdown-header text-light opacity-75">
-                                            Espace entreprise
-                                        </h6>
-
-                                    </li>
-
-                                    <li>
-
-                                        <a class="dropdown-item text-light {{ currentRoute starts with 'company_registration_' ? 'active' : '' }}"
-                                           href="{{ path('company_registration_status') }}"
-                                           {% if currentRoute starts with 'company_registration_' %}
-                                               aria-current="page"
-                                           {% endif %}>
-
-                                            <i class="bi bi-building me-2" aria-hidden="true"></i>
-                                            Mon entreprise
-
-                                        </a>
-
-                                    </li>
 
                                     <li>
 
@@ -394,10 +376,7 @@
                                 {% endif %}
 
                                 <li>
-
-                                    <hr class="dropdown-divider text-light"
-                                        aria-hidden="true">
-
+                                    <hr class="dropdown-divider text-light" aria-hidden="true">
                                 </li>
 
                                 <li>
@@ -463,43 +442,39 @@
 
                             </li>
 
-                        {% endif %}
-
-                        {% if not isEnterprise %}
-
                             <li class="nav-item d-block d-xl-none">
 
-                                <a class="nav-link text-light {{ currentRoute == 'company_registration_new' ? 'active' : '' }}"
-                                   href="{{ path('company_registration_new') }}"
-                                   {% if currentRoute == 'company_registration_new' %}
+                                <a class="nav-link text-light {{ currentRoute starts with 'admin_mission_' ? 'active' : '' }}"
+                                   href="{{ path('admin_mission_index') }}"
+                                   {% if currentRoute starts with 'admin_mission_' %}
                                        aria-current="page"
                                    {% endif %}>
 
-                                    <i class="bi bi-building-add me-2" aria-hidden="true"></i>
-                                    Créer un compte entreprise
+                                    <i class="bi bi-clipboard-check me-2" aria-hidden="true"></i>
+                                    Gestion des missions
 
                                 </a>
 
                             </li>
 
                         {% endif %}
+
+                        <li class="nav-item d-block d-xl-none">
+
+                            <a class="nav-link text-light {{ currentRoute starts with 'company_registration_' ? 'active' : '' }}"
+                               href="{{ path('company_registration_new') }}"
+                               {% if currentRoute starts with 'company_registration_' %}
+                                   aria-current="page"
+                               {% endif %}>
+
+                                <i class="bi bi-building me-2" aria-hidden="true"></i>
+                                Espace entreprise
+
+                            </a>
+
+                        </li>
 
                         {% if isEnterprise %}
-
-                            <li class="nav-item d-block d-xl-none">
-
-                                <a class="nav-link text-light {{ currentRoute starts with 'company_registration_' ? 'active' : '' }}"
-                                   href="{{ path('company_registration_status') }}"
-                                   {% if currentRoute starts with 'company_registration_' %}
-                                       aria-current="page"
-                                   {% endif %}>
-
-                                    <i class="bi bi-building me-2" aria-hidden="true"></i>
-                                    Mon entreprise
-
-                                </a>
-
-                            </li>
 
                             <li class="nav-item d-block d-xl-none">
 
@@ -565,8 +540,8 @@
                         <li class="nav-item d-flex flex-column flex-xl-row gap-2 mt-2 mt-xl-0">
 
                             <a href="{{ path('app_register') }}"
-                               class="btn-outline-gradient btn-sm text-white {{ app.request.attributes.get('_route') == 'app_register' ? 'active' : '' }}"
-                               {% if app.request.attributes.get('_route') == 'app_register' %}
+                               class="btn-outline-gradient btn-sm text-white {{ currentRoute == 'app_register' ? 'active' : '' }}"
+                               {% if currentRoute == 'app_register' %}
                                    aria-current="page"
                                {% endif %}>
 
@@ -575,8 +550,8 @@
                             </a>
 
                             <a href="{{ path('app_login') }}"
-                               class="btn-neon btn-sm text-white {{ app.request.attributes.get('_route') == 'app_login' ? 'active' : '' }}"
-                               {% if app.request.attributes.get('_route') == 'app_login' %}
+                               class="btn-neon btn-sm text-white {{ currentRoute == 'app_login' ? 'active' : '' }}"
+                               {% if currentRoute == 'app_login' %}
                                    aria-current="page"
                                {% endif %}>
 
@@ -595,4 +570,5 @@
         </div>
 
     </nav>
+
 </header>
