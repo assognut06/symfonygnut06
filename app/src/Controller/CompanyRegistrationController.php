@@ -12,11 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-
 #[Route('/entreprise/compte', name: 'company_registration_')]
 #[IsGranted('ROLE_USER')]
-
-#[Route('/statut', name: 'status', methods: ['GET'])]
 final class CompanyRegistrationController extends AbstractController
 {
     #[Route('/inscription', name: 'new', methods: ['GET', 'POST'])]
@@ -39,10 +36,6 @@ final class CompanyRegistrationController extends AbstractController
             ]);
 
         if ($existingAccount instanceof CompteEntreprise) {
-            if ($this->assignEnterpriseRole($user)) {
-                $entityManager->flush();
-            }
-
             return $this->redirectToRoute(
                 'company_registration_status'
             );
@@ -58,9 +51,9 @@ final class CompanyRegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $entityManager->persist($compteEntreprise);
 
-            $this->assignEnterpriseRole($user);
 
             $entityManager->flush();
 
@@ -109,23 +102,23 @@ final class CompanyRegistrationController extends AbstractController
 
         $statusLabels = [
             CompteEntreprise::STATUS_PENDING => 'En attente de validation',
+
             CompteEntreprise::STATUS_APPROVED => 'Compte approuvé',
+
             CompteEntreprise::STATUS_REJECTED => 'Demande refusée',
+
             CompteEntreprise::STATUS_SUSPENDED => 'Compte suspendu',
         ];
 
+   
         $statusDescriptions = [
-            CompteEntreprise::STATUS_PENDING =>
-                'Votre demande a été enregistrée. Elle est en attente de vérification par l’équipe GNUT06.',
+            CompteEntreprise::STATUS_PENDING => 'Votre demande a été enregistrée. Elle est en attente de vérification par l’équipe GNUT06.',
 
-            CompteEntreprise::STATUS_APPROVED =>
-                'Votre compte entreprise a été validé. Vous pouvez désormais soumettre vos missions à validation.',
+            CompteEntreprise::STATUS_APPROVED => 'Votre compte entreprise a été validé. Vous pouvez désormais soumettre vos missions à validation.',
 
-            CompteEntreprise::STATUS_REJECTED =>
-                'Votre demande de création de compte entreprise a été refusée. Contactez l’équipe GNUT06 pour obtenir des informations.',
+            CompteEntreprise::STATUS_REJECTED =>'Votre demande de création de compte entreprise a été refusée. Contactez l’équipe GNUT06 pour obtenir des informations.',
 
-            CompteEntreprise::STATUS_SUSPENDED =>
-                'Votre compte entreprise est actuellement suspendu. Contactez l’équipe GNUT06 pour obtenir des informations.',
+            CompteEntreprise::STATUS_SUSPENDED =>'Votre compte entreprise est actuellement suspendu. Contactez l’équipe GNUT06 pour obtenir des informations.',
         ];
 
         $status = $compteEntreprise->getStatut();
@@ -140,20 +133,5 @@ final class CompanyRegistrationController extends AbstractController
                 'isApproved' => $compteEntreprise->isApproved(),
             ]
         );
-    }
-
-    private function assignEnterpriseRole(User $user): bool
-    {
-        $roles = $user->getRoles();
-
-        if (in_array('ROLE_ENTREPRISE', $roles, true)) {
-            return false;
-        }
-
-        $roles[] = 'ROLE_ENTREPRISE';
-
-        $user->setRoles($roles);
-
-        return true;
     }
 }

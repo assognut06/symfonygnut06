@@ -37,12 +37,7 @@ final class AdminCompanyController extends AbstractController
         ]);
     }
 
-    #[Route(
-        '/{id}',
-        name: 'show',
-        requirements: ['id' => '\d+'],
-        methods: ['GET']
-    )]
+    #[Route('/{id}',name: 'show',requirements: ['id' => '\d+'],methods: ['GET'])]
     public function show(
         int $id,
         EntityManagerInterface $entityManager
@@ -62,17 +57,8 @@ final class AdminCompanyController extends AbstractController
         ]);
     }
 
-    #[Route(
-        '/{id}/approuver',
-        name: 'approve',
-        requirements: ['id' => '\d+'],
-        methods: ['POST']
-    )]
-    public function approve(
-        int $id,
-        Request $request,
-        EntityManagerInterface $entityManager
-    ): Response {
+    #[Route('/{id}/approuver',name: 'approve',requirements: ['id' => '\d+'],methods: ['POST'])]
+    public function approve(int $id,Request $request,EntityManagerInterface $entityManager): Response {
         $account = $this->getCompanyAccount($entityManager, $id);
 
         $this->checkCsrfToken($request, 'approve', $id);
@@ -85,10 +71,7 @@ final class AdminCompanyController extends AbstractController
             ],
             true
         )) {
-            $this->addFlash(
-                'warning',
-                'Ce compte ne peut pas être approuvé dans son état actuel.'
-            );
+            $this->addFlash('warning','Ce compte ne peut pas être approuvé dans son état actuel.');
 
             return $this->redirectToRoute('admin_company_show', [
                 'id' => $id,
@@ -97,38 +80,26 @@ final class AdminCompanyController extends AbstractController
 
         $account->approve();
 
+        $this->syncEnterpriseRole($account);
+
         $entityManager->flush();
 
-        $this->addFlash(
-            'success',
-            'Le compte entreprise a été approuvé avec succès.'
-        );
+        $this->addFlash('success','Le compte entreprise a été approuvé avec succès.');
 
         return $this->redirectToRoute('admin_company_show', [
             'id' => $id,
         ]);
     }
 
-    #[Route(
-        '/{id}/refuser',
-        name: 'reject',
-        requirements: ['id' => '\d+'],
-        methods: ['POST']
-    )]
-    public function reject(
-        int $id,
-        Request $request,
-        EntityManagerInterface $entityManager
-    ): Response {
-        $account = $this->getCompanyAccount($entityManager, $id);
+    #[Route('/{id}/refuser',name: 'reject',requirements: ['id' => '\d+'],methods: ['POST'])]
+    public function reject(int $id,Request $request,EntityManagerInterface $entityManager): Response {
+        
+    $account = $this->getCompanyAccount($entityManager, $id);
 
         $this->checkCsrfToken($request, 'reject', $id);
 
         if ($account->getStatut() !== CompteEntreprise::STATUS_PENDING) {
-            $this->addFlash(
-                'warning',
-                'Seule une demande en attente peut être refusée.'
-            );
+            $this->addFlash('warning','Seule une demande en attente peut être refusée.');
 
             return $this->redirectToRoute('admin_company_show', [
                 'id' => $id,
@@ -137,38 +108,26 @@ final class AdminCompanyController extends AbstractController
 
         $account->reject();
 
+        $this->syncEnterpriseRole($account);
+
         $entityManager->flush();
 
-        $this->addFlash(
-            'success',
-            'La demande de compte entreprise a été refusée.'
-        );
+        $this->addFlash('success','La demande de compte entreprise a été refusée.');
 
         return $this->redirectToRoute('admin_company_show', [
             'id' => $id,
         ]);
     }
 
-    #[Route(
-        '/{id}/suspendre',
-        name: 'suspend',
-        requirements: ['id' => '\d+'],
-        methods: ['POST']
-    )]
-    public function suspend(
-        int $id,
-        Request $request,
-        EntityManagerInterface $entityManager
-    ): Response {
-        $account = $this->getCompanyAccount($entityManager, $id);
+    #[Route('/{id}/suspendre',name: 'suspend',requirements: ['id' => '\d+'],methods: ['POST'] )]
+    public function suspend(int $id,Request $request, EntityManagerInterface $entityManager): Response {
+      
+    $account = $this->getCompanyAccount($entityManager, $id);
 
         $this->checkCsrfToken($request, 'suspend', $id);
 
         if ($account->getStatut() !== CompteEntreprise::STATUS_APPROVED) {
-            $this->addFlash(
-                'warning',
-                'Seul un compte approuvé peut être suspendu.'
-            );
+            $this->addFlash('warning','Seul un compte approuvé peut être suspendu.');
 
             return $this->redirectToRoute('admin_company_show', [
                 'id' => $id,
@@ -177,29 +136,19 @@ final class AdminCompanyController extends AbstractController
 
         $account->suspend();
 
+        $this->syncEnterpriseRole($account);
+
         $entityManager->flush();
 
-        $this->addFlash(
-            'success',
-            'Le compte entreprise a été suspendu.'
-        );
+        $this->addFlash('success','Le compte entreprise a été suspendu.');
 
         return $this->redirectToRoute('admin_company_show', [
             'id' => $id,
         ]);
     }
 
-    #[Route(
-        '/{id}/reexaminer',
-        name: 'reopen',
-        requirements: ['id' => '\d+'],
-        methods: ['POST']
-    )]
-    public function reopen(
-        int $id,
-        Request $request,
-        EntityManagerInterface $entityManager
-    ): Response {
+    #[Route('/{id}/reexaminer',name: 'reopen',requirements: ['id' => '\d+'],methods: ['POST'])]
+    public function reopen(int $id,Request $request,EntityManagerInterface $entityManager): Response {
         $account = $this->getCompanyAccount($entityManager, $id);
 
         $this->checkCsrfToken($request, 'reopen', $id);
@@ -217,12 +166,11 @@ final class AdminCompanyController extends AbstractController
 
         $account->requestNewReview();
 
+        $this->syncEnterpriseRole($account);
+
         $entityManager->flush();
 
-        $this->addFlash(
-            'success',
-            'La demande a été remise en attente de validation.'
-        );
+        $this->addFlash('success','La demande a été remise en attente de validation.');
 
         return $this->redirectToRoute('admin_company_show', [
             'id' => $id,
@@ -260,6 +208,40 @@ final class AdminCompanyController extends AbstractController
             throw $this->createAccessDeniedException(
                 'Jeton de sécurité invalide.'
             );
+        }
+    }
+
+    private function syncEnterpriseRole(
+        CompteEntreprise $account
+    ): void {
+        $user = $account->getUser();
+
+        $roles = $user->getRoles();
+
+        $role = 'ROLE_ENTREPRISE';
+
+        $hasRole = in_array($role, $roles, true);
+
+        if ($account->isApproved()) {
+            if (!$hasRole) {
+                $roles[] = $role;
+
+                $user->setRoles($roles);
+            }
+
+            return;
+        }
+
+        if ($hasRole) {
+            $roles = array_values(
+                array_filter(
+                    $roles,
+                    static fn (string $existingRole): bool =>
+                        $existingRole !== $role
+                )
+            );
+
+            $user->setRoles($roles);
         }
     }
 }
