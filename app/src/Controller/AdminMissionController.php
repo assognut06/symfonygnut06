@@ -5,13 +5,13 @@ namespace App\Controller;
 use App\Entity\DecisionModeration;
 use App\Entity\Mission;
 use App\Entity\User;
+use App\Service\MissionModerationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/admin/missions', name: 'admin_mission_')]
 #[IsGranted('ROLE_ADMIN')]
@@ -20,30 +20,24 @@ final class AdminMissionController extends AbstractController
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        $missions = $entityManager
-            ->getRepository(Mission::class)
-            ->findBy([], [
-                'createdAt' => 'DESC',
-                'id' => 'DESC',
-            ]);
+        $missionRepository = $entityManager->getRepository(Mission::class);
 
-        $pendingCount = 0;
-        $publishedCount = 0;
-        $correctionCount = 0;
+        $missions = $missionRepository->findBy([], [
+            'createdAt' => 'DESC',
+            'id' => 'DESC',
+        ]);
 
-        foreach ($missions as $mission) {
-            if ($mission->getStatut() === Mission::STATUS_PENDING) {
-                $pendingCount++;
-            }
+        $pendingCount = $missionRepository->count([
+            'statut' => Mission::STATUS_PENDING,
+        ]);
 
-            if ($mission->getStatut() === Mission::STATUS_PUBLISHED) {
-                $publishedCount++;
-            }
+        $publishedCount = $missionRepository->count([
+            'statut' => Mission::STATUS_PUBLISHED,
+        ]);
 
-            if ($mission->getStatut() === Mission::STATUS_CORRECTION) {
-                $correctionCount++;
-            }
-        }
+        $correctionCount = $missionRepository->count([
+            'statut' => Mission::STATUS_CORRECTION,
+        ]);
 
         return $this->render('admin_mission/index.html.twig', [
             'missions' => $missions,
@@ -54,9 +48,17 @@ final class AdminMissionController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}',name: 'show',requirements: ['id' => '\d+'],methods: ['GET'])]
-    public function show(int $id,EntityManagerInterface $entityManager): Response {
-
+    #[Route(
+        '/{id}',
+        name: 'show',
+        requirements: ['id' => '\d+'],
+        methods: ['GET']
+    )]
+    public function show(
+        int $id,
+        EntityManagerInterface $entityManager,
+        MissionModerationService $moderationService
+    ): Response {
         $mission = $this->getMission($entityManager, $id);
 
         $decisions = $entityManager
@@ -66,164 +68,88 @@ final class AdminMissionController extends AbstractController
                 ['createdAt' => 'DESC', 'id' => 'DESC']
             );
 
-        $deadline = $mission->getDateLimiteReponse();
-
-        $canPublish = $mission->getStatut() === Mission::STATUS_PENDING
-            && $mission->getCompteEntreprise()->isApproved()
-            && $deadline !== null
-            && $deadline->format('Y-m-d')
-                > (new \DateTimeImmutable('today'))->format('Y-m-d');
-
         return $this->render('admin_mission/show.html.twig', [
             'mission' => $mission,
             'decisions' => $decisions,
-            'canPublish' => $canPublish,
+            'canPublish' => $moderationService->canPublish($mission),
             'statusLabels' => $this->getStatusLabels(),
         ]);
     }
 
-    #[Route('/{id}/publier',name: 'publish',requirements: ['id' => '\d+'],methods: ['POST'])]
+    #[Route(
+        '/{id}/publier',
+        name: 'publish',
+        requirements: ['id' => '\d+'],
+        methods: ['POST']
+    )]
     public function publish(
         int $id,
         Request $request,
         EntityManagerInterface $entityManager,
-        ValidatorInterface $validator
+        MissionModerationService $moderationService
     ): Response {
         $mission = $this->getMission($entityManager, $id);
 
         $this->checkCsrfToken($request, 'publish', $id);
 
-        if ($mission->getStatut() !== Mission::STATUS_PENDING) {
-            $this->addFlash(
-                'warning',
-                'Seule une mission en attente peut être publiée.'
-            );
-
-            return $this->redirectToRoute('admin_mission_show', [
-                'id' => $id,
-            ]);
-        }
-
-        if (!$mission->getCompteEntreprise()->isApproved()) {
-            $this->addFlash(
-                'warning',
-                'Le compte entreprise doit être approuvé avant la publication.'
-            );
-
-            return $this->redirectToRoute('admin_mission_show', [
-                'id' => $id,
-            ]);
-        }
-
-        $deadline = $mission->getDateLimiteReponse();
-
-        if (
-            $deadline === null
-            || $deadline->format('Y-m-d')
-                <= (new \DateTimeImmutable('today'))->format('Y-m-d')
-        ) {
-            $this->addFlash(
-                'warning',
-                'La date limite de réponse doit être future.'
-            );
-
-            return $this->redirectToRoute('admin_mission_show', [
-                'id' => $id,
-            ]);
-        }
-
-        $violations = $validator->validate(
-            $mission,
-            null,
-            ['Default', 'mission_submit']
-        );
-
-        if (count($violations) > 0) {
-            $this->addFlash(
-                'warning',
-                'La mission contient des informations manquantes ou invalides.'
-            );
-
-            return $this->redirectToRoute('admin_mission_show', [
-                'id' => $id,
-            ]);
-        }
-
         $moderator = $this->getModerator();
 
-        $mission->publish();
+        try {
+            $moderationService->publish($mission, $moderator);
 
-        $decision = new DecisionModeration(
-            $mission,
-            $moderator,
-            DecisionModeration::DECISION_PUBLISH
-        );
-
-        $entityManager->persist($decision);
-        $entityManager->flush();
-
-        $this->addFlash(
-            'success',
-            'La mission a été publiée avec succès.'
-        );
+            $this->addFlash(
+                'success',
+                'La mission a été publiée avec succès.'
+            );
+        } catch (\DomainException $exception) {
+            $this->addFlash(
+                'warning',
+                $exception->getMessage()
+            );
+        }
 
         return $this->redirectToRoute('admin_mission_show', [
             'id' => $id,
         ]);
     }
 
-    #[Route('/{id}/correction',name: 'correction',requirements: ['id' => '\d+'],methods: ['POST'])]
+    #[Route(
+        '/{id}/correction',
+        name: 'correction',
+        requirements: ['id' => '\d+'],
+        methods: ['POST']
+    )]
     public function correction(
         int $id,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MissionModerationService $moderationService
     ): Response {
         $mission = $this->getMission($entityManager, $id);
 
         $this->checkCsrfToken($request, 'correction', $id);
 
-        if ($mission->getStatut() !== Mission::STATUS_PENDING) {
-            $this->addFlash(
-                'warning',
-                'Seule une mission en attente peut faire l’objet d’une demande de correction.'
-            );
-
-            return $this->redirectToRoute('admin_mission_show', [
-                'id' => $id,
-            ]);
-        }
-
-        $reason = trim($request->request->getString('reason'));
-
-        if ($reason === '' || mb_strlen($reason) > 200) {
-            $this->addFlash(
-                'warning',
-                'Le motif de correction est obligatoire et ne doit pas dépasser 200 caractères.'
-            );
-
-            return $this->redirectToRoute('admin_mission_show', [
-                'id' => $id,
-            ]);
-        }
+        $reason = $request->request->getString('reason');
 
         $moderator = $this->getModerator();
 
-        $mission->requestCorrection();
+        try {
+            $moderationService->requestCorrection(
+                $mission,
+                $moderator,
+                $reason
+            );
 
-        $decision = new DecisionModeration(
-            $mission,
-            $moderator,
-            DecisionModeration::DECISION_REQUEST_CORRECTION,
-            $reason
-        );
-
-        $entityManager->persist($decision);
-        $entityManager->flush();
-
-        $this->addFlash(
-            'success',
-            'La demande de correction a été enregistrée.'
-        );
+            $this->addFlash(
+                'success',
+                'La demande de correction a été enregistrée.'
+            );
+        } catch (\DomainException $exception) {
+            $this->addFlash(
+                'warning',
+                $exception->getMessage()
+            );
+        }
 
         return $this->redirectToRoute('admin_mission_show', [
             'id' => $id,
@@ -239,54 +165,34 @@ final class AdminMissionController extends AbstractController
     public function withdraw(
         int $id,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MissionModerationService $moderationService
     ): Response {
         $mission = $this->getMission($entityManager, $id);
 
         $this->checkCsrfToken($request, 'withdraw', $id);
 
-        if ($mission->getStatut() !== Mission::STATUS_PUBLISHED) {
-            $this->addFlash(
-                'warning',
-                'Seule une mission publiée peut être retirée.'
-            );
-
-            return $this->redirectToRoute('admin_mission_show', [
-                'id' => $id,
-            ]);
-        }
-
-        $reason = trim($request->request->getString('reason'));
-
-        if ($reason === '' || mb_strlen($reason) > 2000) {
-            $this->addFlash(
-                'warning',
-                'Le motif du retrait est obligatoire et ne doit pas dépasser 2 000 caractères.'
-            );
-
-            return $this->redirectToRoute('admin_mission_show', [
-                'id' => $id,
-            ]);
-        }
+        $reason = $request->request->getString('reason');
 
         $moderator = $this->getModerator();
 
-        $mission->withdraw();
+        try {
+            $moderationService->withdraw(
+                $mission,
+                $moderator,
+                $reason
+            );
 
-        $decision = new DecisionModeration(
-            $mission,
-            $moderator,
-            DecisionModeration::DECISION_WITHDRAW,
-            $reason
-        );
-
-        $entityManager->persist($decision);
-        $entityManager->flush();
-
-        $this->addFlash(
-            'success',
-            'La mission a été retirée de la publication.'
-        );
+            $this->addFlash(
+                'success',
+                'La mission a été retirée de la publication.'
+            );
+        } catch (\DomainException $exception) {
+            $this->addFlash(
+                'warning',
+                $exception->getMessage()
+            );
+        }
 
         return $this->redirectToRoute('admin_mission_show', [
             'id' => $id,
@@ -343,7 +249,7 @@ final class AdminMissionController extends AbstractController
     private function getStatusLabels(): array
     {
         return [
-           // Mission::STATUS_DRAFT => 'Brouillon',
+            Mission::STATUS_DRAFT => 'Brouillon',
             Mission::STATUS_PENDING => 'En attente de validation',
             Mission::STATUS_CORRECTION => 'À corriger',
             Mission::STATUS_PUBLISHED => 'Publiée',

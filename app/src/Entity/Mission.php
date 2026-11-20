@@ -105,7 +105,15 @@ class Mission
         scale: 2,
         nullable: true
     )]
-    #[Assert\Positive(groups: ['Default', 'mission_submit'])]
+    #[Assert\Positive(
+        message: 'Le tarif minimum doit être supérieur à zéro.',
+        groups: ['Default', 'mission_submit']
+    )]
+    #[Assert\LessThanOrEqual(
+        value: '99999999.99',
+        message: 'Le tarif minimum ne peut pas dépasser 99 999 999,99 €.',
+        groups: ['Default', 'mission_submit']
+    )]
     private ?string $budgetMin = null;
 
     #[ORM\Column(
@@ -114,7 +122,15 @@ class Mission
         scale: 2,
         nullable: true
     )]
-    #[Assert\Positive(groups: ['Default', 'mission_submit'])]
+    #[Assert\Positive(
+        message: 'Le tarif maximum doit être supérieur à zéro.',
+        groups: ['Default', 'mission_submit']
+    )]
+    #[Assert\LessThanOrEqual(
+        value: '99999999.99',
+        message: 'Le tarif maximum ne peut pas dépasser 99 999 999,99 €.',
+        groups: ['Default', 'mission_submit']
+    )]
     private ?string $budgetMax = null;
 
     #[ORM\Column(length: 20, nullable: true)]

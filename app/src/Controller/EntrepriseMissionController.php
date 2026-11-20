@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\CompteEntreprise;
 use App\Entity\Mission;
 use App\Entity\User;
+use App\Entity\DecisionModeration;
 use App\Form\MissionType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/entreprise/missions', name: 'entreprise_mission_')]
-#[IsGranted('ROLE_ENTREPRISE')]
+#[IsGranted('ROLE_USER')]
 final class EntrepriseMissionController extends AbstractController
 {
     private const EDITABLE_STATUSES = [
@@ -25,8 +26,9 @@ final class EntrepriseMissionController extends AbstractController
     ];
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
-    {
+    public function index(
+        EntityManagerInterface $entityManager
+    ): Response {
         $compte = $this->getCompteEntreprise($entityManager);
 
         $missions = $entityManager
@@ -39,10 +41,14 @@ final class EntrepriseMissionController extends AbstractController
                 ]
             );
 
+        $editableStatuses = $compte->isApproved()
+            ? self::EDITABLE_STATUSES
+            : [Mission::STATUS_DRAFT];
+
         return $this->render('entreprise_mission/index.html.twig', [
             'compte' => $compte,
             'missions' => $missions,
-            'editableStatuses' => self::EDITABLE_STATUSES,
+            'editableStatuses' => $editableStatuses,
         ]);
     }
 
@@ -55,35 +61,47 @@ final class EntrepriseMissionController extends AbstractController
 
         $mission = new Mission($compte);
 
-        $form = $this->createForm(MissionType::class, $mission);
+        $form = $this->createForm(
+            MissionType::class,
+            $mission
+        );
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $submitForReview = $form
                 ->get('submitForReview')
                 ->isClicked();
 
             if ($submitForReview) {
+
                 if (!$compte->isApproved()) {
+
                     $form->addError(new FormError(
                         'Votre compte entreprise doit être validé avant de soumettre une mission.'
                     ));
+
                 } else {
+
                     $mission->submit();
                 }
             }
 
             if ($form->isValid()) {
+
                 $entityManager->persist($mission);
                 $entityManager->flush();
 
                 if ($submitForReview) {
+
                     $this->addFlash(
                         'success',
                         'Votre mission a été soumise à validation.'
                     );
+
                 } else {
+
                     $this->addFlash(
                         'success',
                         'Votre brouillon a été enregistré.'
@@ -96,10 +114,13 @@ final class EntrepriseMissionController extends AbstractController
             }
         }
 
-        return $this->render('entreprise_mission/form.html.twig', [
-            'form' => $form->createView(),
-            'pageTitle' => 'Créer une mission',
-        ]);
+        return $this->render(
+            'entreprise_mission/form.html.twig',
+            [
+                'form' => $form->createView(),
+                'pageTitle' => 'Créer une mission',
+            ]
+        );
     }
 
     #[Route(
@@ -130,41 +151,92 @@ final class EntrepriseMissionController extends AbstractController
 
         $initialStatus = $mission->getStatut();
 
-        if (!in_array(
-            $initialStatus,
-            self::EDITABLE_STATUSES,
-            true
-        )) {
-            throw $this->createAccessDeniedException(
-                'Cette mission ne peut pas être modifiée dans son état actuel.'
-            );
+        $editableStatuses = $compte->isApproved()
+            ? self::EDITABLE_STATUSES
+            : [Mission::STATUS_DRAFT];
+
+            if (!in_array(
+                $initialStatus,
+                $editableStatuses,
+                true
+            )) {
+                throw $this->createAccessDeniedException(
+                    'Cette mission ne peut pas être modifiée dans son état actuel.'
+                );
+            }
+            
+            $lastCorrection = null;
+            
+            if ($initialStatus === Mission::STATUS_CORRECTION) {
+                $lastCorrection = $entityManager
+                    ->getRepository(DecisionModeration::class)
+                    ->findOneBy(
+                        [
+                            'mission' => $mission,
+                            'decision' => DecisionModeration::DECISION_REQUEST_CORRECTION,
+                        ],
+                        [
+                            'createdAt' => 'DESC',
+                            'id' => 'DESC',
+                        ]
+                    );
+            }
+            
+            $formOptions = [];
+
+
+        if ($initialStatus === Mission::STATUS_PUBLISHED) {
+            $formOptions['validation_groups'] = [
+                'Default',
+                'mission_submit',
+            ];
         }
 
-        $form = $this->createForm(MissionType::class, $mission);
+        $form = $this->createForm(
+            MissionType::class,
+            $mission,
+            $formOptions
+        );
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $submitForReview = $form
                 ->get('submitForReview')
                 ->isClicked();
 
             if ($submitForReview) {
+
                 if (!$compte->isApproved()) {
+
                     $form->addError(new FormError(
                         'Votre compte entreprise doit être validé avant toute soumission.'
                     ));
-                } elseif (in_array($mission->getStatut(),[ Mission::STATUS_DRAFT,Mission::STATUS_CORRECTION],true)) {
-                  
+
+                } elseif (in_array(
+                    $mission->getStatut(),
+                    [
+                        Mission::STATUS_DRAFT,
+                        Mission::STATUS_CORRECTION,
+                    ],
+                    true
+                )) {
+
                     $mission->submit();
-                
-                    } elseif ($initialStatus === Mission::STATUS_PUBLISHED && $mission->getStatut() === Mission::STATUS_PENDING) {
-                    
-                $this->addFlash(
+
+                } elseif (
+                    $initialStatus === Mission::STATUS_PUBLISHED
+                    && $mission->getStatut() === Mission::STATUS_PENDING
+                ) {
+
+                    $this->addFlash(
                         'info',
                         'Les modifications de cette mission nécessitent une nouvelle validation.'
                     );
+
                 } else {
+
                     $form->addError(new FormError(
                         'Cette mission ne peut pas être soumise dans son état actuel.'
                     ));
@@ -172,22 +244,28 @@ final class EntrepriseMissionController extends AbstractController
             }
 
             if ($form->isValid()) {
+
                 $entityManager->flush();
 
                 if ($submitForReview) {
+
                     $this->addFlash(
                         'success',
                         'Votre mission a été soumise à validation.'
                     );
+
                 } elseif (
                     $initialStatus === Mission::STATUS_PUBLISHED
                     && $mission->getStatut() === Mission::STATUS_PENDING
                 ) {
+
                     $this->addFlash(
                         'success',
                         'Les modifications ont été enregistrées. La mission est en attente de validation.'
                     );
+
                 } else {
+
                     $this->addFlash(
                         'success',
                         'La mission a été mise à jour.'
@@ -200,10 +278,14 @@ final class EntrepriseMissionController extends AbstractController
             }
         }
 
-        return $this->render('entreprise_mission/form.html.twig', [
-            'form' => $form->createView(),
-            'pageTitle' => 'Modifier une mission',
-        ]);
+        return $this->render(
+            'entreprise_mission/form.html.twig',
+            [
+                'form' => $form->createView(),
+                'pageTitle' => 'Modifier une mission',
+                'lastCorrection' => $lastCorrection,
+            ]
+        );
     }
 
     private function getCompteEntreprise(
@@ -226,6 +308,21 @@ final class EntrepriseMissionController extends AbstractController
         if (!$compte instanceof CompteEntreprise) {
             throw $this->createAccessDeniedException(
                 'Aucun profil entreprise n’est associé à votre compte.'
+            );
+        }
+
+        $allowedStatuses = [
+            CompteEntreprise::STATUS_PENDING,
+            CompteEntreprise::STATUS_APPROVED,
+        ];
+
+        if (!in_array(
+            $compte->getStatut(),
+            $allowedStatuses,
+            true
+        )) {
+            throw $this->createAccessDeniedException(
+                'Votre compte entreprise ne permet pas actuellement d’accéder à la gestion des missions.'
             );
         }
 
