@@ -19,6 +19,15 @@ class VerifiedEmailUserChecker implements UserCheckerInterface
 
     public function checkPreAuth(UserInterface $user): void
     {
+        if (!$user instanceof User) {
+            return;
+        }
+
+        if (!$user->isActive()) {
+            throw new CustomUserMessageAccountStatusException(
+                'Votre compte a été désactivé. Contactez un administrateur.'
+            );
+        }
     }
 
     public function checkPostAuth(UserInterface $user): void
@@ -29,6 +38,7 @@ class VerifiedEmailUserChecker implements UserCheckerInterface
 
         try {
             $this->emailService->sendConfirmationEmail($user);
+
             $message = 'Votre compte n\'est pas encore vérifié. Un nouveau lien de validation vient de vous être envoyé par email.';
         } catch (\Throwable $exception) {
             $this->logger->error('Erreur renvoi email de confirmation pendant la connexion', [

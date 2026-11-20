@@ -7,77 +7,116 @@
 		<div class="mx-4">
 			<h2 class="my-4 text-center">Les utilisateurs de Gnut06.org</h2>
 			<div class="border border-secondary mb-4 mx-5"></div>
+
 			{% set queryParams = query|default('') is empty ? {} : {'q': query} %}
 
 			<form class="mb-3" method="get" action="{{ path('app_admin_user') }}">
 				<div class="input-group">
-					<input type="text" id="search-email" name="q" class="form-control"
-						value="{{ query|default('') }}"
-						placeholder="Rechercher par email…">
+					<input type="text" id="search-email" name="q" class="form-control" value="{{ query|default('') }}" placeholder="Rechercher par email…" aria-label="Rechercher un utilisateur par email">
 					<button class="btn btn-primary" type="submit">Rechercher</button>
 					{% if query|default('') is not empty %}
 						<a class="btn btn-outline-secondary" href="{{ path('app_admin_user') }}">Réinitialiser</a>
 					{% endif %}
 				</div>
 			</form>
+
 			<div class="row align-items-start mx-auto">
 				<div class="col-12">
-					<table id="users-table" class="table table-success table-striped">
-						<thead>
-							<tr>
-								<th scope="col">id</th>
-								<th scope="col">Email</th>
-								<th scope="col">Roles</th>
-								<th scope="col">Vérifié</th>
-								<th scope="col">Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% if users is not empty %}
-								{% for user in users %}
-									<tr>
-										<td>{{ user.id }}</td>
-										<td>{{ user.email }}</td>
-										<td>{{ user.roles | join(' - ') }}</td>
-										<td>{{ user.isVerified }}</td>
-										<td class="d-flex">
-											<form action="{{ path('app_admin_user_delete', {'id': user.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
-												<input type="hidden" name="_method" value="DELETE">
-												<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-												<button class="btn btn-danger text-white" type="submit">Supprimer</button>
-											</form>
-											<form action="{{ path('app_admin_user_promote', {'id': user.id}) }}" method="post">
-    											<input type="hidden" name="_token" value="{{ csrf_token('promote_user' ~ user.id) }}">
-    											{% if 'ROLE_ADMIN' in user.roles %}
-        											<button class="btn btn-warning mx-1" type="submit">Rétrograder</button>
-    											{% else %}
-        											<button class="btn btn-success mx-1" type="submit">Promouvoir</button>
-    											{% endif %}
-											</form>
-										</td>
-									</tr>
-								{% endfor %}
-							{% else %}
+					<div class="table-responsive">
+						<table id="users-table" class="table table-success table-striped table-hover align-middle">
+							<caption class="visually-hidden">Liste des utilisateurs GNUT06 et gestion de leurs comptes</caption>
+							<thead>
 								<tr>
-									<td colspan="5" class="text-center">Aucun utilisateur trouvé.</td>
+									<th scope="col">ID</th>
+									<th scope="col">Email</th>
+									<th scope="col">Rôles</th>
+									<th scope="col">Vérifié</th>
+									<th scope="col">Statut</th>
+									<th scope="col">Actions</th>
 								</tr>
-							{% endif %}
-							<tr>
-								<td class="text-end" colspan="5">
-									<strong class="text-primary">
-										Soit {{ users|length }} utilisateur{{ users|length > 1 ? 's' : '' }} affiché{{ users|length > 1 ? 's' : '' }} sur {{ total }}
-									</strong>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+							</thead>
+							<tbody>
+								{% if users is not empty %}
+									{% for user in users %}
+										{% set isCurrentUser = app.user and app.user.id == user.id %}
+
+										<tr>
+											<td>{{ user.id }}</td>
+											<td>{{ user.email }}</td>
+											<td>{{ user.roles|join(' - ') }}</td>
+											<td>
+												{% if user.isVerified %}
+													<span class="badge bg-success">Oui</span>
+												{% else %}
+													<span class="badge bg-warning text-dark">Non</span>
+												{% endif %}
+											</td>
+											<td>
+												{% if user.isActive %}
+													<span class="badge bg-success">Actif</span>
+												{% else %}
+													<span class="badge bg-secondary">Inactif</span>
+												{% endif %}
+											</td>
+											<td>
+												<div class="d-flex gap-2 flex-wrap">
+													{% if user.isActive %}
+														{% if not isCurrentUser %}
+															<form action="{{ path('app_admin_user_delete', {'id': user.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir désactiver cet utilisateur ?');">
+																<input type="hidden" name="_method" value="DELETE">
+																<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+																<button class="btn btn-danger text-white" type="submit">Désactiver</button>
+															</form>
+														{% endif %}
+
+														{% if not (isCurrentUser and 'ROLE_ADMIN' in user.roles) %}
+															<form action="{{ path('app_admin_user_promote', {'id': user.id}) }}" method="post">
+																<input type="hidden" name="_token" value="{{ csrf_token('promote_user' ~ user.id) }}">
+																{% if 'ROLE_ADMIN' in user.roles %}
+																	<button class="btn btn-warning" type="submit">Rétrograder</button>
+																{% else %}
+																	<button class="btn btn-success" type="submit">Promouvoir</button>
+																{% endif %}
+															</form>
+														{% endif %}
+
+														{% if isCurrentUser %}
+															<span class="text-muted small align-self-center">Compte connecté</span>
+														{% endif %}
+													{% else %}
+														<form action="{{ path('app_admin_user_reactivate', {'id': user.id}) }}" method="post" onsubmit="return confirm('Voulez-vous réactiver cet utilisateur ?');">
+															<input type="hidden" name="_token" value="{{ csrf_token('reactivate' ~ user.id) }}">
+															<button class="btn btn-success" type="submit">Réactiver</button>
+														</form>
+													{% endif %}
+												</div>
+											</td>
+										</tr>
+									{% endfor %}
+								{% else %}
+									<tr>
+										<td colspan="6" class="text-center">Aucun utilisateur trouvé.</td>
+									</tr>
+								{% endif %}
+
+								<tr>
+									<td class="text-end" colspan="6">
+										<strong class="text-primary">
+											Soit {{ users|length }} utilisateur{{ users|length > 1 ? 's' : '' }} affiché{{ users|length > 1 ? 's' : '' }} sur {{ total }}
+										</strong>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
+
 				<div class="col-12 pagination-container mt-3">
-					<nav aria-label="Admin navigation">
+					<nav aria-label="Navigation des pages utilisateurs">
 						<ul class="pagination">
 							{% if page > 1 %}
 								<li class="page-item">
-									<a class="page-link" href="{{ path('app_admin_user', {'page': page - 1}|merge(queryParams)) }}">
+									<a class="page-link" href="{{ path('app_admin_user', {'page': page - 1}|merge(queryParams)) }}" aria-label="Page précédente">
 										<span aria-hidden="true">&laquo;</span>
 									</a>
 								</li>
@@ -85,13 +124,13 @@
 
 							{% for p in 1..pages %}
 								<li class="page-item{% if page == p %} active{% endif %}">
-									<a class="page-link" href="{{ path('app_admin_user', {'page': p}|merge(queryParams)) }}">{{ p }}</a>
+									<a class="page-link" href="{{ path('app_admin_user', {'page': p}|merge(queryParams)) }}" {% if page == p %}aria-current="page"{% endif %}>{{ p }}</a>
 								</li>
 							{% endfor %}
 
 							{% if page < pages %}
 								<li class="page-item">
-									<a class="page-link" href="{{ path('app_admin_user', {'page': page + 1}|merge(queryParams)) }}">
+									<a class="page-link" href="{{ path('app_admin_user', {'page': page + 1}|merge(queryParams)) }}" aria-label="Page suivante">
 										<span aria-hidden="true">&raquo;</span>
 									</a>
 								</li>
