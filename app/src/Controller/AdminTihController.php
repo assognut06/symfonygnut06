@@ -28,6 +28,8 @@ class AdminTihController extends AbstractController
 
         $qb = $tihRepository->createQueryBuilder('t')
             ->leftJoin('t.user', 'u')->addSelect('u')
+            ->andWhere('t.profileKind = :profileKind')
+            ->setParameter('profileKind', Tih::PROFILE_KIND_REAL)
             ->orderBy('t.id', 'DESC');
 
         if ($q !== '') {
