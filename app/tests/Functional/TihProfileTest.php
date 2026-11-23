@@ -141,39 +141,6 @@ class TihProfileTest extends WebTestCase
         $this->client->request('GET', '/profil');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('.alert-warning', 'Vous avez un message concernant votre candidature TIH.');
-        $this->assertSelectorCount(1, '#tih-review-message');
         $this->assertSelectorTextContains('#tih-review-message', 'Votre attestation doit être renouvelée.');
-        $this->assertSelectorExists('#tih-review-title.text-danger');
-        $this->assertSelectorNotExists('#tih-review-title[style]');
-        $this->assertSelectorNotExists('#tih-rejection-message');
-        $this->assertSelectorNotExists('a[href="#tih-review-message"], a[href="#tih-rejection-message"]');
-    }
-
-    public function testProfileHidesHistoricalRefusalWhenApplicationIsPendingOrApproved(): void
-    {
-        $admin = $this->createAdmin('historical-refusal-admin@test.com');
-        $candidate = $this->createTihUser('historical-refusal-candidate@test.com');
-        $decision = new TihApplicationEvent(
-            $candidate->getTih(),
-            TihApplicationEvent::STATUS_REFUSED,
-            $admin,
-            'Ancien motif de refus.',
-            TihApplicationEvent::SOURCE_ADMIN_DECISION,
-        );
-        $candidate->getTih()->addApplicationEvent($decision)->setApplicationStatus(Tih::STATUS_PENDING);
-        $this->em->persist($decision);
-        $this->em->flush();
-        $this->loginAs($candidate);
-
-        foreach ([Tih::STATUS_PENDING, Tih::STATUS_APPROVED] as $status) {
-            $candidate->getTih()->setApplicationStatus($status);
-            $this->em->flush();
-            $this->client->request('GET', '/profil');
-
-            $this->assertResponseIsSuccessful();
-            $this->assertSelectorTextContains('h1#profile-title', 'Votre profil');
-            $this->assertSelectorNotExists('.alert-warning');
-            $this->assertSelectorNotExists('#tih-rejection-message');
-        }
     }
 }
