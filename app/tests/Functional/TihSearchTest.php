@@ -2,11 +2,20 @@
 
 namespace App\Tests\Functional;
 
+use App\Entity\Tih;
+
 /**
  * Scenario-based tests for TIH search: fixtures in DB, then assert filtered results.
  */
 class TihSearchTest extends WebTestCase
 {
+    protected function createSearchableTih(array $options = []): Tih
+    {
+        $options['profileKind'] = Tih::PROFILE_KIND_DEMO;
+
+        return parent::createSearchableTih($options);
+    }
+
     public function testTihSearchPageLoads(): void
     {
         $this->client->request('GET', '/tih/tih_search');
@@ -60,6 +69,7 @@ class TihSearchTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertTihResultCount(1);
         $this->assertTihGridContains('Valid Profile');
+        $this->assertTihGridContains('Profil fictif');
         $this->assertTihGridNotContains('Pending Review');
     }
 
@@ -143,9 +153,10 @@ class TihSearchTest extends WebTestCase
         $this->assertSelectorTextContains('body', 'Marie');
         $this->assertSelectorTextContains('body', 'Curie');
         $this->assertSelectorTextContains('body', 'Nice');
+        $this->assertSelectorTextContains('.card-body', 'Profil fictif');
     }
 
-    public function testTihContactPageShowsFormForValidatedProfile(): void
+    public function testTihContactIsDisabledForDemoProfile(): void
     {
         $tih = $this->createSearchableTih([
             'email' => 'contact@test.com',
@@ -153,10 +164,8 @@ class TihSearchTest extends WebTestCase
             'lastName' => 'Me',
         ]);
 
-        $crawler = $this->client->request('GET', '/tih/tih/' . $tih->getId() . '/contact');
+        $this->client->request('GET', '/tih/tih/' . $tih->getId() . '/contact');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('body', 'Contact Me');
-        $this->assertSelectorExists('form');
+        $this->assertResponseStatusCodeSame(404);
     }
 }
