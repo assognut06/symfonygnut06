@@ -26,7 +26,8 @@
         <div class="container mt-4">
              <h1 id="profile-title" class="gradient-text text-main text-start text-center">Votre profil</h1>
         </div>
-        {% if latestMessage and app.user.tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_APPROVED') %}
+        {% if latestMessage and app.user.tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_APPROVED')
+            and (isReview or app.user.tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_REFUSED')) %}
             {% set messageColor = isReview ? 'warning' : 'danger' %}
             {% set isPending = app.user.tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_PENDING') %}
             <div class="container mt-4">
