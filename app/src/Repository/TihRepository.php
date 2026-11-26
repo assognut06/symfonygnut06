@@ -113,13 +113,15 @@ class TihRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
     
-    public function findValidatedById(int $id): ?Tih
+    public function findValidatedById(int $id, string $profileKind = Tih::PROFILE_KIND_REAL): ?Tih
     {
         return $this->createQueryBuilder('t')
             ->where('t.id = :id')
             ->andWhere('t.isValidate = :validated')
+            ->andWhere('t.profileKind = :profileKind')
             ->setParameter('id', $id)
             ->setParameter('validated', true)
+            ->setParameter('profileKind', $profileKind)
             ->getQuery()
             ->getOneOrNullResult();
     }
@@ -127,7 +129,7 @@ class TihRepository extends ServiceEntityRepository
     /**
      * Search TIH profiles with filters and pagination
      * 
-     * @param array{skills:?array<string>,cities:array<string>,regions:array<string>,departements:array<string>,availability:array<string>,minRate:?float,maxRate:?float,rateType:?string,availabilityDate:?DateTime,availabilityDateAfter:?DateTime} $filters 
+     * @param array{profileKind?:string,skills:?array<string>,cities:array<string>,regions:array<string>,departements:array<string>,availability:array<string>,minRate:?float,maxRate:?float,rateType:?string,availabilityDate:?DateTime,availabilityDateAfter:?DateTime} $filters
      * @param int $page
      * @param int $limit
      * @return Paginator<Tih>
@@ -136,7 +138,9 @@ class TihRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('t')
             ->where('t.isValidate = :validated')
-            ->setParameter('validated', true);
+            ->andWhere('t.profileKind = :profileKind')
+            ->setParameter('validated', true)
+            ->setParameter('profileKind', $filters['profileKind'] ?? Tih::PROFILE_KIND_REAL);
 
         // Filter by skills - using subquery to avoid GROUP BY issues
         if (!empty($filters['skills'])) {
@@ -144,6 +148,7 @@ class TihRepository extends ServiceEntityRepository
                 ->select('t2.id')
                 ->leftJoin('t2.competences', 'c2')
                 ->where('c2.id IN (:skills)')
+                ->andWhere('t2.profileKind = :profileKind')
                 ->getDQL();
             
             $qb->andWhere($qb->expr()->in('t.id', $subQuery))
@@ -240,7 +245,9 @@ class TihRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('t')
             ->leftJoin('t.competences', 'c')
             ->where('t.isValidate = :validated')
-            ->setParameter('validated', true);
+            ->andWhere('t.profileKind = :profileKind')
+            ->setParameter('validated', true)
+            ->setParameter('profileKind', $filters['profileKind'] ?? Tih::PROFILE_KIND_REAL);
 
         // Apply existing filters except the one we're getting options for
         $tempFilters = $filters;

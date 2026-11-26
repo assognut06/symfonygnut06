@@ -116,6 +116,7 @@ class TihFixtures extends Fixture implements DependentFixtureInterface
             
             $tih = new Tih();
             $tih->setUser($user);
+            $tih->setProfileKind(Tih::PROFILE_KIND_DEMO);
             $tih->setFirstName(self::FIRST_NAMES[($i - 1) % count(self::FIRST_NAMES)]);
             $tih->setLastName(self::LAST_NAMES[($i - 1) % count(self::LAST_NAMES)]);
             

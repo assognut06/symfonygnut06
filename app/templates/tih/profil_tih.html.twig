@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
-{% block title %}Espace TIH{% endblock %}
+{% block title %}{{ demoMode|default(false) ? 'Proposer un profil TIH fictif' : 'Espace TIH' }}{% endblock %}
 
 {% block body %}
-<h1 class="text-center my-4">Espace TIH</h1>
+<h2 class="text-center my-4">{{ demoMode|default(false) ? 'Proposer un profil TIH fictif' : 'Espace TIH' }}</h2>
 
 {% for message in app.flashes('success') %}
     <div class="alert alert-success shadow-sm" role="status">{{ message }}</div>
@@ -11,7 +11,16 @@
     <div class="alert alert-danger shadow-sm" role="alert">{{ message }}</div>
 {% endfor %}
 
+{% if tih.removed %}
+    <div class="alert alert-secondary" role="status">Votre profil TIH est supprimé. Votre compte est conservé. Vous pouvez soumettre une nouvelle demande, qui sera examinée par un administrateur.</div>
+{% endif %}
+
 {% if form is defined and form is not null %}
+    {% if demoMode|default(false) %}
+        <div class="container w-75 alert alert-danger border-danger text-center fw-bold" role="alert">
+            Ne pas entrer de données personnelles réelles sur ce formulaire.
+        </div>
+    {% endif %}
     <p class="text-center text-white">Complétez ou modifiez votre profil TIH</p>
     <div class="container w-75 shadow p-4 rounded bg-white">
         {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
@@ -79,6 +88,13 @@
                 <h3 class="h5 mb-3">Documents</h3>
             </div>
 
+            {% if demoMode|default(false) %}
+            <div class="col-12 mb-3">
+                <div class="alert alert-secondary mb-0" role="status">
+                    Le dépôt de photo, CV et attestation est désactivé dans la démonstration.
+                </div>
+            </div>
+            {% else %}
             <div class="col-md-12 mb-3">
                 {{ form_row(form.photo) }}
                 {% if tih.photo %}
@@ -134,9 +150,10 @@
                 </button>
                 <p class="small text-muted mt-3 mb-0">Les informations recueillies sont utilisées par GNUT 06 pour examiner et valider votre profil TIH. Elles sont accessibles uniquement aux personnes habilitées. Pour connaître la durée de conservation de vos données et exercer vos droits, consultez la politique de confidentialité de GNUT 06.</p>
             </div>
+            {% endif %}
         </div>
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success px-4">Enregistrer</button>
+            <button type="submit" class="btn btn-success px-4">{{ demoMode|default(false) ? 'Proposer ce profil fictif' : (tih.removed ? 'Soumettre une nouvelle demande' : 'Enregistrer') }}</button>
         </div>
         {{ form_end(form) }}
     </div>
@@ -192,7 +209,11 @@
             </div>
         </div>
         <div class="text-center mt-4">
-            <a href="{{ path('espace_tih', {'edit': '1'}) }}" class="btn btn-secondary">Modifier mes infos</a>
+            {% if tih.removed %}
+                <a href="{{ path('espace_tih', {'reapply': '1'}) }}" class="btn btn-primary">Préparer une nouvelle demande</a>
+            {% else %}
+                <a href="{{ path('espace_tih', {'edit': '1'}) }}" class="btn btn-secondary">Modifier mes infos</a>
+            {% endif %}
         </div>
     </div>
 {% endif %}
@@ -250,7 +271,7 @@
 
 <div class="text-center my-4">
     <a href="{{ path('app_logout') }}" class="btn btn-danger text-white">Se déconnecter</a>
-</div>
+</div>{% endif %}
 
 <!-- Modal des modèles d'attestation -->
 <div class="modal fade" id="modalModelesAttestation" tabindex="-1" aria-labelledby="modalModelesAttestationLabel" aria-hidden="true">

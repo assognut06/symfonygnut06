@@ -10,6 +10,28 @@ use App\Entity\TihApplicationEvent;
  */
 class TihProfileTest extends WebTestCase
 {
+    public function testRemovedProfileRequiresExplicitNewApplication(): void
+    {
+        $user = $this->createTihUser();
+        $user->getTih()->setApplicationStatus(Tih::STATUS_REMOVED);
+        $user->setRoles(['ROLE_USER']);
+        $this->em->flush();
+        $this->loginAs($user);
+
+        $this->client->request('GET', '/espace-tih?edit=1');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('.alert-secondary', 'Votre profil TIH est supprimé');
+        $this->assertSelectorNotExists('form[name="tih"]');
+        $this->assertSelectorExists('a[href="/espace-tih?reapply=1"]');
+
+        $this->client->request('GET', '/espace-tih?reapply=1');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form[name="tih"]');
+        $this->assertSelectorTextContains('form[name="tih"] button[type="submit"]', 'Soumettre une nouvelle demande');
+        $this->em->clear();
+        $this->assertTrue($this->em->getRepository(Tih::class)->find($user->getTih()->getId())->isRemoved());
+    }
+
     public function testTihSpaceRedirectsAnonymous(): void
     {
         $this->client->request('GET', '/espace-tih');
@@ -137,6 +159,7 @@ class TihProfileTest extends WebTestCase
         $this->assertSelectorTextContains('h1#profile-title', 'Votre profil');
         $this->assertSelectorNotExists('.alert-warning');
         $this->assertSelectorNotExists('#tih-rejection-message');
+        $this->assertSelectorNotExists('#tih-review-message');
         $this->assertSelectorTextNotContains('body', 'Votre attestation doit être renouvelée.');
 
         $this->loginAs($candidate);
@@ -145,6 +168,8 @@ class TihProfileTest extends WebTestCase
         $this->assertSelectorTextContains('.alert-warning[role="alert"]', 'Une information concernant votre profil TIH est disponible.');
         $this->assertSelectorNotExists('.alert-warning a');
         $this->assertSelectorTextContains('#tih-rejection-message', 'Votre attestation doit être renouvelée.');
+        $this->assertSelectorTextContains('.alert-warning', 'Vous avez un message concernant votre candidature TIH.');
+        $this->assertSelectorTextContains('#tih-review-message', 'Votre attestation doit être renouvelée.');
     }
 
     public function testProfileHidesHistoricalRefusalWhenApplicationIsPendingOrApproved(): void
