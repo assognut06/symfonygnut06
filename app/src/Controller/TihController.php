@@ -10,17 +10,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-#[Route('/espace-tih')]
-#[IsGranted('ROLE_USER')]
 class TihController extends AbstractController
 {
-    #[Route('/cv', name: 'espace_tih_cv')]
+    #[Route('/espace-tih/cv', name: 'espace_tih_cv')]
+    #[IsGranted('ROLE_USER')]
     public function downloadCv(): Response
     {
         /** @var \App\Entity\User $user */
@@ -49,7 +48,8 @@ class TihController extends AbstractController
         return $response;
     }
 
-    #[Route('/attestation', name: 'espace_tih_attestation')]
+    #[Route('/espace-tih/attestation', name: 'espace_tih_attestation')]
+    #[IsGranted('ROLE_USER')]
     public function downloadAttestation(): Response
     {
         /** @var \App\Entity\User $user */
@@ -78,7 +78,8 @@ class TihController extends AbstractController
         return $response;
     }
 
-    #[Route('', name: 'espace_tih')]
+    #[Route('/espace-tih', name: 'espace_tih')]
+    #[IsGranted('ROLE_USER')]
     public function profiltih(
         Request $request,
         EntityManagerInterface $em,
@@ -91,11 +92,13 @@ class TihController extends AbstractController
 
         $tih = $user->getTih();
         $initialSubmission = null === $tih;
-        $showForm = $request->query->get('edit') === '1' || !$tih;
+        $resubmission = $tih?->isRemoved() && $request->query->get('reapply') === '1';
+        $showForm = $resubmission || !$tih || (!$tih->isRemoved() && $request->query->get('edit') === '1');
 
         if (!$tih) {
             $tih = new Tih();
             $tih->setUser($user);
+            $tih->setProfileKind(Tih::PROFILE_KIND_REAL);
             $tih->setCreatedAt(new \DateTime());
             $tih->setUpdatedAt(new \DateTime());
             $tih->setIsValidate(false);
@@ -108,6 +111,7 @@ class TihController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
+                $tih->setProfileKind(Tih::PROFILE_KIND_REAL);
                 /** @var UploadedFile|null $cvFile */
                 $cvFile = $form->get('cv')->getData();
                 if ($cvFile) {
@@ -149,7 +153,7 @@ class TihController extends AbstractController
                 }
 
                 $tih->setUpdatedAt(new \DateTime());
-                $workflow->submitForReview($tih, $user, $initialSubmission);
+                $workflow->submitForReview($tih, $user, $initialSubmission, $resubmission);
 
                 $em->persist($tih);
                 $em->flush();
@@ -164,6 +168,40 @@ class TihController extends AbstractController
         return $this->render('tih/profil_tih.html.twig', [
             'tih' => $tih,
             'form' => $formView,
+            'demoMode' => false,
+        ]);
+    }
+
+    #[Route('/tih/demo/ajouter', name: 'app_tih_demo_new', methods: ['GET', 'POST'])]
+    public function newDemo(Request $request, EntityManagerInterface $em): Response
+    {
+        $tih = new Tih();
+        $tih->setProfileKind(Tih::PROFILE_KIND_DEMO);
+        $tih->setApplicationStatus(Tih::STATUS_PENDING);
+
+        $form = $this->createForm(TihType::class, $tih, ['demo_mode' => true]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // La route impose la nature du profil : elle ne dépend jamais d'une valeur du formulaire.
+            $tih->setProfileKind(Tih::PROFILE_KIND_DEMO);
+            $tih->setApplicationStatus(Tih::STATUS_PENDING);
+            $tih->setPhoto(null);
+            $tih->setCv(null);
+            $tih->setAttestationTih(null);
+
+            $em->persist($tih);
+            $em->flush();
+
+            $this->addFlash('success', 'Le profil fictif a été proposé. Il sera visible après validation par un administrateur.');
+
+            return $this->redirectToRoute('app_tih_search');
+        }
+
+        return $this->render('tih/profil_tih.html.twig', [
+            'tih' => $tih,
+            'form' => $form->createView(),
+            'demoMode' => true,
         ]);
     }
 }

@@ -339,12 +339,20 @@ class TihType extends AbstractType
                     ])
                 ],
             ]);
+
+        if ($options['demo_mode']) {
+            foreach (['photo', 'cv', 'attestationTih'] as $fileField) {
+                $builder->remove($fileField);
+            }
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Tih::class,
+            'demo_mode' => false,
         ]);
+        $resolver->setAllowedTypes('demo_mode', 'bool');
     }
 }
