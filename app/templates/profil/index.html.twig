@@ -49,6 +49,7 @@
     {% endif %}
     <div class="w-100 bg-main pt-5 pb-5">
         <div class="container my-4 pt-3 bg-light rounded-5 shadow mb-0">
+
                 <div class="row flex-column flex-md-row">
 
                     <!-- ✅ CORRECTION - Navigation accessible -->
@@ -118,7 +119,7 @@
 
                         <!-- ✅ CORRECTION - En-tête utilisateur amélioré -->
                         <header class="mb-4">
-                            <h2 id="profile-welcome-title" class="fs-4 mb-1">
+                            <h2 class="fs-4 mb-1">
                                 Bienvenue, {{ user.email }}
                             </h2>
                             <p id="current-date"
@@ -451,7 +452,7 @@
                 </div> <!-- Fin row -->
         </div> <!-- Fin container -->
     </div>
-</main>
+    </main>
 {% endblock %}
 
 {% block javascripts %}
