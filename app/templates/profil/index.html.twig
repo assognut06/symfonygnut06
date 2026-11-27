@@ -44,7 +44,16 @@
                     </div>
                 </section>
             </div>
+            <section id="tih-rejection-message" class="card border-warning mb-4" aria-labelledby="tih-rejection-title">
+                <div class="card-body">
+                    <h2 id="tih-rejection-title" class="h5 card-title">Décision concernant votre candidature TIH</h2>
+                    <p class="text-muted mb-2">Message reçu le {{ tihRejection.occurredAt|date('d/m/Y à H:i') }}</p>
+                    <p class="mb-1"><strong>Motif du refus :</strong></p>
+                    <p class="mb-0" style="white-space: pre-wrap;">{{ tihRejection.reason }}</p>
+                </div>
+            </section>
         {% endif %}
+    </div>
         {% if app.user.tih is null %}
             <div class="text-center my-4">
                 <a href="{{ path('espace_tih') }}" class="btn btn-success">
