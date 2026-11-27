@@ -1,0 +1,145 @@
+.account-hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--acc-hero);
+    color: #ffffff;
+    border-bottom: 3px solid var(--acc-accent);
+}
+
+.account-hero__photo {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 46%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 72% 35%;
+}
+
+.account-hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 46%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--acc-hero) 0%, rgba(11, 8, 22, 0.55) 45%, rgba(11, 8, 22, 0.1) 100%);
+    z-index: 1;
+}
+
+.account-hero__intro,
+.account-hero__links {
+    position: relative;
+    z-index: 2;
+}
+
+.account-hero__intro {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.75rem;
+    padding: 2.75rem 2.5rem 1.75rem;
+}
+
+.account-avatar {
+    position: relative;
+    flex: 0 0 auto;
+    width: 104px;
+    height: 104px;
+}
+
+.account-avatar__img {
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ffffff;
+}
+
+.account-avatar__edit {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 3px solid var(--acc-hero);
+    background: #ffffff;
+    color: var(--acc-ink);
+    font-size: 1.05rem;
+    text-decoration: none;
+}
+
+.account-avatar__edit:hover {
+    background: var(--acc-surface);
+    color: var(--acc-primary-ink);
+}
+
+.account-hero__text {
+    flex: 1 1 360px;
+    min-width: 0;
+    max-width: min(540px, 100%);
+}
+
+.account-page .account-hero__title {
+    margin: 0;
+    font-size: 2rem !important;
+    line-height: 1.2;
+    color: #ffffff !important;
+}
+
+.account-hero__lead {
+    margin: 0.5rem 0 0;
+    color: #d9d5e6;
+}
+
+.account-hero__meta {
+    margin: 0.625rem 0 0;
+    font-size: 0.875rem;
+    color: #bdb8cf;
+    overflow-wrap: anywhere;
+}
+
+.account-hero__remove {
+    margin: 0.25rem 0 0;
+}
+
+.account-hero__remove-btn {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #bdb8cf;
+    font-size: 0.875rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.account-hero__remove-btn:hover {
+    color: #ffffff;
+}
+
+.account-hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.75rem;
+    padding: 0 2.5rem 1.75rem calc(2.5rem + 104px + 1.75rem);
+    font-size: 0.9375rem;
+}
+
+.account-hero__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: #ffffff;
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: rgba(255, 255, 255, 0.4);
+}
+
+.account-hero__links a:hover {
+    text-decoration-color: var(--acc-accent);
+}

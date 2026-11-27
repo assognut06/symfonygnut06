@@ -1,8 +1,6 @@
-{# templates/profil/index.html.twig #}
-
 {% extends 'base.html.twig' %}
 
-{% block title %}Profil utilisateur - {{ user.email }} - GNUT 06{% endblock %}
+{% block title %}{{ profileForm is defined and profileForm.vars.submitted and not profileForm.vars.valid ? 'Erreur : ' : '' }}Mon espace - GNUT 06{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -10,461 +8,225 @@
 {% endblock %}
 
 {% block body %}
-    <!-- ✅ CORRECTION - Skip links ajoutés -->
+    {% import 'profil/_fields.html.twig' as ui %}
+
     <nav aria-label="Navigation rapide" class="visually-hidden-focusable">
         <a href="#main-content" class="skip-link">Aller au contenu principal</a>
-        <a href="#profile-nav" class="skip-link">Aller à la navigation du profil</a>
-        <a href="#profile-content" class="skip-link">Aller au contenu du profil</a>
+        <a href="#profile-nav" class="skip-link">Aller à la navigation de mon espace</a>
+        <a href="#profile-content" class="skip-link">Aller au contenu de mon espace</a>
     </nav>
-    {% if app.user %}
-        {% set tihRejection = app.user.tih ? app.user.tih.latestRefusalEvent : null %}
-        {% set tihReview = app.user.tih ? app.user.tih.latestReviewRequestEvent : null %}
-        {% set isReview = tihReview and (not tihRejection or tihReview.occurredAt > tihRejection.occurredAt or (tihReview.occurredAt == tihRejection.occurredAt and tihReview.id > tihRejection.id)) %}
-        {% set latestMessage = isReview ? tihReview : tihRejection %}
 
-        <main id="main-content" role="main" aria-labelledby="profile-title">
-        <div class="container mt-4">
-             <h1 id="profile-title" class="gradient-text text-main text-start text-center">Votre profil</h1>
-        </div>
-        {% if latestMessage and app.user.tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_APPROVED') %}
-            {% set messageColor = isReview ? 'warning' : 'danger' %}
-            {% set isPending = app.user.tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_PENDING') %}
-            <div class="container mt-4">
-                {% if not isReview or isPending %}
-                    <div class="alert alert-warning d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2" role="status">
-                        <span>{{ isReview ? 'Votre profil TIH est en attente de validation. Vous avez un nouveau message.' : 'Vous avez un message concernant votre candidature TIH.' }}</span>
+    {% set section = app.request.attributes.get('donnees') ?? (app.request.attributes.get('_route') == 'app_profil' ? 'profile' : '') %}
+    {% set firstName = payer is defined and payer ? payer.firstName|trim : '' %}
+    {% set tih = app.user ? app.user.tih : null %}
+    {% set tihRejection = tih ? tih.latestRefusalEvent : null %}
+    {% set tihReview = tih ? tih.latestReviewRequestEvent : null %}
+    {% set isReview = tihReview and (not tihRejection or tihReview.occurredAt > tihRejection.occurredAt or (tihReview.occurredAt == tihRejection.occurredAt and tihReview.id > tihRejection.id)) %}
+    {% set latestMessage = isReview ? tihReview : tihRejection %}
+    {% set sections = [
+        {key: 'profile', label: 'Profil', icon: 'person', url: path('app_profil')},
+        {key: 'orders', label: 'Commandes', icon: 'bag', url: path('app_profil_page', {page: 1, donnees: 'orders'})},
+        {key: 'payments', label: 'Paiements', icon: 'credit-card', url: path('app_profil_page', {page: 1, donnees: 'payments'})},
+    ] %}
+
+    <div class="account-page">
+        <main id="main-content" class="account-panel" aria-labelledby="account-title">
+
+            <section class="account-hero">
+                <img class="account-hero__photo"
+                     src="{{ asset('images/webp/LSCA_mars2025.webp') }}"
+                     alt=""
+                     width="1200" height="900">
+
+                <div class="account-hero__intro">
+                    <div class="account-avatar">
+                        {% if user.profilePicture %}
+                            <img src="{{ asset('uploads/profilePictures/' ~ user.profilePicture) }}"
+                                 class="account-avatar__img"
+                                 alt="Votre photo de profil">
+                        {% else %}
+                            <img src="{{ asset('images/user_profil.jpg') }}"
+                                 class="account-avatar__img"
+                                 alt="Photo de profil par défaut">
+                        {% endif %}
+                        <a href="{{ path('edit_profile_picture') }}"
+                           class="account-avatar__edit"
+                           aria-label="{{ user.profilePicture ? 'Modifier' : 'Ajouter' }} votre photo de profil">
+                            <i class="bi bi-camera" aria-hidden="true"></i>
+                        </a>
                     </div>
-                {% endif %}
-                <section id="tih-review-message" class="card border-warning mb-4" tabindex="-1" aria-labelledby="tih-review-title">
-                    <div class="card-body">
-                        <h2 id="tih-review-title" class="card-title text-{{ messageColor }}">{{ isReview ? (isPending ? 'Remise en attente de validation de votre profil TIH' : 'Message précédent concernant votre profil TIH') : 'Refus de votre candidature TIH' }}</h2>
-                        <p class="text-muted mb-2">Message reçu le {{ latestMessage.occurredAt|date('d/m/Y à H:i') }}</p>
-                        <p class="mb-1"><strong>{{ isReview ? 'Motif de la remise en attente :' : 'Motif du refus :' }}</strong></p>
-                        <p class="mb-0" style="white-space: pre-wrap;">{{ latestMessage.reason }}</p>
+
+                    <div class="account-hero__text">
+                        <h1 id="account-title" class="account-hero__title">
+                            Bienvenue{{ firstName ? ', ' ~ firstName : '' }}
+                        </h1>
+                        <p class="account-hero__lead">
+                            Content de vous revoir. Ici, vous gérez vos informations, vos commandes et vos dons.
+                        </p>
+                        <p class="account-hero__meta">
+                            {{ user.email }}
+                            · {{ user.isVerified ? 'Email vérifié' : 'Email non vérifié' }}
+                            · Identifiant : {{ user.id }}
+                        </p>
+                        {% if user.profilePicture %}
+                            <form method="post"
+                                  action="{{ path('delete_profile_picture') }}"
+                                  class="account-hero__remove"
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre photo de profil ?')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_profile_picture' ~ user.id) }}">
+                                <button type="submit" class="account-hero__remove-btn">Supprimer la photo</button>
+                            </form>
+                        {% endif %}
                     </div>
-                </section>
-            </div>
-        {% endif %}
-        {% if app.user.tih is null %}
-            <div class="text-center my-4">
-                <a href="{{ path('espace_tih') }}" class="btn btn-success">
-                    Voulez-vous vous inscrire en tant que TIH ?
-                </a>
-            </div>
-        {% else %}
-            <div class="text-center my-4">
-                <a href="{{ path('espace_tih') }}" class="btn btn-primary">
-                    Accéder à votre espace TIH
-                </a>
-            </div>
-        {% endif %}
-    {% endif %}
-    <div class="w-100 bg-main pt-5 pb-5">
-        <div class="container my-4 pt-3 bg-light rounded-5 shadow mb-0">
-                <div class="row flex-column flex-md-row">
+                </div>
 
-                    <!-- ✅ CORRECTION - Navigation accessible -->
-                    <nav id="profile-nav"
-                         class="col-md-3 col-sm-4 my-2 sidebar-nav"
-                         aria-label="Navigation du profil utilisateur"
-                         role="navigation">
+                <nav class="account-hero__links" aria-label="Raccourcis de l'association">
+                    <a href="{{ path('app_billetteries') }}">Réserver une activité</a>
+                    <a href="{{ path('app_metavers') }}">Salles 3D immersives</a>
+                    <a href="{{ path('app_don') }}">Soutenir l'association</a>
+                </nav>
+            </section>
 
-                        <h2 class="visually-hidden">Menu du profil</h2>
-
-                        <ul class="nav nav-tabs flex-column text-center"
-                            role="tablist"
-                            aria-label="Sections du profil">
-
-                            <li class="nav-item mb-2" role="presentation">
-                                <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'profile' or app.request.attributes.get('_route') == 'app_profil') ? ' active' : '' }}"
-                                   href="{{ path('app_profil') }}"
-                                   role="tab"
-                                   aria-controls="profile-content"
-                                   aria-selected="{{ (app.request.attributes.get('donnees') == 'profile' or app.request.attributes.get('_route') == 'app_profil') ? 'true' : 'false' }}"
-                                   aria-label="Voir et modifier les informations de profil">
-                                    <img src="{{ asset('images/webp/element-4.svg') }}"
-                                         alt=""
-                                         aria-hidden="true"
-                                         style="width:18px; height:18px;">
-                                    <span class="mt-1">Profil</span>
+            <div class="account-body">
+                <nav id="profile-nav" class="account-nav" aria-label="Sections de mon espace">
+                    <ul class="account-nav__list">
+                        {% for item in sections %}
+                            <li>
+                                <a href="{{ item.url }}"
+                                   class="account-nav__link{{ section == item.key ? ' is-active' : '' }}"
+                                   {% if section == item.key %}aria-current="page"{% endif %}>
+                                    <i class="bi bi-{{ item.icon }}" aria-hidden="true"></i>
+                                    {{ item.label }}
                                 </a>
                             </li>
-
-                            <li class="nav-item mb-2" role="presentation">
-                                <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'orders') ? ' active' : '' }}"
-                                   href="{{ path('app_profil_page', {'page': '1', 'donnees': 'orders'}) }}"
-                                   role="tab"
-                                   aria-controls="profile-content"
-                                   aria-selected="{{ (app.request.attributes.get('donnees') == 'orders') ? 'true' : 'false' }}"
-                                   aria-label="Consulter l'historique de vos commandes">
-                                    <img src="{{ asset('images/webp/cart-frame.svg') }}"
-                                         alt=""
-                                         aria-hidden="true"
-                                         style="width:18px; height:18px;">
-                                    <span class="mt-1">Commandes</span>
-                                </a>
-                            </li>
-
-                            <li class="nav-item mb-2" role="presentation">
-                                <a class="nav-link d-flex flex-column align-items-center justify-content-center{{ (app.request.attributes.get('donnees') == 'payments') ? ' active' : '' }}"
-                                   href="{{ path('app_profil_page', {'page': '1', 'donnees': 'payments'}) }}"
-                                   role="tab"
-                                   aria-controls="profile-content"
-                                   aria-selected="{{ (app.request.attributes.get('donnees') == 'payments') ? 'true' : 'false' }}"
-                                   aria-label="Consulter l'historique de vos paiements">
-                                    <img src="{{ asset('images/webp/cash.svg') }}"
-                                         alt=""
-                                         aria-hidden="true"
-                                         style="width:18px; height:18px;">
-                                    <span class="mt-1">Paiements</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-
-                    <!-- ✅ CORRECTION - Contenu principal accessible -->
-                    <div id="profile-content"
-                         class="col-md-9 text-start p-3"
-                         role="tabpanel"
-                         aria-labelledby="profile-welcome-title">
-
-                        <!-- ✅ CORRECTION - En-tête utilisateur amélioré -->
-                        <header class="mb-4">
-                            <h2 id="profile-welcome-title" class="fs-4 mb-1">
-                                Bienvenue, {{ user.email }}
-                            </h2>
-                            </h2>
-                            <p id="current-date"
-                               class="text-muted"
-                               aria-live="polite"
-                               aria-label="Date du jour"></p>
-                        </header>
-
-                        <!-- ✅ CORRECTION - Carte profil accessible -->
-                        <section class="profile-card rounded mb-4"
-                                 aria-labelledby="profile-info-title">
-
-                            <div class="profile-header"></div>
-
-                            <div class="profile-avatar px-3">
-                                <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start">
-
-                                    {% if user.profilePicture %}
-                                        <!-- ✅ Photo de profil existante -->
-                                        <div class="text-center">
-                                            <img src="{{ asset('uploads/profilePictures/' ~ user.profilePicture) }}"
-                                                 class="rounded-circle"
-                                                 style="width: 120px; height: 120px; object-fit: cover;"
-                                                 alt="Photo de profil de {{ user.email }}"
-                                                 role="img">
-                                            <div class="mt-3">
-                                                <a href="{{ path('edit_profile_picture') }}"
-                                                   class="btn btn-primary me-2"
-                                                   aria-label="Modifier la photo de profil">
-                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
-                                                    <span class="d-none d-sm-inline ms-1">Modifier</span>
-                                                </a>
-                                                <form method="post"
-                                                      action="{{ path('delete_profile_picture') }}"
-                                                      class="d-inline"
-                                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre photo de profil ?')">
-                                                    <input type="hidden"
-                                                           name="_token"
-                                                           value="{{ csrf_token('delete_profile_picture' ~ user.id) }}">
-                                                    <button type="submit"
-                                                            class="btn btn-danger"
-                                                            aria-label="Supprimer la photo de profil">
-                                                    <i class="bi bi-trash" aria-hidden="true"></i>
-                                                    <span class="d-none d-sm-inline ms-1">Supprimer</span>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    {% else %}
-                                        <!-- ✅ Photo par défaut -->
-                                        <div class="text-center">
-                                            <img src="{{ asset('images/user_profil.jpg') }}"
-                                                 class="rounded-circle"
-                                                 style="width: 120px; height: 120px; object-fit: cover;"
-                                                 alt="Photo de profil par défaut"
-                                                 role="img">
-                                            <div class="mt-3">
-                                                <a href="{{ path('edit_profile_picture') }}"
-                                                   class="btn btn-primary"
-                                                   aria-label="Ajouter une photo de profil">
-                                                    <i class="bi bi-camera" aria-hidden="true"></i>
-                                                    <span class="d-none d-sm-inline ms-1">Ajouter une photo</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-
-                                    <!-- ✅ CORRECTION - Informations utilisateur -->
-                                    <div class="ms-md-4 mt-3 mt-md-0 text-center text-md-start">
-                                        <h2 id="profile-info-title" class="fs-4 mb-3">
-                                            {{ user.email }}
-
-                                            {% if user.isVerified == 1 %}
-                                                <span class="status-badge status-verified"
-                                                      aria-label="Compte vérifié">
-                                                    <i class="bi bi-patch-check" aria-hidden="true"></i>
-                                                    Vérifié
-                                                </span>
-                                            {% else %}
-                                                <span class="status-badge status-unverified"
-                                                      aria-label="Compte non vérifié">
-                                                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                                                    Non vérifié
-                                                </span>
-                                            {% endif %}
-                                        </h2>
-
-                                        <p class="text-muted mb-2">
-                                            <strong>Identifiant :</strong> {{ user.id }}
-                                        </p>
-
-                                        <div class="mt-3" aria-labelledby="oauth-links-title">
-                                            <h3 id="oauth-links-title" class="h6 mb-2">
-                                                <i class="bi bi-shield-lock" aria-hidden="true"></i>
-                                                Connexions OAuth liées
-                                            </h3>
-                                            <div class="d-flex flex-column flex-sm-row gap-2">
-                                                {% if user.googleId %}
-                                                    <span class="btn btn-outline-success btn-sm disabled" aria-disabled="true">
-                                                        <i class="bi bi-google" aria-hidden="true"></i>
-                                                        Google lié
-                                                    </span>
-                                                {% else %}
-                                                    <form method="post" action="{{ path('oauth_link_reauth', {provider: 'google'}) }}">
-                                                        <input type="hidden" name="_token" value="{{ csrf_token('oauth_link_start_google') }}">
-                                                        <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-google" aria-hidden="true"></i> Lier Google</button>
-                                                    </form>
-                                                {% endif %}
-
-                                                {% if user.azureId %}
-                                                    <span class="btn btn-outline-success btn-sm disabled" aria-disabled="true">
-                                                        <i class="bi bi-microsoft" aria-hidden="true"></i>
-                                                        Microsoft lié
-                                                    </span>
-                                                {% else %}
-                                                    <form method="post" action="{{ path('oauth_link_reauth', {provider: 'microsoft'}) }}">
-                                                        <input type="hidden" name="_token" value="{{ csrf_token('oauth_link_start_microsoft') }}">
-                                                        <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-microsoft" aria-hidden="true"></i> Lier Microsoft</button>
-                                                    </form>
-                                                {% endif %}
-                                            </div>
-                                            <p class="text-muted small mt-2 mb-0">
-                                                Pour éviter une prise de contrôle, un compte OAuth ne peut être lié à cet email que depuis cette session déjà authentifiée.
-                                            </p>
-                                        </div>
-
-                                        {% if user.isVerified == 0 %}
-                                            <div class="alert alert-warning" role="alert">
-                                                <h3 class="h6 mb-2">
-                                                    <i class="bi bi-envelope" aria-hidden="true"></i>
-                                                    Vérification requise
-                                                </h3>
-                                                <p class="mb-2">Votre compte n'est pas encore vérifié.</p>
-                                                <a href="{{ path('app_verify_email_renew', {'id': user.id}) }}"
-                                                   class="btn btn-warning btn-sm"
-                                                   aria-label="Renvoyer l'email de confirmation pour vérifier votre compte">
-                                                    <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
-                                                    Renvoyer l'email de confirmation
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        {# ✅ CORRECTION - Contenu dynamique selon le menu cliqué #}
-                        {% set section = app.request.attributes.get('donnees') ?? (app.request.attributes.get('_route') == 'app_profil' ? 'profile' : '') %}
-
-                        {# Flash messages #}
-                        {% for type, messages in app.flashes %}
-                            {% for message in messages %}
-                                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
-                                    <i class="bi bi-{{ type == 'success' ? 'check-circle' : 'exclamation-triangle' }} me-2" aria-hidden="true"></i>
-                                    {{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
-                                </div>
-                            {% endfor %}
                         {% endfor %}
+                    </ul>
+                    <div class="account-nav__actions">
+                        <a href="{{ path('app_logout') }}" class="account-btn account-btn--quiet account-nav__logout">
+                            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                            Se déconnecter
+                        </a>
+                    </div>
+                </nav>
 
-                        {% if section == 'profile' %}
-                            <!-- ✅ CORRECTION - Formulaire du profil accessible -->
-                            <section class="profile-card p-4"
-                                     aria-labelledby="profile-form-title">
+                <div id="profile-content" class="account-content">
 
-                                <header class="mb-4">
-                                    <h3 id="profile-form-title" class="h4">
-                                        <i class="bi bi-person-gear me-2" aria-hidden="true"></i>
-                                        Informations personnelles
-                                    </h3>
-                                    <p class="text-muted">
-                                        Complétez vos informations pour personnaliser votre profil.
-                                    </p>
-                                </header>
+                    {% if latestMessage and tih.applicationStatus != constant('App\\Entity\\Tih::STATUS_APPROVED') %}
+                        {% set isPending = tih.applicationStatus == constant('App\\Entity\\Tih::STATUS_PENDING') %}
+                        {% if not isReview or isPending %}
+                            <div class="alert alert-warning account-alert" role="status">
+                                <span>{{ isReview ? 'Votre profil TIH est en attente de validation. Vous avez un nouveau message.' : 'Vous avez un message concernant votre candidature TIH.' }}</span>
+                            </div>
+                        {% endif %}
+                        <section id="tih-review-message" class="account-card account-card--notice" tabindex="-1" aria-labelledby="tih-review-title">
+                            <h2 id="tih-review-title" class="account-card__title text-{{ isReview ? 'warning' : 'danger' }}">
+                                {{ isReview ? (isPending ? 'Votre profil TIH est de nouveau en attente de validation' : 'Message précédent concernant votre profil TIH') : 'Refus de votre candidature TIH' }}
+                            </h2>
+                            <p class="account-card__hint">Message reçu le {{ latestMessage.occurredAt|date('d/m/Y à H:i') }}</p>
+                            <p class="account-notice__label">{{ isReview ? 'Motif de la remise en attente :' : 'Motif du refus :' }}</p>
+                            <p class="account-notice__reason">{{ latestMessage.reason }}</p>
+                        </section>
+                    {% endif %}
 
-                                {{ form_start(profileForm, {'action': path('app_profil'), 'method': 'POST'}) }}
-                                
-                                <fieldset>
-                                    <legend class="visually-hidden">Informations personnelles</legend>
+                    {% if section == 'profile' %}
 
-                                    <div class="row">
-                                        <!-- Colonne gauche -->
-                                        <div class="col-12 col-md-6">
-                                            <div class="mb-3">
-                                                {{ form_label(profileForm.firstName) }}
-                                                <span class="required-field" aria-label="obligatoire">*</span>
-                                                {{ form_widget(profileForm.firstName) }}
-                                                <div class="invalid-feedback" role="alert">
-                                                    {{ form_errors(profileForm.firstName) }}
-                                                </div>
-                                            </div>
+                        {% if not user.isVerified %}
+                            <div class="alert alert-warning" role="alert">
+                                <p class="mb-2">Votre adresse email n'est pas encore vérifiée.</p>
+                                <a href="{{ path('app_verify_email_renew', {'id': user.id}) }}" class="btn btn-warning btn-sm">
+                                    Renvoyer l'email de confirmation
+                                </a>
+                            </div>
+                        {% endif %}
 
-                                            <div class="mb-3">
-                                                {{ form_label(profileForm.address) }}
-                                                <span class="required-field" aria-label="obligatoire">*</span>
-                                                {{ form_widget(profileForm.address) }}
-                                                <div class="invalid-feedback" role="alert">
-                                                    {{ form_errors(profileForm.address) }}
-                                                </div>
-                                            </div>
+                        {% if profileForm is defined %}
+                            <section class="account-card" aria-labelledby="profile-form-title">
+                                <h2 id="profile-form-title" class="account-card__title">Informations personnelles</h2>
+                                <p class="account-card__hint">Utilisées pour vos commandes et vos reçus de don.</p>
 
-                                            <div class="mb-3">
-                                                {{ form_label(profileForm.zipCode) }}
-                                                <span class="required-field" aria-label="obligatoire">*</span>
-                                                {{ form_widget(profileForm.zipCode) }}
-                                                {{ form_help(profileForm.zipCode) }}
-                                                <div class="invalid-feedback" role="alert">
-                                                    {{ form_errors(profileForm.zipCode) }}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Colonne droite -->
-                                        <div class="col-12 col-md-6">
-                                            <div class="mb-3">
-                                                {{ form_label(profileForm.lastName) }}
-                                                <span class="required-field" aria-label="obligatoire">*</span>
-                                                {{ form_widget(profileForm.lastName) }}
-                                                <div class="invalid-feedback" role="alert">
-                                                    {{ form_errors(profileForm.lastName) }}
-                                                </div>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                {{ form_label(profileForm.city) }}
-                                                <span class="required-field" aria-label="obligatoire">*</span>
-                                                {{ form_widget(profileForm.city) }}
-                                                <div class="invalid-feedback" role="alert">
-                                                    {{ form_errors(profileForm.city) }}
-                                                </div>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                {{ form_label(profileForm.phone) }}
-                                                {{ form_widget(profileForm.phone) }}
-                                                {{ form_help(profileForm.phone) }}
-                                                <div class="invalid-feedback" role="alert">
-                                                    {{ form_errors(profileForm.phone) }}
-                                                </div>
-                                            </div>
-                                        </div>
+                                {{ form_start(profileForm, {
+                                    action: path('app_profil'),
+                                    method: 'POST',
+                                    attr: profileForm.vars.attr|merge({'data-profile-unsaved': profileForm.vars.submitted and not profileForm.vars.valid ? 'true' : 'false'})
+                                }) }}
+                                    {% include 'profil/_error_summary.html.twig' with {form: profileForm} only %}
+                                    <div class="account-form-grid">
+                                        {{ ui.field(profileForm.firstName) }}
+                                        {{ ui.field(profileForm.lastName) }}
+                                        {{ ui.field(profileForm.address) }}
+                                        {{ ui.field(profileForm.zipCode) }}
+                                        {{ ui.field(profileForm.city) }}
+                                        {{ ui.field(profileForm.phone) }}
                                     </div>
-                                </fieldset>
-
-                                <!-- ✅ CORRECTION - Mention des champs obligatoires accessible -->
-                                <div id="form-help" class="alert alert-info mt-3" role="status">
-                                    <p class="mb-0">
-                                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                                        Les champs marqués d'un astérisque (<span class="required-field">*</span>) sont obligatoires.
-                                    </p>
-                                </div>
-
-                                <div class="text-center mt-4">
-                                    <button type="submit"
-                                            class="btn-asso px-4"
-                                            role="button"
-                                            aria-describedby="save-help">
-                                        <i class="bi bi-save me-2" aria-hidden="true"></i>
-                                        Enregistrer les modifications
-                                    </button>
-                                    <div id="save-help" class="form-text mt-2">
-                                        Vos informations seront mises à jour de manière sécurisée.
+                                    <div class="account-form-footer">
+                                        <p id="form-help" class="account-form-footer__note">
+                                            <span class="account-required" aria-hidden="true">*</span> Champ obligatoire
+                                        </p>
+                                        <p class="account-form-status" data-profile-status role="status" {% if not profileForm.vars.submitted or profileForm.vars.valid %}hidden{% endif %}>Modifications non enregistrées</p>
+                                        <button type="submit" class="account-btn account-btn--primary">Enregistrer</button>
                                     </div>
-                                </div>
-
                                 {{ form_end(profileForm) }}
                             </section>
-
-                        {% elseif section == 'orders' %}
-                            <!-- ✅ CORRECTION - Section Commandes accessible -->
-                            <section aria-labelledby="orders-title">
-                                <header class="mb-4">
-                                    <h3 id="orders-title" class="h4">
-                                        <i class="bi bi-bag-check me-2" aria-hidden="true"></i>
-                                        Mes dernières commandes
-                                    </h3>
-                                </header>
-
-                                {% if data_items is defined and data_items['data'] is not empty %}
-                                    <div role="list" aria-label="Liste de vos commandes">
-                                        {% for item in data_items['data'] %}
-                                            <div role="listitem">
-                                                {% include 'profil/orders.html.twig' %}
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    <div class="alert alert-info text-center" role="status">
-                                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                                        Aucune commande à afficher pour le moment.
-                                    </div>
-                                {% endif %}
-                            </section>
-
-                        {% elseif section == 'payments' %}
-                            <!-- ✅ CORRECTION - Section Paiements accessible -->
-                            <section aria-labelledby="payments-title">
-                                <header class="mb-4">
-                                    <h3 id="payments-title" class="h4">
-                                        <i class="bi bi-credit-card me-2" aria-hidden="true"></i>
-                                        Mes paiements
-                                    </h3>
-                                </header>
-
-                                {% if data_items is defined and data_items['data'] is not empty %}
-                                    <div role="list" aria-label="Liste de vos paiements">
-                                        {% for item in data_items['data'] %}
-                                            <div role="listitem">
-                                                {% include 'profil/payments.html.twig' %}
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    <div class="alert alert-info text-center" role="status">
-                                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                                        Aucun paiement à afficher pour le moment.
-                                    </div>
-                                {% endif %}
-                            </section>
                         {% endif %}
 
-                        {% if section in ['orders', 'payments'] %}
-                            {% include 'profil/_pagination.html.twig' with {
-                                pagination: data_items.pagination|default({}),
-                                section: section
-                            } only %}
-                        {% endif %}
+                    {% elseif section == 'orders' %}
+                        <section class="account-card" aria-labelledby="orders-title">
+                            <h2 id="orders-title" class="account-card__title">Mes commandes</h2>
+                            {% if data_items.loadFailed|default(false) %}
+                                {% include 'profil/_history_unavailable.html.twig' with {section: section, page: app.request.attributes.get('page')|default(1)} only %}
+                            {% elseif data_items is defined and data_items['data'] is not empty %}
+                                <div class="account-list" role="list" aria-label="Liste de vos commandes">
+                                    {% for item in data_items['data'] %}
+                                        <div class="account-list__item" role="listitem">
+                                            {% include 'profil/orders.html.twig' %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="account-empty" role="status">
+                                    <i class="bi bi-bag" aria-hidden="true"></i>
+                                    <p>Aucune commande à afficher pour le moment.</p>
+                                    <a href="{{ path('app_billetteries') }}" class="account-btn account-btn--outline">Réserver une activité</a>
+                                </div>
+                            {% endif %}
+                        </section>
 
-                    </div> <!-- Fin contenu principal -->
-                </div> <!-- Fin row -->
-        </div> <!-- Fin container -->
+                    {% elseif section == 'payments' %}
+                        <section class="account-card" aria-labelledby="payments-title">
+                            <h2 id="payments-title" class="account-card__title">Mes paiements</h2>
+                            {% if data_items.loadFailed|default(false) %}
+                                {% include 'profil/_history_unavailable.html.twig' with {section: section, page: app.request.attributes.get('page')|default(1)} only %}
+                            {% elseif data_items is defined and data_items['data'] is not empty %}
+                                <div class="account-list" role="list" aria-label="Liste de vos paiements">
+                                    {% for item in data_items['data'] %}
+                                        <div class="account-list__item" role="listitem">
+                                            {% include 'profil/payments.html.twig' %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="account-empty" role="status">
+                                    <i class="bi bi-credit-card" aria-hidden="true"></i>
+                                    <p>Aucun paiement à afficher pour le moment.</p>
+                                </div>
+                            {% endif %}
+                        </section>
+                    {% endif %}
+
+                    {% if section in ['orders', 'payments'] and not data_items.loadFailed|default(false) %}
+                        {% include 'profil/_pagination.html.twig' with {
+                            pagination: data_items.pagination|default({}),
+                            section: section
+                        } only %}
+                    {% endif %}
+
+                    {% include 'profil/_connected_accounts.html.twig' with {user: user} only %}
+                    {% include 'profil/_tih_space.html.twig' with {tih: tih} only %}
+
+                </div>
+            </div>
+        </main>
     </div>
-</main>
 {% endblock %}
 
 {% block javascripts %}

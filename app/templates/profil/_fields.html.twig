@@ -1,0 +1,30 @@
+{% macro field(field) %}
+    {% set errorId = field.vars.name ~ '-error' %}
+    {% set fieldClasses = field.vars.attr.class|default('') %}
+    {% if 'form-control' not in fieldClasses|split(' ') %}
+        {% set fieldClasses = (fieldClasses ~ ' form-control')|trim %}
+    {% endif %}
+    {% if not field.vars.valid and 'is-invalid' not in fieldClasses|split(' ') %}
+        {% set fieldClasses = (fieldClasses ~ ' is-invalid')|trim %}
+    {% endif %}
+    <div class="account-field{{ field.vars.name == 'address' ? ' account-field--wide' : '' }}">
+        <label for="{{ field.vars.id }}" class="account-field__label">
+            {{ field.vars.label }}
+            {% if field.vars.required %}
+                <span class="account-required" aria-hidden="true">*</span>
+            {% else %}
+                <span class="account-optional">(facultatif)</span>
+            {% endif %}
+        </label>
+        {{ form_widget(field, {attr: field.vars.attr|merge({
+            class: fieldClasses,
+            'aria-invalid': field.vars.valid ? 'false' : 'true',
+            'aria-describedby': field.vars.attr['aria-describedby']|default(errorId)
+        })}) }}
+        {{ form_help(field) }}
+        <div id="{{ errorId }}" class="invalid-feedback" role="alert">
+            <div data-profile-server-errors>{{ form_errors(field) }}</div>
+            <span data-profile-client-error></span>
+        </div>
+    </div>
+{% endmacro %}

@@ -1,0 +1,14 @@
+<div id="profile-errors" class="account-form-errors" tabindex="-1" aria-labelledby="profile-errors-title"
+     {% if not form.vars.submitted or form.vars.valid %}hidden{% endif %}>
+    <h3 id="profile-errors-title">Veuillez corriger les erreurs suivantes</h3>
+    <ul data-profile-errors>
+        {% for error in form.vars.errors %}
+            <li data-form-error>{{ error.message }}</li>
+        {% endfor %}
+        {% for field in form %}
+            {% for error in field.vars.errors %}
+                <li><a href="#{{ field.vars.id }}">{{ error.message }}</a></li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+</div>

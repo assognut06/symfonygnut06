@@ -1,0 +1,180 @@
+.account-form-errors {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border: 2px solid #b42318;
+    border-radius: 10px;
+    color: var(--acc-ink);
+}
+
+.account-form-errors:focus {
+    outline: 3px solid var(--acc-primary);
+    outline-offset: 2px;
+}
+
+.account-page .account-form-errors h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem !important;
+    color: var(--acc-ink) !important;
+}
+
+.account-form-errors ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.account-form-errors a {
+    color: #b42318;
+    text-underline-offset: 3px;
+}
+
+.account-form-status {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--acc-primary-ink);
+}
+
+.account-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 1.25rem 1.5rem;
+}
+
+.account-field {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.account-field--wide {
+    grid-column: 1 / -1;
+}
+
+.account-field__label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--acc-ink);
+}
+
+.account-required {
+    color: var(--acc-required);
+}
+
+.account-optional {
+    font-weight: 400;
+    color: var(--acc-muted);
+}
+
+.account-page .form-control {
+    min-width: 0;
+    max-width: 100%;
+    min-height: 46px;
+    padding: 0.5rem 0.875rem;
+    border: 1px solid #cfcbdb;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: var(--acc-ink);
+}
+
+.account-page .form-control::placeholder {
+    color: #8a8698;
+}
+
+.account-page .form-control:focus {
+    border-color: var(--acc-primary);
+    box-shadow: 0 0 0 3px rgba(127, 41, 255, 0.2);
+}
+
+.account-page .form-text,
+.account-page .help-text {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--acc-muted);
+}
+
+.account-page .invalid-feedback ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.account-form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--acc-line-soft);
+}
+
+.account-form-footer__note {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--acc-muted);
+}
+
+.account-btn,
+.account-btn-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    text-decoration: none;
+    max-width: 100%;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.account-btn {
+    min-height: 46px;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+}
+
+.account-btn-sm {
+    min-height: 40px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.account-btn--primary {
+    background: var(--acc-primary);
+    border-color: var(--acc-primary);
+    color: #ffffff;
+}
+
+.account-btn--primary:hover {
+    background: var(--acc-primary-ink);
+    border-color: var(--acc-primary-ink);
+    color: #ffffff;
+}
+
+.account-btn--outline {
+    background: transparent;
+    border-color: var(--acc-primary);
+    color: var(--acc-primary-ink);
+}
+
+.account-btn--outline:hover {
+    background: rgba(127, 41, 255, 0.08);
+    color: var(--acc-primary-ink);
+}
+
+.account-btn--quiet {
+    background: #ffffff;
+    border-color: #cfcbdb;
+    color: var(--acc-ink);
+}
+
+.account-btn--quiet:hover {
+    background: var(--acc-surface);
+    color: var(--acc-ink);
+}
