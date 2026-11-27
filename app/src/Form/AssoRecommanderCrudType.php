@@ -6,10 +6,20 @@ use App\Entity\AssoRecommander;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
 /**
+ * Formulaire complet utilisé par le CRUD admin (AssosCrudController).
+ * Remplace l'ancien AssoRecommander1Type.
+ *
+ * À ne pas confondre avec AssoRecommanderType, qui ne contient que le slug
+ * et sert à l'import HelloAsso (AdminAssoRecommanderController::new).
+ *
+ * createdAt / updatedAt ne sont pas exposés : ils sont gérés par l'entité
+ * (constructeur + #[ORM\PreUpdate]).
+ *
  * @extends AbstractType<AssoRecommander>
  */
-class AssoRecommander1Type extends AbstractType
+class AssoRecommanderCrudType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -26,12 +36,6 @@ class AssoRecommander1Type extends AbstractType
             ->add('zipCode')
             ->add('description')
             ->add('url')
-            ->add('CreatedAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('UpdatedAt', null, [
-                'widget' => 'single_text',
-            ])
         ;
     }
 

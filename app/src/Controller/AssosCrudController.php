@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\AssoRecommander;
-use App\Form\AssoRecommander1Type;
+use App\Form\AssoRecommanderCrudType;
 use App\Repository\AssoRecommanderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +29,7 @@ class AssosCrudController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $assoRecommander = new AssoRecommander();
-        $form = $this->createForm(AssoRecommander1Type::class, $assoRecommander);
+        $form = $this->createForm(AssoRecommanderCrudType::class, $assoRecommander);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -58,7 +58,7 @@ class AssosCrudController extends AbstractController
     #[Route('/{id}/edit', name: 'app_assos_crud_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, AssoRecommander $assoRecommander, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(AssoRecommander1Type::class, $assoRecommander);
+        $form = $this->createForm(AssoRecommanderCrudType::class, $assoRecommander);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
