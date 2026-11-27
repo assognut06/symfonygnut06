@@ -10,6 +10,28 @@ use App\Entity\TihApplicationEvent;
  */
 class TihProfileTest extends WebTestCase
 {
+    public function testRemovedProfileRequiresExplicitNewApplication(): void
+    {
+        $user = $this->createTihUser();
+        $user->getTih()->setApplicationStatus(Tih::STATUS_REMOVED);
+        $user->setRoles(['ROLE_USER']);
+        $this->em->flush();
+        $this->loginAs($user);
+
+        $this->client->request('GET', '/espace-tih?edit=1');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('.alert-secondary', 'Votre profil TIH est supprimé');
+        $this->assertSelectorNotExists('form[name="tih"]');
+        $this->assertSelectorExists('a[href="/espace-tih?reapply=1"]');
+
+        $this->client->request('GET', '/espace-tih?reapply=1');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form[name="tih"]');
+        $this->assertSelectorTextContains('form[name="tih"] button[type="submit"]', 'Soumettre une nouvelle demande');
+        $this->em->clear();
+        $this->assertTrue($this->em->getRepository(Tih::class)->find($user->getTih()->getId())->isRemoved());
+    }
+
     public function testTihSpaceRedirectsAnonymous(): void
     {
         $this->client->request('GET', '/espace-tih');

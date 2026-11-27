@@ -29,6 +29,7 @@ class ProtectedRouteTest extends WebTestCase
     {
         yield 'Profile' => ['/profil'];
         yield 'TIH space' => ['/espace-tih'];
+        yield 'Real TIH search' => ['/intranet/tih/tih_search'];
         yield 'Edit picture' => ['/profile/edit-picture'];
     }
 
