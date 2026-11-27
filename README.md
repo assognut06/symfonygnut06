@@ -291,7 +291,7 @@ Utilisez `--force-with-lease` plutôt que `--force` : Git refuse ainsi d'écrase
 
 Un comportement particulier a été constaté sur GitHub : même lorsque les relecteurs approuvent la Pull Request après le rebase, leurs approbations peuvent être considérées comme antérieures au dernier commit. La fusion reste alors bloquée, car GitHub ne reconnaît pas ces approbations comme portant sur la dernière version de la branche.
 
-Le contournement consiste, après avoir terminé, validé et poussé le rebase, à fermer puis à rouvrir la Pull Request. Cette opération permet à GitHub de prendre en compte le dernier état de la branche pour les approbations.
+Le contournement consiste, après avoir terminé, validé et poussé le rebase, à fermer puis à rouvrir la Pull Request. Cette opération permet à GitHub de prendre en compte le dernier état de la branche pour les approbations..
 
 ## Trouble shoot
 
